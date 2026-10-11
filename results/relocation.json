@@ -1,0 +1,399 @@
+[
+ {
+  "model": "deepseek-v4-pro",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1518,
+  "transitions": 3961,
+  "reloc": 471,
+  "crossfn": 68,
+  "newfn": 34,
+  "subst": 207,
+  "memmove": 21,
+  "reappear": 190,
+  "reloc_clean": 143,
+  "crossfn_clean": 18,
+  "newfn_clean": 6,
+  "subst_clean": 56,
+  "memmove_clean": 18,
+  "reappear_clean": 48,
+  "added_kind": {
+   "in_place": 1022,
+   "other_fn": 107,
+   "same_fn": 187,
+   "global": 1
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 82,
+   "cppcheck": 3
+  }
+ },
+ {
+  "model": "qwen-max",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1395,
+  "transitions": 2840,
+  "reloc": 268,
+  "crossfn": 70,
+  "newfn": 3,
+  "subst": 80,
+  "memmove": 5,
+  "reappear": 66,
+  "reloc_clean": 121,
+  "crossfn_clean": 43,
+  "newfn_clean": 1,
+  "subst_clean": 17,
+  "memmove_clean": 2,
+  "reappear_clean": 17,
+  "added_kind": {
+   "other_fn": 93,
+   "in_place": 508,
+   "same_fn": 119,
+   "global": 1
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 68,
+   "cppcheck": 4
+  }
+ },
+ {
+  "model": "glm-5.1",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1825,
+  "transitions": 4756,
+  "reloc": 900,
+  "crossfn": 30,
+  "newfn": 1,
+  "subst": 48,
+  "memmove": 0,
+  "reappear": 214,
+  "reloc_clean": 705,
+  "crossfn_clean": 20,
+  "newfn_clean": 0,
+  "subst_clean": 5,
+  "memmove_clean": 0,
+  "reappear_clean": 69,
+  "added_kind": {
+   "in_place": 1462,
+   "other_fn": 44,
+   "same_fn": 58
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 30,
+   "cppcheck": 2
+  }
+ },
+ {
+  "model": "kimi-k3",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1357,
+  "transitions": 4063,
+  "reloc": 407,
+  "crossfn": 69,
+  "newfn": 20,
+  "subst": 190,
+  "memmove": 4,
+  "reappear": 186,
+  "reloc_clean": 124,
+  "crossfn_clean": 34,
+  "newfn_clean": 6,
+  "subst_clean": 32,
+  "memmove_clean": 2,
+  "reappear_clean": 35,
+  "added_kind": {
+   "in_place": 534,
+   "same_fn": 115,
+   "other_fn": 112
+  },
+  "crossfn_by_tool": {
+   "cppcheck": 1,
+   "flawfinder": 72
+  }
+ },
+ {
+  "model": "openai-gpt56-sol",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1461,
+  "transitions": 4929,
+  "reloc": 946,
+  "crossfn": 221,
+  "newfn": 150,
+  "subst": 365,
+  "memmove": 33,
+  "reappear": 375,
+  "reloc_clean": 475,
+  "crossfn_clean": 78,
+  "newfn_clean": 46,
+  "subst_clean": 77,
+  "memmove_clean": 25,
+  "reappear_clean": 108,
+  "added_kind": {
+   "in_place": 1255,
+   "same_fn": 582,
+   "other_fn": 369
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 268,
+   "cppcheck": 10
+  }
+ },
+ {
+  "model": "claude-fable-5",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1110,
+  "transitions": 2840,
+  "reloc": 378,
+  "crossfn": 123,
+  "newfn": 118,
+  "subst": 49,
+  "memmove": 9,
+  "reappear": 32,
+  "reloc_clean": 189,
+  "crossfn_clean": 50,
+  "newfn_clean": 48,
+  "subst_clean": 18,
+  "memmove_clean": 9,
+  "reappear_clean": 15,
+  "added_kind": {
+   "in_place": 436,
+   "other_fn": 131,
+   "same_fn": 58
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 126,
+   "cppcheck": 3
+  }
+ },
+ {
+  "model": "gemini-3-pro",
+  "slug": "feedback-static-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 985,
+  "transitions": 1363,
+  "reloc": 40,
+  "crossfn": 2,
+  "newfn": 0,
+  "subst": 83,
+  "memmove": 2,
+  "reappear": 34,
+  "reloc_clean": 36,
+  "crossfn_clean": 2,
+  "newfn_clean": 0,
+  "subst_clean": 78,
+  "memmove_clean": 2,
+  "reappear_clean": 32,
+  "added_kind": {
+   "in_place": 44,
+   "same_fn": 12,
+   "other_fn": 4
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 2
+  }
+ },
+ {
+  "model": "deepseek-v4-pro",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1730,
+  "transitions": 4637,
+  "reloc": 508,
+  "crossfn": 75,
+  "newfn": 36,
+  "subst": 200,
+  "memmove": 22,
+  "reappear": 203,
+  "reloc_clean": 161,
+  "crossfn_clean": 19,
+  "newfn_clean": 8,
+  "subst_clean": 42,
+  "memmove_clean": 20,
+  "reappear_clean": 60,
+  "added_kind": {
+   "same_fn": 244,
+   "in_place": 1098,
+   "other_fn": 112
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 80,
+   "fuzz": 4,
+   "cppcheck": 5
+  }
+ },
+ {
+  "model": "qwen-max",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1638,
+  "transitions": 3867,
+  "reloc": 337,
+  "crossfn": 65,
+  "newfn": 4,
+  "subst": 88,
+  "memmove": 4,
+  "reappear": 100,
+  "reloc_clean": 135,
+  "crossfn_clean": 42,
+  "newfn_clean": 2,
+  "subst_clean": 17,
+  "memmove_clean": 2,
+  "reappear_clean": 27,
+  "added_kind": {
+   "same_fn": 219,
+   "other_fn": 87,
+   "in_place": 596
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 58,
+   "cppcheck": 5,
+   "fuzz": 5
+  }
+ },
+ {
+  "model": "glm-5.1",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1902,
+  "transitions": 5238,
+  "reloc": 935,
+  "crossfn": 39,
+  "newfn": 2,
+  "subst": 44,
+  "memmove": 1,
+  "reappear": 246,
+  "reloc_clean": 735,
+  "crossfn_clean": 29,
+  "newfn_clean": 0,
+  "subst_clean": 3,
+  "memmove_clean": 1,
+  "reappear_clean": 94,
+  "added_kind": {
+   "in_place": 1448,
+   "same_fn": 72,
+   "other_fn": 68
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 35,
+   "cppcheck": 3,
+   "fuzz": 1
+  }
+ },
+ {
+  "model": "kimi-k3",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1540,
+  "transitions": 4690,
+  "reloc": 418,
+  "crossfn": 76,
+  "newfn": 25,
+  "subst": 182,
+  "memmove": 5,
+  "reappear": 217,
+  "reloc_clean": 118,
+  "crossfn_clean": 42,
+  "newfn_clean": 7,
+  "subst_clean": 21,
+  "memmove_clean": 3,
+  "reappear_clean": 32,
+  "added_kind": {
+   "other_fn": 147,
+   "in_place": 580,
+   "same_fn": 116
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 77,
+   "fuzz": 3
+  }
+ },
+ {
+  "model": "openai-gpt56-sol",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1486,
+  "transitions": 5101,
+  "reloc": 946,
+  "crossfn": 216,
+  "newfn": 154,
+  "subst": 360,
+  "memmove": 43,
+  "reappear": 394,
+  "reloc_clean": 489,
+  "crossfn_clean": 65,
+  "newfn_clean": 38,
+  "subst_clean": 72,
+  "memmove_clean": 36,
+  "reappear_clean": 121,
+  "added_kind": {
+   "in_place": 1276,
+   "same_fn": 610,
+   "other_fn": 389
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 278,
+   "cppcheck": 3,
+   "clang": 1
+  }
+ },
+ {
+  "model": "claude-fable-5",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1214,
+  "transitions": 3203,
+  "reloc": 391,
+  "crossfn": 108,
+  "newfn": 103,
+  "subst": 53,
+  "memmove": 8,
+  "reappear": 31,
+  "reloc_clean": 189,
+  "crossfn_clean": 44,
+  "newfn_clean": 41,
+  "subst_clean": 13,
+  "memmove_clean": 6,
+  "reappear_clean": 12,
+  "added_kind": {
+   "in_place": 476,
+   "other_fn": 124,
+   "same_fn": 56,
+   "global": 1
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 112,
+   "cppcheck": 2
+  }
+ },
+ {
+  "model": "gemini-3-pro",
+  "slug": "feedback-static+dynamic-r0-t1.0-p1.0",
+  "cap": 5,
+  "entered": 1110,
+  "transitions": 1804,
+  "reloc": 65,
+  "crossfn": 4,
+  "newfn": 0,
+  "subst": 91,
+  "memmove": 1,
+  "reappear": 59,
+  "reloc_clean": 47,
+  "crossfn_clean": 3,
+  "newfn_clean": 0,
+  "subst_clean": 78,
+  "memmove_clean": 1,
+  "reappear_clean": 38,
+  "added_kind": {
+   "same_fn": 26,
+   "in_place": 77,
+   "other_fn": 4
+  },
+  "crossfn_by_tool": {
+   "flawfinder": 4
+  }
+ }
+]
