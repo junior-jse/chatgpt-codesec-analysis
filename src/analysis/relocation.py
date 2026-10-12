@@ -207,7 +207,7 @@ def analyze_cell(model: str, slug: str, cap: int, events: list) -> dict | None:
                 for k, n in added.items():
                     add_by[k[0]] += [k] * n
                 flags = set()
-                for rule in set(rem_by) & set(add_by):
+                for rule in sorted(set(rem_by) & set(add_by)):
                     flags.add("reloc")
                     for a in add_by[rule]:
                         sims = [difflib.SequenceMatcher(None, a[2], b[2]).ratio()
