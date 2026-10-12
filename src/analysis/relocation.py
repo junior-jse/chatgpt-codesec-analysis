@@ -25,7 +25,7 @@ cross-function event for that sampling.
 
 Usage:
     python -m src.analysis.relocation [--cap 5] [--slug SLUG ...]
-        [--models ID ...] [--tasks subset] [--name relocation]
+        [--models ID ...] [--tasks subset] [--samples N] [--name relocation]
 
 Output: results/sac2027/relocation.md, relocation.json,
         relocation_events.csv
@@ -62,7 +62,8 @@ def round_dir(cell: Path, r: int) -> Path:
 
 
 def analyze_cell(model: str, slug: str, cap: int, events: list,
-                 keep: set[int] | None = None) -> dict | None:
+                 keep: set[int] | None = None,
+                 max_sample: int | None = None) -> dict | None:
     cell = COLL / model / slug
     mf = RES / model / f"{slug}.manifest.json"
     if not mf.is_file() or not cell.is_dir():
@@ -72,6 +73,9 @@ def analyze_cell(model: str, slug: str, cap: int, events: list,
     if keep is not None:
         outcomes = {b: v for b, v in outcomes.items()
                     if int(b.split("-")[1]) in keep}
+    if max_sample is not None:
+        outcomes = {b: v for b, v in outcomes.items()
+                    if int(b.split("-s")[1] if "-s" in b else 1) <= max_sample}
     st = Counter()
     progs = defaultdict(set)
     crossfn_by_tool = Counter()
@@ -162,6 +166,8 @@ def main() -> None:
     ap.add_argument("--models", nargs="*", default=MODELS)
     ap.add_argument("--tasks", default=None,
                     help="restrict to these tasks ('subset' or a comma list)")
+    ap.add_argument("--samples", type=int, default=None,
+                    help="keep only samples 1..N of each task")
     ap.add_argument("--name", default="relocation",
                     help="output basename under results/sac2027/")
     a = ap.parse_args()
@@ -169,11 +175,12 @@ def main() -> None:
     if a.tasks:
         from src.pipeline.run_experiment import _parse_tasks
         keep = set(_parse_tasks(a.tasks))
+    max_sample = a.samples
     OUT.mkdir(parents=True, exist_ok=True)
     rows, events = [], []
     for slug in a.slug:
         for model in a.models:
-            row = analyze_cell(model, slug, a.cap, events, keep)
+            row = analyze_cell(model, slug, a.cap, events, keep, max_sample)
             if row:
                 rows.append(row)
                 print(f"{model} / {slug}: {row['entered']} programs, "
