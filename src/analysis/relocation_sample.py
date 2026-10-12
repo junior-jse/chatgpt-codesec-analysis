@@ -27,7 +27,8 @@ import csv
 import random
 from collections import defaultdict
 
-from src.analysis.relocation import COLL, RES, func_map, round_dir
+from src.analysis.relocation import COLL, RES, round_dir
+from src.pipeline.finding_track import func_map
 
 
 def function_text(path, names: set[str], limit: int = 40) -> str:
