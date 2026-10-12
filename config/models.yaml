@@ -168,3 +168,43 @@ models:
     extra_body:
       enable_thinking: true
     max_tokens: 16384
+
+  # ---- SAC 2027 (v3): repair-only reasoning. Same settings as the matching
+  #      *-thinking entry; the separate id gives these cells their own data
+  #      directory, so they repair the reasoning-off round-0 programs
+  #      (--gen-source-model <base id>) without touching the r1/r1 cells. ----
+  - id: deepseek-v4-pro-repairthink
+    provider: dashscope
+    model_id: deepseek-v4-pro
+    api_key_env: DASHSCOPE_API_KEY
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    reasoning: true
+    extra_body:
+      enable_thinking: true
+    max_tokens: 32768
+  - id: openai-gpt56-sol-repairthink
+    provider: openai
+    model_id: gpt-5.6-sol
+    api_key_env: OPENAI_API_KEY
+    reasoning: true
+    extra_body:
+      reasoning_effort: high
+    max_tokens: 16384
+  - id: kimi-k3-repairthink
+    provider: dashscope
+    model_id: kimi-k3
+    api_key_env: DASHSCOPE_API_KEY
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    reasoning: true
+    extra_body:
+      enable_thinking: true
+    max_tokens: 16384
+  - id: glm-5.1-repairthink
+    provider: dashscope
+    model_id: glm-5.1
+    api_key_env: DASHSCOPE_API_KEY
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    reasoning: true
+    extra_body:
+      enable_thinking: true
+    max_tokens: 16384
