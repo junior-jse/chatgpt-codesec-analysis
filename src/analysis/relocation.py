@@ -245,12 +245,15 @@ def analyze_cell(model: str, slug: str, cap: int, events: list) -> dict | None:
                     progs[fl].add(base)
             hist.append(cur)
             prev, prev_fns, prev_cwe, prev_src = cur, fns, cwe_of, src
+    # Accepted = the gate reported no finding within the analyzed horizon, so
+    # events and outcomes cover the same rounds.
+    accepted = {b for b, v in outcomes.items() if v.get("outcome") == "clean"
+                and 0 < (v.get("rounds_to_clean") or 0) <= cap}
     return {"model": model, "slug": slug, "cap": cap,
             "entered": len(progs["entered"]), "transitions": st["transitions"],
+            "accepted": len(accepted),
             **{f: len(progs[f]) for f in FLAGS},
-            **{f"{f}_clean": len(progs[f] & {b for b, v in outcomes.items()
-                                             if v.get("outcome") == "clean"})
-               for f in FLAGS},
+            **{f"{f}_accepted": len(progs[f] & accepted) for f in FLAGS},
             "added_kind": dict(added_kind),
             "crossfn_by_tool": dict(crossfn_by_tool)}
 
@@ -289,6 +292,15 @@ def main() -> None:
         tot = {k: sum(r[k] for r in sub) for k in ["entered", *FLAGS]}
         lines.append(f"| **all** | {slug} | **{tot['entered']}** | "
                      + " | ".join(pct(tot[f], tot["entered"]) for f in FLAGS) + " |")
+    lines += ["", f"## Programs the gate accepted by round {a.cap}", "",
+              "Share of accepted programs whose trajectory contains each event.", "",
+              "| Cell | accepted | " + " | ".join(FLAGS) + " |",
+              "|---|---:|" + "---:|" * len(FLAGS)]
+    for slug in a.slug:
+        sub = [r for r in rows if r["slug"] == slug]
+        acc = sum(r["accepted"] for r in sub)
+        lines.append(f"| {slug} | {acc} | " + " | ".join(
+            pct(sum(r[f"{f}_accepted"] for r in sub), acc) for f in FLAGS) + " |")
     lines += ["", "## Where added instances of a relocated rule land", "",
               "| Cell | in place (sim >= 0.6) | same function | other function | global |",
               "|---|---:|---:|---:|---:|"]
