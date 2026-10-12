@@ -3,7 +3,7 @@
 Motivation: relocation events come from a heuristic key (rule, enclosing
 function, normalized line text), so before reporting them as moved defects
 two annotators must check whether the moved code still carries the weakness.
-This script draws a reproducible sample from results/relocation_events.csv
+This script draws a reproducible sample from results/sac2027/relocation_events.csv
 (one event per program, quotas balanced across models) and writes, for each
 event, the source function the rule left and the function it entered.
 
@@ -17,8 +17,8 @@ Labels (one per annotator):
 Usage:
     python -m src.analysis.relocation_sample [--n 150] [--seed 2027]
 
-Output: results/relocation_sample.md (code for reading),
-        results/relocation_sample.csv (label sheet)
+Output: results/sac2027/relocation_sample.md (code for reading),
+        results/sac2027/relocation_sample.csv (label sheet)
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ import csv
 import random
 from collections import defaultdict
 
-from src.analysis.relocation import COLL, RES, round_dir
+from src.analysis.relocation import COLL, OUT, round_dir
 from src.pipeline.finding_track import func_map
 
 
@@ -67,7 +67,7 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=150)
     ap.add_argument("--seed", type=int, default=2027)
     a = ap.parse_args()
-    with open(RES / "relocation_events.csv") as f:
+    with open(OUT / "relocation_events.csv") as f:
         events = list(csv.DictReader(f))
     # One event per program (first in trajectory order), grouped by model.
     seen, by_model = set(), defaultdict(list)
@@ -108,14 +108,14 @@ def main() -> None:
                      "program": e["program"], "round": r, "rule": e["rule"],
                      "new_fn": e["new_fn"], "outcome": e["outcome"],
                      "label_a": "", "label_b": "", "notes": ""})
-    (RES / "relocation_sample.md").write_text("\n".join(md) + "\n")
-    with open(RES / "relocation_sample.csv", "w", newline="") as f:
+    (OUT / "relocation_sample.md").write_text("\n".join(md) + "\n")
+    with open(OUT / "relocation_sample.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
     per_model = {m: q for m, q in quota.items() if q}
     print(f"sampled {len(sample)} events: {per_model}")
-    print(f"written -> {RES / 'relocation_sample.md'}")
+    print(f"written -> {OUT / 'relocation_sample.md'}")
 
 
 if __name__ == "__main__":
