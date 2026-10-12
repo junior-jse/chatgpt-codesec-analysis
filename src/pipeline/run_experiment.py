@@ -55,6 +55,9 @@ class ExperimentCell:
     root: str = "data/collected_code_6"
     gen_source: str | None = None  # sibling cell slug to import round-0 from
     gen_source_reports: bool = False  # also import static reports + .o
+    # Registry id whose cell holds gen_source (default: this model). Lets a
+    # reasoning-on alias repair the programs of its reasoning-off sibling.
+    gen_source_model: str | None = None
 
 
 def cell_slug(cell: ExperimentCell, cfg) -> str:
@@ -118,7 +121,8 @@ def import_round0(cell: ExperimentCell, cfg, tasks: list[dict],
     source cell analyzed the exact same code — true for gen-source imports
     from a completed static cell). Returns the number of files copied.
     """
-    src_dir = REPO_ROOT / cell.root / cell.model / cell.gen_source / "heal_0"
+    src_model = cell.gen_source_model or cell.model
+    src_dir = REPO_ROOT / cell.root / src_model / cell.gen_source / "heal_0"
     if not src_dir.is_dir():
         sys.exit(f"[gen-source] source cell not found: {src_dir}")
     dst = REPO_ROOT / cell.root / cell.model / cell_slug(cell, cfg) / "heal_0"
@@ -147,7 +151,7 @@ def import_round0(cell: ExperimentCell, cfg, tasks: list[dict],
         copied += 1
     print(
         f"[{cell.model}] gen-source: imported {copied} round-0 files "
-        f"from {cell.gen_source} (tasks={len(task_ids)}, samples={cell.samples}"
+        f"from {src_model}/{cell.gen_source} (tasks={len(task_ids)}, samples={cell.samples}"
         f"{', incl. static reports' if reports else ''})"
     )
     return copied
@@ -323,6 +327,10 @@ if __name__ == "__main__":
                         help="import round-0 generations from a sibling cell "
                              "(e.g. feedback-static-r0-t1.0-p1.0) instead of "
                              "regenerating; missing samples are still generated")
+    parser.add_argument("--gen-source-model", default=None, metavar="MODEL_ID",
+                        help="registry id whose cell holds --gen-source (default: "
+                             "--model); e.g. repair the reasoning-off programs "
+                             "with a reasoning-on alias")
     parser.add_argument("--gen-source-reports", action="store_true",
                         help="also import static-analyzer reports and compile "
                              "objects from the gen-source cell (skips re-running "
@@ -346,5 +354,6 @@ if __name__ == "__main__":
         fuzz=args.fuzz,
         gen_source=args.gen_source,
         gen_source_reports=args.gen_source_reports,
+        gen_source_model=args.gen_source_model,
     )
     run_cell(cell)
