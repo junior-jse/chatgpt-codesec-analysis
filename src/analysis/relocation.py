@@ -25,6 +25,7 @@ cross-function event for that sampling.
 
 Usage:
     python -m src.analysis.relocation [--cap 5] [--slug SLUG ...]
+        [--models ID ...] [--tasks subset] [--name relocation]
 
 Output: results/sac2027/relocation.md, relocation.json,
         relocation_events.csv
@@ -60,13 +61,17 @@ def round_dir(cell: Path, r: int) -> Path:
     return cell / "heal_0" if r == 0 else cell / f"heal_{r}" / "healed"
 
 
-def analyze_cell(model: str, slug: str, cap: int, events: list) -> dict | None:
+def analyze_cell(model: str, slug: str, cap: int, events: list,
+                 keep: set[int] | None = None) -> dict | None:
     cell = COLL / model / slug
     mf = RES / model / f"{slug}.manifest.json"
     if not mf.is_file() or not cell.is_dir():
         return None
     suffixes = STATIC + (DYNAMIC if "dynamic" in slug else [])
     outcomes = json.loads(mf.read_text())["outcomes"]
+    if keep is not None:
+        outcomes = {b: v for b, v in outcomes.items()
+                    if int(b.split("-")[1]) in keep}
     st = Counter()
     progs = defaultdict(set)
     crossfn_by_tool = Counter()
@@ -155,12 +160,20 @@ def main() -> None:
                     help="last repair round analyzed (paper horizon: 5)")
     ap.add_argument("--slug", nargs="*", default=SLUGS)
     ap.add_argument("--models", nargs="*", default=MODELS)
+    ap.add_argument("--tasks", default=None,
+                    help="restrict to these tasks ('subset' or a comma list)")
+    ap.add_argument("--name", default="relocation",
+                    help="output basename under results/sac2027/")
     a = ap.parse_args()
+    keep = None
+    if a.tasks:
+        from src.pipeline.run_experiment import _parse_tasks
+        keep = set(_parse_tasks(a.tasks))
     OUT.mkdir(parents=True, exist_ok=True)
     rows, events = [], []
     for slug in a.slug:
         for model in a.models:
-            row = analyze_cell(model, slug, a.cap, events)
+            row = analyze_cell(model, slug, a.cap, events, keep)
             if row:
                 rows.append(row)
                 print(f"{model} / {slug}: {row['entered']} programs, "
@@ -210,14 +223,14 @@ def main() -> None:
                 k.update(r["crossfn_by_tool"])
         lines.append(f"| {slug} | " + " | ".join(str(k[t]) for t in
                      ["flawfinder", "cppcheck", "clang", "gcc", "asan", "fuzz"]) + " |")
-    (OUT / "relocation.md").write_text("\n".join(lines) + "\n")
-    (OUT / "relocation.json").write_text(json.dumps(rows, indent=1) + "\n")
-    with open(OUT / "relocation_events.csv", "w", newline="") as f:
+    (OUT / f"{a.name}.md").write_text("\n".join(lines) + "\n")
+    (OUT / f"{a.name}.json").write_text(json.dumps(rows, indent=1) + "\n")
+    with open(OUT / f"{a.name}_events.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["model", "slug", "program", "round", "rule",
                                           "from_fns", "to_fns", "new_fn", "outcome"])
         w.writeheader()
         w.writerows(events)
-    print(f"written -> {OUT / 'relocation.md'} ({len(events)} cross-function events)")
+    print(f"written -> {OUT / (a.name + '.md')} ({len(events)} cross-function events)")
 
 
 if __name__ == "__main__":
