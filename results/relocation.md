@@ -21,6 +21,15 @@ Rounds 0..5; programs that entered repair (not clean at start). A program is cou
 | gemini-3-pro | feedback-static+dynamic-r0-t1.0-p1.0 | 1110 | 65 (5.9%) | 4 (0.4%) | 0 (0.0%) | 91 (8.2%) | 1 (0.1%) | 59 (5.3%) |
 | **all** | feedback-static+dynamic-r0-t1.0-p1.0 | **10620** | 3600 (33.9%) | 583 (5.5%) | 324 (3.1%) | 1018 (9.6%) | 84 (0.8%) | 1250 (11.8%) |
 
+## Programs the gate accepted by round 5
+
+Share of accepted programs whose trajectory contains each event.
+
+| Cell | accepted | reloc | crossfn | newfn | subst | memmove | reappear |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| feedback-static-r0-t1.0-p1.0 | 6897 | 1398 (20.3%) | 175 (2.5%) | 62 (0.9%) | 171 (2.5%) | 48 (0.7%) | 146 (2.1%) |
+| feedback-static+dynamic-r0-t1.0-p1.0 | 7361 | 1466 (19.9%) | 180 (2.4%) | 59 (0.8%) | 154 (2.1%) | 61 (0.8%) | 177 (2.4%) |
+
 ## Where added instances of a relocated rule land
 
 | Cell | in place (sim >= 0.6) | same function | other function | global |
