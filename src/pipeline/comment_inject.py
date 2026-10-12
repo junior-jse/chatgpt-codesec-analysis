@@ -7,7 +7,10 @@ the standard ``file:line:col:severity:message`` format from BOTH channels:
 - dynamic: .asan.txt, .fuzz.txt, .test.txt
 
 and inserts ``/* Possible weaknesses found: ... */`` blocks above flagged
-lines. The feedback mode selects which suffixes are consumed.
+lines. The feedback mode selects which suffixes are consumed. Modes ending
+in ``+history`` (SAC 2027 extension) also prepend a ``/* Repair history */``
+block naming findings that moved to another function or were replaced by a
+call with the same CWE since the previous round (see ``finding_track``).
 
 File naming: basenames are ``problem-{id}.c`` (single sample) or
 ``problem-{id}-s{k}.c`` (multi-sample). Reports share the basename, e.g.
@@ -17,9 +20,10 @@ from __future__ import annotations
 
 import os
 import re
+from pathlib import Path
 from typing import Iterable
 
-from . import flawfinder_norm
+from . import finding_track, flawfinder_norm
 
 from tqdm import tqdm
 
@@ -31,6 +35,8 @@ CHANNEL_SUFFIXES = {
     "static": STATIC_SUFFIXES,
     "dynamic": DYNAMIC_SUFFIXES,
     "static+dynamic": STATIC_SUFFIXES + DYNAMIC_SUFFIXES,
+    "static+history": STATIC_SUFFIXES,
+    "static+dynamic+history": STATIC_SUFFIXES + DYNAMIC_SUFFIXES,
 }
 
 _PROBLEM_RE = re.compile(r"^problem-(\d+)(-s\d+)?$")
@@ -42,12 +48,17 @@ def generate_commented_weak_code(
     feedback: str = "static",
     task_ids: Iterable[int] | None = None,
     resume: bool = False,
+    history_dir: str | None = None,
 ) -> int:
     """Write commented (annotated) sources for all flagged files.
+
+    ``history_dir`` holds the previous round's programs and reports; it is
+    used only by ``+history`` feedback modes.
 
     Returns the number of annotated files written.
     """
     suffixes = CHANNEL_SUFFIXES.get(feedback, STATIC_SUFFIXES)
+    with_history = feedback.endswith("+history") and history_dir is not None
     findings = get_problems_weaknesses(input_dir, suffixes, task_ids)
     create_output_folders(output_dir)
     written = 0
@@ -62,11 +73,14 @@ def generate_commented_weak_code(
         with open(src) as inputfile:
             with open(dst, "w") as outputfile:
                 try:
-                    outputfile.write(
-                        add_comments_to_weak_source(
-                            input=inputfile.read(), errors=errors
-                        )
+                    commented = add_comments_to_weak_source(
+                        input=inputfile.read(), errors=errors
                     )
+                    if with_history:
+                        commented = history_header(finding_track.history_notes(
+                            Path(history_dir), Path(input_dir), basename, suffixes
+                        )) + commented
+                    outputfile.write(commented)
                     written += 1
                 except Exception as ex:  # noqa: BLE001
                     print(f"{basename}: {ex}")
@@ -181,6 +195,13 @@ def add_comments_to_weak_source(input: str, errors: dict[int, list[str]]) -> str
         weaknesses_comment += padding + last_line_end
         input_lines.insert(error_line - 1, weaknesses_comment)
     return "".join(input_lines)
+
+
+def history_header(notes: list[str]) -> str:
+    if not notes:
+        return ""
+    return ("/* Repair history (previous round):\n"
+            + "".join(f" * - {n}\n" for n in notes) + " */\n")
 
 
 def leading_spaces(s: str) -> str:

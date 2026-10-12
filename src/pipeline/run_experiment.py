@@ -13,7 +13,9 @@ Semantics:
 - ``measure``   = which detection channels are RUN (the paper's numbers).
   RQ1 uses "static"; ablation cells use "static+dynamic".
 - ``feedback``  = which findings are injected as comments for repair
-  ("none" | "static" | "dynamic" | "static+dynamic").
+  ("none" | "static" | "dynamic" | "static+dynamic"). A ``+history`` suffix
+  (SAC 2027 extension) also tells the model which findings moved or were
+  replaced since the previous round; detection and stopping are unchanged.
 """
 from __future__ import annotations
 
@@ -175,11 +177,13 @@ def run_cell(cell: ExperimentCell, resume: bool = True) -> None:
     outcome: dict[str, dict] = {}
     ever_flagged: set[str] = set()
     prev_healed = heal0
+    history: Path | None = None  # program one round before prev_healed
     for round_no in range(1, cell.max_rounds + 1):
         to_be_healed = root / f"heal_{round_no}" / "to_be_healed"
         ci.generate_commented_weak_code(
             str(prev_healed), str(to_be_healed),
             feedback=cell.feedback, task_ids=set(cell.tasks), resume=resume,
+            history_dir=str(history) if history else None,
         )
         flagged = sorted(p.stem for p in to_be_healed.glob("*.c"))
         if not flagged:
@@ -198,6 +202,7 @@ def run_cell(cell: ExperimentCell, resume: bool = True) -> None:
         ci.generate_commented_weak_code(
             str(healed), str(next_tbe),
             feedback=cell.feedback, task_ids=set(cell.tasks), resume=True,
+            history_dir=str(prev_healed),
         )
         still_flagged = {p.stem for p in next_tbe.glob("*.c")}
         for base in flagged:
@@ -211,6 +216,7 @@ def run_cell(cell: ExperimentCell, resume: bool = True) -> None:
                 outcome[base] = {
                     "rounds_to_clean": round_no, "outcome": "heal_failed",
                 }
+        history = prev_healed
         prev_healed = healed
 
     # Everything that never reached zero findings.
@@ -300,7 +306,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run an experiment cell")
     parser.add_argument("--model", required=True, help="registry id, e.g. deepseek-chat")
     parser.add_argument("--feedback", default="static",
-                        choices=["none", "static", "dynamic", "static+dynamic"])
+                        choices=["none", "static", "dynamic", "static+dynamic",
+                                 "static+history", "static+dynamic+history"])
     parser.add_argument("--measure", default=None,
                         choices=["static", "dynamic", "static+dynamic"])
     parser.add_argument("--tasks", default=None, help="comma list, 'subset', or 'all'")
@@ -322,8 +329,9 @@ if __name__ == "__main__":
                              "static analysis on identical code)")
     args = parser.parse_args()
 
+    channels = args.feedback.removesuffix("+history")
     measure = args.measure or (
-        "static+dynamic" if args.feedback in ("none", "dynamic") else args.feedback
+        "static+dynamic" if channels in ("none", "dynamic") else channels
     )
     cell = ExperimentCell(
         model=args.model,
