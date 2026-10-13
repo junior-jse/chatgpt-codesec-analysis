@@ -1,0 +1,4202 @@
+[
+ {
+  "id": "E001",
+  "judge1": {
+   "id": "E001",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 strlen(str) only ever receives the NUL-terminated literal \"abcde\" from main (line 18), so no over-read is possible. AFTER line 17 is the same strlen moved into main, on the same literal."
+  },
+  "judge2": {
+   "id": "E001",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 runs strlen(str) on the NUL-terminated array literal \"abcde\" passed from main (line 18), so it cannot over-read. AFTER line 17 runs strlen on the same literal in main and passes the length to findRotations, so the operation only moved to the caller and is still safe."
+  },
+  "final": {
+   "id": "E001",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 strlen(str) only ever receives the NUL-terminated literal \"abcde\" from main (line 18), so no over-read is possible. AFTER line 17 is the same strlen moved into main, on the same literal."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E002",
+  "judge1": {
+   "id": "E002",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 strlen(str) is called only on the NUL-terminated string literals in test_strings (lines 19-25). AFTER line 24 does the same strlen in main's loop over the same literals and passes the result as len."
+  },
+  "judge2": {
+   "id": "E002",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 runs strlen on test_strings[i], which are all NUL-terminated string literals (lines 19-25). AFTER line 24 does the same strlen on the same literals in main and passes len in, so this is a safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E002",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 strlen(str) is called only on the NUL-terminated string literals in test_strings (lines 19-25). AFTER line 24 does the same strlen in main's loop over the same literals and passes the result as len."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E003",
+  "judge1": {
+   "id": "E003",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) runs on the fixed literal input from main (line 77), which is NUL-terminated. AFTER line 68 moves the same strlen(input) into main on the same literal."
+  },
+  "judge2": {
+   "id": "E003",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 runs strlen on the fixed literal input from main (line 77), which is NUL-terminated. AFTER line 68 does the same strlen on the same literal in main and passes len to replace_with_colon, so there is no over-read in either version."
+  },
+  "final": {
+   "id": "E003",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) runs on the fixed literal input from main (line 77), which is NUL-terminated. AFTER line 68 moves the same strlen(input) into main on the same literal."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E004",
+  "judge1": {
+   "id": "E004",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50/56 strlen(key)/strlen(value) only receive NUL-terminated literals from main (lines 133-136). AFTER line 24 is the same length-for-copy step wrapped in the new dup_string helper, called on the same literals (lines 79/84)."
+  },
+  "judge2": {
+   "id": "E004",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50/56 run strlen on key/value, which are always NUL-terminated literals from main (lines 133-136). AFTER line 24 does the same strlen on the same key/value inside the new dup_string helper (called at lines 79/84), so the safe operation was only wrapped in a helper."
+  },
+  "final": {
+   "id": "E004",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50/56 strlen(key)/strlen(value) only receive NUL-terminated literals from main (lines 133-136). AFTER line 24 is the same length-for-copy step wrapped in the new dup_string helper, called on the same literals (lines 79/84)."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E005",
+  "judge1": {
+   "id": "E005",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) is applied only to the literal \"abcab\" (line 20). AFTER line 18 moves the same strlen into main on that literal."
+  },
+  "judge2": {
+   "id": "E005",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 runs strlen on the literal \"abcab\" passed from main (line 20). AFTER line 18 does the same strlen on the same literal in main and passes the length in, so the safe call only moved."
+  },
+  "final": {
+   "id": "E005",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) is applied only to the literal \"abcab\" (line 20). AFTER line 18 moves the same strlen into main on that literal."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E006",
+  "judge1": {
+   "id": "E006",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 char input[256] is filled only by fgets(input, sizeof(input), stdin) (lines 23/45), and every index is checked with len>0, so it cannot overflow. AFTER line 18 is the same buffer moved into read_and_validate_double; it is filled with fgets(sizeof) and bounded by strnlen (lines 23, 28), with len>0 or short-circuit guards before any input[len-1]."
+  },
+  "judge2": {
+   "id": "E006",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 declares char input[256], which is only filled by fgets(input, sizeof(input), stdin) (lines 23/45), so it cannot overflow. AFTER line 18 is the same buffer moved into read_and_validate_double, still filled by a bounded fgets (line 23) with guarded indexing (lines 29-45)."
+  },
+  "final": {
+   "id": "E006",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 char input[256] is filled only by fgets(input, sizeof(input), stdin) (lines 23/45), and every index is checked with len>0, so it cannot overflow. AFTER line 18 is the same buffer moved into read_and_validate_double; it is filled with fgets(sizeof) and bounded by strnlen (lines 23, 28), with len>0 or short-circuit guards before any input[len-1]."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E007",
+  "judge1": {
+   "id": "E007",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(str) gets argv[1] (line 30), which the C standard guarantees is NUL-terminated. AFTER line 29 is the same strlen(argv[1]) moved into main."
+  },
+  "judge2": {
+   "id": "E007",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 runs strlen on argv[1], which is guaranteed NUL-terminated and checked by argc != 2 (line 25). AFTER line 29 does the same strlen(argv[1]) in main and passes len to count_substrings, so the operation only moved and is safe."
+  },
+  "final": {
+   "id": "E007",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(str) gets argv[1] (line 30), which the C standard guarantees is NUL-terminated. AFTER line 29 is the same strlen(argv[1]) moved into main."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E008",
+  "judge1": {
+   "id": "E008",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) only gets the literal testString (line 46). AFTER line 58 takes the length of that same literal in main and passes it as maxLen, while the callee now does a bounded scan."
+  },
+  "judge2": {
+   "id": "E008",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 runs strlen on the NUL-terminated literal testString (line 46). AFTER line 58 does the same strlen on that literal in main to compute maxLen for replaceSpaces, so the safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E008",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) only gets the literal testString (line 46). AFTER line 58 takes the length of that same literal in main and passes it as maxLen, while the callee now does a bounded scan."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E009",
+  "judge1": {
+   "id": "E009",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 61/74 errbuf[256] is filled only by regerror(..., errbuf, sizeof(errbuf)), which truncates and NUL-terminates. AFTER line 63 is the same regerror buffer moved into the report_regex_error helper, still bounded by its size and explicitly terminated (lines 66-67)."
+  },
+  "judge2": {
+   "id": "E009",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 61/74 declare char errbuf[256], filled only by regerror(..., sizeof(errbuf)), which truncates and NUL-terminates. AFTER line 63 is the same error buffer moved into report_regex_error, filled with a bounded regerror plus explicit termination (lines 65-67), so it cannot overflow either."
+  },
+  "final": {
+   "id": "E009",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 61/74 errbuf[256] is filled only by regerror(..., errbuf, sizeof(errbuf)), which truncates and NUL-terminates. AFTER line 63 is the same regerror buffer moved into the report_regex_error helper, still bounded by its size and explicitly terminated (lines 66-67)."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E010",
+  "judge1": {
+   "id": "E010",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding: BEFORE line 121 new_capacity and AFTER lines 61/179 loop counter i are correctly initialized before use, so no weakness can be triggered. The AFTER reports flag a different variable in different functions (dictionary_destroy, tuple_destroy), not the moved declaration."
+  },
+  "judge2": {
+   "id": "E010",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "cppcheck variableScope is a style finding: new_capacity at BEFORE line 121 has no security impact, and neither do the loop counters i at AFTER lines 61/179 in dictionary_destroy and tuple_destroy. Those are different variables in different functions, used correctly as loop indices."
+  },
+  "final": {
+   "id": "E010",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding: BEFORE line 121 new_capacity and AFTER lines 61/179 loop counter i are correctly initialized before use, so no weakness can be triggered. The AFTER reports flag a different variable in different functions (dictionary_destroy, tuple_destroy), not the moved declaration."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E011",
+  "judge1": {
+   "id": "E011",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding with no CWE. BEFORE line 66 declares 'cleaned' at the top of main, and AFTER line 15 declares the unrelated 'match_len' at the top of remove_non_alnum; neither can misbehave."
+  },
+  "judge2": {
+   "id": "E011",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 66 flags only that 'cleaned' could be declared in a narrower scope, which is a style issue and not a weakness. AFTER line 15 flags the scope of a different variable, 'match_len', whose use at lines 57-64 is bounds-checked; this is also style only."
+  },
+  "final": {
+   "id": "E011",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding with no CWE. BEFORE line 66 declares 'cleaned' at the top of main, and AFTER line 15 declares the unrelated 'match_len' at the top of remove_non_alnum; neither can misbehave."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E012",
+  "judge1": {
+   "id": "E012",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 5 moved into main at AFTER line 22 and still runs on the same NUL-terminated literal array \"abcdef\" (line 16/20). No over-read is possible in either version."
+  },
+  "judge2": {
+   "id": "E012",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 calls strlen(str) on the NUL-terminated array initialized from \"abcdef\" (line 16). AFTER line 22 moves the same strlen(str) into main, on the same terminated array, and passes the length to left_rotate."
+  },
+  "final": {
+   "id": "E012",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 5 moved into main at AFTER line 22 and still runs on the same NUL-terminated literal array \"abcdef\" (line 16/20). No over-read is possible in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E013",
+  "judge1": {
+   "id": "E013",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen on argv[1] moved from count_substrings (BEFORE line 10) to main (AFTER line 29). argv strings are always NUL-terminated, so no over-read can occur."
+  },
+  "judge2": {
+   "id": "E013",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 calls strlen on argv[1], which the C runtime always NUL-terminates. AFTER line 29 performs the same strlen(argv[1]) in main and passes len to count_substrings."
+  },
+  "final": {
+   "id": "E013",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen on argv[1] moved from count_substrings (BEFORE line 10) to main (AFTER line 29). argv strings are always NUL-terminated, so no over-read can occur."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E014",
+  "judge1": {
+   "id": "E014",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(s) at BEFORE line 16 became strlen(str) in main at AFTER line 48 on the same literal \"bbbab\". It is NUL-terminated, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E014",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 16 calls strlen on s, which can only be the string literal \"bbbab\" (line 48). AFTER line 48 hoists the same strlen(str) into main on that literal."
+  },
+  "final": {
+   "id": "E014",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(s) at BEFORE line 16 became strlen(str) in main at AFTER line 48 on the same literal \"bbbab\". It is NUL-terminated, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E015",
+  "judge1": {
+   "id": "E015",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, lines 54 and 80 copy strlen+1 bytes into a malloc(strlen+1) buffer; in AFTER, line 31 copies len bytes into malloc(len+1) inside the new duplicateBounded helper. Both duplicate the same word strings, and the destination always fits."
+  },
+  "judge2": {
+   "id": "E015",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 54 and 80 memcpy exactly len = strlen+1 bytes into a malloc(len) buffer, so they cannot overflow. AFTER line 31 wraps the same string duplication in duplicateBounded, copying len bytes into malloc(len+1) and terminating the copy at line 32."
+  },
+  "final": {
+   "id": "E015",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, lines 54 and 80 copy strlen+1 bytes into a malloc(strlen+1) buffer; in AFTER, line 31 copies len bytes into malloc(len+1) inside the new duplicateBounded helper. Both duplicate the same word strings, and the destination always fits."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E016",
+  "judge1": {
+   "id": "E016",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) in is_palindrome (BEFORE line 7) moved to strlen(strings[i]) in find_palindromes (AFTER line 18) on the same data. Every input is a NUL-terminated string literal (line 27), so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E016",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen on elements of the literal array at line 27, which are all NUL-terminated. AFTER line 18 moves the same strlen(strings[i]) into find_palindromes, the caller, on the same literals."
+  },
+  "final": {
+   "id": "E016",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) in is_palindrome (BEFORE line 7) moved to strlen(strings[i]) in find_palindromes (AFTER line 18) on the same data. Every input is a NUL-terminated string literal (line 27), so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E017",
+  "judge1": {
+   "id": "E017",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The getchar loop in main (BEFORE line 172) moved into read_line (AFTER line 180). Both call grow_buffer before every write (BEFORE line 184, AFTER line 188), so no buffer boundary can be exceeded."
+  },
+  "judge2": {
+   "id": "E017",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE (lines 172-190), the getchar loop calls grow_buffer to length+1 before each write, and length is checked against SIZE_MAX, so no write goes out of bounds. AFTER moves the same stdin read loop into read_line (lines 180-196), growing to length+2 before each write, so it is also bounded."
+  },
+  "final": {
+   "id": "E017",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The getchar loop in main (BEFORE line 172) moved into read_line (AFTER line 180). Both call grow_buffer before every write (BEFORE line 184, AFTER line 188), so no buffer boundary can be exceeded."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E018",
+  "judge1": {
+   "id": "E018",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50-51 copy len1 bytes twice into a 2*len1+1 buffer, which always fits. AFTER line 20 does the same copies wrapped in safe_copy, which also bounds-checks at lines 14-19."
+  },
+  "judge2": {
+   "id": "E018",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50-51 copy len1 bytes twice into a 2*len1+1 buffer (line 39), and line 45 checks the bounds first. AFTER line 20 performs the same two copies inside the safe_copy wrapper, which checks dest_offset and src_len against dest_size at lines 14-19."
+  },
+  "final": {
+   "id": "E018",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50-51 copy len1 bytes twice into a 2*len1+1 buffer, which always fits. AFTER line 20 does the same copies wrapped in safe_copy, which also bounds-checks at lines 14-19."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E019",
+  "judge1": {
+   "id": "E019",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 only drains the rest of an over-long line and writes to no buffer. AFTER lines 40/52/71/97 do a different job, parsing digits char-by-char with an overflow check at line 66 and checking the trailing input, and none of them writes to a buffer."
+  },
+  "judge2": {
+   "id": "E019",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 uses getchar only to discard the rest of an overlong line and writes nothing into a buffer. The AFTER getchar calls (lines 40, 52, 71, 97) are new operations that parse digits into an integer with an overflow check at line 66 and check for trailing whitespace; they write no buffer either."
+  },
+  "final": {
+   "id": "E019",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 only drains the rest of an over-long line and writes to no buffer. AFTER lines 40/52/71/97 do a different job, parsing digits char-by-char with an overflow check at line 66 and checking the trailing input, and none of them writes to a buffer."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E020",
+  "judge1": {
+   "id": "E020",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(input) at BEFORE line 11 became strlen(test_str) in main at AFTER line 45 on the same literal \"a1b2c3d4\". It is NUL-terminated, so no over-read can occur."
+  },
+  "judge2": {
+   "id": "E020",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen on input, which can only be the literal \"a1b2c3d4\" (line 40). AFTER line 45 moves the same strlen into main on that literal, and the callee then uses strnlen with the passed bound (line 11)."
+  },
+  "final": {
+   "id": "E020",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(input) at BEFORE line 11 became strlen(test_str) in main at AFTER line 45 on the same literal \"a1b2c3d4\". It is NUL-terminated, so no over-read can occur."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E021",
+  "judge1": {
+   "id": "E021",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 runs strlen(str) on string literals from main's tests array, which are always NUL-terminated. AFTER line 57 is the same strlen moved into the caller on the same literals, so neither can over-read."
+  },
+  "judge2": {
+   "id": "E021",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen(str) in canRearrange, and AFTER line 57 calls strlen(tests[i]) in main; in both cases the argument is one of the NUL-terminated string literals in tests[]. This is the same length computation moved from the callee into the caller, and neither version can over-read."
+  },
+  "final": {
+   "id": "E021",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 runs strlen(str) on string literals from main's tests array, which are always NUL-terminated. AFTER line 57 is the same strlen moved into the caller on the same literals, so neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E022",
+  "judge1": {
+   "id": "E022",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 14 runs strlen(key) in create_node on keys that are always string literals from main (lines 75-78). AFTER lines 44/51 run the same strlen on the same lists[i][j] literals, moved into the caller, so neither can over-read."
+  },
+  "judge2": {
+   "id": "E022",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 14 runs strlen(key) inside create_node. AFTER lines 44/51 compute strlen of the same lists[i][j] strings in lists_to_nested_dict, which is the same operation hoisted to the caller; every key is a NUL-terminated literal from main, so no over-read is possible."
+  },
+  "final": {
+   "id": "E022",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 14 runs strlen(key) in create_node on keys that are always string literals from main (lines 75-78). AFTER lines 44/51 run the same strlen on the same lists[i][j] literals, moved into the caller, so neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E023",
+  "judge1": {
+   "id": "E023",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 40-72 copy short constant strings with strncpy(dst, lit, 63) and then explicitly NUL-terminate 64-byte fields. AFTER lines 37/44 are the same bounded copy plus termination wrapped in set_entry, called only with literals, so neither can overflow."
+  },
+  "judge2": {
+   "id": "E023",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 40-72 copy short constant strings with strncpy bounded to MAX-1 and then terminate explicitly. AFTER lines 37/44 do the same bounded copy and termination inside the new set_entry helper, with the same literals; neither version can overflow or leave a string unterminated."
+  },
+  "final": {
+   "id": "E023",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 40-72 copy short constant strings with strncpy(dst, lit, 63) and then explicitly NUL-terminate 64-byte fields. AFTER lines 37/44 are the same bounded copy plus termination wrapped in set_entry, called only with literals, so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E024",
+  "judge1": {
+   "id": "E024",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 calls getchar() only to drain extra input to newline/EOF and never stores into a buffer. AFTER line 84 is the same drain loop moved into read_line, also with no buffer write, so no overflow is possible."
+  },
+  "judge2": {
+   "id": "E024",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 and AFTER line 84 both call getchar() only to drain the rest of an over-long input line, and never store into a buffer. The drain loop just moved from main into read_line, so no boundary violation is possible in either version."
+  },
+  "final": {
+   "id": "E024",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 calls getchar() only to drain extra input to newline/EOF and never stores into a buffer. AFTER line 84 is the same drain loop moved into read_line, also with no buffer write, so no overflow is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E025",
+  "judge1": {
+   "id": "E025",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 10-11 call strlen on str1/str2, which are always string literals from main. AFTER lines 42/46/50 make the same strlen calls on the same literals, moved into main, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E025",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 10-11 run strlen on str1/str2 inside is_permutation. AFTER lines 42/46/50 compute the same lengths in main and pass them in; all the arguments are NUL-terminated string literals, so no over-read is possible."
+  },
+  "final": {
+   "id": "E025",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 10-11 call strlen on str1/str2, which are always string literals from main. AFTER lines 42/46/50 make the same strlen calls on the same literals, moved into main, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E026",
+  "judge1": {
+   "id": "E026",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 calls strlen(pattern) on the literal \"hello\". AFTER lines 62-63 make the same strlen calls on the literals str/pattern, moved into main, so neither can over-read (the AFTER memchr check at line 19 is a logic bug, not an over-read)."
+  },
+  "judge2": {
+   "id": "E026",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 runs strlen(pattern) inside starts_with_regex. AFTER line 63 computes the same strlen(pattern) in main, and line 62 adds strlen(str); both are NUL-terminated literals, so no over-read is possible (the memchr check on AFTER line 19 is a functional bug, not related to this rule)."
+  },
+  "final": {
+   "id": "E026",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 calls strlen(pattern) on the literal \"hello\". AFTER lines 62-63 make the same strlen calls on the literals str/pattern, moved into main, so neither can over-read (the AFTER memchr check at line 19 is a logic bug, not an over-read)."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E027",
+  "judge1": {
+   "id": "E027",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 24 calls strlen(str) on the literal input from main line 132. AFTER line 157 makes the same strlen on the same literal, moved into main and passed as str_len, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E027",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 24 runs strlen(str) inside split_string. AFTER line 157 computes strlen(input) on the same literal in main and passes it as str_len; it is the same computation moved to the caller, on a NUL-terminated literal, so no over-read is possible."
+  },
+  "final": {
+   "id": "E027",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 24 calls strlen(str) on the literal input from main line 132. AFTER line 157 makes the same strlen on the same literal, moved into main and passed as str_len, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E028",
+  "judge1": {
+   "id": "E028",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 47 is a self-copy strncpy(label, label, 31) into a 32-byte field followed by termination; it overlaps itself but is bounded, so no overflow. AFTER line 43 (safe_strncpy, called at line 58) is the same bounded self-copy wrapped in a helper, and line 32 copies at most 32 bytes from a 32-byte label into a 33-byte buffer, so it is also safe."
+  },
+  "judge2": {
+   "id": "E028",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 47 does a self-copy strncpy(label, label, 31) followed by explicit termination; it overlaps (formally UB) but is bounded, so no CWE-120 overflow. AFTER line 43 is the same self-copy wrapped in safe_strncpy (called at line 58), and line 32 copies a terminated 32-byte label into a 33-byte buffer with a 32-byte bound; none of these can overflow."
+  },
+  "final": {
+   "id": "E028",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 47 is a self-copy strncpy(label, label, 31) into a 32-byte field followed by termination; it overlaps itself but is bounded, so no overflow. AFTER line 43 (safe_strncpy, called at line 58) is the same bounded self-copy wrapped in a helper, and line 32 copies at most 32 bytes from a 32-byte label into a 33-byte buffer, so it is also safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E029",
+  "judge1": {
+   "id": "E029",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 75-86 memcpy into an output buffer sized exactly from overflow-checked lengths (lines 46-65) of constant strings. AFTER line 33 is the same copy wrapped in append_bytes, now also checked against remaining (line 28), so neither can overflow."
+  },
+  "judge2": {
+   "id": "E029",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 75-86 memcpy into a buffer whose size was precomputed with overflow-checked addition from the same lengths (lines 46-63), so the destination always fits. AFTER line 33 performs the same appends through the append_bytes helper, which also checks length <= remaining, so neither version can overflow."
+  },
+  "final": {
+   "id": "E029",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 75-86 memcpy into an output buffer sized exactly from overflow-checked lengths (lines 46-65) of constant strings. AFTER line 33 is the same copy wrapped in append_bytes, now also checked against remaining (line 28), so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E030",
+  "judge1": {
+   "id": "E030",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 51 calls strlen on string literals in main. AFTER line 33 is a new strlen(input[i]) in extract_strings, used to bound a memcpy, on heap copies main NUL-terminated (line 62), so it is safe; main's original strlen stays at line 53."
+  },
+  "judge2": {
+   "id": "E030",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 51 runs strlen(strings[i]) on literals in main to size an allocation, which is safe. AFTER line 33 is a new strlen(input[i]) in extract_strings used to clamp the copy; the heap copies are NUL-terminated (AFTER line 62), so it is also safe, and it is a different operation on a different buffer."
+  },
+  "final": {
+   "id": "E030",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 51 calls strlen on string literals in main. AFTER line 33 is a new strlen(input[i]) in extract_strings, used to bound a memcpy, on heap copies main NUL-terminated (line 62), so it is safe; main's original strlen stays at line 53."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E031",
+  "judge1": {
+   "id": "E031",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 59 calls strlen(str) on the NUL-terminated literal from main (line 78) to size the result buffer. AFTER line 26 calls strlen(token) on a NUL-terminated strtok token, which is a different operation on different data, and neither can over-read."
+  },
+  "judge2": {
+   "id": "E031",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 59 runs strlen(str) on the NUL-terminated literal that main passes in, so it cannot over-read. The new flag at AFTER line 26 is strlen(token) on a NUL-terminated strtok token inside split_string, which is a different string and a safe call."
+  },
+  "final": {
+   "id": "E031",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 59 calls strlen(str) on the NUL-terminated literal from main (line 78) to size the result buffer. AFTER line 26 calls strlen(token) on a NUL-terminated strtok token, which is a different operation on different data, and neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E032",
+  "judge1": {
+   "id": "E032",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 29 copies each node's data into result, which was allocated with the summed lengths + 1 (lines 17-21), so it cannot overflow. AFTER line 49 is a different copy: it copies str into node->data, which was malloc'd as len+1 at line 44, so it is also exactly sized."
+  },
+  "judge2": {
+   "id": "E032",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 29 copies len bytes into a buffer sized from the sum of all strlen values plus 1 (line 21), so it cannot overflow. AFTER line 49 is a different copy: create_node copies len+1 bytes into a malloc(len+1) buffer, which is also in bounds."
+  },
+  "final": {
+   "id": "E032",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 29 copies each node's data into result, which was allocated with the summed lengths + 1 (lines 17-21), so it cannot overflow. AFTER line 49 is a different copy: it copies str into node->data, which was malloc'd as len+1 at line 44, so it is also exactly sized."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E033",
+  "judge1": {
+   "id": "E033",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(input) at BEFORE line 36 was moved into the callers at AFTER lines 80-108 as strlen(testN). All inputs are NUL-terminated char-array literals (lines 73-77), so no over-read is possible in either version."
+  },
+  "judge2": {
+   "id": "E033",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The strlen(input) at BEFORE line 36 moved to the callers at AFTER lines 80-108, as strlen(testN) passed in as the new length argument. Every testN is a NUL-terminated char-array literal, so neither location can over-read."
+  },
+  "final": {
+   "id": "E033",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(input) at BEFORE line 36 was moved into the callers at AFTER lines 80-108 as strlen(testN). All inputs are NUL-terminated char-array literals (lines 73-77), so no over-read is possible in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E034",
+  "judge1": {
+   "id": "E034",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 10 became strlen(argv[1]) in main at AFTER line 38, after the argc==2 check. It is the same operation on the same argv string, which is always NUL-terminated, so it cannot over-read."
+  },
+  "judge2": {
+   "id": "E034",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The strlen(str) at BEFORE line 10 moved into main at AFTER line 38 as strlen(argv[1]). argv strings are always NUL-terminated, so neither version can over-read."
+  },
+  "final": {
+   "id": "E034",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 10 became strlen(argv[1]) in main at AFTER line 38, after the argc==2 check. It is the same operation on the same argv string, which is always NUL-terminated, so it cannot over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E035",
+  "judge1": {
+   "id": "E035",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The fgetc calls at BEFORE lines 89/96 (read one character, then drain the line) moved unchanged into read_character_line at AFTER lines 80/89. Neither version stores the drained characters in a buffer, so there is no boundary to violate."
+  },
+  "judge2": {
+   "id": "E035",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 89 and 96 in main read one character and then discard the rest of the line, without writing to any buffer. AFTER lines 80 and 89 do the same read-and-drain inside the new helper read_character_line, so no buffer boundary is involved either way."
+  },
+  "final": {
+   "id": "E035",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The fgetc calls at BEFORE lines 89/96 (read one character, then drain the line) moved unchanged into read_character_line at AFTER lines 80/89. Neither version stores the drained characters in a buffer, so there is no boundary to violate."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E036",
+  "judge1": {
+   "id": "E036",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 18 moved to main as strlen(argv[1]) at AFTER line 51, after the argc and NULL checks. It is the same operation on a NUL-terminated argv string, so neither version can over-read."
+  },
+  "judge2": {
+   "id": "E036",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The strlen(str) at BEFORE line 18 moved to the caller at AFTER line 51 as strlen(argv[1]). The argument is always the NUL-terminated argv[1], so neither location can over-read."
+  },
+  "final": {
+   "id": "E036",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 18 moved to main as strlen(argv[1]) at AFTER line 51, after the argc and NULL checks. It is the same operation on a NUL-terminated argv string, so neither version can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E037",
+  "judge1": {
+   "id": "E037",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 calls strlen on the NUL-terminated literal input, and main keeps that call at AFTER line 54. The new AFTER line 35 is a different call, strlen(cursor), on the tail of that same NUL-terminated string (it replaces the old strcpy), so it is also safe."
+  },
+  "judge2": {
+   "id": "E037",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 is strlen(input) on a string literal in main, which is safe. AFTER line 35 is a different operation: strlen(cursor) on the tail of that same NUL-terminated input inside filter_alphanumeric, replacing the old strcpy, and cursor only advances by the match's rm_eo so it never passes the terminator."
+  },
+  "final": {
+   "id": "E037",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 calls strlen on the NUL-terminated literal input, and main keeps that call at AFTER line 54. The new AFTER line 35 is a different call, strlen(cursor), on the tail of that same NUL-terminated string (it replaces the old strcpy), so it is also safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E038",
+  "judge1": {
+   "id": "E038",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The four memcpy calls at BEFORE lines 107-128 copied each arrN into a buffer malloc'd as size*sizeof(int), and they are now wrapped in safe_copy_array (AFTER line 90). That helper copies alloc_size bytes into a buffer of exactly alloc_size, so neither version overflows."
+  },
+  "judge2": {
+   "id": "E038",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 107-128 copy each fixed int array into a malloc of exactly sizeof(arr), and AFTER line 90 does the same copy wrapped in safe_copy_array with alloc_size = count*sizeof(int). The destination always matches the source size in both versions."
+  },
+  "final": {
+   "id": "E038",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The four memcpy calls at BEFORE lines 107-128 copied each arrN into a buffer malloc'd as size*sizeof(int), and they are now wrapped in safe_copy_array (AFTER line 90). That helper copies alloc_size bytes into a buffer of exactly alloc_size, so neither version overflows."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E039",
+  "judge1": {
+   "id": "E039",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 76 copies key_len bytes into a key_len+1 buffer (line 71), and that copy moved into safe_strdup at AFTER line 59. The helper copies len bytes into a len+1 buffer (line 55), the same copy of the same key, so both versions are exactly sized."
+  },
+  "judge2": {
+   "id": "E039",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 76 copies key_len bytes into malloc(key_len+1), and AFTER line 59 is the same key copy moved into safe_strdup, again into malloc(len+1). Neither can overflow."
+  },
+  "final": {
+   "id": "E039",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 76 copies key_len bytes into a key_len+1 buffer (line 71), and that copy moved into safe_strdup at AFTER line 59. The helper copies len bytes into a len+1 buffer (line 55), the same copy of the same key, so both versions are exactly sized."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E040",
+  "judge1": {
+   "id": "E040",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding: 'cleaned' at BEFORE line 64 and 'match_len' at AFTER line 15 are only declared wider than needed. Neither is a weakness, and they are unrelated variables in different functions."
+  },
+  "judge2": {
+   "id": "E040",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style rule: 'cleaned' at BEFORE line 64 and 'match_len' at AFTER line 15 are only declared wider than needed, which is not a security weakness. They are also different variables doing different things."
+  },
+  "final": {
+   "id": "E040",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "variableScope is a style finding: 'cleaned' at BEFORE line 64 and 'match_len' at AFTER line 15 are only declared wider than needed. Neither is a weakness, and they are unrelated variables in different functions."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E041",
+  "judge1": {
+   "id": "E041",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 strlen(snake) only ever runs on the string literal from line 49, so it cannot over-read. AFTER line 64 strlen(input) runs on a buffer that fgets (line 59, checked) has NUL-terminated, and it is a new call used to strip the newline; the callee's length computation became the bounded loop at lines 21-23."
+  },
+  "judge2": {
+   "id": "E041",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 strlen runs on the NUL-terminated literal passed at line 52, and AFTER line 64 strlen runs on the buffer that fgets (line 59) always NUL-terminates. It is the same length computation on the input string, moved into the caller, and it cannot over-read in either version."
+  },
+  "final": {
+   "id": "E041",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 18 strlen(snake) only ever runs on the string literal from line 49, so it cannot over-read. AFTER line 64 strlen(input) runs on a buffer that fgets (line 59, checked) has NUL-terminated, and it is a new call used to strip the newline; the callee's length computation became the bounded loop at lines 21-23."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E042",
+  "judge1": {
+   "id": "E042",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) runs on the 100-byte fgets buffer, and line 41 has already written a terminator at the strcspn index, so it reads no further than strcspn did (the unchecked fgets at line 40 is a separate defect in main). AFTER line 49 strlen runs after a checked fgets (line 44) and is a new call to strip the newline; the callee now uses the bounded loop at lines 7-9."
+  },
+  "judge2": {
+   "id": "E042",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen gets str from fgets plus strcspn termination (lines 40-41), and AFTER line 49 strlen runs on the same str after a checked fgets (line 44). Both buffers are always NUL-terminated, so there is no over-read; this is the same strlen of the input string moved into main."
+  },
+  "final": {
+   "id": "E042",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) runs on the 100-byte fgets buffer, and line 41 has already written a terminator at the strcspn index, so it reads no further than strcspn did (the unchecked fgets at line 40 is a separate defect in main). AFTER line 49 strlen runs after a checked fgets (line 44) and is a new call to strip the newline; the callee now uses the bounded loop at lines 7-9."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E043",
+  "judge1": {
+   "id": "E043",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 scans \"%\" SCNd64 into an int64_t, which is an integer conversion with no %s buffer, so flawfinder misread the format. AFTER lines 13/34 move the same stdin number reads into helpers that use scanf(\"%127s\") into char token[128], which is correctly bounded, followed by strtoimax/strtoumax."
+  },
+  "judge2": {
+   "id": "E043",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 is scanf with SCNd64 into an int64_t, which is an integer conversion and not an unbounded %s, so no buffer overflow is possible. AFTER lines 13/34 read the same numeric tokens via scanf(\"%127s\") into char token[128], which is correctly bounded, inside the new read_int64/read_size helpers."
+  },
+  "final": {
+   "id": "E043",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 79 scans \"%\" SCNd64 into an int64_t, which is an integer conversion with no %s buffer, so flawfinder misread the format. AFTER lines 13/34 move the same stdin number reads into helpers that use scanf(\"%127s\") into char token[128], which is correctly bounded, followed by strtoimax/strtoumax."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E044",
+  "judge1": {
+   "id": "E044",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 strlen(str) runs on a buffer filled by a checked fgets (line 25) and newline-stripped (line 26), so it is always terminated within 1000 bytes. AFTER line 30 strlen in main is a new newline-trimming call on the same fgets-terminated buffer, while countSubstrings now uses the bounded loop at lines 6-8."
+  },
+  "judge2": {
+   "id": "E044",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 strlen gets str from fgets plus strcspn termination (lines 25-26), and AFTER line 30 strlen runs on the same fgets-filled buffer in main. Both are always NUL-terminated, so this is the same length computation on the input string, moved to the caller, with no over-read."
+  },
+  "final": {
+   "id": "E044",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 strlen(str) runs on a buffer filled by a checked fgets (line 25) and newline-stripped (line 26), so it is always terminated within 1000 bytes. AFTER line 30 strlen in main is a new newline-trimming call on the same fgets-terminated buffer, while countSubstrings now uses the bounded loop at lines 6-8."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E045",
+  "judge1": {
+   "id": "E045",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy at lines 86/94 copies into a buffer of exactly total_length+1 bytes, after explicit checks at lines 81/90 that the remaining capacity is enough. AFTER wraps the same copies in safe_memcpy, whose memcpy at line 40 is guarded by the offset/count check at line 37, so both are safe."
+  },
+  "judge2": {
+   "id": "E045",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 86/94 memcpy element and delimiter bytes into a buffer of total_length+1, with explicit remaining-space checks (lines 81, 90). AFTER line 40 does the same copies inside the safe_memcpy wrapper, guarded by offset/count against dest_size (line 37), so there is no overflow in either version."
+  },
+  "final": {
+   "id": "E045",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy at lines 86/94 copies into a buffer of exactly total_length+1 bytes, after explicit checks at lines 81/90 that the remaining capacity is enough. AFTER wraps the same copies in safe_memcpy, whose memcpy at line 40 is guarded by the offset/count check at line 37, so both are safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E046",
+  "judge1": {
+   "id": "E046",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 82-83 memcpy key_len/value_len bytes (strlen+1) into buffers malloc'd with exactly those sizes (lines 69/75). AFTER moves the same key/value duplication into dup_bounded, where memcpy at line 52 copies len bytes into a malloc(len+1) buffer after a strnlen bound, so both are safe."
+  },
+  "judge2": {
+   "id": "E046",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 82-83 copy key/value into buffers malloc'd with exactly strlen+1 bytes (lines 66-75). AFTER line 52 copies the same key/value strings inside dup_bounded into a malloc(len+1) buffer, with len from strnlen, so both copies fit exactly."
+  },
+  "final": {
+   "id": "E046",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 82-83 memcpy key_len/value_len bytes (strlen+1) into buffers malloc'd with exactly those sizes (lines 69/75). AFTER moves the same key/value duplication into dup_bounded, where memcpy at line 52 copies len bytes into a malloc(len+1) buffer after a strnlen bound, so both are safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E047",
+  "judge1": {
+   "id": "E047",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 73/81 copy num_len and insert_len bytes into buffers malloc'd as len+1 (lines 68/76), and num_len is bounded by snprintf into numbuf[32]. AFTER wraps the same copies in dup_buffer, where memcpy at line 35 copies len bytes into malloc(len+1), so it is equally safe."
+  },
+  "judge2": {
+   "id": "E047",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 73/81 copy num_len/insert_len bytes into buffers malloc'd as len+1 (lines 68, 76). AFTER line 35 performs the same copies of numbuf and insert_str inside the dup_buffer helper, into malloc(len+1), so neither can overflow."
+  },
+  "final": {
+   "id": "E047",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 73/81 copy num_len and insert_len bytes into buffers malloc'd as len+1 (lines 68/76), and num_len is bounded by snprintf into numbuf[32]. AFTER wraps the same copies in dup_buffer, where memcpy at line 35 copies len bytes into malloc(len+1), so it is equally safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E048",
+  "judge1": {
+   "id": "E048",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 63 new_num_str[64] is only written by a bounded snprintf whose truncation is checked (line 65), and AFTER's flagged arrays are also safe: tmp[32] at line 56 holds at most 19 digits, and buf[64] at line 10 is guarded by len<64 at line 9. AFTER does introduce a real bug outside these arrays: ll_to_str never NUL-terminates out, so strlen(num_buf) at line 135 and the memcpy at line 136 in the caller can over-read or overflow."
+  },
+  "judge2": {
+   "id": "E048",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, line 63 new_num_str[64] is filled only by a bounded snprintf. In AFTER, line 10 buf[64] is guarded by len < 64, and line 56 tmp[32] (formatting new_val in ll_to_str) holds at most 19 digits of a non-negative value. So no flagged array can overflow; separately, ll_to_str never NUL-terminates num_buf, which makes strlen at AFTER line 135 over-read, but that defect is the line-133 array in increment_numeric_values, not the entered functions."
+  },
+  "final": {
+   "id": "E048",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 63 new_num_str[64] is only written by a bounded snprintf whose truncation is checked (line 65), and AFTER's flagged arrays are also safe: tmp[32] at line 56 holds at most 19 digits, and buf[64] at line 10 is guarded by len<64 at line 9. AFTER does introduce a real bug outside these arrays: ll_to_str never NUL-terminates out, so strlen(num_buf) at line 135 and the memcpy at line 136 in the caller can over-read or overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E049",
+  "judge1": {
+   "id": "E049",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 97 copies result_count<=n WordCount structs into results, which main allocated as n*sizeof(WordCount) (line 119), so it is safe. AFTER line 32 is a different operation, the word copy into word_counts[].word that replaced strncpy, and copy_len is clamped to MAX_WORD_LEN-1 (line 31), so it is also safe."
+  },
+  "judge2": {
+   "id": "E049",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 97 copies result_count <= n WordCount entries into results, which was malloc'd for n entries (line 119), so it is safe. AFTER line 32 is a different copy: in add_word it replaces strncpy, copying a word clamped to MAX_WORD_LEN-1 into a 256-byte field, which is also safe."
+  },
+  "final": {
+   "id": "E049",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 97 copies result_count<=n WordCount structs into results, which main allocated as n*sizeof(WordCount) (line 119), so it is safe. AFTER line 32 is a different operation, the word copy into word_counts[].word that replaced strncpy, and copy_len is clamped to MAX_WORD_LEN-1 (line 31), so it is also safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E050",
+  "judge1": {
+   "id": "E050",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 is a getchar loop that only discards the rest of the input line and writes nothing to any buffer. AFTER moves the identical discard loop into discard_line (line 39), which still writes no buffer, so there is no CWE-120 either way."
+  },
+  "judge2": {
+   "id": "E050",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 and AFTER line 39 are the same discard-rest-of-line getchar loop (moved into discard_line). It only compares characters and writes to no buffer, so no overflow is possible."
+  },
+  "final": {
+   "id": "E050",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 is a getchar loop that only discards the rest of the input line and writes nothing to any buffer. AFTER moves the identical discard loop into discard_line (line 39), which still writes no buffer, so there is no CWE-120 either way."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E051",
+  "judge1": {
+   "id": "E051",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(word) and is only ever reached with the string literals \"even\"/\"odd\" (lines 17-18). AFTER lines 16-17 run the same strlen on the same literals, just moved into main, so no over-read is possible in either version."
+  },
+  "judge2": {
+   "id": "E051",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(word), and AFTER lines 16-17 call strlen on the same string literals \"even\"/\"odd\" in main. These are always NUL-terminated, so neither call can over-read; the call just moved from the callee to the caller."
+  },
+  "final": {
+   "id": "E051",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(word) and is only ever reached with the string literals \"even\"/\"odd\" (lines 17-18). AFTER lines 16-17 run the same strlen on the same literals, just moved into main, so no over-read is possible in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E052",
+  "judge1": {
+   "id": "E052",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 21 calls strlen(str) on the literal \"example\" passed from main (line 57). AFTER line 60 runs the same strlen on the same literal in main and passes the length in; both strings are NUL-terminated, so neither can over-read."
+  },
+  "judge2": {
+   "id": "E052",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 21 calls strlen(str) in create_tuple, and AFTER line 60 calls it in main. In both cases str is the literal \"example\" (BEFORE line 53 / AFTER line 59), so it is NUL-terminated and cannot over-read; the same strlen was hoisted into the caller."
+  },
+  "final": {
+   "id": "E052",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 21 calls strlen(str) on the literal \"example\" passed from main (line 57). AFTER line 60 runs the same strlen on the same literal in main and passes the length in; both strings are NUL-terminated, so neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E053",
+  "judge1": {
+   "id": "E053",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpys at lines 78/88/162/177 copy lengths already checked against the remaining space or against the allocation size (malloc len+1). AFTER wraps the same copies in safe_memcpy (line 38), which also checks src_size <= dest_size, so neither version can overflow."
+  },
+  "judge2": {
+   "id": "E053",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpy calls (lines 78, 88, 162, 177) copy lengths checked against remaining space or against item_length+1 / separator_length+1 allocations. In AFTER, the same copies go through safe_memcpy (line 38), which rejects src_size > dest_size, so neither version can overflow."
+  },
+  "final": {
+   "id": "E053",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpys at lines 78/88/162/177 copy lengths already checked against the remaining space or against the allocation size (malloc len+1). AFTER wraps the same copies in safe_memcpy (line 38), which also checks src_size <= dest_size, so neither version can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E054",
+  "judge1": {
+   "id": "E054",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE getchar loops at lines 45/75 only throw away leftover stdin characters and write to no buffer. AFTER moves the identical discard loop into clear_input_stream (line 30), which is also bufferless, so the flag is only a pattern match."
+  },
+  "judge2": {
+   "id": "E054",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The getchar loops at BEFORE lines 45 and 75 only drain stdin up to a newline and write nothing to any buffer. AFTER line 30 is the same drain loop moved into clear_input_stream, so there is no boundary to break."
+  },
+  "final": {
+   "id": "E054",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE getchar loops at lines 45/75 only throw away leftover stdin characters and write to no buffer. AFTER moves the identical discard loop into clear_input_stream (line 30), which is also bufferless, so the flag is only a pattern match."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E055",
+  "judge1": {
+   "id": "E055",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc loop at line 63 grows the buffer whenever length+1 >= capacity before writing input[length++], with an overflow guard on doubling. AFTER line 61 is the same loop moved into read_line with the same growth checks plus a SIZE_MAX guard, so no overflow can happen in either."
+  },
+  "judge2": {
+   "id": "E055",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The fgetc loop at BEFORE line 63 grows the heap buffer whenever length+1 >= capacity, before each write at line 90, and guards the doubling against overflow. AFTER line 61 is the same loop moved into read_line, with the same checks plus a SIZE_MAX guard, so neither can write out of bounds."
+  },
+  "final": {
+   "id": "E055",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc loop at line 63 grows the buffer whenever length+1 >= capacity before writing input[length++], with an overflow guard on doubling. AFTER line 61 is the same loop moved into read_line with the same growth checks plus a SIZE_MAX guard, so no overflow can happen in either."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E056",
+  "judge1": {
+   "id": "E056",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(s), and s is only ever one of the NUL-terminated literals passed at lines 30-33. AFTER lines 29-32 run the same strlen on the same literals in main and pass the length in, so neither can over-read."
+  },
+  "judge2": {
+   "id": "E056",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(s), and AFTER lines 29-32 call strlen on the same four string literals (lines 24-27) in main. Literals are NUL-terminated, so there is no over-read; the call was moved from callee to caller."
+  },
+  "final": {
+   "id": "E056",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(s), and s is only ever one of the NUL-terminated literals passed at lines 30-33. AFTER lines 29-32 run the same strlen on the same literals in main and pass the length in, so neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E057",
+  "judge1": {
+   "id": "E057",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc at line 28 only discards characters and writes to no buffer. The new fgetc at AFTER line 51 in read_number is a different operation: it reads the line into a realloc'd buffer, and capacity is grown (with an overflow check) before every write at line 73, so it is safe too."
+  },
+  "judge2": {
+   "id": "E057",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 28 is an fgetc drain loop that writes nothing, and it is still present at AFTER line 28. The newly flagged AFTER line 51 is a different operation, reading input into a heap buffer, and it is safe because the buffer is grown whenever length+1 >= capacity before each write (lines 52-73)."
+  },
+  "final": {
+   "id": "E057",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc at line 28 only discards characters and writes to no buffer. The new fgetc at AFTER line 51 in read_number is a different operation: it reads the line into a realloc'd buffer, and capacity is grown (with an overflow check) before every write at line 73, so it is safe too."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E058",
+  "judge1": {
+   "id": "E058",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 8 calls strlen(word) and is only reached with the literal \"example\" (line 14). AFTER line 13 runs the same strlen on the same literal in main, so neither version can over-read."
+  },
+  "judge2": {
+   "id": "E058",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 8 calls strlen(word), and AFTER line 13 calls strlen(test_word) in main. Both act on the literal \"example\", which is NUL-terminated, so neither can over-read; the same call was hoisted into the caller."
+  },
+  "final": {
+   "id": "E058",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 8 calls strlen(word) and is only reached with the literal \"example\" (line 14). AFTER line 13 runs the same strlen on the same literal in main, so neither version can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E059",
+  "judge1": {
+   "id": "E059",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpys at lines 75-86 copy exactly the lengths that were summed (with overflow checks) into the allocation size at lines 46-65, so they stay in bounds. AFTER line 33 is the same copy wrapped in append_bytes, which also checks length <= *remaining."
+  },
+  "judge2": {
+   "id": "E059",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpy calls (lines 75-86) write exactly the lengths already summed with overflow checks into total_length (lines 46-63), so the output buffer fits. AFTER line 33 is the same copying wrapped in append_bytes, which also rejects length > *remaining."
+  },
+  "final": {
+   "id": "E059",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE memcpys at lines 75-86 copy exactly the lengths that were summed (with overflow checks) into the allocation size at lines 46-65, so they stay in bounds. AFTER line 33 is the same copy wrapped in append_bytes, which also checks length <= *remaining."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E060",
+  "judge1": {
+   "id": "E060",
+   "old_unsafe": "yes",
+   "new_unsafe": "yes",
+   "same_operation": "no",
+   "label": "FIX+NEW",
+   "rationale": "BEFORE line 17 (sum += i*i*i) overflows a signed long long for stdin n of about 78000 to 2097151, and AFTER fixes it with the check at line 14. The new report is a different operation: the multiplication (long long)n*n*n at line 7 in is_valid_input, called from main with the user's n (overflows e.g. for n=11111111), which was already present unchanged in BEFORE line 7."
+  },
+  "judge2": {
+   "id": "E060",
+   "old_unsafe": "yes",
+   "new_unsafe": "yes",
+   "same_operation": "no",
+   "label": "FIX+NEW",
+   "rationale": "In BEFORE, line 17 sum += i^3 overflows for stdin n around 1e5, because is_valid_input passes and the sum exceeds LLONG_MAX; AFTER fixes this with the check at line 14. The newly flagged AFTER line 7 is a different operation: the unchanged (long long)n*n*n in is_valid_input, which overflows for n=11111111 read from stdin at line 26."
+  },
+  "final": {
+   "id": "E060",
+   "old_unsafe": "yes",
+   "new_unsafe": "yes",
+   "same_operation": "no",
+   "label": "FIX+NEW",
+   "rationale": "BEFORE line 17 (sum += i*i*i) overflows a signed long long for stdin n of about 78000 to 2097151, and AFTER fixes it with the check at line 14. The new report is a different operation: the multiplication (long long)n*n*n at line 7 in is_valid_input, called from main with the user's n (overflows e.g. for n=11111111), which was already present unchanged in BEFORE line 7."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E061",
+  "judge1": {
+   "id": "E061",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-13 call strlen on str1/str2, which only come from argv[1]/argv[2] (line 49), and argv strings are always NUL-terminated. AFTER line 46 runs the same strlen(argv[1])/strlen(argv[2]) in main and passes the lengths in, so the same safe operation just moved to the caller."
+  },
+  "judge2": {
+   "id": "E061",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-13 call strlen on str1/str2, which only ever come from argv[1]/argv[2] (line 49), and argv strings are always NUL-terminated. AFTER line 46 applies the same strlen to the same argv strings in the caller, so both are flagged patterns rather than reachable over-reads."
+  },
+  "final": {
+   "id": "E061",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-13 call strlen on str1/str2, which only come from argv[1]/argv[2] (line 49), and argv strings are always NUL-terminated. AFTER line 46 runs the same strlen(argv[1])/strlen(argv[2]) in main and passes the lengths in, so the same safe operation just moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E062",
+  "judge1": {
+   "id": "E062",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 31 char input[256] is only filled by fgets(input, sizeof input, stdin) (line 36) and parsed with strtod, so it is always bounded and terminated. AFTER line 30 is the same buffer moved into read_side_sum, still filled with fgets sizeof (line 38); the sscanf at line 42 suppresses the string assignment and stores only one char into extra, so it cannot overflow."
+  },
+  "judge2": {
+   "id": "E062",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 31 declares char input[256] in main and fills it only with fgets(input, sizeof input, stdin) at line 36. AFTER line 30 is the same buffer and the same bounded fgets (line 38) moved into read_side_sum, so neither can overflow."
+  },
+  "final": {
+   "id": "E062",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 31 char input[256] is only filled by fgets(input, sizeof input, stdin) (line 36) and parsed with strtod, so it is always bounded and terminated. AFTER line 30 is the same buffer moved into read_side_sum, still filled with fgets sizeof (line 38); the sscanf at line 42 suppresses the string assignment and stores only one char into extra, so it cannot overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E063",
+  "judge1": {
+   "id": "E063",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 34-35 copy prefix_len and current_len bytes into malloc(new_len + 1) (line 27), which fits exactly. AFTER line 60 is a different copy: it replaces the snprintf in create_node and writes len + 1 bytes into malloc(len + 1) (line 55), which is also correctly sized."
+  },
+  "judge2": {
+   "id": "E063",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 34-35 memcpy prefix_len and current_len bytes into a buffer malloc'd as prefix_len+current_len+1 (line 27), which is correctly sized. AFTER line 60 in create_node is a different operation: it replaces the old snprintf duplication of str with memcpy(len+1) into malloc(len+1) (line 55), and that is also correctly sized."
+  },
+  "final": {
+   "id": "E063",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 34-35 copy prefix_len and current_len bytes into malloc(new_len + 1) (line 27), which fits exactly. AFTER line 60 is a different copy: it replaces the snprintf in create_node and writes len + 1 bytes into malloc(len + 1) (line 55), which is also correctly sized."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E064",
+  "judge1": {
+   "id": "E064",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 35 char input[1024] is filled only by fgets with sizeof input (line 37), or set to an empty string on EOF (line 41). AFTER line 11 is the same stdin buffer moved into count_digits_and_letters; it is filled by fgets with sizeof buffer (line 16) and scanned only up to the NUL, so it cannot overflow."
+  },
+  "judge2": {
+   "id": "E064",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 35 char input[1024] is written only by fgets(input, sizeof input, stdin) (line 37). AFTER line 11 is the stdin read buffer moved into count_digits_and_letters (4096 bytes), filled by fgets with sizeof buffer (line 16) and scanned up to its NUL terminator, so neither can overflow."
+  },
+  "final": {
+   "id": "E064",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 35 char input[1024] is filled only by fgets with sizeof input (line 37), or set to an empty string on EOF (line 41). AFTER line 11 is the same stdin buffer moved into count_digits_and_letters; it is filled by fgets with sizeof buffer (line 16) and scanned only up to the NUL, so it cannot overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E065",
+  "judge1": {
+   "id": "E065",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 15-16 call strlen on str/word, which main only supplies as string literals (lines 54-60, 62-67). AFTER lines 53-58 call strlen on those same literals in main and pass the lengths in, so this is the same safe operation moved to the caller."
+  },
+  "judge2": {
+   "id": "E065",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 15-16 call strlen on str/word, which main only passes as NUL-terminated string literals (lines 54-67). AFTER lines 53-58 apply the same strlen to the same literals in main and pass the lengths in, so no over-read is possible in either version."
+  },
+  "final": {
+   "id": "E065",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 15-16 call strlen on str/word, which main only supplies as string literals (lines 54-60, 62-67). AFTER lines 53-58 call strlen on those same literals in main and pass the lengths in, so this is the same safe operation moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E066",
+  "judge1": {
+   "id": "E066",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 49 is a getchar loop that throws away the rest of the line and writes nothing into any buffer. AFTER line 30 is the same discard loop moved into flush_stdin, so there is no buffer to overflow in either version."
+  },
+  "judge2": {
+   "id": "E066",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 49 is a getchar loop that only discards characters until newline or EOF and writes nothing to any buffer. AFTER line 30 is the identical discard loop extracted into flush_stdin, so there is no buffer boundary that could be exceeded."
+  },
+  "final": {
+   "id": "E066",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 49 is a getchar loop that throws away the rest of the line and writes nothing into any buffer. AFTER line 30 is the same discard loop moved into flush_stdin, so there is no buffer to overflow in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E067",
+  "judge1": {
+   "id": "E067",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 74/81/88 copy exactly the number of bytes allocated at lines 73/80/87, so nothing overflows. The malloc results are not NULL-checked, but that is a null dereference, not the CWE-120 overflow this rule names. AFTER line 75 is the same tuple-data copy wrapped in add_tuple: it writes size*sizeof(int) bytes into a NULL-checked malloc of the same size (line 71), and main passes correct sizes."
+  },
+  "judge2": {
+   "id": "E067",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 74/81/88 copy exactly the number of bytes each destination was malloc'd with (lines 73/80/87), so there is no overflow; the unchecked malloc is a NULL-deref issue, not CWE-120. AFTER line 75 in add_tuple does the same tuple-data copy into a NULL-checked malloc(size*sizeof(int)) of matching size (line 71)."
+  },
+  "final": {
+   "id": "E067",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 74/81/88 copy exactly the number of bytes allocated at lines 73/80/87, so nothing overflows. The malloc results are not NULL-checked, but that is a null dereference, not the CWE-120 overflow this rule names. AFTER line 75 is the same tuple-data copy wrapped in add_tuple: it writes size*sizeof(int) bytes into a NULL-checked malloc of the same size (line 71), and main passes correct sizes."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E068",
+  "judge1": {
+   "id": "E068",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str), and main only ever passes the literal \"abcab\" (line 18). AFTER line 18 calls strlen on the same literal in main and passes the length in, so this is the same safe operation moved to the caller."
+  },
+  "judge2": {
+   "id": "E068",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str), where str is only the string literal \"abcab\" passed from main (line 19). AFTER line 18 runs the same strlen on the same literal in main, so neither can over-read."
+  },
+  "final": {
+   "id": "E068",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str), and main only ever passes the literal \"abcab\" (line 18). AFTER line 18 calls strlen on the same literal in main and passes the length in, so this is the same safe operation moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E069",
+  "judge1": {
+   "id": "E069",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 16 calls strlen(str) after a NULL check, and the only non-NULL argument is a string literal (line 35). AFTER line 34 calls strlen on the same literal in main and passes the length to remove_odd_chars, so this is the same safe operation moved to the caller."
+  },
+  "judge2": {
+   "id": "E069",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 16 calls strlen(str) after a NULL check, and main only passes the literal alphabet string (line 36). AFTER line 34 runs the same strlen on the same literal in main, so neither can over-read."
+  },
+  "final": {
+   "id": "E069",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 16 calls strlen(str) after a NULL check, and the only non-NULL argument is a string literal (line 35). AFTER line 34 calls strlen on the same literal in main and passes the length to remove_odd_chars, so this is the same safe operation moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E070",
+  "judge1": {
+   "id": "E070",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 100-115 copy sizeof(dataN) bytes into malloc(sizeof(dataN)) buffers (lines 85-90), all NULL-checked at line 92, so nothing overflows. AFTER line 78 is the same per-list copy wrapped in safe_copy_list; it checks dest->size >= count (line 74) before copying into buffers sized sizes[i]*sizeof(int) (line 109)."
+  },
+  "judge2": {
+   "id": "E070",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 100-115 memcpy sizeof(dataN) bytes into buffers malloc'd with exactly sizeof(dataN) and NULL-checked (lines 85-98). AFTER line 78 is the same copy wrapped in safe_copy_list, which also checks dest->size >= count against the malloc(sizes[i]*sizeof(int)) at line 109, so neither can overflow."
+  },
+  "final": {
+   "id": "E070",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 100-115 copy sizeof(dataN) bytes into malloc(sizeof(dataN)) buffers (lines 85-90), all NULL-checked at line 92, so nothing overflows. AFTER line 78 is the same per-list copy wrapped in safe_copy_list; it checks dest->size >= count (line 74) before copying into buffers sized sizes[i]*sizeof(int) (line 109)."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E071",
+  "judge1": {
+   "id": "E071",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 strlen(source) in copy_string only ever receives string literals or NUL-terminated heap copies, so it cannot over-read. AFTER line 129 is that same strlen of counts[best_index].word, moved out of copy_string into the caller. Line 61 runs strlen on stored copies that copy_string explicitly terminates (line 27), so both flagged sites are safe."
+  },
+  "judge2": {
+   "id": "E071",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 runs strlen only on NUL-terminated literals from main and on words the program copied and terminated itself. AFTER lines 61 and 129 run strlen on those stored copies, which copy_string terminates at line 27; line 129 is the old strlen inside copy_string moved into the caller for the result copy, and neither can over-read."
+  },
+  "final": {
+   "id": "E071",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 strlen(source) in copy_string only ever receives string literals or NUL-terminated heap copies, so it cannot over-read. AFTER line 129 is that same strlen of counts[best_index].word, moved out of copy_string into the caller. Line 61 runs strlen on stored copies that copy_string explicitly terminates (line 27), so both flagged sites are safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E072",
+  "judge1": {
+   "id": "E072",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) is called on argv[1], which is always NUL-terminated. AFTER line 29 runs the same strlen(argv[1]) in main and passes the length to count_substrings, so this is the same safe operation moved to the caller."
+  },
+  "judge2": {
+   "id": "E072",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 runs strlen(str) on argv[1], which the C runtime always NUL-terminates. AFTER line 29 runs the same strlen(argv[1]), now in main, so no over-read is possible in either version."
+  },
+  "final": {
+   "id": "E072",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 strlen(str) is called on argv[1], which is always NUL-terminated. AFTER line 29 runs the same strlen(argv[1]) in main and passes the length to count_substrings, so this is the same safe operation moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E073",
+  "judge1": {
+   "id": "E073",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy at lines 110 and 121 is preceded by explicit checks (lines 106 and 116) that the copy fits in the total_length allocation. AFTER line 37 is the same delimiter/element copy wrapped in safe_memcpy, with the same checks plus a dest_size check, so the copy cannot overflow either before or after."
+  },
+  "judge2": {
+   "id": "E073",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 110 and 121 copy lengths that safe_strlen capped, into a buffer sized from those same lengths, and lines 106 and 116 check the space left before each copy. AFTER line 37 is the same memcpy wrapped in safe_memcpy, with the same checks plus a dest_size check, so neither can overflow."
+  },
+  "final": {
+   "id": "E073",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy at lines 110 and 121 is preceded by explicit checks (lines 106 and 116) that the copy fits in the total_length allocation. AFTER line 37 is the same delimiter/element copy wrapped in safe_memcpy, with the same checks plus a dest_size check, so the copy cannot overflow either before or after."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E074",
+  "judge1": {
+   "id": "E074",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 82 getchar() only drains leftover stdin until newline or EOF and never writes into a buffer. AFTER line 62 is the same drain loop moved into discard_remaining_input, so no buffer boundary is involved."
+  },
+  "judge2": {
+   "id": "E074",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 82 calls getchar in a loop only to discard the rest of the line and never writes into a buffer. AFTER line 62 is the same discard loop moved into discard_remaining_input, so there is no buffer that could overflow."
+  },
+  "final": {
+   "id": "E074",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 82 getchar() only drains leftover stdin until newline or EOF and never writes into a buffer. AFTER line 62 is the same drain loop moved into discard_remaining_input, so no buffer boundary is involved."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E075",
+  "judge1": {
+   "id": "E075",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 strlen(expression) runs on the fgets-filled input buffer, which is always NUL-terminated. AFTER line 112 runs strlen on that same input buffer in main (isBalanced now uses strnlen), so it is the same safe length computation on the same data."
+  },
+  "judge2": {
+   "id": "E075",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 runs strlen on the fgets buffer, which is always NUL-terminated and shorter than MAX_SIZE, and AFTER line 74 replaces it with strnlen. AFTER line 112 is a new strlen in main that strips the newline from the same NUL-terminated fgets buffer, and inputLen > 0 is checked first, so it is safe and not the moved call."
+  },
+  "final": {
+   "id": "E075",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 strlen(expression) runs on the fgets-filled input buffer, which is always NUL-terminated. AFTER line 112 runs strlen on that same input buffer in main (isBalanced now uses strnlen), so it is the same safe length computation on the same data."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E076",
+  "judge1": {
+   "id": "E076",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(input) is only ever applied to the string literal test_str. AFTER line 45 runs strlen(test_str) in main to compute max_len, so it is the same safe operation on the same literal, moved to the caller."
+  },
+  "judge2": {
+   "id": "E076",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 runs strlen on the string literal \"a1b2c3d4\" passed from main. AFTER line 45 runs strlen on the same literal, moved into main, and the callee now uses a bounded loop, so neither can over-read."
+  },
+  "final": {
+   "id": "E076",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(input) is only ever applied to the string literal test_str. AFTER line 45 runs strlen(test_str) in main to compute max_len, so it is the same safe operation on the same literal, moved to the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E077",
+  "judge1": {
+   "id": "E077",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(str) is called on argv[1], which is always NUL-terminated. AFTER line 29 runs the same strlen(argv[1]) in main and passes the length into count_substrings."
+  },
+  "judge2": {
+   "id": "E077",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 runs strlen(str) on argv[1], which the C runtime always NUL-terminates. AFTER line 29 runs the same strlen(argv[1]), moved into main, and the length is passed to the callee, so neither can over-read."
+  },
+  "final": {
+   "id": "E077",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(str) is called on argv[1], which is always NUL-terminated. AFTER line 29 runs the same strlen(argv[1]) in main and passes the length into count_substrings."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E078",
+  "judge1": {
+   "id": "E078",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) runs on str1, which fgets fills and NUL-terminates. AFTER line 30 runs the same strlen(str1) in main and passes the length into increment_string_num."
+  },
+  "judge2": {
+   "id": "E078",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 runs strlen on str1, a 1024-byte buffer that fgets always NUL-terminates. AFTER line 30 runs the same strlen(str1), moved into main, so neither can over-read."
+  },
+  "final": {
+   "id": "E078",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 strlen(str) runs on str1, which fgets fills and NUL-terminates. AFTER line 30 runs the same strlen(str1) in main and passes the length into increment_string_num."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E079",
+  "judge1": {
+   "id": "E079",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 85 getchar() only discards leftover stdin characters and stores nothing in a buffer. AFTER line 28 is the same drain loop moved into flush_stdin, so no buffer boundary is at stake."
+  },
+  "judge2": {
+   "id": "E079",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 85 calls getchar in a loop only to discard leftover input and never stores into a buffer. AFTER line 28 is the same discard loop moved into flush_stdin, so there is no buffer that could overflow."
+  },
+  "final": {
+   "id": "E079",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 85 getchar() only discards leftover stdin characters and stores nothing in a buffer. AFTER line 28 is the same drain loop moved into flush_stdin, so no buffer boundary is at stake."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E080",
+  "judge1": {
+   "id": "E080",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 copies num_len bytes into malloc(num_len+1), and line 87 is bounds-checked at line 82, so neither copy can overflow. AFTER line 30 is the same digit-run copy moved into extract_number with the same malloc(len+1) sizing, and line 97 keeps its line-92 check."
+  },
+  "judge2": {
+   "id": "E080",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 copies num_len bytes into a buffer allocated as num_len+1, and AFTER line 30 is the same copy moved into extract_number with the same len+1 allocation, so neither can overflow. Outside this rule, AFTER line 73 dereferences endptr after num_str is freed at line 71, a use-after-free."
+  },
+  "final": {
+   "id": "E080",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 copies num_len bytes into malloc(num_len+1), and line 87 is bounds-checked at line 82, so neither copy can overflow. AFTER line 30 is the same digit-run copy moved into extract_number with the same malloc(len+1) sizing, and line 97 keeps its line-92 check."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E081",
+  "judge1": {
+   "id": "E081",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 6-7 call strlen on the literals \"ABCD\" and \"ACDF\" passed from main (lines 25-27), and AFTER lines 25-26 run the same strlen on the same literals in main. Both strings are NUL-terminated constants, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E081",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 6-7 and AFTER lines 25-26 both call strlen on the literals \"ABCD\"/\"ACDF\"; the call just moved from the callee into main, and the input is always NUL-terminated, so no over-read is possible. The new check at AFTER line 28 is a logic error (str1[3]=='D' makes the program exit early) but is not an over-read."
+  },
+  "final": {
+   "id": "E081",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 6-7 call strlen on the literals \"ABCD\" and \"ACDF\" passed from main (lines 25-27), and AFTER lines 25-26 run the same strlen on the same literals in main. Both strings are NUL-terminated constants, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E082",
+  "judge1": {
+   "id": "E082",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen on each string literal from main's array (line 27), and AFTER line 18 runs the same strlen(strings[i]) in the caller find_palindromes. Every element is a NUL-terminated literal, so CWE-126 cannot be triggered."
+  },
+  "judge2": {
+   "id": "E082",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 7 moved to strlen(strings[i]) at AFTER line 18 in the caller. Every element comes from the NUL-terminated string literals at line 27, so CWE-126 cannot occur in either version."
+  },
+  "final": {
+   "id": "E082",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen on each string literal from main's array (line 27), and AFTER line 18 runs the same strlen(strings[i]) in the caller find_palindromes. Every element is a NUL-terminated literal, so CWE-126 cannot be triggered."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E083",
+  "judge1": {
+   "id": "E083",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen on the literal \"Hello, World!\" (line 30), and AFTER line 31 calls strlen on the same literal in main to compute max_len. The input is a NUL-terminated constant, so neither call can over-read."
+  },
+  "judge2": {
+   "id": "E083",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 strlen(input) became strnlen in the callee plus strlen(test_string) in main at AFTER line 31. Both measure the same literal \"Hello, World!\", which is always NUL-terminated, so there is no over-read."
+  },
+  "final": {
+   "id": "E083",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen on the literal \"Hello, World!\" (line 30), and AFTER line 31 calls strlen on the same literal in main to compute max_len. The input is a NUL-terminated constant, so neither call can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E084",
+  "judge1": {
+   "id": "E084",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 8 calls strlen on the test_strings literals (line 31), and AFTER line 35 calls the same strlen(test_strings[i]) in main before passing len. All inputs are NUL-terminated literals, so no over-read occurs."
+  },
+  "judge2": {
+   "id": "E084",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 8 moved into main as strlen(test_strings[i]) at AFTER line 35. It runs on the same NUL-terminated literals from line 31, so no over-read is possible."
+  },
+  "final": {
+   "id": "E084",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 8 calls strlen on the test_strings literals (line 31), and AFTER line 35 calls the same strlen(test_strings[i]) in main before passing len. All inputs are NUL-terminated literals, so no over-read occurs."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E085",
+  "judge1": {
+   "id": "E085",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen on argv[1] inside count_substrings, and AFTER line 43 calls strlen(argv[1]) in main and passes the result. argv strings are NUL-terminated by the C runtime, so neither call can over-read."
+  },
+  "judge2": {
+   "id": "E085",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 6 moved to strlen(argv[1]) in main at AFTER line 43, on the same data. argv strings are always NUL-terminated (argc==2 is checked), so CWE-126 cannot be triggered."
+  },
+  "final": {
+   "id": "E085",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen on argv[1] inside count_substrings, and AFTER line 43 calls strlen(argv[1]) in main and passes the result. argv strings are NUL-terminated by the C runtime, so neither call can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E086",
+  "judge1": {
+   "id": "E086",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc loop (line 65) grows the buffer whenever length+1 >= capacity (lines 72-95) before each write, and AFTER moves the same loop into read_line (line 74) with the same check (line 84). In both, the write at input[length] and the terminator stay in bounds."
+  },
+  "judge2": {
+   "id": "E086",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The fgetc line-reading loop at BEFORE line 65 in main was moved unchanged into read_line at AFTER line 74. In both versions every write buffer[length++] is preceded by a capacity check that grows the buffer (lines 72-95 / 84-111), and the terminator fits, so stdin cannot overflow it."
+  },
+  "final": {
+   "id": "E086",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The BEFORE fgetc loop (line 65) grows the buffer whenever length+1 >= capacity (lines 72-95) before each write, and AFTER moves the same loop into read_line (line 74) with the same check (line 84). In both, the write at input[length] and the terminator stay in bounds."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E087",
+  "judge1": {
+   "id": "E087",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The array char input[64] at BEFORE line 19 (main) and AFTER line 19 (read_value) is filled only by fgets(input, sizeof input, stdin), so a write past the end is not possible. The AFTER scan at lines 28-36 is bounded by sizeof input and stops at the terminator that fgets writes."
+  },
+  "judge2": {
+   "id": "E087",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The same char input[64] buffer (line 19 in both) moved from main into read_value. It is only filled by fgets(input, sizeof input) and scanned within bounds, so there is no overflow. BEFORE line 29 reads the in-bounds but possibly uninitialized input[62]; that is a logic flaw, not CWE-119/120."
+  },
+  "final": {
+   "id": "E087",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The array char input[64] at BEFORE line 19 (main) and AFTER line 19 (read_value) is filled only by fgets(input, sizeof input, stdin), so a write past the end is not possible. The AFTER scan at lines 28-36 is bounded by sizeof input and stops at the terminator that fgets writes."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E088",
+  "judge1": {
+   "id": "E088",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 74 and AFTER line 65 (moved into discard_rest_of_line) both call getchar only to drain the rest of the line and store nothing in a buffer. No overflow is possible; the input is already bounded by fgets(buffer, size) at line 67/77."
+  },
+  "judge2": {
+   "id": "E088",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The getchar discard loop at BEFORE line 74 was extracted into discard_rest_of_line at AFTER line 65. It only reads and drops characters and writes to no buffer, so no overflow is possible in either version."
+  },
+  "final": {
+   "id": "E088",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 74 and AFTER line 65 (moved into discard_rest_of_line) both call getchar only to drain the rest of the line and store nothing in a buffer. No overflow is possible; the input is already bounded by fgets(buffer, size) at line 67/77."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E089",
+  "judge1": {
+   "id": "E089",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 copies strlen(src)+1 bytes into a malloc of exactly that size. In AFTER, line 27 likewise copies src_len+1 into malloc(src_len+1), and lines 48/54 copy chunks whose total equals out_len, which the same strstr pass computed for malloc(out_len+1) (lines 31-39). Lines 48/54 perform a different pattern-removal copy, not the duplication done in BEFORE."
+  },
+  "judge2": {
+   "id": "E089",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 copies strlen+1 bytes into a malloc of exactly that size, which is safe. In AFTER, line 27 is the same full-copy (only reached for an empty pattern), but lines 48/54 are a new pattern-removal copy whose chunks sum exactly to out_len computed at lines 31-37, and line 39 allocates out_len+1, so none of them can overflow."
+  },
+  "final": {
+   "id": "E089",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 20 copies strlen(src)+1 bytes into a malloc of exactly that size. In AFTER, line 27 likewise copies src_len+1 into malloc(src_len+1), and lines 48/54 copy chunks whose total equals out_len, which the same strstr pass computed for malloc(out_len+1) (lines 31-39). Lines 48/54 perform a different pattern-removal copy, not the duplication done in BEFORE."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E090",
+  "judge1": {
+   "id": "E090",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 47/50 call fgetc only to discard the rest of an over-long line and write no buffer. AFTER line 40 is a different operation: it reads characters into a growing heap buffer, and the realloc whenever length+1 >= capacity (lines 41-59) keeps both buffer[length++] and buffer[length]='\\0' in bounds."
+  },
+  "judge2": {
+   "id": "E090",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 47/50 use fgetc only to drop the rest of an over-long line after fgets, with no buffer write. AFTER line 40 is a different operation: it reads the whole line into a heap buffer, and the length+1>=capacity growth check (lines 41-59) means the writes at lines 61 and 74 stay in bounds."
+  },
+  "final": {
+   "id": "E090",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 47/50 call fgetc only to discard the rest of an over-long line and write no buffer. AFTER line 40 is a different operation: it reads characters into a growing heap buffer, and the realloc whenever length+1 >= capacity (lines 41-59) keeps both buffer[length++] and buffer[length]='\\0' in bounds."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E091",
+  "judge1": {
+   "id": "E091",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 calls strlen on the string literal input in main, so it cannot over-read. AFTER line 43 calls strlen(cursor) on the NUL-terminated tail of that same literal to bound a copy that replaces strcpy, which is a different operation; main still keeps its own strlen at line 63."
+  },
+  "judge2": {
+   "id": "E091",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 calls strlen on a string literal in main, which is always NUL-terminated. AFTER line 43 calls strlen(cursor) on the tail of that same literal, to bound the copy that replaced strcpy. That is a different operation and also cannot over-read."
+  },
+  "final": {
+   "id": "E091",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 36 calls strlen on the string literal input in main, so it cannot over-read. AFTER line 43 calls strlen(cursor) on the NUL-terminated tail of that same literal to bound a copy that replaces strcpy, which is a different operation; main still keeps its own strlen at line 63."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E092",
+  "judge1": {
+   "id": "E092",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 19 (escape_regex_literal) and AFTER line 23 (find_literal) both call strlen(literal), and literal is argv[2], which is always NUL-terminated. The same length computation on the same argument moved into the new function, and it is safe in both versions."
+  },
+  "judge2": {
+   "id": "E092",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 19 and AFTER line 23 both call strlen(literal) on argv[2], which is NUL-terminated. The call only moved from escape_regex_literal into find_literal, and neither version can over-read."
+  },
+  "final": {
+   "id": "E092",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 19 (escape_regex_literal) and AFTER line 23 (find_literal) both call strlen(literal), and literal is argv[2], which is always NUL-terminated. The same length computation on the same argument moved into the new function, and it is safe in both versions."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E093",
+  "judge1": {
+   "id": "E093",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 calls strlen on the fgets-filled buffer that main passes to replace_spaces, and AFTER line 30 calls strlen on that same buffer in main right after fgets. fgets always NUL-terminates, so neither call can over-read; the strlen of the input buffer simply moved from the callee into the caller."
+  },
+  "judge2": {
+   "id": "E093",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 uses strlen(str) as the loop bound on a buffer filled by fgets. AFTER line 30 uses strlen(input) in main to strip the newline, replacing strcspn. That is a different use, and fgets guarantees NUL termination in both cases."
+  },
+  "final": {
+   "id": "E093",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 calls strlen on the fgets-filled buffer that main passes to replace_spaces, and AFTER line 30 calls strlen on that same buffer in main right after fgets. fgets always NUL-terminates, so neither call can over-read; the strlen of the input buffer simply moved from the callee into the caller."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E094",
+  "judge1": {
+   "id": "E094",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 22 calls strlen(input) inside find_sequences, and AFTER line 43 calls strlen(test_str) in main on the same string literal, which is then passed in as input_len. This is the same computation moved from callee to caller, and the string is a NUL-terminated literal in both versions."
+  },
+  "judge2": {
+   "id": "E094",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 22 calls strlen(input) inside find_sequences, and AFTER line 43 calls strlen(test_str) in main. The same call moved to the caller and is passed as a parameter. In both cases the argument is a NUL-terminated string literal, so no over-read is possible."
+  },
+  "final": {
+   "id": "E094",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 22 calls strlen(input) inside find_sequences, and AFTER line 43 calls strlen(test_str) in main on the same string literal, which is then passed in as input_len. This is the same computation moved from callee to caller, and the string is a NUL-terminated literal in both versions."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E095",
+  "judge1": {
+   "id": "E095",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 31 and 63 declare errbuf[ERRBUF_SIZE] for regerror with sizeof(errbuf) and explicit NUL termination. AFTER line 11 moves that same buffer into the helper report_regex_error, with the same bounded regerror call and termination (lines 14-15), so no overflow is possible in either version."
+  },
+  "judge2": {
+   "id": "E095",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 31 and 63 declare errbuf[256] buffers that regerror fills with sizeof(errbuf), followed by explicit termination. AFTER line 11 is the same errbuf, wrapped in report_regex_error and filled with sizeof-1 and memset, so it cannot overflow."
+  },
+  "final": {
+   "id": "E095",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 31 and 63 declare errbuf[ERRBUF_SIZE] for regerror with sizeof(errbuf) and explicit NUL termination. AFTER line 11 moves that same buffer into the helper report_regex_error, with the same bounded regerror call and termination (lines 14-15), so no overflow is possible in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E096",
+  "judge1": {
+   "id": "E096",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy calls at lines 86/95/104 are each guarded by a len >= remaining check against a buffer sized from the same safe_strlen values. AFTER line 34 is the same memcpy wrapped in safe_memcpy, which adds an n > dest_size check and is called with the same guarded arguments (lines 94/106/118)."
+  },
+  "judge2": {
+   "id": "E096",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy calls at lines 86, 95 and 104 are each preceded by a len >= remaining check against an exactly sized allocation. AFTER line 34 is the same set of copies, wrapped in safe_memcpy with an extra n > dest_size check, so neither version can overflow."
+  },
+  "final": {
+   "id": "E096",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy calls at lines 86/95/104 are each guarded by a len >= remaining check against a buffer sized from the same safe_strlen values. AFTER line 34 is the same memcpy wrapped in safe_memcpy, which adds an n > dest_size check and is called with the same guarded arguments (lines 94/106/118)."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E097",
+  "judge1": {
+   "id": "E097",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 calls strlen(source) in duplicate_string on dictionary keys and values, and AFTER lines 113-114 call strlen(key) and strlen(value) on the same entries in dictionary_copy. That is the same computation moved from callee to caller. Every string comes from a NUL-terminated literal in main and is checked for NULL first, so there is no over-read."
+  },
+  "judge2": {
+   "id": "E097",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 calls strlen(source) in duplicate_string on dictionary keys and values, which are string literals. AFTER lines 113-114 move the same strlen of key and value into the caller dictionary_copy. All of these strings are NUL-terminated, so no over-read is possible."
+  },
+  "final": {
+   "id": "E097",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 45 calls strlen(source) in duplicate_string on dictionary keys and values, and AFTER lines 113-114 call strlen(key) and strlen(value) on the same entries in dictionary_copy. That is the same computation moved from callee to caller. Every string comes from a NUL-terminated literal in main and is checked for NULL first, so there is no over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E098",
+  "judge1": {
+   "id": "E098",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 55 is a getchar loop in main that throws away the rest of the line until a newline or EOF and writes nothing to any buffer. AFTER line 42 is that same discard loop moved into flush_stdin, and it also stores nothing, so it has no boundary to violate."
+  },
+  "judge2": {
+   "id": "E098",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The getchar loop at BEFORE line 55 only discards stdin up to newline or EOF and writes to no buffer. AFTER line 42 is the same discard loop moved into flush_stdin, and it is equally harmless."
+  },
+  "final": {
+   "id": "E098",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 55 is a getchar loop in main that throws away the rest of the line until a newline or EOF and writes nothing to any buffer. AFTER line 42 is that same discard loop moved into flush_stdin, and it also stores nothing, so it has no boundary to violate."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E099",
+  "judge1": {
+   "id": "E099",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 calls strlen on the fgets-filled input buffer in main, which fgets always NUL-terminates. AFTER lines 20 and 37 call strlen on that same user input line, now read with getline, which also NUL-terminates, inside first_non_repeated_char; this is redundant but cannot over-read."
+  },
+  "judge2": {
+   "id": "E099",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 calls strlen on an fgets buffer to strip the newline. AFTER lines 20 and 37 use strlen(str) as a loop and index bound in first_non_repeated_char, on a getline buffer. That is a different purpose, and both buffers are NUL-terminated, so neither can over-read."
+  },
+  "final": {
+   "id": "E099",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 48 calls strlen on the fgets-filled input buffer in main, which fgets always NUL-terminates. AFTER lines 20 and 37 call strlen on that same user input line, now read with getline, which also NUL-terminates, inside first_non_repeated_char; this is redundant but cannot over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E100",
+  "judge1": {
+   "id": "E100",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 113 is a fgetc loop in main that skips whitespace and stores only a single char, and BEFORE line 65 in read_line grows its buffer before each write (used == capacity-1 check). AFTER line 118 is that same whitespace-skip loop moved into read_target, which also writes only *target, so it cannot overflow."
+  },
+  "judge2": {
+   "id": "E100",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 65 has fgetc in read_line with a realloc growth check before each write, and line 113 has a whitespace-skipping fgetc loop that writes to no buffer. AFTER line 118 is that same whitespace-skip loop moved into read_target, which only stores one char into *target, so no boundary can be exceeded."
+  },
+  "final": {
+   "id": "E100",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 113 is a fgetc loop in main that skips whitespace and stores only a single char, and BEFORE line 65 in read_line grows its buffer before each write (used == capacity-1 check). AFTER line 118 is that same whitespace-skip loop moved into read_target, which also writes only *target, so it cannot overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E101",
+  "judge1": {
+   "id": "E101",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 28 re-checks len<max_len right after line 19 already returned when len>=max_len, so it is only a redundant guard. AFTER line 67 tests search_len==0, which cannot be true because the loop at line 62 requires offset<sentence_len; it is a different dead check, not a defect."
+  },
+  "judge2": {
+   "id": "E101",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 28 re-checks len<max_len after line 19 already returned when len>=max_len, so the condition is just redundant. AFTER line 67 tests search_len==0, which can never be true under the loop guard offset<sentence_len (line 62). That is a different check, and it is dead code, not a defect."
+  },
+  "final": {
+   "id": "E101",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 28 re-checks len<max_len right after line 19 already returned when len>=max_len, so it is only a redundant guard. AFTER line 67 tests search_len==0, which cannot be true because the loop at line 62 requires offset<sentence_len; it is a different dead check, not a defect."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E102",
+  "judge1": {
+   "id": "E102",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 calls strlen(str), and str is argv[1], which is always NUL-terminated. AFTER line 29 moves the same strlen(argv[1]) into main and passes the length to the callee, so it is safe in both versions."
+  },
+  "judge2": {
+   "id": "E102",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The strlen(str) at BEFORE line 10 moved to strlen(argv[1]) at AFTER line 29, still on argv[1]. Since argv strings are always NUL-terminated, no over-read can occur in either version."
+  },
+  "final": {
+   "id": "E102",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 10 calls strlen(str), and str is argv[1], which is always NUL-terminated. AFTER line 29 moves the same strlen(argv[1]) into main and passes the length to the callee, so it is safe in both versions."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E103",
+  "judge1": {
+   "id": "E103",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 10-11 call strlen on string literals passed in from main. AFTER lines 29 and 36 call strlen on the same literals, now in the caller, so neither version can over-read."
+  },
+  "judge2": {
+   "id": "E103",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The strlen calls on str/sub at BEFORE lines 10-11 moved into main at AFTER lines 29 and 36, on the same data. Every argument is a NUL-terminated string literal, so no over-read is possible."
+  },
+  "final": {
+   "id": "E103",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 10-11 call strlen on string literals passed in from main. AFTER lines 29 and 36 call strlen on the same literals, now in the caller, so neither version can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E104",
+  "judge1": {
+   "id": "E104",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 calls strlen on the literal \"1112223\". AFTER line 20 calls the same strlen on that literal, moved into main, so there is no over-read either way."
+  },
+  "judge2": {
+   "id": "E104",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "strlen(str) at BEFORE line 5 moved to strlen(input) in main at AFTER line 20, on the same literal \"1112223\". That string is NUL-terminated, so this cannot over-read."
+  },
+  "final": {
+   "id": "E104",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 5 calls strlen on the literal \"1112223\". AFTER line 20 calls the same strlen on that literal, moved into main, so there is no over-read either way."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E105",
+  "judge1": {
+   "id": "E105",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 82/85/88 copy 4, at most 2 and at most 2 bytes into buffers of 5/3/3, after the length checks at lines 59 and 68. AFTER line 38 does the same substring copy inside a helper that checks len<dest_size at line 36 first, so both are safe."
+  },
+  "judge2": {
+   "id": "E105",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpys at lines 82/85/88 copy y_len==4, m_len<=2 and d_len<=2 bytes, and lines 59/68 check those lengths against buffers of 5/3/3. In AFTER, the same substring copy is wrapped in safe_copy_substring, and line 36 rejects len>=dest_size before the memcpy at line 38."
+  },
+  "final": {
+   "id": "E105",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 82/85/88 copy 4, at most 2 and at most 2 bytes into buffers of 5/3/3, after the length checks at lines 59 and 68. AFTER line 38 does the same substring copy inside a helper that checks len<dest_size at line 36 first, so both are safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E106",
+  "judge1": {
+   "id": "E106",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 116 reads with fgetc into a buffer that grows whenever length+1>=capacity (lines 123-147), and the terminator write at line 187 stays in bounds. AFTER line 129 has the identical loop moved into read_sentence, with the same growth check at line 136 and an in-bounds terminator at line 179."
+  },
+  "judge2": {
+   "id": "E106",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The fgetc read loop at BEFORE line 116 was moved unchanged into read_sentence at AFTER line 129. In both, the used+1>=capacity check with realloc (BEFORE line 123 / AFTER line 136) runs before each write, and the terminator always fits, so a long stdin line cannot overflow the buffer."
+  },
+  "final": {
+   "id": "E106",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 116 reads with fgetc into a buffer that grows whenever length+1>=capacity (lines 123-147), and the terminator write at line 187 stays in bounds. AFTER line 129 has the identical loop moved into read_sentence, with the same growth check at line 136 and an in-bounds terminator at line 179."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E107",
+  "judge1": {
+   "id": "E107",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 99/108 copy each element and delimiter only after checking against the remaining space in a buffer of total_length+1. AFTER line 30 does the same copies inside safe_copy, which first checks source_length>destination_remaining at line 27."
+  },
+  "judge2": {
+   "id": "E107",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpys at lines 99/108 run only after lengths[i]/delimiter_length are checked against remaining in a buffer sized to total_length+1. AFTER moves the same element and delimiter copies into safe_copy (line 30), which makes the same source_length>destination_remaining check at line 27."
+  },
+  "final": {
+   "id": "E107",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 99/108 copy each element and delimiter only after checking against the remaining space in a buffer of total_length+1. AFTER line 30 does the same copies inside safe_copy, which first checks source_length>destination_remaining at line 27."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E108",
+  "judge1": {
+   "id": "E108",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 29/87/132 copy len+1 or item_len+1 bytes into buffers malloc'd to exactly that size, which is safe. AFTER line 31 is in safe_strdup, a new helper that is never called; it copies len bytes into malloc(len+1), while the original copies remain inline at lines 62/131/183."
+  },
+  "judge2": {
+   "id": "E108",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, each memcpy (lines 29/87/132) copies item_len+1 bytes into a malloc(item_len+1) buffer, which fits exactly. The AFTER memcpy at line 31 is in safe_strdup, a helper string_to_tuple never calls; it also copies len bytes into malloc(len+1), so it is not the same copy on the same data and is safe."
+  },
+  "final": {
+   "id": "E108",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 29/87/132 copy len+1 or item_len+1 bytes into buffers malloc'd to exactly that size, which is safe. AFTER line 31 is in safe_strdup, a new helper that is never called; it copies len bytes into malloc(len+1), while the original copies remain inline at lines 62/131/183."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E109",
+  "judge1": {
+   "id": "E109",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 is char num_str[32], written only through a bounded snprintf whose output is checked at line 32. AFTER line 69 is a different array, an input buffer[4096] in main, filled by fgets(buffer, sizeof(buffer), stdin) at line 73, which is also bounded."
+  },
+  "judge2": {
+   "id": "E109",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 declares char num_str[32], which is only filled by a bounded, checked snprintf of a long. AFTER line 69 is a separate input buffer[4096] in main, read with fgets(buffer, sizeof(buffer)) and with len>0 checked before buffer[len-1], so neither array can overflow."
+  },
+  "final": {
+   "id": "E109",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 is char num_str[32], written only through a bounded snprintf whose output is checked at line 32. AFTER line 69 is a different array, an input buffer[4096] in main, filled by fgets(buffer, sizeof(buffer), stdin) at line 73, which is also bounded."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E110",
+  "judge1": {
+   "id": "E110",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 tests i>0 just after i==0 has failed through ||, so it is a redundant condition and not a defect. AFTER line 9 is the same redundant i>0 in the renamed function capitalize."
+  },
+  "judge2": {
+   "id": "E110",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "The redundant 'i>0' in (i==0 || (i>0 && str[i-1]==' ')) at BEFORE line 9 is unchanged at AFTER line 9 in the renamed function capitalize. Short-circuiting makes str[i-1] run only when i>0, so this is a style finding, not an out-of-bounds access."
+  },
+  "final": {
+   "id": "E110",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 tests i>0 just after i==0 has failed through ||, so it is a redundant condition and not a defect. AFTER line 9 is the same redundant i>0 in the renamed function capitalize."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E111",
+  "judge1": {
+   "id": "E111",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str) on the literal \"abcab\" passed from main (line 18), which is always NUL-terminated. AFTER line 18 runs the same strlen on the same literal in the caller, so neither call can over-read."
+  },
+  "judge2": {
+   "id": "E111",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen on the string literal \"abcab\" passed from main, and AFTER line 18 calls strlen on that same literal in main, so it is the same operation moved to the caller. The literal is always NUL-terminated, so no over-read can happen."
+  },
+  "final": {
+   "id": "E111",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str) on the literal \"abcab\" passed from main (line 18), which is always NUL-terminated. AFTER line 18 runs the same strlen on the same literal in the caller, so neither call can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E112",
+  "judge1": {
+   "id": "E112",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 40 declares input[64], which fgets fills with sizeof(input) as the limit (lines 43/52/61). AFTER line 60 moves the same stdin line buffer (now 256 bytes) into read_and_parse_int, still filled by fgets with sizeof(input) at line 63, so neither can overflow."
+  },
+  "judge2": {
+   "id": "E112",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 40 declares input[64], which is filled only by fgets(input, sizeof(input), stdin). AFTER line 60 moves that stdin line buffer into read_and_parse_int as input[256], still read with sizeof-bounded fgets, so neither version can overflow."
+  },
+  "final": {
+   "id": "E112",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 40 declares input[64], which fgets fills with sizeof(input) as the limit (lines 43/52/61). AFTER line 60 moves the same stdin line buffer (now 256 bytes) into read_and_parse_int, still filled by fgets with sizeof(input) at line 63, so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E113",
+  "judge1": {
+   "id": "E113",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 62 copies len bytes, where len comes from strnlen, into malloc(len+1), then writes the terminator. AFTER line 35 does the same copy into malloc(len+1) inside the new duplicate_bounded helper, so the destination always fits."
+  },
+  "judge2": {
+   "id": "E113",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 62 copies len bytes (from strnlen) into malloc(len+1), and AFTER line 35 does the same copy wrapped in duplicate_bounded (malloc(len+1) at line 30). The destination always holds the data, so there is no overflow in either version."
+  },
+  "final": {
+   "id": "E113",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 62 copies len bytes, where len comes from strnlen, into malloc(len+1), then writes the terminator. AFTER line 35 does the same copy into malloc(len+1) inside the new duplicate_bounded helper, so the destination always fits."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E114",
+  "judge1": {
+   "id": "E114",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 100 calls strlen(input) where input is argv[1] (line 167), and argv strings are NUL-terminated. AFTER line 150 moves the same strlen(argv[1]) into main and passes the length down, so there is no over-read in either version."
+  },
+  "judge2": {
+   "id": "E114",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 100 calls strlen on argv[1] passed into string_to_list, and AFTER line 150 calls strlen(argv[1]) in main before calling string_to_list_n, so the same operation moved to the caller. argv strings are NUL-terminated by contract, so neither call can over-read."
+  },
+  "final": {
+   "id": "E114",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 100 calls strlen(input) where input is argv[1] (line 167), and argv strings are NUL-terminated. AFTER line 150 moves the same strlen(argv[1]) into main and passes the length down, so there is no over-read in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E115",
+  "judge1": {
+   "id": "E115",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen(str) on the string literal passed from main (line 73). AFTER line 73 calls strlen on the same literal in main and passes len to find_sequences, so both are terminated strings that cannot over-read."
+  },
+  "judge2": {
+   "id": "E115",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen on the string literal text passed from main, and AFTER line 73 calls strlen(text) in main and passes the length in. The literal is NUL-terminated, so the same operation is safe in both places."
+  },
+  "final": {
+   "id": "E115",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen(str) on the string literal passed from main (line 73). AFTER line 73 calls strlen on the same literal in main and passes len to find_sequences, so both are terminated strings that cannot over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E116",
+  "judge1": {
+   "id": "E116",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 57/84 copy key_len+1 / value_len+1 bytes (from strlen) into malloc'd buffers of exactly that size. AFTER line 37 performs the same duplication of the tuple strings inside safe_strdup: len bytes (bounded by safe_strlen) go into malloc(len+1), so it is safe."
+  },
+  "judge2": {
+   "id": "E116",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 57 and 84 copy key_len+1 and value_len+1 bytes into buffers of exactly that size (malloc at lines 46 and 72). AFTER line 37 does the same key/value duplication inside safe_strdup, copying len bytes into malloc(len+1), so neither version can overflow."
+  },
+  "final": {
+   "id": "E116",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 57/84 copy key_len+1 / value_len+1 bytes (from strlen) into malloc'd buffers of exactly that size. AFTER line 37 performs the same duplication of the tuple strings inside safe_strdup: len bytes (bounded by safe_strlen) go into malloc(len+1), so it is safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E117",
+  "judge1": {
+   "id": "E117",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 digits[32] is filled by snprintf with sizeof(digits) and its result is checked (lines 23-24), and a uint64 has at most 20 digits. AFTER line 74 is a different buffer, input[128] in main, filled by fgets with sizeof input (line 80), so neither can overflow."
+  },
+  "judge2": {
+   "id": "E117",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 declares digits[32], which is filled by snprintf bounded by sizeof with a truncation check, and is safe. AFTER line 74 is an unrelated new stdin buffer input[128] in main, filled by fgets(input, sizeof input, stdin), which is also safe."
+  },
+  "final": {
+   "id": "E117",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 digits[32] is filled by snprintf with sizeof(digits) and its result is checked (lines 23-24), and a uint64 has at most 20 digits. AFTER line 74 is a different buffer, input[128] in main, filled by fgets with sizeof input (line 80), so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E118",
+  "judge1": {
+   "id": "E118",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-14 call strlen on X, Y and Z, which are string literals from main (lines 96-98). AFTER line 98 performs the same three strlen calls on the same literals in main and passes the lengths in, so neither version can over-read."
+  },
+  "judge2": {
+   "id": "E118",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-14 call strlen on X, Y and Z, which are string literals from main, and AFTER line 98 makes the same three strlen calls in main and passes the lengths to lcs_of_3. The literals are NUL-terminated, so there is no over-read."
+  },
+  "final": {
+   "id": "E118",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 12-14 call strlen on X, Y and Z, which are string literals from main (lines 96-98). AFTER line 98 performs the same three strlen calls on the same literals in main and passes the lengths in, so neither version can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E119",
+  "judge1": {
+   "id": "E119",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 25 names[100][50] is filled only by fgets(names[i], NAME_LENGTH) for i < count <= MAX_NAMES (lines 37, 44), so it cannot overflow. AFTER line 9 is just the callee's pointer-to-array parameter, read with strnlen bounded by NAME_LENGTH; the storage declaration itself stays in main (line 25, now calloc), so this is not the moved operation and it is safe."
+  },
+  "judge2": {
+   "id": "E119",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 25 declares names[100][50], written only via fgets(names[i], NAME_LENGTH) with count checked to be at most MAX_NAMES (line 37), so it is safe. AFTER line 9 is only the pointer-to-array parameter type char (*names)[NAME_LENGTH], whose accesses are bounded by count and strnlen, so it is a different, safe construct (the storage itself is still flagged at line 25)."
+  },
+  "final": {
+   "id": "E119",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 25 names[100][50] is filled only by fgets(names[i], NAME_LENGTH) for i < count <= MAX_NAMES (lines 37, 44), so it cannot overflow. AFTER line 9 is just the callee's pointer-to-array parameter, read with strnlen bounded by NAME_LENGTH; the storage declaration itself stays in main (line 25, now calloc), so this is not the moved operation and it is safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E120",
+  "judge1": {
+   "id": "E120",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 37 output[MAX_WORDS] is a pointer array that is written only while output_count < output_max (line 23), so it cannot overflow. AFTER line 26 is a const-char cast of output in the is_duplicate call, which flawfinder matched by its lexical rule; it declares no buffer and is a different, safe operation."
+  },
+  "judge2": {
+   "id": "E120",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 37 declares char *output[MAX_WORDS], and input_count is checked against output_max (line 40) before use, so it cannot overflow. AFTER line 26 is only a pointer cast (const char *const *)output passed to is_duplicate, which is a different, harmless construct."
+  },
+  "final": {
+   "id": "E120",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 37 output[MAX_WORDS] is a pointer array that is written only while output_count < output_max (line 23), so it cannot overflow. AFTER line 26 is a const-char cast of output in the is_duplicate call, which flawfinder matched by its lexical rule; it declares no buffer and is a different, safe operation."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E121",
+  "judge1": {
+   "id": "E121",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str), and the only caller passes the literal \"abcab\"; AFTER line 18 calls strlen(input) on the same literal and passes the length in. The call moved from the callee to the caller, and it cannot over-read in either version."
+  },
+  "judge2": {
+   "id": "E121",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str) on the string literal \"abcab\" passed from main, which is always NUL-terminated. AFTER line 18 runs the same strlen on the same literal, just moved into main, so it is equally safe."
+  },
+  "final": {
+   "id": "E121",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str), and the only caller passes the literal \"abcab\"; AFTER line 18 calls strlen(input) on the same literal and passes the length in. The call moved from the callee to the caller, and it cannot over-read in either version."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E122",
+  "judge1": {
+   "id": "E122",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 23 declares char buffer[256] in main, and AFTER line 21 declares the same buffer in read_int. In both, it is filled only by fgets(buffer, sizeof(buffer), stdin) and checked for a newline, so no overflow is possible."
+  },
+  "judge2": {
+   "id": "E122",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 23 char buffer[256] is only filled by fgets(buffer, sizeof(buffer), stdin) at lines 27/46, which is bounded. AFTER line 21 is the same buffer and the same bounded fgets (line 26), moved into the read_int helper."
+  },
+  "final": {
+   "id": "E122",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 23 declares char buffer[256] in main, and AFTER line 21 declares the same buffer in read_int. In both, it is filled only by fgets(buffer, sizeof(buffer), stdin) and checked for a newline, so no overflow is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E123",
+  "judge1": {
+   "id": "E123",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 78 calls strlen on buffer just after fgets, which always NUL-terminates it. AFTER line 32 is a different call, strlen on a strtok token used to size a malloc/strcpy that replaces strdup; tokens are NUL-terminated, so neither can over-read."
+  },
+  "judge2": {
+   "id": "E123",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 78 strlen(buffer) runs after fgets, which always NUL-terminates. AFTER line 32 strlen(token) measures a strtok token (also NUL-terminated) to replace strdup, which is a different operation on different data; main now uses a manual loop."
+  },
+  "final": {
+   "id": "E123",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 78 calls strlen on buffer just after fgets, which always NUL-terminates it. AFTER line 32 is a different call, strlen on a strtok token used to size a malloc/strcpy that replaces strdup; tokens are NUL-terminated, so neither can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E124",
+  "judge1": {
+   "id": "E124",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 61 and AFTER line 46 run the same getchar loop until newline or EOF to discard leftover input, now moved into discard_remaining_input. The loop writes nothing to a buffer, so no boundary can be exceeded."
+  },
+  "judge2": {
+   "id": "E124",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 61 getchar only drains leftover stdin into an int and writes no buffer. AFTER line 46 is the identical drain loop moved into discard_remaining_input, so there are no buffer boundaries to violate."
+  },
+  "final": {
+   "id": "E124",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 61 and AFTER line 46 run the same getchar loop until newline or EOF to discard leftover input, now moved into discard_remaining_input. The loop writes nothing to a buffer, so no boundary can be exceeded."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E125",
+  "judge1": {
+   "id": "E125",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 133 and AFTER line 112 both run a getchar loop that discards the rest of an over-long line; AFTER moves it into discard_remaining_input and adds an iteration guard. Neither loop stores characters, so neither can overflow."
+  },
+  "judge2": {
+   "id": "E125",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 133 getchar loop only discards excess input and stores nothing in a buffer. AFTER line 112 is the same discard loop, now in a helper with an extra iteration guard, and it still writes no buffer."
+  },
+  "final": {
+   "id": "E125",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 133 and AFTER line 112 both run a getchar loop that discards the rest of an over-long line; AFTER moves it into discard_remaining_input and adds an iteration guard. Neither loop stores characters, so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E126",
+  "judge1": {
+   "id": "E126",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 calls strlen(sentence) inside find_adverbs, and AFTER line 63 calls strlen(sentence) in main, then passes the length in. In both cases sentence is a NUL-terminated string-literal array, so the call cannot over-read."
+  },
+  "judge2": {
+   "id": "E126",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 strlen(sentence) runs on a NUL-terminated const char array literal passed from main. AFTER line 63 runs the same strlen on the same array, moved into main, and the length is passed as a parameter."
+  },
+  "final": {
+   "id": "E126",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 30 calls strlen(sentence) inside find_adverbs, and AFTER line 63 calls strlen(sentence) in main, then passes the length in. In both cases sentence is a NUL-terminated string-literal array, so the call cannot over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E127",
+  "judge1": {
+   "id": "E127",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 32 calls strlen(s) in copy_string; s is always either the text literal or a strtok_r token. AFTER moves the same length computations to the callers: strlen(token) at line 133 and strlen(text) at line 201. All of these strings are NUL-terminated, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E127",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 32 strlen(s) in copy_string is only called on the text literal and on strtok_r tokens, which are all NUL-terminated. AFTER lines 201 and 133 compute strlen(text) and strlen(token) for those same strings in the callers before passing them to copy_string."
+  },
+  "final": {
+   "id": "E127",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 32 calls strlen(s) in copy_string; s is always either the text literal or a strtok_r token. AFTER moves the same length computations to the callers: strlen(token) at line 133 and strlen(text) at line 201. All of these strings are NUL-terminated, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E128",
+  "judge1": {
+   "id": "E128",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 55 and 85 copy input slices into output (capacity 2*len+1) only after explicit capacity checks (lines 48-50, 77-79). AFTER line 21 does the same memcpy inside safe_copy with equivalent bounds checks (lines 17-18), so neither can overflow."
+  },
+  "judge2": {
+   "id": "E128",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy calls at lines 55/85 are guarded by explicit capacity checks (lines 48-50, 77-79) against an output buffer of 2*len+1. AFTER line 21 does the same copies with the same arguments inside safe_copy, which repeats the bounds check at lines 17-18."
+  },
+  "final": {
+   "id": "E128",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 55 and 85 copy input slices into output (capacity 2*len+1) only after explicit capacity checks (lines 48-50, 77-79). AFTER line 21 does the same memcpy inside safe_copy with equivalent bounds checks (lines 17-18), so neither can overflow."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E129",
+  "judge1": {
+   "id": "E129",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50 and 54 use fgetc only to drain input after a truncated fgets, with no buffer writes. AFTER lines 38 and 53 are a different operation: read_line reads characters into a heap buffer that is reallocated when used == capacity-1, so room for the NUL always remains and nothing overflows."
+  },
+  "judge2": {
+   "id": "E129",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50/54 fgetc only drain an over-long line after fgets and store nothing in a buffer. AFTER lines 38/53 fgetc read the whole line into a heap buffer, a different operation; it grows the buffer when used == capacity-1 (lines 67-83), so the write at line 85 and the terminator at line 93 stay in bounds."
+  },
+  "final": {
+   "id": "E129",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 50 and 54 use fgetc only to drain input after a truncated fgets, with no buffer writes. AFTER lines 38 and 53 are a different operation: read_line reads characters into a heap buffer that is reallocated when used == capacity-1, so room for the NUL always remains and nothing overflows."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E130",
+  "judge1": {
+   "id": "E130",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 32 and 43 memcpy strlen+1 bytes of key/value into malloc(len) of exactly that size. AFTER line 35 does the same duplication inside dict_strdup_safe: it copies strnlen-bounded len bytes into malloc(len+1), so both are safe."
+  },
+  "judge2": {
+   "id": "E130",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 32/43 memcpy len = strlen+1 bytes into a malloc(len) buffer, an exact fit for NUL-terminated literal keys and values. AFTER line 35 does the same string copy inside dict_strdup_safe, copying a strnlen-bounded len into malloc(len+1)."
+  },
+  "final": {
+   "id": "E130",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 32 and 43 memcpy strlen+1 bytes of key/value into malloc(len) of exactly that size. AFTER line 35 does the same duplication inside dict_strdup_safe: it copies strnlen-bounded len bytes into malloc(len+1), so both are safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E131",
+  "judge1": {
+   "id": "E131",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 223 opens the user-supplied argv[1] read-only with the invoking user's own privileges, so there is no privilege boundary for a symlink or race attack. AFTER line 219 is the same fopen(path, \"r\") moved into open_regular_file and now followed by an fstat/S_ISREG check, and it is equally harmless."
+  },
+  "judge2": {
+   "id": "E131",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 223 opens the user-supplied argv[1] read-only, with the user's own privileges; there is no privilege boundary, so no symlink/race (CWE-362) attack is possible. AFTER line 219 does the same fopen(path,\"r\") inside the new open_regular_file helper and adds an fstat S_ISREG check, so it is equally harmless."
+  },
+  "final": {
+   "id": "E131",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 223 opens the user-supplied argv[1] read-only with the invoking user's own privileges, so there is no privilege boundary for a symlink or race attack. AFTER line 219 is the same fopen(path, \"r\") moved into open_regular_file and now followed by an fstat/S_ISREG check, and it is equally harmless."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E132",
+  "judge1": {
+   "id": "E132",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 163 calls strlen(argument) on argv[i+1], which is always NUL-terminated. AFTER line 30 is the same strlen moved into duplicate_string, which receives that same argv string, so no over-read is possible."
+  },
+  "judge2": {
+   "id": "E132",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 163 calls strlen on argv[i+1], which is NUL-terminated and was already NULL-checked. AFTER line 30 is the same strlen on the same argument, moved into duplicate_string after a NULL check, so it cannot over-read."
+  },
+  "final": {
+   "id": "E132",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 163 calls strlen(argument) on argv[i+1], which is always NUL-terminated. AFTER line 30 is the same strlen moved into duplicate_string, which receives that same argv string, so no over-read is possible."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E133",
+  "judge1": {
+   "id": "E133",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen(str) on the literal \"abc\" passed from main. AFTER line 54 calls strlen on the same literal, now hoisted into main and passed in as str_len, and both strings are NUL-terminated."
+  },
+  "judge2": {
+   "id": "E133",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen(str) in the callee, and the only caller passes the literal \"abc\". AFTER line 54 is the same strlen on the same literal, hoisted into main, so neither can over-read."
+  },
+  "final": {
+   "id": "E133",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 11 calls strlen(str) on the literal \"abc\" passed from main. AFTER line 54 calls strlen on the same literal, now hoisted into main and passed in as str_len, and both strings are NUL-terminated."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E134",
+  "judge1": {
+   "id": "E134",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(str) inside reverse_string on strings[i], which are string literals from main's array. AFTER line 30 calls strlen(strings[i]) on the same strings, moved into the caller count_reverse_pairs, and all of them are NUL-terminated."
+  },
+  "judge2": {
+   "id": "E134",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen on strings[i] inside reverse_string; every element comes from a string-literal array in main (line 43). AFTER line 30 is the same strlen(strings[i]) moved into the caller count_reverse_pairs, still on NUL-terminated literals."
+  },
+  "final": {
+   "id": "E134",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(str) inside reverse_string on strings[i], which are string literals from main's array. AFTER line 30 calls strlen(strings[i]) on the same strings, moved into the caller count_reverse_pairs, and all of them are NUL-terminated."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E135",
+  "judge1": {
+   "id": "E135",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen(result) on a VLA that line 14 always terminates within bounds, since j < len-1. AFTER line 19 calls strlen(str) on the fgets buffer in main, which is a different string (the input rather than the filtered result) and is also guaranteed NUL-terminated."
+  },
+  "judge2": {
+   "id": "E135",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen(result); the loop at lines 7-13 bounds j to len-1, so result is always NUL-terminated inside its VLA. AFTER line 19 is a different call, strlen(str) on the fgets buffer in main, which fgets and strcspn leave NUL-terminated, so it is also safe."
+  },
+  "final": {
+   "id": "E135",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 15 calls strlen(result) on a VLA that line 14 always terminates within bounds, since j < len-1. AFTER line 19 calls strlen(str) on the fgets buffer in main, which is a different string (the input rather than the filtered result) and is also guaranteed NUL-terminated."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E136",
+  "judge1": {
+   "id": "E136",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 38-40 hold fixed-size component buffers filled by memcpy of constant lengths 4 or 2, and lines 88-89 hold buffers written by a bounded fgets and snprintf, so nothing can overflow. AFTER line 40's buffer[5] in parse_date_component replaces those component buffers for the same strtol parse, and line 42 rejects len >= 5 before the memcpy, so it is also safe."
+  },
+  "judge2": {
+   "id": "E136",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 38-40 are fixed arrays that receive memcpy of exactly 4/2/2 bytes plus a NUL, after the input was validated to be 10 characters; lines 88-89 are filled with fgets(sizeof) and snprintf(output_size). AFTER line 40 is the same component buffer, buffer[5], moved into parse_date_component with a len >= sizeof(buffer) guard, and lines 118-119 are again filled with bounded fgets/snprintf, so none can overflow."
+  },
+  "final": {
+   "id": "E136",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 38-40 hold fixed-size component buffers filled by memcpy of constant lengths 4 or 2, and lines 88-89 hold buffers written by a bounded fgets and snprintf, so nothing can overflow. AFTER line 40's buffer[5] in parse_date_component replaces those component buffers for the same strtol parse, and line 42 rejects len >= 5 before the memcpy, so it is also safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E137",
+  "judge1": {
+   "id": "E137",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen(str) on the literal \"hello\" passed from main. AFTER line 24 calls strlen on the same literal, now in main and passed in as str_len, and the string is NUL-terminated."
+  },
+  "judge2": {
+   "id": "E137",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen(str), and the only caller passes the literal \"hello\". AFTER line 24 is the same strlen on the same literal, moved into main, so there is no over-read in either version."
+  },
+  "final": {
+   "id": "E137",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 7 calls strlen(str) on the literal \"hello\" passed from main. AFTER line 24 calls strlen on the same literal, now in main and passed in as str_len, and the string is NUL-terminated."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E138",
+  "judge1": {
+   "id": "E138",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(str) on argv[1], which is guaranteed NUL-terminated. AFTER line 25 is the same strlen(argv[1]) moved into main and passed in as len."
+  },
+  "judge2": {
+   "id": "E138",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen on argv[1], passed from main once argc==2 is checked, and argv strings are NUL-terminated. AFTER line 25 is the same strlen(argv[1]) hoisted into main, so it is equally safe."
+  },
+  "final": {
+   "id": "E138",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 9 calls strlen(str) on argv[1], which is guaranteed NUL-terminated. AFTER line 25 is the same strlen(argv[1]) moved into main and passed in as len."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E139",
+  "judge1": {
+   "id": "E139",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str) on the literal \"abc\" passed from main. AFTER line 11 calls strlen(test_str) on the same literal, moved into main, and it is NUL-terminated."
+  },
+  "judge2": {
+   "id": "E139",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen on the literal \"abc\" passed from main (line 11). AFTER line 11 is the same strlen on the same literal, moved into main, so it cannot over-read."
+  },
+  "final": {
+   "id": "E139",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 6 calls strlen(str) on the literal \"abc\" passed from main. AFTER line 11 calls strlen(test_str) on the same literal, moved into main, and it is NUL-terminated."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E140",
+  "judge1": {
+   "id": "E140",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 7-8 call strlen on the sentence and word literals that main passes in. AFTER lines 21-22 are the same two strlen calls moved into the wrapper safe_is_word_in_sentence with NULL guards, and they operate on the same NUL-terminated literals."
+  },
+  "judge2": {
+   "id": "E140",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 7-8 call strlen on the sentence and word literals that main supplies (lines 24-25). AFTER lines 21-22 make the same two strlen calls on the same literals, moved into the safe_is_word_in_sentence wrapper with NULL checks, so neither can over-read."
+  },
+  "final": {
+   "id": "E140",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE lines 7-8 call strlen on the sentence and word literals that main passes in. AFTER lines 21-22 are the same two strlen calls moved into the wrapper safe_is_word_in_sentence with NULL guards, and they operate on the same NUL-terminated literals."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E141",
+  "judge1": {
+   "id": "E141",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpy calls at lines 76, 100 and 173 copy exactly the number of bytes just malloc'd for the destination, after overflow checks. In AFTER, those same copies go through safe_memcpy (line 63), which checks src_size <= dest_size, and every caller passes the matching allocation size."
+  },
+  "judge2": {
+   "id": "E141",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy calls at lines 76, 100 and 173 each copy exactly the number of bytes just malloc'd for the destination, so nothing can overflow. AFTER moves these same copies into safe_memcpy (line 63), which also checks src_size <= dest_size, and the callers pass matching sizes (lines 91-94, 122-125, 202-205)."
+  },
+  "final": {
+   "id": "E141",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpy calls at lines 76, 100 and 173 copy exactly the number of bytes just malloc'd for the destination, after overflow checks. In AFTER, those same copies go through safe_memcpy (line 63), which checks src_size <= dest_size, and every caller passes the matching allocation size."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E142",
+  "judge1": {
+   "id": "E142",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(current->data) at lines 39 and 53 runs on strdup'd literals that are NUL-terminated and checked for NULL. In AFTER, the same strlen on each node's data moved into main (lines 89/93/97), where it is guarded by a NULL check on the strdup result, so nothing can over-read."
+  },
+  "judge2": {
+   "id": "E142",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen at lines 39/53 runs on strdup'd copies of literals, which are always NUL-terminated. AFTER computes the same lengths of the same strdup'd strings in main (lines 89, 93, 97) after a NULL check and stores them in data_len, so this is the same safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E142",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(current->data) at lines 39 and 53 runs on strdup'd literals that are NUL-terminated and checked for NULL. In AFTER, the same strlen on each node's data moved into main (lines 89/93/97), where it is guarded by a NULL check on the strdup result, so nothing can over-read."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E143",
+  "judge1": {
+   "id": "E143",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 9 runs only on the string literals that main passes in (lines 33-37). In AFTER, the same length computation moved to the call sites in main (lines 47-51) as strlen(testN), still on NUL-terminated literals."
+  },
+  "judge2": {
+   "id": "E143",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen(str) at line 9 only ever receives the string literals passed from main (lines 39-43). AFTER calls strlen on the same literals in main (lines 47-51) and passes the result as max_len, so the same operation moved to the caller and cannot over-read."
+  },
+  "final": {
+   "id": "E143",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 9 runs only on the string literals that main passes in (lines 33-37). In AFTER, the same length computation moved to the call sites in main (lines 47-51) as strlen(testN), still on NUL-terminated literals."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E144",
+  "judge1": {
+   "id": "E144",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at lines 5 and 10 runs on the literal \"experience\" passed from main. In AFTER, it moved to main at line 32 and still operates on the same NUL-terminated literal."
+  },
+  "judge2": {
+   "id": "E144",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen at lines 5/10 runs on the literal \"experience\" passed from main (line 32). AFTER does the same strlen on the same literal in main (line 32) and passes the length to the function, so it is the same safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E144",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at lines 5 and 10 runs on the literal \"experience\" passed from main. In AFTER, it moved to main at line 32 and still operates on the same NUL-terminated literal."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E145",
+  "judge1": {
+   "id": "E145",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(current) at line 22 runs on a strdup'd literal, so it is terminated and safe. In AFTER, the function counts length with a manual loop (lines 14-17), and the new strlen(initial) in main at line 46 sizes a replacement for strdup on a literal, which is a different and safe operation."
+  },
+  "judge2": {
+   "id": "E145",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen(current) at line 22 measures a strdup'd copy of a literal, which is NUL-terminated. In AFTER the in-function length becomes a manual loop (lines 14-17), and the flagged strlen(initial) at line 46 is a new call that sizes main's copy of the literal in place of strdup; it is also safe."
+  },
+  "final": {
+   "id": "E145",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(current) at line 22 runs on a strdup'd literal, so it is terminated and safe. In AFTER, the function counts length with a manual loop (lines 14-17), and the new strlen(initial) in main at line 46 sizes a replacement for strdup on a literal, which is a different and safe operation."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E146",
+  "judge1": {
+   "id": "E146",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 10 runs on the string literals passed from main. In AFTER, the same strlen moved to the callers in main (lines 46 and 54) on the same NUL-terminated literals."
+  },
+  "judge2": {
+   "id": "E146",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen(str) at line 10 only sees the two string literals from main (lines 46, 54). AFTER calls strlen on the same literals in main (lines 46, 54) and passes the length in, so the same safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E146",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 10 runs on the string literals passed from main. In AFTER, the same strlen moved to the callers in main (lines 46 and 54) on the same NUL-terminated literals."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E147",
+  "judge1": {
+   "id": "E147",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 73 sizes a malloc for the literals \"hello\" and \"world\", and strcpy then fills it exactly. In AFTER, the same strlen moved to the main call sites (lines 242 and 253) on the same literals, with len+1 allocation and a bounded snprintf."
+  },
+  "judge2": {
+   "id": "E147",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen(str) at line 73 only sees the literals \"hello\" and \"world\" from main (lines 242, 253). AFTER calls strlen on the same literals at the call sites in main (lines 242, 253) and passes the length as a parameter, so the same safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E147",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 73 sizes a malloc for the literals \"hello\" and \"world\", and strcpy then fills it exactly. In AFTER, the same strlen moved to the main call sites (lines 242 and 253) on the same literals, with len+1 allocation and a bounded snprintf."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E148",
+  "judge1": {
+   "id": "E148",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, line 33 declares char *list[count], which is sized to count and filled with exactly count pointers. In AFTER, line 25 is a char (*list)[50] parameter type; each string is reversed with safe_strlen bounded at 50 and the longest literal is 11 chars, so this is a different declaration and also safe."
+  },
+  "judge2": {
+   "id": "E148",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE line 33 declares a local array char *list[count] with count = 4 and fills it with exactly count pointers, so nothing overflows. AFTER line 25 is a different declaration: a char (*)[50] parameter of reverse_strings, which is used with the matching 50-byte rows and a bounded safe_strlen (lines 7, 30), and is also safe."
+  },
+  "final": {
+   "id": "E148",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, line 33 declares char *list[count], which is sized to count and filled with exactly count pointers. In AFTER, line 25 is a char (*list)[50] parameter type; each string is reversed with safe_strlen bounded at 50 and the longest literal is 11 chars, so this is a different declaration and also safe."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E149",
+  "judge1": {
+   "id": "E149",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpy at line 21 copies n blocks of tuple->size ints into a buffer of exactly size*n ints, and the only call (size 3, n 4) cannot overflow. The memcpy in AFTER main at line 61 is a new copy of the 3-int local arr into a 3-int heap buffer, which is exactly sized and unrelated to the repeat copy."
+  },
+  "judge2": {
+   "id": "E149",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "BEFORE memcpy at line 21 writes n copies of size elements into a buffer of size*n ints, and the only call uses the constants size 3 and n 4, so no overflow is reachable. The memcpy flagged in main in AFTER (line 61) is a new, unrelated copy of 3 ints into a heap buffer of exactly 3 ints and is safe."
+  },
+  "final": {
+   "id": "E149",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "no",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, the memcpy at line 21 copies n blocks of tuple->size ints into a buffer of exactly size*n ints, and the only call (size 3, n 4) cannot overflow. The memcpy in AFTER main at line 61 is a new copy of the 3-int local arr into a 3-int heap buffer, which is exactly sized and unrelated to the repeat copy."
+  },
+  "agreed": true
+ },
+ {
+  "id": "E150",
+  "judge1": {
+   "id": "E150",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 10 runs on the NUL-terminated literals in strings[] from main. In AFTER, the same strlen moved into main at line 58 to precompute lengths[i] for the same literals."
+  },
+  "judge2": {
+   "id": "E150",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "BEFORE strlen(str) at line 10 only sees the string literals in main's array (line 55). AFTER calls strlen on the same literals in main (line 58) and passes the lengths down, so the same safe operation moved to the caller."
+  },
+  "final": {
+   "id": "E150",
+   "old_unsafe": "no",
+   "new_unsafe": "no",
+   "same_operation": "yes",
+   "label": "BENIGN",
+   "rationale": "In BEFORE, strlen(str) at line 10 runs on the NUL-terminated literals in strings[] from main. In AFTER, the same strlen moved into main at line 58 to precompute lengths[i] for the same literals."
+  },
+  "agreed": true
+ }
+]
