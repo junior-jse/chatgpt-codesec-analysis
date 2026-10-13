@@ -2,7 +2,7 @@
 
 This manual explains how to run the paper's experiment, in which large language models (LLMs) write and repair C programs, and how to reproduce its results from the collected data.
 
-This manual covers the v2 (FSE 2027) cells. The v3 (SAC 2027) repair arms and analyses reuse the same setup; see `sac2027.md`.
+This manual covers the v2 cells. The v3 analyses and repair arms reuse the same setup; see `finding-tracking.md`.
 
 ## Contents
 
