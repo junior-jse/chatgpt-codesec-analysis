@@ -141,7 +141,9 @@ def history_notes(prev_dir: Path, cur_dir: Path, base: str,
     """Repair-history notes for ``base`` between the previous round's program
     (``prev_dir``) and the current one (``cur_dir``): findings that moved to
     another function, and Flawfinder calls replaced by a call with the same
-    CWE. Empty when either program or its reports are missing."""
+    CWE. The notes only state what changed: most moved findings are lexical
+    matches on code that is already safe, so they do not tell the model the
+    code is unsafe. Empty when either program or its reports are missing."""
     prev_src, cur_src = prev_dir / f"{base}.c", cur_dir / f"{base}.c"
     if not prev_src.is_file() or not cur_src.is_file():
         return []
@@ -165,14 +167,12 @@ def history_notes(prev_dir: Path, cur_dir: Path, base: str,
         if moved_to and moved_from:
             notes.append(
                 f"{_label(rule)} was removed from {', '.join(sorted(moved_from))}() "
-                f"but now appears in {', '.join(sorted(moved_to))}(). Moving the "
-                "flagged code does not fix the weakness; fix its cause.")
+                f"and now appears in {', '.join(sorted(moved_to))}().")
     for a in sorted(set(rem_by) - set(add_by)):
         for b in sorted(set(add_by) - set(rem_by)):
             cwe = prev_cwe.get(a)
             if cwe and cwe == cur_cwe.get(b):
                 notes.append(
                     f"{_label(a)} was replaced by {b.partition(':')[2]}, which "
-                    f"has the same weakness ({cwe}). Replacing the call does "
-                    "not fix it; make the operation safe.")
+                    f"Flawfinder flags with the same CWE ({cwe}).")
     return notes
