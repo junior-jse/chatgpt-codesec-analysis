@@ -8,7 +8,7 @@ the standard ``file:line:col:severity:message`` format from BOTH channels:
 
 and inserts ``/* Possible weaknesses found: ... */`` blocks above flagged
 lines. The feedback mode selects which suffixes are consumed. Modes ending
-in ``+history`` (SAC 2027 extension) also prepend a ``/* Repair history */``
+in ``+history`` (v3) also prepend a ``/* Repair history */``
 block naming findings that moved to another function or were replaced by a
 call with the same CWE since the previous round (see ``finding_track``).
 

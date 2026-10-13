@@ -14,7 +14,7 @@ Semantics:
   RQ1 uses "static"; ablation cells use "static+dynamic".
 - ``feedback``  = which findings are injected as comments for repair
   ("none" | "static" | "dynamic" | "static+dynamic"). A ``+history`` suffix
-  (SAC 2027 extension) also tells the model which findings moved or were
+  (v3) also tells the model which findings moved or were
   replaced since the previous round; detection and stopping are unchanged.
 """
 from __future__ import annotations

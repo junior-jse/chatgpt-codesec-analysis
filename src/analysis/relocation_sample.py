@@ -3,7 +3,7 @@
 Motivation: relocation events come from a heuristic key (rule, enclosing
 function, normalized line text), so before reporting them as moved defects
 two annotators must check whether the moved code still carries the weakness.
-This script draws a reproducible sample from results/sac2027/relocation_events.csv
+This script draws a reproducible sample from results/finding_tracking/relocation_events.csv
 (one event per program, quotas balanced across models) and writes, for each
 event, the source function the rule left and the function it entered.
 
@@ -17,8 +17,8 @@ Labels (one per annotator):
 Usage:
     python -m src.analysis.relocation_sample [--n 150] [--seed 2027]
 
-Output: results/sac2027/relocation_sample.md (code for reading),
-        results/sac2027/relocation_sample.csv (label sheet)
+Output: results/finding_tracking/relocation_sample.md (code for reading),
+        results/finding_tracking/relocation_sample.csv (label sheet)
 """
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Track analyzer findings across repair rounds (SAC 2027 extension).
+"""Track analyzer findings across repair rounds (v3).
 
 A finding is keyed by (tool:rule, enclosing function, normalized source line,
 occurrence index); line numbers alone are useless because every repair

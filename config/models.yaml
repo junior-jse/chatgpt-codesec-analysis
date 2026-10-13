@@ -169,7 +169,7 @@ models:
       enable_thinking: true
     max_tokens: 16384
 
-  # ---- SAC 2027 (v3): repair-only reasoning. Same settings as the matching
+  # ---- v3: repair-only reasoning. Same settings as the matching
   #      *-thinking entry; the separate id gives these cells their own data
   #      directory, so they repair the reasoning-off round-0 programs
   #      (--gen-source-model <base id>) without touching the r1/r1 cells. ----

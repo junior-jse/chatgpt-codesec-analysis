@@ -10,7 +10,7 @@ name is left out so judges label blind.
 Usage:
     python -m src.analysis.relocation_context
 
-Output: results/sac2027/relocation_sample_context.json
+Output: results/finding_tracking/relocation_sample_context.json
 """
 from __future__ import annotations
 
