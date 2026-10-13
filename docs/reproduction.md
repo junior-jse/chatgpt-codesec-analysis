@@ -290,6 +290,6 @@ For arm C, the second command uses the base model ids and `--slug feedback-stati
 
 ### 11.7 Reports
 
-All v3 outputs are in `results/finding_tracking/`: `relocation.md` and `.json` (events per model and cell), `relocation_events.csv` (every cross-function event), `relocation_sample.*` (the 150 events), `relocation_sample_context.json` (their full programs), `relocation_judge.*` (judge labels and summary) and `relocation_human_check.*` (the human check).
+All v3 outputs are in `results/finding_tracking/`: `relocation.md` and `.json` (events per model and cell), `relocation_events.csv` (every cross-function event), `relocation_sample.csv` (the 150 sampled events), `relocation_sample_context.json` (their full programs), `relocation_judge.*` (judge labels and summary) and `relocation_human_check.*` (the human check).
 
 The v2 limits also apply: GCC runs with `-w`, which hides its `-fanalyzer` warnings, and Clang ran without Z3, so most findings, and 97% of the cross-function events, come from Flawfinder, which matches text patterns.
