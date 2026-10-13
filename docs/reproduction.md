@@ -2,7 +2,7 @@
 
 This manual explains how to run the paper's experiment, in which large language models (LLMs) write and repair C programs, and how to reproduce its results from the collected data.
 
-This manual covers the v2 cells. The v3 analyses and repair arms reuse the same setup; see `finding-tracking.md`.
+Sections 1 to 10 cover the v2 cells. Section 11 covers v3, which reuses the same setup.
 
 ## Contents
 
@@ -16,6 +16,7 @@ This manual covers the v2 cells. The v3 analyses and repair arms reuse the same 
 8. [Generated reports](#8-generated-reports)
 9. [Reproducing the paper's results](#9-reproducing-the-papers-results)
 10. [Notes](#10-notes)
+11. [Version 3: finding tracking](#11-version-3-finding-tracking)
 
 ## 1. What the experiment does
 
@@ -201,3 +202,94 @@ Figures:
 - API calls have a cost, so we recommend starting with the quick test.
 - LLMs do not always produce the same answer, even with the same parameters. A new run therefore produces code different from the code we collected. To check the paper's numbers, we use the collected data (Section 9).
 - The test harnesses, which run the test cases of each task, are already in `data/harnesses/<id>/spec.json`. The `mbpp/mbpp.jsonl` file, from the Mostly Basic Python Problems (MBPP) dataset, is only needed to rebuild them.
+
+## 11. Version 3: finding tracking
+
+### 11.1 What it does
+
+In v2, a program counts as repaired when the gate stops reporting findings. A finding can stop being reported because the problem was fixed, but also because the model rewrote the line, moved the code to another function, or replaced a call with another one that has the same CWE, or because it went away and came back. Version 3 follows each finding from one round to the next and counts how it left. A finding is identified by its rule, its function, the text of its line and its position among equal findings, so it survives the line shifts of every repair.
+
+It also adds two repair arms that need new runs, both on the same initial programs as the v2 cell `feedback-static-r0-t1.0-p1.0`:
+
+| Arm | Question | What changes |
+|---|---|---|
+| B | Does reasoning help when it is on only during repair? | model id ending in `-repairthink` (reasoning on) repairs the reasoning-off programs |
+| C | Does telling the model which findings moved change how it repairs? | feedback `static+history`: the same findings and stopping rule, plus a `/* Repair history */` block saying what moved |
+
+Arm B is the priority. Arm C is optional.
+
+### 11.2 Offline analysis
+
+These commands use only the collected v2 data, with no keys and no analyzers:
+
+```sh
+.venv/bin/python -m src.analysis.relocation
+.venv/bin/python -m src.analysis.relocation_sample --n 150 --seed 2027
+.venv/bin/python -m src.analysis.relocation_context
+.venv/bin/python -m src.analysis.relocation_judge_report
+```
+
+They count the events per model and cell, draw 150 events (one per program, balanced across models), gather the full programs of those events, and summarize the judge labels.
+
+### 11.3 LLM judges and the human check
+
+Two judges (Claude Opus 5.5 agents) read each sampled event independently, without knowing which model wrote the code; a third decides when they disagree. They answer whether the flagged code before and after the move is a real weakness in that program (assuming the usual C contracts) and whether it is the same operation, only moved. The label follows from the answers: SAME (the weakness moved and persists), BENIGN (neither is a weakness), FIX+NEW (the old weakness is gone), UNCLEAR.
+
+Result: 149 of the 150 events are BENIGN, 1 is FIX+NEW, none is SAME, and the two judges agreed on all of them. Because both judges are the same model, that agreement is an upper bound. Two people label the 30 random events in `results/finding_tracking/relocation_human_check.md` (sheet: `relocation_human_check.csv`) before reading the judge report; running the report again adds the agreement.
+
+### 11.4 Checking a cell without spending
+
+`replay_check` runs a cell from start to end in a temporary folder, but reuses the repairs recorded in a v2 cell instead of calling the model. It checks the import of the initial programs, the analysis, the feedback and the manifest, and writes nothing to the repository.
+
+```sh
+.venv/bin/python -m src.pipeline.replay_check --model openai-gpt56-sol-repairthink --gen-source-model openai-gpt56-sol --feedback static --tasks 544,607,747,794 --replay openai-gpt56-sol/feedback-static-r0-t1.0-p1.0
+.venv/bin/python -m src.pipeline.replay_check --model openai-gpt56-sol --feedback static+history --tasks 544,607,747,794 --replay openai-gpt56-sol/feedback-static-r0-t1.0-p1.0
+```
+
+The first must report the cell `openai-gpt56-sol-repairthink/feedback-static-r1-t1.0-p1.0` with 4 imported programs; the second must show history blocks in rounds 2 and 3. Missing analyzers are skipped with a warning, so outcomes can differ from the recorded cell.
+
+### 11.5 Running the new arms
+
+A quick test with one task (`--tasks 2 --samples 1`) costs cents. Then:
+
+**Arm B:**
+
+```sh
+for m in deepseek-v4-pro glm-5.1 kimi-k3 openai-gpt56-sol; do
+  .venv/bin/python -m src.pipeline.run_experiment --model "$m-repairthink" --feedback static --tasks subset --samples 3 --gen-source feedback-static-r0-t1.0-p1.0 --gen-source-model "$m" --gen-source-reports
+done
+```
+
+**Arm C (optional):**
+
+```sh
+for m in deepseek-v4-pro openai-gpt56-sol kimi-k3; do
+  .venv/bin/python -m src.pipeline.run_experiment --model "$m" --feedback static+history --tasks subset --samples 3 --gen-source feedback-static-r0-t1.0-p1.0 --gen-source-reports
+done
+```
+
+The initial programs and their reports are copied, not generated again. Arm B lands in `data/collected_code_6/<model>-repairthink/feedback-static-r1-t1.0-p1.0/` and `results/<model>-repairthink/`; arm C in `data/collected_code_6/<model>/feedback-static+history-r0-t1.0-p1.0/` and `results/<model>/`.
+
+Estimated cost with worst-case input prices from the v2 usage records:
+
+| Plan | Arm B | Arm C |
+|---|---|---|
+| `--samples 1` | about US$42 (up to 93) | about US$20 (up to 40) |
+| `--samples 3` | about US$121 (up to 267) | about US$57 (up to 115) |
+
+Without GPT-5.6 Sol, arm B costs about US$23 or US$66. Each model takes about 2 to 5 hours per arm, and models from different providers can run at the same time.
+
+### 11.6 Analyzing the arms
+
+```sh
+.venv/bin/python -m src.analysis.relocation --tasks subset --models deepseek-v4-pro glm-5.1 kimi-k3 openai-gpt56-sol --slug feedback-static-r0-t1.0-p1.0 --name arm_a
+.venv/bin/python -m src.analysis.relocation --tasks subset --models deepseek-v4-pro-repairthink glm-5.1-repairthink kimi-k3-repairthink openai-gpt56-sol-repairthink --slug feedback-static-r1-t1.0-p1.0 --name arm_b
+```
+
+With `--samples 1` runs, we add `--samples 1` so the baseline covers the same programs.
+
+### 11.7 Reports
+
+All v3 outputs are in `results/finding_tracking/`: `relocation.md` and `.json` (events per model and cell), `relocation_events.csv` (every cross-function event), `relocation_sample.*` (the 150 events), `relocation_sample_context.json` (their full programs), `relocation_judge.*` (judge labels and summary) and `relocation_human_check.*` (the human check).
+
+The v2 limits also apply: GCC runs with `-w`, which hides its `-fanalyzer` warnings, and Clang ran without Z3, so most findings, and 97% of the cross-function events, come from Flawfinder, which matches text patterns.

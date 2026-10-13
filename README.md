@@ -23,7 +23,7 @@ The experiment has grown in three versions. Each keeps its own run guide.
 |---|---|---|---|
 | v1 (ISE 2026) | Vulnerabilities in GPT-4-generated C code and repair guided by GCC's static analyzer | `v1/` | [v1/README.md](v1/README.md) |
 | v2 (multi-channel gate) | Seven LLMs, a multi-channel analysis gate (static analyzers, tests, sanitizers, fuzzing) and iterative repair | `src/`, `config/`, `data/`, `results/` | [docs/reproduction.md](docs/reproduction.md), [docs/architecture.md](docs/architecture.md) |
-| v3 (finding tracking) | How analyzer findings leave during repair (fixed, moved, replaced, returned), LLM judges for the moved code, repair-only reasoning and repair-history feedback | v2 code plus `src/pipeline/finding_track.py`, `src/pipeline/replay_check.py`, `src/analysis/relocation*.py`, `results/finding_tracking/` | [docs/finding-tracking.md](docs/finding-tracking.md) |
+| v3 (finding tracking) | How analyzer findings leave during repair (fixed, moved, replaced, returned), LLM judges for the moved code, repair-only reasoning and repair-history feedback | v2 code plus `src/pipeline/finding_track.py`, `src/pipeline/replay_check.py`, `src/analysis/relocation*.py`, `results/finding_tracking/` | [docs/reproduction.md, section 11](docs/reproduction.md#11-version-3-finding-tracking) |
 
 ## Quick start
 
@@ -37,4 +37,4 @@ python -m src.analysis.relocation_sample
 
 Running new cells needs API keys and the analysis toolchain; see
 [docs/reproduction.md](docs/reproduction.md) for v2 cells and
-[docs/finding-tracking.md](docs/finding-tracking.md) for the v3 repair arms.
+[docs/reproduction.md, section 11](docs/reproduction.md#11-version-3-finding-tracking) for the v3 repair arms.

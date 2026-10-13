@@ -3,7 +3,7 @@
 **Repo:** `chatgpt-codesec-analysis` (BCT dataset, 974 C programming tasks)
 **Successor of:** the ISE 2026 v1 pipeline (`run_full_experiment.py`, kept untouched for reproduction)
 **Document date:** 2026-09-01
-**v3 additions:** finding tracking, `+history` feedback modes, repair-only reasoning cells and the offline replay check, described in `docs/finding-tracking.md`
+**v3 additions:** finding tracking, `+history` feedback modes, repair-only reasoning cells and the offline replay check, described in `docs/reproduction.md`, section 11
 
 This document explains, in depth, how the new experiment works: the main script's flow, the anatomy of the healing loop, what every module does, where every artifact lands on disk, and the design decisions behind it. The three figures referenced below are the same diagrams shown in the chat, each followed by a full textual explanation of everything it depicts.
 
