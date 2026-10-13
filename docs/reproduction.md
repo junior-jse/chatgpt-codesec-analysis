@@ -207,14 +207,14 @@ Figures:
 
 ### 11.1 What it does
 
-In v2, a program counts as repaired when the gate stops reporting findings. A finding can stop being reported because the problem was fixed, but also because the model rewrote the line, moved the code to another function, or replaced a call with another one that has the same CWE, or because it went away and came back. Version 3 follows each finding from one round to the next and counts how it left. A finding is identified by its rule, its function, the text of its line and its position among equal findings, so it survives the line shifts of every repair.
+In v2, repair stops when the program is detection-free, that is, when the gate reports no finding. A finding can disappear because its defect was fixed, or because the model rewrote the flagged line, moved it to another function, or replaced the call with one of the same CWE; it can also return in a later round. Version 3 follows each finding from one round to the next and records how it disappeared. A finding is identified by its rule, its enclosing function, the text of its line and its position among equal findings, so the identity survives the line shifts of every repair.
 
 It also adds two repair arms that need new runs, both on the same initial programs as the v2 cell `feedback-static-r0-t1.0-p1.0`:
 
 | Arm | Question | What changes |
 |---|---|---|
-| B | Does reasoning help when it is on only during repair? | model id ending in `-repairthink` (reasoning on) repairs the reasoning-off programs |
-| C | Does telling the model which findings moved change how it repairs? | feedback `static+history`: the same findings and stopping rule, plus a `/* Repair history */` block saying what moved |
+| B | Does reasoning help when it is enabled only during repair? | a `-repairthink` model id (reasoning on) repairs the reasoning-off programs |
+| C | Does stating which findings moved change how the model repairs? | `static+history` feedback: the same findings and stopping rule, plus a `/* Repair history */` block |
 
 Arm B is the priority. Arm C is optional.
 
@@ -229,13 +229,13 @@ These commands use only the collected v2 data, with no keys and no analyzers:
 .venv/bin/python -m src.analysis.relocation_judge_report
 ```
 
-They count the events per model and cell, draw 150 events (one per program, balanced across models), gather the full programs of those events, and summarize the judge labels.
+In order, they count the events per model and cell, draw 150 events (one per program, balanced across models), collect the full programs of those events, and summarize the judge labels.
 
 ### 11.3 LLM judges and the human check
 
-Two judges (Claude Opus 5.5 agents) read each sampled event independently, without knowing which model wrote the code; a third decides when they disagree. They answer whether the flagged code before and after the move is a real weakness in that program (assuming the usual C contracts) and whether it is the same operation, only moved. The label follows from the answers: SAME (the weakness moved and persists), BENIGN (neither is a weakness), FIX+NEW (the old weakness is gone), UNCLEAR.
+Two judges (Claude Opus 5.5 agents) labeled each sampled event independently, without knowing which model wrote the code; a third judge settled disagreements. For each event they decide whether the flagged code before and after the move is a weakness in that program, assuming the usual C contracts, and whether it is the same operation, only moved. The label follows from these answers: SAME (the weakness moved and persists), BENIGN (neither location is a weakness), FIX+NEW (the old weakness is gone) or UNCLEAR.
 
-Result: 149 of the 150 events are BENIGN, 1 is FIX+NEW, none is SAME, and the two judges agreed on all of them. Because both judges are the same model, that agreement is an upper bound. Two people label the 30 random events in `results/finding_tracking/relocation_human_check.md` (sheet: `relocation_human_check.csv`) before reading the judge report; running the report again adds the agreement.
+Of the 150 events, 149 are BENIGN, 1 is FIX+NEW and none is SAME; the two judges agreed on every event. Both judges are the same model, so this agreement is an upper bound. Two people label 30 random events (`results/finding_tracking/relocation_human_check.md`, sheet `relocation_human_check.csv`) before reading the judge report; running the report again adds their agreement with each other and with the judges.
 
 ### 11.4 Checking a cell without spending
 
@@ -286,7 +286,7 @@ Without GPT-5.6 Sol, arm B costs about US$23 or US$66. Each model takes about 2 
 .venv/bin/python -m src.analysis.relocation --tasks subset --models deepseek-v4-pro-repairthink glm-5.1-repairthink kimi-k3-repairthink openai-gpt56-sol-repairthink --slug feedback-static-r1-t1.0-p1.0 --name arm_b
 ```
 
-With `--samples 1` runs, we add `--samples 1` so the baseline covers the same programs.
+For arm C, the second command uses the base model ids and `--slug feedback-static+history-r0-t1.0-p1.0`. With `--samples 1` runs, we add `--samples 1` so the baseline covers the same programs.
 
 ### 11.7 Reports
 
