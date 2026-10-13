@@ -3,7 +3,6 @@
 **Repo:** `chatgpt-codesec-analysis` (BCT dataset, 974 C programming tasks)
 **Successor of:** the ISE 2026 v1 pipeline (`run_full_experiment.py`, kept untouched for reproduction)
 **Document date:** 2026-09-01
-**v3 additions:** finding tracking, `+history` feedback modes, repair-only reasoning cells and the offline replay check, described in `docs/reproduction.md`, section 11
 
 This document explains, in depth, how the new experiment works: the main script's flow, the anatomy of the healing loop, what every module does, where every artifact lands on disk, and the design decisions behind it. The three figures referenced below are the same diagrams shown in the chat, each followed by a full textual explanation of everything it depicts.
 
@@ -224,7 +223,6 @@ The only package you invoke directly.
 | `generate.py` | LLM code generation and repair with v1-verbatim prompts; batching and retry policy | `generate_code`, `heal_code`, `run_batch`, `_safe` |
 | `comment_inject.py` | Turns analyzer reports into source comments; **owns the channel/suffix vocabulary** shared by `feedback` and `measure` | `CHANNEL_SUFFIXES`, `generate_commented_weak_code`, `get_problems_weaknesses`, `add_comments_to_weak_source`, `extract_standard_messages` |
 | `static.py` | The 4-tool static gate + compile gate, driven by `config/tools.yaml` | `analyze`, `_run_one`, `_compile_gate` |
-| `finding_track.py` | (v3) Shift-robust finding keys shared by the `+history` feedback modes and `src/analysis/relocation.py` | `parse_reports`, `located`, `func_map`, `history_notes` |
 
 ### 5.2 `src/llm` — provider-agnostic model access (purple, left)
 
