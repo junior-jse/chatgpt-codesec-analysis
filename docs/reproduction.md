@@ -216,7 +216,7 @@ It also adds two repair arms that need new runs, both on the same initial progra
 | B | Does reasoning help when it is enabled only during repair? | a `-repairthink` model id (reasoning on) repairs the reasoning-off programs |
 | C | Does stating which findings moved change how the model repairs? | `static+history` feedback: the same findings and stopping rule, plus a `/* Repair history */` block |
 
-Arm B is the priority. Arm C is optional.
+Run both arms. If the budget is short, run arm B first.
 
 ### 11.2 Offline analysis
 
@@ -260,7 +260,7 @@ for m in deepseek-v4-pro glm-5.1 kimi-k3 openai-gpt56-sol; do
 done
 ```
 
-**Arm C (optional):**
+**Arm C:**
 
 ```sh
 for m in deepseek-v4-pro openai-gpt56-sol kimi-k3; do
