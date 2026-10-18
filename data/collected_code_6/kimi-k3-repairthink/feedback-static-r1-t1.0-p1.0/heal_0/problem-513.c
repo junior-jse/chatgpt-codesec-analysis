@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char **items;
+    size_t count;
+} Tuple;
+
+typedef struct {
+    char **items;
+    size_t count;
+} List;
+
+List tuple_to_list_with_separator(const Tuple *tuple, const char *separator) {
+    List result;
+    result.items = NULL;
+    result.count = 0;
+
+    if (tuple == NULL || separator == NULL || tuple->count == 0) {
+        return result;
+    }
+
+    size_t new_count = (2 * tuple->count) - 1;
+    result.items = calloc(new_count, sizeof(char *));
+    if (result.items == NULL) {
+        return result;
+    }
+
+    result.count = new_count;
+
+    for (size_t i = 0; i < tuple->count; i++) {
+        result.items[2 * i] = strdup(tuple->items[i]);
+        if (result.items[2 * i] == NULL) {
+            for (size_t j = 0; j < 2 * i; j++) {
+                free(result.items[j]);
+            }
+            free(result.items);
+            result.items = NULL;
+            result.count = 0;
+            return result;
+        }
+
+        if (i < tuple->count - 1) {
+            result.items[2 * i + 1] = strdup(separator);
+            if (result.items[2 * i + 1] == NULL) {
+                for (size_t j = 0; j <= 2 * i; j++) {
+                    free(result.items[j]);
+                }
+                free(result.items);
+                result.items = NULL;
+                result.count = 0;
+                return result;
+            }
+        }
+    }
+
+    return result;
+}
+
+void free_list(List *list) {
+    if (list == NULL || list->items == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < list->count; i++) {
+        free(list->items[i]);
+    }
+    free(list->items);
+    list->items = NULL;
+    list->count = 0;
+}
+
+int main(void) {
+    char *tuple_items[] = {"apple", "banana", "cherry", "date"};
+    Tuple tuple = {tuple_items, 4};
+    const char *separator = "X";
+
+    List result = tuple_to_list_with_separator(&tuple, separator);
+
+    if (result.items == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("[");
+    for (size_t i = 0; i < result.count; i++) {
+        printf("\"%s\"", result.items[i]);
+        if (i < result.count - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+
+    free_list(&result);
+
+    return EXIT_SUCCESS;
+}

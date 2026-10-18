@@ -1,0 +1,17 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:120:17: error: call to undeclared function 'free_tuple'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  120 |                 free_tuple(result);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:120:17: note: did you mean 'create_tuple'?
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:32:8: note: 'create_tuple' declared here
+   32 | Tuple *create_tuple(void) {
+      |        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:129:21: error: call to undeclared function 'free_tuple'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  129 |                     free_tuple(result);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:142:6: error: conflicting types for 'free_tuple'
+  142 | void free_tuple(Tuple *t) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-533.c:120:17: note: previous implicit declaration is here
+  120 |                 free_tuple(result);
+      |                 ^
+3 errors generated.

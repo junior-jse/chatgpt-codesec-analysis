@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct ListNode {
+    char *str;
+    struct ListNode *next;
+} ListNode;
+
+#define MAX_STRING_LENGTH 65536
+
+static int safe_strlen(const char *str, size_t *out_len) {
+    if (str == NULL) return 0;
+    size_t n = 0;
+    while (n < MAX_STRING_LENGTH && str[n] != '\0') n++;
+    if (n == MAX_STRING_LENGTH) return 0;
+    *out_len = n;
+    return 1;
+}
+
+ListNode *create_node(const char *str) {
+    size_t len;
+    if (!safe_strlen(str, &len)) return NULL;
+
+    ListNode *node = malloc(sizeof(ListNode));
+    if (node == NULL) return NULL;
+
+    node->str = malloc(len + 1);
+    if (node->str == NULL) {
+        free(node);
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(node->str, str, len + 1);
+    node->next = NULL;
+    return node;
+}
+
+void free_list(ListNode *head) {
+    while (head != NULL) {
+        ListNode *next = head->next;
+        free(head->str);
+        free(head);
+        head = next;
+    }
+}
+
+ListNode *string_to_list(const char *input, const char *delimiter) {
+    if (input == NULL || delimiter == NULL) return NULL;
+
+    size_t len;
+    if (!safe_strlen(input, &len)) return NULL;
+
+    char *copy = malloc(len + 1);
+    if (copy == NULL) return NULL;
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(copy, input, len + 1);
+
+    ListNode *head = NULL;
+    ListNode *tail = NULL;
+
+    char *token = strtok(copy, delimiter);
+    while (token != NULL) {
+        ListNode *node = create_node(token);
+        if (node == NULL) {
+            free_list(head);
+            free(copy);
+            return NULL;
+        }
+        if (head == NULL) {
+            head = tail = node;
+        } else {
+            tail->next = node;
+            tail = node;
+        }
+        token = strtok(NULL, delimiter);
+    }
+
+    free(copy);
+    return head;
+}
+
+void print_list(const ListNode *head) {
+    while (head != NULL) {
+        puts(head->str);
+        head = head->next;
+    }
+}
+
+int main(void) {
+    const char *input = "apple,banana,cherry,date";
+    const char *delimiter = ",";
+
+    ListNode *list = string_to_list(input, delimiter);
+    if (list == NULL) {
+        fprintf(stderr, "Failed to convert string to list\n");
+        return EXIT_FAILURE;
+    }
+
+    print_list(list);
+    free_list(list);
+    return EXIT_SUCCESS;
+}

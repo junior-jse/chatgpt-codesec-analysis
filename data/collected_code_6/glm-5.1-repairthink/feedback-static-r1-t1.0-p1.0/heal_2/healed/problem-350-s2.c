@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int calculate_min_length(const char *str, size_t len) {
+    if (len == 0) {
+        return 0;
+    }
+
+    size_t total_ops = 0;
+    for (size_t i = 0; i < len; ) {
+        size_t j = i + 1;
+        while (j < len && str[j] == str[i]) {
+            j++;
+        }
+        total_ops++;
+        i = j;
+    }
+
+    return (int)total_ops;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
+        return 1;
+    }
+
+    const char *input = argv[1];
+    size_t max_len = 1048576;
+    size_t input_len = 0;
+    while (input_len < max_len && input[input_len] != '\0') {
+        input_len++;
+    }
+    
+    int result = calculate_min_length(input, input_len);
+    printf("%d\n", result);
+
+    return 0;
+}

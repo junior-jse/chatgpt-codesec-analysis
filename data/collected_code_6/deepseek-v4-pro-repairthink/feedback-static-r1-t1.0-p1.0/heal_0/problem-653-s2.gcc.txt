@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c: In function 'find_entry':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c:45:15: error: assignment to 'Entry *' from incompatible pointer type 'struct Entry *' [-Wincompatible-pointer-types]
+   45 |         entry = entry->next;
+      |               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c: In function 'put':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c:82:17: error: assignment to 'struct Entry *' from incompatible pointer type 'Entry *' [-Wincompatible-pointer-types]
+   82 |     entry->next = map->head;
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c: In function 'free_map':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c:91:29: error: initialization of 'Entry *' from incompatible pointer type 'struct Entry *' [-Wincompatible-pointer-types]
+   91 |         Entry *next_entry = entry->next;
+      |                             ^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c: In function 'print_map':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653-s2.c:116:15: error: assignment to 'Entry *' from incompatible pointer type 'struct Entry *' [-Wincompatible-pointer-types]
+  116 |         entry = entry->next;
+      |               ^

@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    void *data;
+    int is_list;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+} List;
+
+List *create_list() {
+    List *list = malloc(sizeof(List));
+    if (list == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    list->head = NULL;
+    return list;
+}
+
+void add_value(List *list, int value) {
+    Node *node = malloc(sizeof(Node));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    int *data = malloc(sizeof(int));
+    if (data == NULL) {
+        free(node);
+        exit(EXIT_FAILURE);
+    }
+    *data = value;
+    node->data = data;
+    node->is_list = 0;
+    node->next = list->head;
+    list->head = node;
+}
+
+void add_list(List *parent, List *child) {
+    Node *node = malloc(sizeof(Node));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    node->data = child;
+    node->is_list = 1;
+    node->next = parent->head;
+    parent->head = node;
+}
+
+int value_in_list(List *list, int value) {
+    Node *current = list->head;
+    while (current != NULL) {
+        if (current->is_list) {
+            if (value_in_list((List *)current->data, value)) {
+                return 1;
+            }
+        } else {
+            if (*(int *)current->data == value) {
+                return 1;
+            }
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+List *find_nested_elements(List *list1, List *list2) {
+    List *result = create_list();
+    Node *current = list1->head;
+    while (current != NULL) {
+        if (current->is_list) {
+            List *sublist = (List *)current->data;
+            Node *sub_current = sublist->head;
+            while (sub_current != NULL) {
+                if (!sub_current->is_list) {
+                    int val = *(int *)sub_current->data;
+                    if (value_in_list(list2, val)) {
+                        Node *res_current = result->head;
+                        int found = 0;
+                        while (res_current != NULL) {
+                            if (!res_current->is_list && *(int *)res_current->data == val) {
+                                found = 1;
+                                break;
+                            }
+                            res_current = res_current->next;
+                        }
+                        if (!found) {
+                            add_value(result, val);
+                        }
+                    }
+                }
+                sub_current = sub_current->next;
+            }
+        }
+        current = current->next;
+    }
+    return result;
+}
+
+void free_list(List *list) {
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *next = current->next;
+        if (current->is_list) {
+            free_list((List *)current->data);
+        } else {
+            free(current->data);
+        }
+        free(current);
+        current = next;
+    }
+    free(list);
+}
+
+void print_list(List *list) {
+    Node *current = list->head;
+    printf("[");
+    while (current != NULL) {
+        if (current->is_list) {
+            print_list((List *)current->data);
+        } else {
+            printf("%d", *(int *)current->data);
+        }
+        if (current->next != NULL) {
+            printf(", ");
+        }
+        current = current->next;
+    }
+    printf("]");
+}
+
+int main(void) {
+    List *list1 = create_list();
+    List *sub1 = create_list();
+    add_value(sub1, 2);
+    add_value(sub1, 3);
+    List *sub2 = create_list();
+    add_value(sub2, 5);
+    add_value(sub2, 6);
+    add_list(list1, sub1);
+    add_list(list1, sub2);
+    add_value(list1, 10);
+
+    List *list2 = create_list();
+    add_value(list2, 3);
+    add_value(list2, 5);
+    add_value(list2, 7);
+
+    List *result = find_nested_elements(list1, list2);
+    
+    printf("List 1: ");
+    print_list(list1);
+    printf("\n");
+    
+    printf("List 2: ");
+    print_list(list2);
+    printf("\n");
+    
+    printf("Result: ");
+    print_list(result);
+    printf("\n");
+
+    free_list(list1);
+    free_list(list2);
+    free_list(result);
+
+    return 0;
+}

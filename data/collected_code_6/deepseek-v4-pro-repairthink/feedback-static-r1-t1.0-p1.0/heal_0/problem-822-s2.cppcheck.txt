@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-822-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-822-s2.c:98:29: style: Condition 'is_valid_password(NULL)' is always false [knownConditionTrueFalse]
+           is_valid_password(NULL) ? "true" : "false");
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-822-s2.c:98:29: note: Calling function 'is_valid_password' returns 0
+           is_valid_password(NULL) ? "true" : "false");
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-822-s2.c:98:29: note: Condition 'is_valid_password(NULL)' is always false
+           is_valid_password(NULL) ? "true" : "false");
+                            ^

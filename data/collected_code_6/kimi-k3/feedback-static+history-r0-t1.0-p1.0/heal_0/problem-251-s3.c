@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* create_node(int data) {
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int insert_before_each(Node **head, int element) {
+    Node *current;
+    Node *new_node;
+    
+    if (head == NULL) {
+        return -1;
+    }
+    
+    current = *head;
+    
+    if (current == NULL) {
+        return 0;
+    }
+    
+    new_node = create_node(element);
+    if (new_node == NULL) {
+        return -1;
+    }
+    new_node->next = current;
+    *head = new_node;
+    
+    while (current != NULL) {
+        if (current->next != NULL) {
+            new_node = create_node(element);
+            if (new_node == NULL) {
+                return -1;
+            }
+            new_node->next = current->next;
+            current->next = new_node;
+            current = new_node->next;
+        } else {
+            current = current->next;
+        }
+    }
+    
+    return 0;
+}
+
+void print_list(const Node *head) {
+    const Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node **head) {
+    Node *current;
+    Node *next;
+    
+    if (head == NULL) {
+        return;
+    }
+    
+    current = *head;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    *head = NULL;
+}
+
+int main(void) {
+    Node *head = NULL;
+    Node *tail = NULL;
+    Node *new_node;
+    int values[] = {1, 2, 3, 4};
+    size_t i;
+    int result;
+    
+    for (i = 0; i < sizeof(values) / sizeof(values[0]); i++) {
+        new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            free_list(&head);
+            return EXIT_FAILURE;
+        }
+        
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+    
+    printf("Original list: ");
+    print_list(head);
+    
+    result = insert_before_each(&head, 0);
+    if (result != 0) {
+        fprintf(stderr, "Failed to insert elements\n");
+        free_list(&head);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Modified list: ");
+    print_list(head);
+    
+    free_list(&head);
+    
+    return EXIT_SUCCESS;
+}

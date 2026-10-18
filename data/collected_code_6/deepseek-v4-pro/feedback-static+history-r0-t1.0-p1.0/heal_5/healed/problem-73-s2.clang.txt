@@ -1,0 +1,22 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:62:21: error: call to undeclared function 'free_tokens'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   62 |                     free_tokens(tokens, token_count);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:69:21: error: call to undeclared function 'free_tokens'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   69 |                     free_tokens(tokens, token_count);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:77:21: error: call to undeclared function 'free_tokens'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   77 |                     free_tokens(tokens, token_count);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:94:21: error: call to undeclared function 'free_tokens'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   94 |                     free_tokens(tokens, token_count);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:102:21: error: call to undeclared function 'free_tokens'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  102 |                     free_tokens(tokens, token_count);
+      |                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:118:6: error: conflicting types for 'free_tokens'
+  118 | void free_tokens(char **tokens, int count) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:62:21: note: previous implicit declaration is here
+   62 |                     free_tokens(tokens, token_count);
+      |                     ^
+6 errors generated.

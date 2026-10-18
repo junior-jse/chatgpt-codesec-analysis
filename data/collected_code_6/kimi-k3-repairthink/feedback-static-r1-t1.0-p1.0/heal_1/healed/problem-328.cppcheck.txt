@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:33:17: style: Condition 'k_bytes<=total_bytes' is always true [knownConditionTrueFalse]
+    if (k_bytes <= total_bytes) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:24:17: note: Assuming that condition 'k_bytes>total_bytes' is not redundant
+    if (k_bytes > total_bytes || remaining_bytes > total_bytes) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:29:14: note: Assuming condition is false
+    if (temp == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:33:17: note: Condition 'k_bytes<=total_bytes' is always true
+    if (k_bytes <= total_bytes) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:40:25: style: Condition 'remaining_bytes<=total_bytes' is always true [knownConditionTrueFalse]
+    if (remaining_bytes <= total_bytes) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:24:50: note: Assuming that condition 'remaining_bytes>total_bytes' is not redundant
+    if (k_bytes > total_bytes || remaining_bytes > total_bytes) {
+                                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:29:14: note: Assuming condition is false
+    if (temp == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-328.c:40:25: note: Condition 'remaining_bytes<=total_bytes' is always true
+    if (remaining_bytes <= total_bytes) {
+                        ^

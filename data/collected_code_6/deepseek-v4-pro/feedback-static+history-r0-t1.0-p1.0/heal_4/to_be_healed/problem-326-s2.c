@@ -1,0 +1,147 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *most_frequent_word(char **strings, int count) {
+    if (strings == NULL || count <= 0) {
+        return NULL;
+    }
+
+    char **words = NULL;
+    int *freqs = NULL;
+    int unique_count = 0;
+    int capacity = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (strings[i] == NULL) {
+            continue;
+        }
+        
+        /* Possible weaknesses found:
+         * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+         */
+        size_t current_len = strlen(strings[i]);
+        char *current_copy = malloc(current_len + 1);
+        if (current_copy == NULL) {
+            for (int k = 0; k < unique_count; k++) {
+                free(words[k]);
+            }
+            free(words);
+            free(freqs);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(current_copy, strings[i], current_len + 1);
+        
+        char *token = strtok(current_copy, " \t\n");
+        while (token != NULL) {
+            int found = 0;
+            for (int j = 0; j < unique_count; j++) {
+                if (strcmp(words[j], token) == 0) {
+                    freqs[j]++;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                if (unique_count == capacity) {
+                    capacity = capacity == 0 ? 16 : capacity * 2;
+                    char **new_words = realloc(words, capacity * sizeof(char *));
+                    int *new_freqs = realloc(freqs, capacity * sizeof(int));
+                    if (new_words == NULL || new_freqs == NULL) {
+                        free(new_words);
+                        free(new_freqs);
+                        for (int k = 0; k < unique_count; k++) {
+                            free(words[k]);
+                        }
+                        free(words);
+                        free(freqs);
+                        free(current_copy);
+                        return NULL;
+                    }
+                    words = new_words;
+                    freqs = new_freqs;
+                }
+                
+                /* Possible weaknesses found:
+                 * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+                 */
+                size_t token_len = strlen(token);
+                words[unique_count] = malloc(token_len + 1);
+                if (words[unique_count] == NULL) {
+                    for (int k = 0; k < unique_count; k++) {
+                        free(words[k]);
+                    }
+                    free(words);
+                    free(freqs);
+                    free(current_copy);
+                    return NULL;
+                }
+                /* Possible weaknesses found:
+                 * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                 */
+                memcpy(words[unique_count], token, token_len + 1);
+                freqs[unique_count] = 1;
+                unique_count++;
+            }
+            token = strtok(NULL, " \t\n");
+        }
+        free(current_copy);
+    }
+
+    if (unique_count == 0) {
+        free(words);
+        free(freqs);
+        return NULL;
+    }
+
+    int max_index = 0;
+    for (int i = 1; i < unique_count; i++) {
+        if (freqs[i] > freqs[max_index]) {
+            max_index = i;
+        }
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t result_len = strlen(words[max_index]);
+    char *result = malloc(result_len + 1);
+    if (result == NULL) {
+        for (int k = 0; k < unique_count; k++) {
+            free(words[k]);
+        }
+        free(words);
+        free(freqs);
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(result, words[max_index], result_len + 1);
+
+    for (int k = 0; k < unique_count; k++) {
+        free(words[k]);
+    }
+    free(words);
+    free(freqs);
+
+    return result;
+}
+
+int main(void) {
+    char str1[] = "hello world hello";
+    char str2[] = "world of programming";
+    char str3[] = "hello from C";
+    char *strings[] = {str1, str2, str3};
+
+    char *result = most_frequent_word(strings, 3);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    return 0;
+}

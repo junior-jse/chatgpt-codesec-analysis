@@ -1,0 +1,100 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+#define INITIAL_CAPACITY 10
+
+typedef struct Dictionary {
+    int *keys;
+    int *values;
+    int size;
+    int capacity;
+} Dictionary;
+
+Dictionary *create_empty_dict(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    
+    dict->keys = (int *)malloc(INITIAL_CAPACITY * sizeof(int));
+    if (dict->keys == NULL) {
+        free(dict);
+        return NULL;
+    }
+    
+    dict->values = (int *)malloc(INITIAL_CAPACITY * sizeof(int));
+    if (dict->values == NULL) {
+        free(dict->keys);
+        free(dict);
+        return NULL;
+    }
+    
+    dict->size = 0;
+    dict->capacity = INITIAL_CAPACITY;
+    
+    return dict;
+}
+
+Dictionary **create_list_of_empty_dicts(int count) {
+    if (count <= 0) {
+        return NULL;
+    }
+    
+    Dictionary **list = (Dictionary **)malloc(count * sizeof(Dictionary *));
+    if (list == NULL) {
+        return NULL;
+    }
+    
+    for (int i = 0; i < count; i++) {
+        list[i] = create_empty_dict();
+        if (list[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(list[j]->keys);
+                free(list[j]->values);
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+    }
+    
+    return list;
+}
+
+void destroy_dict(Dictionary *dict) {
+    if (dict != NULL) {
+        free(dict->keys);
+        free(dict->values);
+        free(dict);
+    }
+}
+
+void destroy_list_of_dicts(Dictionary **list, int count) {
+    if (list != NULL) {
+        for (int i = 0; i < count; i++) {
+            destroy_dict(list[i]);
+        }
+        free(list);
+    }
+}
+
+int main(void) {
+    int count = 5;
+    Dictionary **dict_list = create_list_of_empty_dicts(count);
+    
+    if (dict_list == NULL) {
+        fprintf(stderr, "Failed to create dictionary list\n");
+        return EXIT_FAILURE;
+    }
+    
+    for (int i = 0; i < count; i++) {
+        printf("Dictionary %d: size=%d, capacity=%d\n", 
+               i, dict_list[i]->size, dict_list[i]->capacity);
+    }
+    
+    destroy_list_of_dicts(dict_list, count);
+    
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,54 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+#define MAX_INPUT_LEN 4096
+
+char find_most_common_char(const char *str, int *count) {
+    int freq[256] = {0};
+    int max_count = 0;
+    char result = '\0';
+    size_t len;
+    size_t i;
+
+    if (str == NULL || count == NULL) {
+        return '\0';
+    }
+
+    len = strnlen(str, MAX_INPUT_LEN);
+    if (len == 0 || len == MAX_INPUT_LEN) {
+        *count = 0;
+        return '\0';
+    }
+
+    for (i = 0; i < len; i++) {
+        unsigned char c = (unsigned char)str[i];
+        freq[c]++;
+    }
+
+    for (i = 0; i < 256; i++) {
+        if (freq[i] > max_count) {
+            max_count = freq[i];
+            result = (char)i;
+        }
+    }
+
+    *count = max_count;
+    return result;
+}
+
+int main(void) {
+    const char *input = "hello world";
+    int count = 0;
+    char most_common = find_most_common_char(input, &count);
+
+    if (most_common != '\0') {
+        printf("Most common character: '%c' (appears %d times)\n", most_common, count);
+    } else {
+        printf("String is empty or invalid.\n");
+    }
+
+    return 0;
+}

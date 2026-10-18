@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-440.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-440.c:68:31: style: Condition 'token_len+1==0' is always false [knownConditionTrueFalse]
+            if (token_len + 1 == 0) {
+                              ^

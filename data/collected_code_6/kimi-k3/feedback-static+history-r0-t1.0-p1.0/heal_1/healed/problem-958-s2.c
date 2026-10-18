@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void int_to_roman(int num, char *result, size_t size) {
+    if (num <= 0 || num > 3999 || result == NULL || size < 16) {
+        if (result != NULL && size > 0) {
+            result[0] = '\0';
+        }
+        return;
+    }
+
+    const char *roman_numerals[] = {
+        "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
+    };
+    const int values[] = {
+        1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1
+    };
+
+    result[0] = '\0';
+    size_t offset = 0;
+
+    for (int i = 0; i < 13; i++) {
+        while (num >= values[i]) {
+            int written = snprintf(result + offset, size - offset, "%s", roman_numerals[i]);
+            if (written < 0 || (size_t)written >= size - offset) {
+                result[0] = '\0';
+                return;
+            }
+            offset += (size_t)written;
+            num -= values[i];
+        }
+    }
+}
+
+int main(void) {
+    int number;
+    char roman[16];
+
+    printf("Enter an integer (1-3999): ");
+    if (scanf("%d", &number) != 1) {
+        fprintf(stderr, "Invalid input.\n");
+        return EXIT_FAILURE;
+    }
+
+    int_to_roman(number, roman, sizeof(roman));
+
+    if (roman[0] == '\0') {
+        fprintf(stderr, "Number out of range or conversion failed.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Roman numeral: %s\n", roman);
+    return EXIT_SUCCESS;
+}

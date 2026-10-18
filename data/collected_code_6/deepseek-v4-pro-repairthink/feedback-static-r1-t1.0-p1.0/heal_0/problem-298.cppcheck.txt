@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:40:10: style: The scope of the variable 'found_any' can be reduced. [variableScope]
+    bool found_any = false;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:40:20: style: Variable 'found_any' is assigned a value that is never used. [unreadVariable]
+    bool found_any = false;
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:52:23: style: Variable 'found_any' is assigned a value that is never used. [unreadVariable]
+            found_any = true;
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:67:27: style: Variable 'found_any' is assigned a value that is never used. [unreadVariable]
+                found_any = true;
+                          ^

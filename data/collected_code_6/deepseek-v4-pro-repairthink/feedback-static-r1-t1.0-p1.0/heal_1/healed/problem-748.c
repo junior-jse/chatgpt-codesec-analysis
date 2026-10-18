@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+char* add_spaces_before_capitals(const char* input) {
+    if (input == NULL) return NULL;
+
+    size_t len = 0;
+    size_t spaces = 0;
+    int first = 1;
+    const char* p = input;
+
+    while (*p != '\0') {
+        if (isupper((unsigned char)*p)) {
+            if (!first) spaces++;
+        }
+        first = 0;
+        len++;
+        p++;
+    }
+
+    size_t out_len = len + spaces;
+    char* result = malloc(out_len + 1);
+    if (result == NULL) return NULL;
+
+    const char* src = input;
+    char* dst = result;
+    first = 1;
+
+    while (*src != '\0') {
+        if (isupper((unsigned char)*src) && !first) {
+            *dst++ = ' ';
+        }
+        *dst++ = *src++;
+        first = 0;
+    }
+    *dst = '\0';
+    return result;
+}
+
+int main(void) {
+    const char* test_str = "HelloWorldThisIsATest";
+    char* result = add_spaces_before_capitals(test_str);
+
+    if (result != NULL) {
+        printf("Input: %s\n", test_str);
+        printf("Output: %s\n", result);
+        free(result);
+    } else {
+        printf("Error processing string\n");
+    }
+
+    return 0;
+}

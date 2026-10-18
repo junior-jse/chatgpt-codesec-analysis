@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Entry {
+    char *key;
+    int value;
+    struct Entry *next;
+} Entry;
+
+typedef struct {
+    Entry **buckets;
+    size_t size;
+} Dictionary;
+
+Dictionary *dict_create(size_t size) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    if (!dict) return NULL;
+    dict->size = size;
+    dict->buckets = calloc(size, sizeof(Entry *));
+    if (!dict->buckets) {
+        free(dict);
+        return NULL;
+    }
+    return dict;
+}
+
+int dict_insert(Dictionary *dict, const char *key, int value) {
+    if (!dict || !key) return 0;
+    size_t index = 0;
+    for (size_t i = 0; key[i]; i++) {
+        index = (index * 31 + key[i]) % dict->size;
+    }
+    Entry *entry = malloc(sizeof(Entry));
+    if (!entry) return 0;
+    entry->key = strdup(key);
+    if (!entry->key) {
+        free(entry);
+        return 0;
+    }
+    entry->value = value;
+    entry->next = dict->buckets[index];
+    dict->buckets[index] = entry;
+    return 1;
+}
+
+char **dict_keys(Dictionary *dict, size_t *out_len) {
+    if (!dict || !out_len) return NULL;
+    size_t len = 0;
+    size_t cap = 16;
+    char **keys = malloc(cap * sizeof(char *));
+    if (!keys) return NULL;
+    for (size_t i = 0; i < dict->size; i++) {
+        for (Entry *e = dict->buckets[i]; e; e = e->next) {
+            if (len == cap) {
+                cap *= 2;
+                char **new_keys = realloc(keys, cap * sizeof(char *));
+                if (!new_keys) {
+                    for (size_t j = 0; j < len; j++) free(keys[j]);
+                    free(keys);
+                    return NULL;
+                }
+                keys = new_keys;
+            }
+            keys[len] = strdup(e->key);
+            if (!keys[len]) {
+                for (size_t j = 0; j < len; j++) free(keys[j]);
+                free(keys);
+                return NULL;
+            }
+            len++;
+        }
+    }
+    *out_len = len;
+    return keys;
+}
+
+int main(void) {
+    Dictionary *dict = dict_create(8);
+    if (!dict) return EXIT_FAILURE;
+    if (!dict_insert(dict, "apple", 1) ||
+        !dict_insert(dict, "banana", 2) ||
+        !dict_insert(dict, "cherry", 3)) {
+        return EXIT_FAILURE;
+    }
+    size_t len = 0;
+    char **keys = dict_keys(dict, &len);
+    if (!keys) return EXIT_FAILURE;
+    for (size_t i = 0; i < len; i++) {
+        printf("%s\n", keys[i]);
+        free(keys[i]);
+    }
+    free(keys);
+    return EXIT_SUCCESS;
+}

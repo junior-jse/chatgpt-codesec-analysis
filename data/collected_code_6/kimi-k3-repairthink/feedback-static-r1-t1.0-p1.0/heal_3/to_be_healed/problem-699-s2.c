@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <limits.h>
+
+#define INITIAL_CAPACITY 16
+
+int min_swaps(const char *str1, const char *str2) {
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len1 = strlen(str1);
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len2 = strlen(str2);
+
+    if (len1 != len2) {
+        return -1;
+    }
+
+    size_t count0_str1 = 0, count1_str1 = 0;
+    size_t count0_str2 = 0, count1_str2 = 0;
+
+    for (size_t i = 0; i < len1; i++) {
+        if (str1[i] == '0') {
+            count0_str1++;
+        } else if (str1[i] == '1') {
+            count1_str1++;
+        } else {
+            return -1;
+        }
+
+        if (str2[i] == '0') {
+            count0_str2++;
+        } else if (str2[i] == '1') {
+            count1_str2++;
+        } else {
+            return -1;
+        }
+    }
+
+    if (count0_str1 != count0_str2 || count1_str1 != count1_str2) {
+        return -1;
+    }
+
+    size_t swaps = 0;
+    for (size_t i = 0; i < len1; i++) {
+        if (str1[i] != str2[i]) {
+            swaps++;
+        }
+    }
+
+    if (swaps / 2 > (size_t)INT_MAX) {
+        return -1;
+    }
+
+    return (int)(swaps / 2);
+}
+
+char *read_line(FILE *stream) {
+    size_t capacity = INITIAL_CAPACITY;
+    size_t length = 0;
+    char *buffer = malloc(capacity);
+
+    if (buffer == NULL) {
+        return NULL;
+    }
+
+    int c;
+    /* Possible weaknesses found:
+     * Flawfinder fgetc: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+     */
+    while ((c = fgetc(stream)) != EOF && c != '\n') {
+        if (length + 1 >= capacity) {
+            if (capacity > SIZE_MAX / 2) {
+                free(buffer);
+                return NULL;
+            }
+            size_t new_capacity = capacity * 2;
+            char *new_buffer = realloc(buffer, new_capacity);
+            if (new_buffer == NULL) {
+                free(buffer);
+                return NULL;
+            }
+            buffer = new_buffer;
+            capacity = new_capacity;
+        }
+        buffer[length++] = (char)c;
+    }
+
+    if (c == EOF && length == 0) {
+        free(buffer);
+        return NULL;
+    }
+
+    buffer[length] = '\0';
+    return buffer;
+}
+
+int main(void) {
+    printf("Enter the first binary string: ");
+    fflush(stdout);
+
+    char *str1 = read_line(stdin);
+    if (str1 == NULL) {
+        fprintf(stderr, "Error reading input.\n");
+        return 1;
+    }
+
+    printf("Enter the second binary string: ");
+    fflush(stdout);
+
+    char *str2 = read_line(stdin);
+    if (str2 == NULL) {
+        fprintf(stderr, "Error reading input.\n");
+        free(str1);
+        return 1;
+    }
+
+    int result = min_swaps(str1, str2);
+
+    if (result == -1) {
+        printf("Conversion not possible.\n");
+    } else {
+        printf("Minimum number of swaps required: %d\n", result);
+    }
+
+    free(str1);
+    free(str2);
+    return 0;
+}

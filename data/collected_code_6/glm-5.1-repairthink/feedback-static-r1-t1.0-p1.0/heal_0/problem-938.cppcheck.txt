@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:5:29: style: Parameter 'arr1' can be declared as const array [constParameter]
+void find_three_closest(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3, int result[]) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:5:49: style: Parameter 'arr2' can be declared as const array [constParameter]
+void find_three_closest(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3, int result[]) {
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:5:69: style: Parameter 'arr3' can be declared as const array [constParameter]
+void find_three_closest(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3, int result[]) {
+                                                                    ^

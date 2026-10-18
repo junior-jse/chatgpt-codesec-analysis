@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SNAKE_TO_CAMEL_MAX_INPUT 4096
+
+static size_t bounded_strlen(const char* s, size_t max_len) {
+    size_t len = 0;
+    while (len < max_len && s[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+char* snake_to_camel(const char* input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t len = bounded_strlen(input, SNAKE_TO_CAMEL_MAX_INPUT);
+    if (len == SNAKE_TO_CAMEL_MAX_INPUT) {
+        return NULL;
+    }
+
+    char* result = (char*)malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t i = 0;
+    size_t j = 0;
+    int capitalize_next = 0;
+
+    while (i < len) {
+        if (input[i] == '_') {
+            if (j > 0) {
+                capitalize_next = 1;
+            }
+            i++;
+        } else {
+            if (capitalize_next) {
+                result[j] = (char)toupper((unsigned char)input[i]);
+                capitalize_next = 0;
+            } else {
+                result[j] = input[i];
+            }
+            j++;
+            i++;
+        }
+    }
+    result[j] = '\0';
+
+    char* final_result = (char*)realloc(result, j + 1);
+    if (final_result == NULL) {
+        free(result);
+        return NULL;
+    }
+
+    return final_result;
+}
+
+int main(void) {
+    const char* test_cases[] = {
+        "hello_world",
+        "snake_case_string",
+        "already_camel",
+        "_leading_underscore",
+        "trailing_underscore_",
+        "multiple__underscores",
+        "a",
+        "",
+        "___",
+        "a_b_c_d_e"
+    };
+    size_t num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char* result = snake_to_camel(test_cases[i]);
+        if (result != NULL) {
+            printf("Input: \"%s\" -> Output: \"%s\"\n", test_cases[i], result);
+            free(result);
+        } else {
+            fprintf(stderr, "Error: Failed to convert \"%s\"\n", test_cases[i]);
+        }
+    }
+
+    return 0;
+}

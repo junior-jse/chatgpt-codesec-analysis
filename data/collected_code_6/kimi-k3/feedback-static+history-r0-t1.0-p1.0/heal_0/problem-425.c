@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct Sublist {
+    Node* head;
+    struct Sublist* next;
+} Sublist;
+
+int countSublistsContaining(Sublist* listOfLists, int target) {
+    int count = 0;
+    Sublist* currentSublist = listOfLists;
+    
+    while (currentSublist != NULL) {
+        Node* currentNode = currentSublist->head;
+        int found = 0;
+        
+        while (currentNode != NULL) {
+            if (currentNode->data == target) {
+                found = 1;
+                break;
+            }
+            currentNode = currentNode->next;
+        }
+        
+        if (found) {
+            count++;
+        }
+        
+        currentSublist = currentSublist->next;
+    }
+    
+    return count;
+}
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+Sublist* createSublist() {
+    Sublist* newSublist = (Sublist*)malloc(sizeof(Sublist));
+    if (newSublist == NULL) {
+        return NULL;
+    }
+    newSublist->head = NULL;
+    newSublist->next = NULL;
+    return newSublist;
+}
+
+int appendToSublist(Sublist* sublist, int data) {
+    if (sublist == NULL) {
+        return 0;
+    }
+    
+    Node* newNode = createNode(data);
+    if (newNode == NULL) {
+        return 0;
+    }
+    
+    if (sublist->head == NULL) {
+        sublist->head = newNode;
+    } else {
+        Node* current = sublist->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+    
+    return 1;
+}
+
+void freeSublistNodes(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void freeAllSublists(Sublist* listOfLists) {
+    Sublist* current = listOfLists;
+    while (current != NULL) {
+        Sublist* temp = current;
+        freeSublistNodes(current->head);
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Sublist* listOfLists = NULL;
+    Sublist* sublist1 = createSublist();
+    Sublist* sublist2 = createSublist();
+    Sublist* sublist3 = createSublist();
+    
+    if (sublist1 == NULL || sublist2 == NULL || sublist3 == NULL) {
+        free(sublist1);
+        free(sublist2);
+        free(sublist3);
+        return 1;
+    }
+    
+    if (!appendToSublist(sublist1, 1) || !appendToSublist(sublist1, 2) || !appendToSublist(sublist1, 3)) {
+        freeAllSublists(sublist1);
+        freeAllSublists(sublist2);
+        freeAllSublists(sublist3);
+        return 1;
+    }
+    
+    if (!appendToSublist(sublist2, 4) || !appendToSublist(sublist2, 5)) {
+        freeAllSublists(sublist1);
+        freeAllSublists(sublist2);
+        freeAllSublists(sublist3);
+        return 1;
+    }
+    
+    if (!appendToSublist(sublist3, 2) || !appendToSublist(sublist3, 6) || !appendToSublist(sublist3, 7)) {
+        freeAllSublists(sublist1);
+        freeAllSublists(sublist2);
+        freeAllSublists(sublist3);
+        return 1;
+    }
+    
+    sublist1->next = sublist2;
+    sublist2->next = sublist3;
+    listOfLists = sublist1;
+    
+    int target = 2;
+    int result = countSublistsContaining(listOfLists, target);
+    printf("Number of sublists containing %d: %d\n", target, result);
+    
+    target = 5;
+    result = countSublistsContaining(listOfLists, target);
+    printf("Number of sublists containing %d: %d\n", target, result);
+    
+    target = 10;
+    result = countSublistsContaining(listOfLists, target);
+    printf("Number of sublists containing %d: %d\n", target, result);
+    
+    freeAllSublists(listOfLists);
+    
+    return 0;
+}

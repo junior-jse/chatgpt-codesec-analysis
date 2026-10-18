@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-748.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-748.c:47:19: style: Condition 'input_len>=buf_size' is always false [knownConditionTrueFalse]
+    if (input_len >= buf_size) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-748.c:41:14: note: buf_size is assigned 'input_len+1' here.
+    buf_size = input_len + 1;
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-748.c:43:13: note: Assuming condition is false
+    if (buf == NULL) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-748.c:47:19: note: Condition 'input_len>=buf_size' is always false
+    if (input_len >= buf_size) {
+                  ^

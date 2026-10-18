@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_STRLEN 4096
+
+static size_t safe_strnlen(const char *s, size_t maxlen) {
+    size_t i = 0;
+    while (i < maxlen && s[i] != '\0') {
+        i++;
+    }
+    return i;
+}
+
+char *concatenate_list(char **list, int count) {
+    size_t total_length = 0;
+    char *result;
+    char *position;
+    int i;
+
+    if (list == NULL || count <= 0) {
+        return NULL;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            size_t len = safe_strnlen(list[i], MAX_STRLEN);
+            if (len == MAX_STRLEN) {
+                return NULL;
+            }
+            if (total_length > SIZE_MAX - len) {
+                return NULL;
+            }
+            total_length += len;
+        }
+    }
+
+    if (total_length > SIZE_MAX - 1) {
+        return NULL;
+    }
+
+    result = malloc(total_length + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    position = result;
+    size_t remaining = total_length;
+    for (i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            size_t len = safe_strnlen(list[i], remaining);
+            if (len == remaining && list[i][len] != '\0') {
+                free(result);
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(position, list[i], len);
+            position += len;
+            remaining -= len;
+        }
+    }
+    *position = '\0';
+
+    return result;
+}
+
+int main(void) {
+    char *list1[] = {"Hello", " ", "World", "!"};
+    char *list2[] = {"The", " ", "quick", " ", "brown", " ", "fox"};
+    char *list3[] = {"", "Empty", "", "String", ""};
+    char *result;
+
+    result = concatenate_list(list1, 4);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(list2, 7);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(list3, 5);
+    if (result != NULL) {
+        printf("[%s]\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(NULL, 3);
+    if (result == NULL) {
+        printf("NULL input handled\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+int first_max_even_word(const char *str, char *result, size_t result_size) {
+    if (str == NULL || result == NULL || result_size == 0) {
+        return -1;
+    }
+
+    size_t max_len = 0;
+    size_t max_start = 0;
+    int found = 0;
+    size_t i = 0;
+    size_t cur_start = 0;
+
+    while (1) {
+        unsigned char ch = (unsigned char)str[i];
+        if (ch == '\0') {
+            size_t word_len = i - cur_start;
+            if (word_len > 0 && word_len % 2 == 0) {
+                if (!found || word_len > max_len) {
+                    max_len = word_len;
+                    max_start = cur_start;
+                    found = 1;
+                }
+            }
+            break;
+        }
+        if (isspace(ch)) {
+            size_t word_len = i - cur_start;
+            if (word_len > 0 && word_len % 2 == 0) {
+                if (!found || word_len > max_len) {
+                    max_len = word_len;
+                    max_start = cur_start;
+                    found = 1;
+                }
+            }
+            cur_start = i + 1;
+        }
+        i++;
+    }
+
+    if (!found) {
+        result[0] = '\0';
+        return 0;
+    }
+
+    if (max_len >= result_size) {
+        max_len = result_size - 1;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(result, str + max_start, max_len);
+    result[max_len] = '\0';
+
+    return 1;
+}
+
+int main(void) {
+    const char *text = "The quick brown fox jumps over the lazy dog";
+    size_t len = 0;
+    while (text[len] != '\0') {
+        len++;
+    }
+    char *word = malloc(len + 1);
+    if (word == NULL) {
+        return 1;
+    }
+
+    int ret = first_max_even_word(text, word, len + 1);
+
+    if (ret == 1) {
+        printf("First max even word: %s\n", word);
+    } else if (ret == 0) {
+        printf("No even word found.\n");
+    } else {
+        printf("Invalid input.\n");
+    }
+
+    free(word);
+    return 0;
+}

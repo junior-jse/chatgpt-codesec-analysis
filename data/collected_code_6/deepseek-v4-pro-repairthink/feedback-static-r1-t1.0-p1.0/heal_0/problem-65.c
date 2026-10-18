@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
+
+int list_sum(struct ListNode *head) {
+    if (head == NULL) {
+        return 0;
+    }
+    return head->val + list_sum(head->next);
+}
+
+struct ListNode *create_node(int val) {
+    struct ListNode *node = malloc(sizeof(struct ListNode));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    node->val = val;
+    node->next = NULL;
+    return node;
+}
+
+void free_list(struct ListNode *head) {
+    while (head != NULL) {
+        struct ListNode *next = head->next;
+        free(head);
+        head = next;
+    }
+}
+
+int main(void) {
+    struct ListNode *head = create_node(1);
+    head->next = create_node(2);
+    head->next->next = create_node(3);
+    head->next->next->next = create_node(4);
+
+    int sum = list_sum(head);
+    printf("%d\n", sum);
+
+    free_list(head);
+    return 0;
+}

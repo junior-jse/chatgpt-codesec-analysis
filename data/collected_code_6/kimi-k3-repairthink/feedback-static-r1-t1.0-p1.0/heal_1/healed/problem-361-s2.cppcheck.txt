@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c:64:23: style: Condition 'copy_size>dest_size' is always false [knownConditionTrueFalse]
+        if (copy_size > dest_size) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c:63:26: note: copy_size is assigned 'size*sizeof(int)' here.
+        size_t copy_size = size * sizeof(int);
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c:58:26: note: dest_size is assigned 'size*sizeof(int)' here.
+        size_t dest_size = size * sizeof(int);
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c:60:41: note: Assuming condition is false
+        if (lol->lists[lol->count].data == NULL) {
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-361-s2.c:64:23: note: Condition 'copy_size>dest_size' is always false
+        if (copy_size > dest_size) {
+                      ^

@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int get_rightmost_set_bit_position(int n) {
+    if (n == 0) {
+        return -1;
+    }
+    int position = 1;
+    while ((n & 1) == 0) {
+        n >>= 1;
+        position++;
+    }
+    return position;
+}
+
+int main(void) {
+    int num;
+    printf("Enter an integer: ");
+    if (scanf("%d", &num) != 1) {
+        printf("Invalid input\n");
+        return 1;
+    }
+    int pos = get_rightmost_set_bit_position(num);
+    if (pos == -1) {
+        printf("No set bit found\n");
+    } else {
+        printf("Position of rightmost set bit: %d\n", pos);
+    }
+    return 0;
+}

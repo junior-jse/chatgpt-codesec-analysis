@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:31: style: Parameter 'arr1' can be declared as pointer to const [constParameterPointer]
+void findClosestElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result)
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:53: style: Parameter 'arr2' can be declared as pointer to const [constParameterPointer]
+void findClosestElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result)
+                                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:75: style: Parameter 'arr3' can be declared as pointer to const [constParameterPointer]
+void findClosestElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result)
+                                                                          ^

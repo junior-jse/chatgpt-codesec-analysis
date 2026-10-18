@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-352.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-352.c:42:24: style: Condition 'test3' is always false [knownConditionTrueFalse]
+    printf("%s: %d\n", test3 ? test3 : "NULL", are_characters_unique(test3));
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-352.c:37:25: note: Assignment 'test3=NULL', assigned value is 0
+    const char *test3 = NULL;
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-352.c:42:24: note: Condition 'test3' is always false
+    printf("%s: %d\n", test3 ? test3 : "NULL", are_characters_unique(test3));
+                       ^

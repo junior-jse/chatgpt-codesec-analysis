@@ -1,0 +1,8 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-553.c: In function 'tuple_to_float':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-553.c:32:14: error: implicit declaration of function 'isspace' [-Wimplicit-function-declaration]
+   32 |         if (!isspace((unsigned char)*endptr)) {
+      |              ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-553.c:5:1: note: include '<ctype.h>' or provide a declaration of 'isspace'
+    4 | #include <errno.h>
+  +++ |+#include <ctype.h>
+    5 | 

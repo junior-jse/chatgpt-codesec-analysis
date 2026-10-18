@@ -1,0 +1,96 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (!newNode) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void appendNode(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* current = *head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+void removeEvenNumbers(Node** head) {
+    if (!head || !*head) return;
+    
+    while (*head && (*head)->data % 2 == 0) {
+        Node* temp = *head;
+        *head = (*head)->next;
+        free(temp);
+    }
+    
+    Node* current = *head;
+    while (current && current->next) {
+        if (current->next->data % 2 == 0) {
+            Node* temp = current->next;
+            current->next = temp->next;
+            free(temp);
+        } else {
+            current = current->next;
+        }
+    }
+}
+
+void printList(Node* head) {
+    Node* current = head;
+    while (current) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void freeList(Node** head) {
+    Node* current = *head;
+    while (current) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+    *head = NULL;
+}
+
+int main(void) {
+    Node* list = NULL;
+    int values[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    size_t i;
+    size_t count = sizeof(values) / sizeof(values[0]);
+    
+    for (i = 0; i < count; i++) {
+        appendNode(&list, values[i]);
+    }
+    
+    printf("Original list: ");
+    printList(list);
+    
+    removeEvenNumbers(&list);
+    
+    printf("List after removing even numbers: ");
+    printList(list);
+    
+    freeList(&list);
+    
+    return 0;
+}
+```

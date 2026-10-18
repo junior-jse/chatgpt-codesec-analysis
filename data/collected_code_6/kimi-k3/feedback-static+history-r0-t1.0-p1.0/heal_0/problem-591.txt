@@ -1,0 +1,58 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void swapFirstLast(int *arr, size_t size) {
+    if (arr == NULL || size < 2) {
+        return;
+    }
+    
+    int temp = arr[0];
+    arr[0] = arr[size - 1];
+    arr[size - 1] = temp;
+}
+
+int main(void) {
+    size_t size;
+    int *arr = NULL;
+    size_t i;
+    
+    printf("Enter the number of elements: ");
+    if (scanf("%zu", &size) != 1 || size == 0) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    arr = malloc(size * sizeof(int));
+    if (arr == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Enter %zu integers: ", size);
+    for (i = 0; i < size; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            fprintf(stderr, "Invalid input\n");
+            free(arr);
+            return EXIT_FAILURE;
+        }
+    }
+    
+    printf("Original list: ");
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    
+    swapFirstLast(arr, size);
+    
+    printf("Modified list: ");
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    
+    free(arr);
+    return EXIT_SUCCESS;
+}
+```

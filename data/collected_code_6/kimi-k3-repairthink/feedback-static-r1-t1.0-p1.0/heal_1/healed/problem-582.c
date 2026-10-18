@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define DICTIONARY_SIZE 100
+
+typedef struct {
+    char *key;
+    char *value;
+} Entry;
+
+typedef struct {
+    Entry entries[DICTIONARY_SIZE];
+    int count;
+} Dictionary;
+
+void initDictionary(Dictionary *dict) {
+    dict->count = 0;
+}
+
+int isEmpty(const Dictionary *dict) {
+    return dict->count == 0;
+}
+
+int insert(Dictionary *dict, const char *key, const char *value) {
+    size_t key_len;
+    size_t value_len;
+    char *key_copy;
+    char *value_copy;
+
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+
+    if (dict->count >= DICTIONARY_SIZE) {
+        return -1;
+    }
+
+    key_len = strlen(key) + 1;
+    value_len = strlen(value) + 1;
+
+    key_copy = malloc(key_len);
+    if (key_copy == NULL) {
+        return -1;
+    }
+
+    value_copy = malloc(value_len);
+    if (value_copy == NULL) {
+        free(key_copy);
+        return -1;
+    }
+
+    memcpy(key_copy, key, key_len);
+    memcpy(value_copy, value, value_len);
+
+    dict->entries[dict->count].key = key_copy;
+    dict->entries[dict->count].value = value_copy;
+    dict->count++;
+
+    return 0;
+}
+
+void freeDictionary(Dictionary *dict) {
+    int i;
+
+    if (dict == NULL) {
+        return;
+    }
+
+    for (i = 0; i < dict->count; i++) {
+        free(dict->entries[i].key);
+        free(dict->entries[i].value);
+        dict->entries[i].key = NULL;
+        dict->entries[i].value = NULL;
+    }
+
+    dict->count = 0;
+}
+
+int main(void) {
+    Dictionary dict;
+    initDictionary(&dict);
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty.\n");
+    } else {
+        printf("Dictionary is not empty.\n");
+    }
+
+    if (insert(&dict, "name", "John") != 0) {
+        fprintf(stderr, "Failed to insert entry.\n");
+        freeDictionary(&dict);
+        return EXIT_FAILURE;
+    }
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty.\n");
+    } else {
+        printf("Dictionary is not empty.\n");
+    }
+
+    freeDictionary(&dict);
+
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-215.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-215.c:4:21: style: Parameter 'nums' can be declared as pointer to const [constParameterPointer]
+int* decodeRLE(int* nums, int numsSize, int* returnSize) {
+                    ^

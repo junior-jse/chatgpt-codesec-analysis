@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <float.h>
+
+#define PI 3.14159265358979323846
+
+typedef struct {
+    double x;
+    double y;
+} Point;
+
+typedef struct {
+    Point a;
+    Point b;
+    Point c;
+    double area;
+} Triangle;
+
+double triangle_area(Point a, Point b, Point c) {
+    return fabs((a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2.0);
+}
+
+void generate_point_on_ellipse(double a, double b, double angle, Point *p) {
+    if (p == NULL || a <= 0.0 || b <= 0.0) {
+        return;
+    }
+    p->x = a * cos(angle);
+    p->y = b * sin(angle);
+}
+
+Triangle find_largest_inscribed_triangle(double a, double b) {
+    Triangle largest;
+    Triangle current;
+    Point p1, p2, p3;
+    double angle1, angle2, angle3;
+    double max_area = 0.0;
+    double current_area;
+    double step = PI / 180.0;
+    
+    if (a <= 0.0 || b <= 0.0) {
+        largest.a.x = 0.0;
+        largest.a.y = 0.0;
+        largest.b.x = 0.0;
+        largest.b.y = 0.0;
+        largest.c.x = 0.0;
+        largest.c.y = 0.0;
+        largest.area = 0.0;
+        return largest;
+    }
+    
+    largest.a.x = 0.0;
+    largest.a.y = 0.0;
+    largest.b.x = 0.0;
+    largest.b.y = 0.0;
+    largest.c.x = 0.0;
+    largest.c.y = 0.0;
+    largest.area = 0.0;
+    
+    for (angle1 = 0.0; angle1 < 2.0 * PI; angle1 += step) {
+        generate_point_on_ellipse(a, b, angle1, &p1);
+        
+        for (angle2 = angle1 + step; angle2 < 2.0 * PI; angle2 += step) {
+            generate_point_on_ellipse(a, b, angle2, &p2);
+            
+            for (angle3 = angle2 + step; angle3 < 2.0 * PI; angle3 += step) {
+                generate_point_on_ellipse(a, b, angle3, &p3);
+                
+                current_area = triangle_area(p1, p2, p3);
+                if (current_area > max_area) {
+                    max_area = current_area;
+                    largest.a = p1;
+                    largest.b = p2;
+                    largest.c = p3;
+                    largest.area = max_area;
+                }
+            }
+        }
+    }
+    
+    angle1 = 0.0;
+    angle2 = 2.0 * PI / 3.0;
+    angle3 = 4.0 * PI / 3.0;
+    
+    generate_point_on_ellipse(a, b, angle1, &p1);
+    generate_point_on_ellipse(a, b, angle2, &p2);
+    generate_point_on_ellipse(a, b, angle3, &p3);
+    
+    current_area = triangle_area(p1, p2, p3);
+    if (current_area > largest.area) {
+        largest.a = p1;
+        largest.b = p2;
+        largest.c = p3;
+        largest.area = current_area;
+    }
+    
+    return largest;
+}
+
+int main(void) {
+    double semi_major = 5.0;
+    double semi_minor = 3.0;
+    Triangle result;
+    
+    result = find_largest_inscribed_triangle(semi_major, semi_minor);
+    
+    printf("Largest inscribed triangle in ellipse (a=%.2f, b=%.2f):\n", semi_major, semi_minor);
+    printf("Vertex 1: (%.6f, %.6f)\n", result.a.x, result.a.y);
+    printf("Vertex 2: (%.6f, %.6f)\n", result.b.x, result.b.y);
+    printf("Vertex 3: (%.6f, %.6f)\n", result.c.x, result.c.y);
+    printf("Area: %.6f\n", result.area);
+    printf("Theoretical maximum area: %.6f\n", (3.0 * sqrt(3.0) / 4.0) * semi_major * semi_minor);
+    
+    return 0;
+}

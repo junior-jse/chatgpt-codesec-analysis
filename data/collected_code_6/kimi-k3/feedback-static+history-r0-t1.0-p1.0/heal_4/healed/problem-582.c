@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define DICTIONARY_SIZE 100
+#define KEY_SIZE 50
+#define VALUE_SIZE 50
+
+typedef struct {
+    char key[KEY_SIZE];
+    char value[VALUE_SIZE];
+} Entry;
+
+typedef struct {
+    Entry entries[DICTIONARY_SIZE];
+    int count;
+} Dictionary;
+
+void initDictionary(Dictionary *dict) {
+    if (dict != NULL) {
+        memset(dict->entries, 0, sizeof(dict->entries));
+        dict->count = 0;
+    }
+}
+
+int isEmpty(const Dictionary *dict) {
+    if (dict == NULL) {
+        return 1;
+    }
+    return dict->count == 0;
+}
+
+int insert(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+
+    if (dict->count < 0 || dict->count >= DICTIONARY_SIZE) {
+        return -1;
+    }
+
+    size_t key_len = strnlen(key, KEY_SIZE);
+    size_t value_len = strnlen(value, VALUE_SIZE);
+
+    if (key_len >= KEY_SIZE || value_len >= VALUE_SIZE) {
+        return -1;
+    }
+
+    strncpy(dict->entries[dict->count].key, key, KEY_SIZE - 1);
+    dict->entries[dict->count].key[KEY_SIZE - 1] = '\0';
+    
+    strncpy(dict->entries[dict->count].value, value, VALUE_SIZE - 1);
+    dict->entries[dict->count].value[VALUE_SIZE - 1] = '\0';
+
+    dict->count++;
+    return 0;
+}
+
+int main(void) {
+    Dictionary dict;
+    initDictionary(&dict);
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty.\n");
+    } else {
+        printf("Dictionary is not empty.\n");
+    }
+
+    if (insert(&dict, "name", "John") != 0) {
+        fprintf(stderr, "Failed to insert entry.\n");
+        return EXIT_FAILURE;
+    }
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty.\n");
+    } else {
+        printf("Dictionary is not empty.\n");
+    }
+
+    return EXIT_SUCCESS;
+}

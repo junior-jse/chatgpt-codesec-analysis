@@ -1,0 +1,323 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+typedef enum {
+    TYPE_NONE,
+    TYPE_DICT,
+    TYPE_LIST,
+    TYPE_STRING,
+    TYPE_NUMBER,
+    TYPE_BOOL,
+    TYPE_NULL
+} ValueType;
+
+typedef struct Value {
+    ValueType type;
+    char *key;
+    struct Value *next;
+    struct Value *children;
+    char *str_val;
+    double num_val;
+    int bool_val;
+} Value;
+
+Value *create_value(ValueType type) {
+    Value *v = (Value *)malloc(sizeof(Value));
+    if (v == NULL) {
+        return NULL;
+    }
+    v->type = type;
+    v->key = NULL;
+    v->next = NULL;
+    v->children = NULL;
+    v->str_val = NULL;
+    v->num_val = 0;
+    v->bool_val = 0;
+    return v;
+}
+
+void free_value(Value *v) {
+    if (v == NULL) return;
+    free(v->key);
+    free(v->str_val);
+    free_value(v->children);
+    free_value(v->next);
+    free(v);
+}
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int dict_depth(Value *v) {
+    if (v == NULL) {
+        return -1;
+    }
+    
+    if (v->type != TYPE_DICT) {
+        Value *child = v->children;
+        while (child != NULL) {
+            int d = dict_depth(child);
+            if (d >= 0) return d;
+            child = child->next;
+        }
+        return -1;
+    }
+    
+    int depth = 1;
+    Value *child = v->children;
+    while (child != NULL) {
+        if (child->type == TYPE_DICT) {
+            int child_depth = dict_depth(child);
+            if (child_depth > 0) {
+                depth = max(depth, child_depth + 1);
+            }
+        }
+        child = child->next;
+    }
+    
+    return depth;
+}
+
+void skip_whitespace(const char **p) {
+    while (**p && isspace((unsigned char)**p)) {
+        (*p)++;
+    }
+}
+
+char *parse_string(const char **p) {
+    if (**p != '"') return NULL;
+    (*p)++;
+    char *result = (char *)malloc(256);
+    if (result == NULL) return NULL;
+    int i = 0;
+    while (**p && **p != '"' && i < 255) {
+        result[i++] = **p;
+        (*p)++;
+    }
+    result[i] = '\0';
+    if (**p != '"') {
+        free(result);
+        return NULL;
+    }
+    (*p)++;
+    return result;
+}
+
+Value *parse_value(const char **p);
+
+Value *parse_dict(const char **p) {
+    if (**p != '{') return NULL;
+    (*p)++;
+    Value *head = NULL;
+    Value *tail = NULL;
+    
+    skip_whitespace(p);
+    if (**p == '}') {
+        (*p)++;
+        Value *dict = create_value(TYPE_DICT);
+        return dict;
+    }
+    
+    while (**p) {
+        skip_whitespace(p);
+        char *key = parse_string(p);
+        if (key == NULL) {
+            free_value(head);
+            return NULL;
+        }
+        
+        skip_whitespace(p);
+        if (**p != ':') {
+            free(key);
+            free_value(head);
+            return NULL;
+        }
+        (*p)++;
+        skip_whitespace(p);
+        
+        Value *child = parse_value(p);
+        if (child == NULL) {
+            free(key);
+            free_value(head);
+            return NULL;
+        }
+        child->key = key;
+        
+        if (tail == NULL) {
+            head = child;
+            tail = child;
+        } else {
+            tail->next = child;
+            tail = child;
+        }
+        
+        skip_whitespace(p);
+        if (**p == ',') {
+            (*p)++;
+            continue;
+        } else if (**p == '}') {
+            (*p)++;
+            break;
+        } else {
+            free_value(head);
+            return NULL;
+        }
+    }
+    
+    Value *dict = create_value(TYPE_DICT);
+    if (dict == NULL) {
+        free_value(head);
+        return NULL;
+    }
+    dict->children = head;
+    return dict;
+}
+
+Value *parse_list(const char **p) {
+    if (**p != '[') return NULL;
+    (*p)++;
+    Value *head = NULL;
+    Value *tail = NULL;
+    
+    skip_whitespace(p);
+    if (**p == ']') {
+        (*p)++;
+        Value *list = create_value(TYPE_LIST);
+        return list;
+    }
+    
+    while (**p) {
+        skip_whitespace(p);
+        Value *child = parse_value(p);
+        if (child == NULL) {
+            free_value(head);
+            return NULL;
+        }
+        
+        if (tail == NULL) {
+            head = child;
+            tail = child;
+        } else {
+            tail->next = child;
+            tail = child;
+        }
+        
+        skip_whitespace(p);
+        if (**p == ',') {
+            (*p)++;
+            continue;
+        } else if (**p == ']') {
+            (*p)++;
+            break;
+        } else {
+            free_value(head);
+            return NULL;
+        }
+    }
+    
+    Value *list = create_value(TYPE_LIST);
+    if (list == NULL) {
+        free_value(head);
+        return NULL;
+    }
+    list->children = head;
+    return list;
+}
+
+Value *parse_value(const char **p) {
+    skip_whitespace(p);
+    
+    if (**p == '{') {
+        return parse_dict(p);
+    }
+    if (**p == '[') {
+        return parse_list(p);
+    }
+    if (**p == '"') {
+        char *str = parse_string(p);
+        if (str == NULL) return NULL;
+        Value *v = create_value(TYPE_STRING);
+        if (v == NULL) {
+            free(str);
+            return NULL;
+        }
+        v->str_val = str;
+        return v;
+    }
+    if (strncmp(*p, "true", 4) == 0) {
+        *p += 4;
+        Value *v = create_value(TYPE_BOOL);
+        if (v == NULL) return NULL;
+        v->bool_val = 1;
+        return v;
+    }
+    if (strncmp(*p, "false", 5) == 0) {
+        *p += 5;
+        Value *v = create_value(TYPE_BOOL);
+        if (v == NULL) return NULL;
+        v->bool_val = 0;
+        return v;
+    }
+    if (strncmp(*p, "null", 4) == 0) {
+        *p += 4;
+        return create_value(TYPE_NULL);
+    }
+    if (isdigit((unsigned char)**p) || **p == '-') {
+        char *end;
+        double num = strtod(*p, &end);
+        if (*p == end) return NULL;
+        *p = end;
+        Value *v = create_value(TYPE_NUMBER);
+        if (v == NULL) return NULL;
+        v->num_val = num;
+        return v;
+    }
+    
+    return NULL;
+}
+
+Value *parse_json(const char *str) {
+    const char *p = str;
+    Value *v = parse_value(&p);
+    if (v == NULL) return NULL;
+    skip_whitespace(&p);
+    if (*p != '\0') {
+        free_value(v);
+        return NULL;
+    }
+    return v;
+}
+
+int main() {
+    const char *test1 = "{\"a\":1,\"b\":{\"c\":2,\"d\":{\"e\":3}}}";
+    const char *test2 = "{\"a\":1,\"b\":2}";
+    const char *test3 = "[]";
+    const char *test4 = "{\"a\":[1,2,3],\"b\":{\"c\":4}}";
+    
+    Value *v1 = parse_json(test1);
+    Value *v2 = parse_json(test2);
+    Value *v3 = parse_json(test3);
+    Value *v4 = parse_json(test4);
+    
+    if (v1 != NULL) {
+        printf("%d\n", dict_depth(v1));
+        free_value(v1);
+    }
+    if (v2 != NULL) {
+        printf("%d\n", dict_depth(v2));
+        free_value(v2);
+    }
+    if (v3 != NULL) {
+        printf("%d\n", dict_depth(v3));
+        free_value(v3);
+    }
+    if (v4 != NULL) {
+        printf("%d\n", dict_depth(v4));
+        free_value(v4);
+    }
+    
+    return 0;
+}

@@ -1,0 +1,245 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+typedef struct WordNode {
+    char *word;
+    struct WordNode *next;
+} WordNode;
+
+typedef struct {
+    WordNode **buckets;
+    size_t size;
+} HashSet;
+
+typedef struct {
+    char *word;
+    size_t len;
+} WordInfo;
+
+static unsigned long hash_string(const char *str) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash;
+}
+
+static HashSet *hashset_create(size_t size) {
+    HashSet *set = malloc(sizeof(HashSet));
+    if (!set) return NULL;
+    set->size = size;
+    set->buckets = calloc(size, sizeof(WordNode *));
+    if (!set->buckets) {
+        free(set);
+        return NULL;
+    }
+    return set;
+}
+
+static int hashset_contains(HashSet *set, const char *word) {
+    unsigned long index = hash_string(word) % set->size;
+    WordNode *node = set->buckets[index];
+    while (node) {
+        if (strcmp(node->word, word) == 0) {
+            return 1;
+        }
+        node = node->next;
+    }
+    return 0;
+}
+
+static int hashset_add(HashSet *set, const char *word) {
+    if (hashset_contains(set, word)) {
+        return 0;
+    }
+    unsigned long index = hash_string(word) % set->size;
+    WordNode *node = malloc(sizeof(WordNode));
+    if (!node) return -1;
+    node->word = strdup(word);
+    if (!node->word) {
+        free(node);
+        return -1;
+    }
+    node->next = set->buckets[index];
+    set->buckets[index] = node;
+    return 1;
+}
+
+static void hashset_free(HashSet *set) {
+    for (size_t i = 0; i < set->size; i++) {
+        WordNode *node = set->buckets[i];
+        while (node) {
+            WordNode *next = node->next;
+            free(node->word);
+            free(node);
+            node = next;
+        }
+    }
+    free(set->buckets);
+    free(set);
+}
+
+static WordInfo *split_words(const char *str, int *count) {
+    int capacity = 16;
+    int word_count = 0;
+    WordInfo *words = malloc(capacity * sizeof(WordInfo));
+    if (!words) {
+        *count = 0;
+        return NULL;
+    }
+
+    const char *p = str;
+    while (*p) {
+        while (*p && isspace((unsigned char)*p)) p++;
+        if (!*p) break;
+
+        const char *start = p;
+        while (*p && !isspace((unsigned char)*p)) p++;
+
+        size_t length = p - start;
+        char *word = malloc(length + 1);
+        if (!word) {
+            for (int i = 0; i < word_count; i++) free(words[i].word);
+            free(words);
+            *count = 0;
+            return NULL;
+        }
+        snprintf(word, length + 1, "%.*s", (int)length, start);
+
+        if (word_count >= capacity) {
+            capacity *= 2;
+            WordInfo *new_words = realloc(words, capacity * sizeof(WordInfo));
+            if (!new_words) {
+                free(word);
+                for (int i = 0; i < word_count; i++) free(words[i].word);
+                free(words);
+                *count = 0;
+                return NULL;
+            }
+            words = new_words;
+        }
+        words[word_count].word = word;
+        words[word_count].len = length;
+        word_count++;
+    }
+
+    *count = word_count;
+    return words;
+}
+
+char *remove_duplicate_words(const char *input) {
+    if (!input) return NULL;
+
+    int word_count;
+    WordInfo *word_infos = split_words(input, &word_count);
+    if (!word_infos) return NULL;
+
+    if (word_count == 0) {
+        free(word_infos);
+        return strdup("");
+    }
+
+    HashSet *set = hashset_create(64);
+    if (!set) {
+        for (int i = 0; i < word_count; i++) free(word_infos[i].word);
+        free(word_infos);
+        return NULL;
+    }
+
+    size_t total_length = 0;
+    int unique_count = 0;
+    int *unique_indices = malloc(word_count * sizeof(int));
+    if (!unique_indices) {
+        for (int i = 0; i < word_count; i++) free(word_infos[i].word);
+        free(word_infos);
+        hashset_free(set);
+        return NULL;
+    }
+
+    for (int i = 0; i < word_count; i++) {
+        int result = hashset_add(set, word_infos[i].word);
+        if (result == 1) {
+            unique_indices[unique_count++] = i;
+            total_length += word_infos[i].len + 1;
+        } else if (result == -1) {
+            for (int j = 0; j < word_count; j++) free(word_infos[j].word);
+            free(word_infos);
+            free(unique_indices);
+            hashset_free(set);
+            return NULL;
+        }
+    }
+
+    char *result = malloc(total_length + 1);
+    if (!result) {
+        for (int i = 0; i < word_count; i++) free(word_infos[i].word);
+        free(word_infos);
+        free(unique_indices);
+        hashset_free(set);
+        return NULL;
+    }
+
+    char *ptr = result;
+    for (int i = 0; i < unique_count; i++) {
+        size_t len = word_infos[unique_indices[i]].len;
+        size_t remaining = total_length - (ptr - result);
+        if (len > remaining) {
+            free(result);
+            for (int j = 0; j < word_count; j++) free(word_infos[j].word);
+            free(word_infos);
+            free(unique_indices);
+            hashset_free(set);
+            return NULL;
+        }
+        memcpy(ptr, word_infos[unique_indices[i]].word, len);
+        ptr += len;
+        if (i < unique_count - 1) {
+            *ptr++ = ' ';
+        }
+    }
+    *ptr = '\0';
+
+    for (int i = 0; i < word_count; i++) {
+        free(word_infos[i].word);
+    }
+    free(word_infos);
+    free(unique_indices);
+    hashset_free(set);
+
+    return result;
+}
+
+int main() {
+    const char *test1 = "hello world hello again world";
+    char *result1 = remove_duplicate_words(test1);
+    if (result1) {
+        printf("Input: %s\nOutput: %s\n", test1, result1);
+        free(result1);
+    }
+
+    const char *test2 = "the quick brown fox jumps over the lazy dog";
+    char *result2 = remove_duplicate_words(test2);
+    if (result2) {
+        printf("Input: %s\nOutput: %s\n", test2, result2);
+        free(result2);
+    }
+
+    const char *test3 = "single";
+    char *result3 = remove_duplicate_words(test3);
+    if (result3) {
+        printf("Input: %s\nOutput: %s\n", test3, result3);
+        free(result3);
+    }
+
+    const char *test4 = "";
+    char *result4 = remove_duplicate_words(test4);
+    if (result4) {
+        printf("Input: %s\nOutput: %s\n", test4, result4);
+        free(result4);
+    }
+
+    return 0;
+}

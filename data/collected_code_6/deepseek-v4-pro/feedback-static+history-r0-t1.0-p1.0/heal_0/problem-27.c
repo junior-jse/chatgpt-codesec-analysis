@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+void remove_digits_from_string(char *str) {
+    char *src = str;
+    char *dst = str;
+    
+    while (*src) {
+        if (!isdigit((unsigned char)*src)) {
+            *dst++ = *src;
+        }
+        src++;
+    }
+    *dst = '\0';
+}
+
+void remove_digits_from_list(char **list, size_t count) {
+    if (list == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            remove_digits_from_string(list[i]);
+        }
+    }
+}
+
+int main(void) {
+    char *strings[] = {
+        "abc123def456",
+        "hello42world",
+        "no_digits_here",
+        "123456",
+        "",
+        "a1b2c3d4e5f6"
+    };
+    size_t count = sizeof(strings) / sizeof(strings[0]);
+    
+    remove_digits_from_list(strings, count);
+    
+    for (size_t i = 0; i < count; i++) {
+        printf("%s\n", strings[i]);
+    }
+    
+    return 0;
+}

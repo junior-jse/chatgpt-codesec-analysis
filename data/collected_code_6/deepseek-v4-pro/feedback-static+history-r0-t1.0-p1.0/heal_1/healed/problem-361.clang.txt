@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-361.c:135:37: error: member reference type 'List *' (aka 'struct List *') is a pointer; did you mean to use '->'?
+  135 |             Node* current = lists[i].head;
+      |                             ~~~~~~~~^
+      |                                     ->
+1 error generated.

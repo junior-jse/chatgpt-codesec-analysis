@@ -1,0 +1,98 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *create_node(int data)
+{
+    struct Node *new_node = malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void remove_consecutive_duplicates(struct Node *head)
+{
+    struct Node *current = head;
+    struct Node *temp;
+
+    while (current != NULL && current->next != NULL) {
+        if (current->data == current->next->data) {
+            temp = current->next;
+            current->next = current->next->next;
+            free(temp);
+        } else {
+            current = current->next;
+        }
+    }
+}
+
+void print_list(struct Node *head)
+{
+    struct Node *current = head;
+
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(struct Node *head)
+{
+    struct Node *current = head;
+    struct Node *temp;
+
+    while (current != NULL) {
+        temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main(void)
+{
+    struct Node *head = NULL;
+    struct Node *tail = NULL;
+    struct Node *new_node;
+    int values[] = {1, 2, 2, 3, 3, 3, 4, 5, 5, 6};
+    size_t num_values = sizeof(values) / sizeof(values[0]);
+    size_t i;
+
+    for (i = 0; i < num_values; i++) {
+        new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    remove_consecutive_duplicates(head);
+
+    printf("List after removing consecutive duplicates: ");
+    print_list(head);
+
+    free_list(head);
+
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-562.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-562.c:4:42: style: Parameter 'lengths' can be declared as pointer to const [constParameterPointer]
+int max_sublist_length(int **lists, int *lengths, int count) {
+                                         ^

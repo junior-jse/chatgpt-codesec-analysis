@@ -1,0 +1,120 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(Node *head)
+{
+    Node *current = head;
+    Node *next;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+Node *split_list_every_nth(Node *head, int n)
+{
+    if (head == NULL || n <= 0) {
+        return NULL;
+    }
+    
+    Node *current = head;
+    int count = 1;
+    
+    while (current != NULL && current->next != NULL) {
+        if (count % n == 0) {
+            Node *temp = current->next;
+            current->next = NULL;
+            current = temp;
+        } else {
+            current = current->next;
+        }
+        count++;
+    }
+    
+    return head;
+}
+
+void print_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    Node *head = NULL;
+    Node *tail = NULL;
+    
+    for (int i = 1; i <= 10; i++) {
+        Node *new_node = create_node(i);
+        if (new_node == NULL) {
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+        
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+    
+    printf("Original list: ");
+    print_list(head);
+    
+    int n = 3;
+    Node *result = split_list_every_nth(head, n);
+    
+    printf("After splitting every %d elements:\n", n);
+    Node *segment = result;
+    int segment_num = 1;
+    
+    while (segment != NULL) {
+        printf("Segment %d: ", segment_num++);
+        Node *current = segment;
+        while (current != NULL) {
+            printf("%d ", current->data);
+            current = current->next;
+        }
+        printf("\n");
+        
+        Node *next_segment = NULL;
+        current = segment;
+        while (current != NULL && current->next != NULL) {
+            current = current->next;
+        }
+        if (current != NULL) {
+            next_segment = current->next;
+        }
+        segment = next_segment;
+    }
+    
+    free_list(result);
+    
+    return EXIT_SUCCESS;
+}
+```

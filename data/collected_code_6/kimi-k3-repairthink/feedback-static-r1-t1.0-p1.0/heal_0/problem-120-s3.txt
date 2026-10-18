@@ -1,0 +1,65 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+int max_product_pairs(const Tuple *tuples, size_t count, size_t *index1, size_t *index2) {
+    if (tuples == NULL || count < 2 || index1 == NULL || index2 == NULL) {
+        return -1;
+    }
+    
+    long long max_product = LLONG_MIN;
+    size_t max_i = 0;
+    size_t max_j = 1;
+    int found = 0;
+    
+    for (size_t i = 0; i < count; i++) {
+        for (size_t j = i + 1; j < count; j++) {
+            long long product = (long long)tuples[i].first * tuples[i].second;
+            long long product2 = (long long)tuples[j].first * tuples[j].second;
+            long long pair_product = product * product2;
+            
+            if (!found || pair_product > max_product) {
+                max_product = pair_product;
+                max_i = i;
+                max_j = j;
+                found = 1;
+            }
+        }
+    }
+    
+    if (!found) {
+        return -1;
+    }
+    
+    *index1 = max_i;
+    *index2 = max_j;
+    
+    return 0;
+}
+
+int main(void) {
+    Tuple tuples[] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    size_t count = sizeof(tuples) / sizeof(tuples[0]);
+    size_t index1 = 0;
+    size_t index2 = 0;
+    
+    if (max_product_pairs(tuples, count, &index1, &index2) == 0) {
+        long long product1 = (long long)tuples[index1].first * tuples[index1].second;
+        long long product2 = (long long)tuples[index2].first * tuples[index2].second;
+        printf("Maximum product: %lld\n", product1 * product2);
+        printf("Pair 1: (%d, %d)\n", tuples[index1].first, tuples[index1].second);
+        printf("Pair 2: (%d, %d)\n", tuples[index2].first, tuples[index2].second);
+    } else {
+        fprintf(stderr, "Error: Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}
+```

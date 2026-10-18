@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-821-s3.c:1:1: error: expected identifier or '('
+    1 | if (src_len >= dst_size) {
+      | ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-821-s3.c:5:1: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+    5 | memcpy(copy, str, src_len);
+      | ^
+      | int
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-821-s3.c:5:8: error: a parameter list without types is only allowed in a function definition
+    5 | memcpy(copy, str, src_len);
+      |        ^
+3 errors generated.

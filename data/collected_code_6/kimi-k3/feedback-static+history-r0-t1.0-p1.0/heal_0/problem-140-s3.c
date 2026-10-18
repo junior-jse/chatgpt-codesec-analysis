@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+int *extract_singly(const Tuple *tuples, size_t num_tuples, size_t *result_count) {
+    if (tuples == NULL || num_tuples == 0 || result_count == NULL) {
+        return NULL;
+    }
+
+    size_t total_elements = 0;
+    for (size_t i = 0; i < num_tuples; i++) {
+        if (tuples[i].data == NULL && tuples[i].size > 0) {
+            return NULL;
+        }
+        total_elements += tuples[i].size;
+    }
+
+    if (total_elements == 0) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    int *all_elements = malloc(total_elements * sizeof(int));
+    if (all_elements == NULL) {
+        return NULL;
+    }
+
+    size_t index = 0;
+    for (size_t i = 0; i < num_tuples; i++) {
+        for (size_t j = 0; j < tuples[i].size; j++) {
+            all_elements[index++] = tuples[i].data[j];
+        }
+    }
+
+    int *result = malloc(total_elements * sizeof(int));
+    if (result == NULL) {
+        free(all_elements);
+        return NULL;
+    }
+
+    size_t count = 0;
+    for (size_t i = 0; i < total_elements; i++) {
+        int occurrences = 0;
+        for (size_t j = 0; j < total_elements; j++) {
+            if (all_elements[j] == all_elements[i]) {
+                occurrences++;
+            }
+        }
+        if (occurrences == 1) {
+            result[count++] = all_elements[i];
+        }
+    }
+
+    free(all_elements);
+
+    if (count == 0) {
+        free(result);
+        *result_count = 0;
+        return NULL;
+    }
+
+    int *final_result = realloc(result, count * sizeof(int));
+    if (final_result == NULL) {
+        *result_count = count;
+        return result;
+    }
+
+    *result_count = count;
+    return final_result;
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3};
+    int data2[] = {2, 4, 5};
+    int data3[] = {1, 6, 7, 5};
+
+    Tuple tuples[] = {
+        {data1, 3},
+        {data2, 3},
+        {data3, 4}
+    };
+
+    size_t num_tuples = sizeof(tuples) / sizeof(tuples[0]);
+    size_t result_count = 0;
+
+    int *singly = extract_singly(tuples, num_tuples, &result_count);
+
+    if (singly == NULL && result_count > 0) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Elements occurring singly: ");
+    for (size_t i = 0; i < result_count; i++) {
+        printf("%d ", singly[i]);
+    }
+    printf("\n");
+
+    free(singly);
+
+    return EXIT_SUCCESS;
+}

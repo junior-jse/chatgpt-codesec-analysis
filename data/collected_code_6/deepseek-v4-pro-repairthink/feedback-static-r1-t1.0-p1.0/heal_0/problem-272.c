@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Tuple {
+    int first;
+    int second;
+    struct Tuple *next;
+} Tuple;
+
+typedef struct {
+    Tuple *head;
+    Tuple *tail;
+    int size;
+} TupleList;
+
+void initList(TupleList *list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+int appendTuple(TupleList *list, int first, int second) {
+    Tuple *newTuple = (Tuple *)malloc(sizeof(Tuple));
+    if (newTuple == NULL) {
+        return -1;
+    }
+    newTuple->first = first;
+    newTuple->second = second;
+    newTuple->next = NULL;
+    
+    if (list->tail == NULL) {
+        list->head = newTuple;
+        list->tail = newTuple;
+    } else {
+        list->tail->next = newTuple;
+        list->tail = newTuple;
+    }
+    list->size++;
+    return 0;
+}
+
+int extractRear(TupleList *list, int *first, int *second) {
+    if (list == NULL || first == NULL || second == NULL) {
+        return -1;
+    }
+    
+    if (list->size == 0 || list->head == NULL || list->tail == NULL) {
+        return -1;
+    }
+    
+    if (list->size == 1) {
+        *first = list->head->first;
+        *second = list->head->second;
+        free(list->head);
+        list->head = NULL;
+        list->tail = NULL;
+        list->size = 0;
+        return 0;
+    }
+    
+    Tuple *current = list->head;
+    while (current->next != list->tail) {
+        current = current->next;
+        if (current == NULL) {
+            return -1;
+        }
+    }
+    
+    *first = list->tail->first;
+    *second = list->tail->second;
+    free(list->tail);
+    list->tail = current;
+    list->tail->next = NULL;
+    list->size--;
+    return 0;
+}
+
+void freeList(TupleList *list) {
+    if (list == NULL) {
+        return;
+    }
+    
+    Tuple *current = list->head;
+    while (current != NULL) {
+        Tuple *next = current->next;
+        free(current);
+        current = next;
+    }
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+int main(void) {
+    TupleList list;
+    int first, second;
+    int result;
+    
+    initList(&list);
+    
+    appendTuple(&list, 1, 10);
+    appendTuple(&list, 2, 20);
+    appendTuple(&list, 3, 30);
+    
+    result = extractRear(&list, &first, &second);
+    if (result == 0) {
+        printf("Extracted: (%d, %d)\n", first, second);
+    }
+    
+    result = extractRear(&list, &first, &second);
+    if (result == 0) {
+        printf("Extracted: (%d, %d)\n", first, second);
+    }
+    
+    result = extractRear(&list, &first, &second);
+    if (result == 0) {
+        printf("Extracted: (%d, %d)\n", first, second);
+    }
+    
+    result = extractRear(&list, &first, &second);
+    if (result != 0) {
+        printf("No more elements\n");
+    }
+    
+    freeList(&list);
+    
+    return 0;
+}

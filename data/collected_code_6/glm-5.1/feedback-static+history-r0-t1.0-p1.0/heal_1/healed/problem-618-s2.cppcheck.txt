@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:83:13: warning: Possible null pointer dereference: list1_tail [nullPointer]
+            list1_tail->next = n1;
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:69:24: note: Assignment 'list1_tail=NULL', assigned value is 0
+    Node* list1_tail = NULL;
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:83:13: note: Null pointer dereference
+            list1_tail->next = n1;
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:92:13: warning: Possible null pointer dereference: list2_tail [nullPointer]
+            list2_tail->next = n2;
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:71:24: note: Assignment 'list2_tail=NULL', assigned value is 0
+    Node* list2_tail = NULL;
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-618-s2.c:92:13: note: Null pointer dereference
+            list2_tail->next = n2;
+            ^

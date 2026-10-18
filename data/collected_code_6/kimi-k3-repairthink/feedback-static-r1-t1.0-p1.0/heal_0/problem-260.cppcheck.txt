@@ -1,0 +1,43 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:24:17: style: Condition 'is_prime(s0)' is always false [knownConditionTrueFalse]
+    if (is_prime(s0)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:24:17: note: Calling function 'is_prime' returns 0
+    if (is_prime(s0)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:24:17: note: Condition 'is_prime(s0)' is always false
+    if (is_prime(s0)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:25:15: style: Condition 'count==n' is always false [knownConditionTrueFalse]
+    if (count == n) return s0;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:22:17: note: Assignment 'count=0', assigned value is 0
+    int count = 0;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:19:11: note: Assuming that condition 'n<1' is not redundant
+    if (n < 1) return 0;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:25:15: note: Condition 'count==n' is always false
+    if (count == n) return s0;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:27:17: style: Condition 'is_prime(s1)' is always false [knownConditionTrueFalse]
+    if (is_prime(s1)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:27:17: note: Calling function 'is_prime' returns 0
+    if (is_prime(s1)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:27:17: note: Condition 'is_prime(s1)' is always false
+    if (is_prime(s1)) count++;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:28:15: style: Condition 'count==n' is always false [knownConditionTrueFalse]
+    if (count == n) return s1;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:41:12: warning: Uninitialized variable: s_curr [uninitvar]
+    return s_curr;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:31:18: note: Assuming condition is false
+    while (count < n) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260.c:41:12: note: Uninitialized variable: s_curr
+    return s_curr;
+           ^

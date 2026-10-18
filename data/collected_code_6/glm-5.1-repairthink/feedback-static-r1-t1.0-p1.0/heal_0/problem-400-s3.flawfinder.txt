@@ -1,0 +1,1 @@
+problem-400-s3.c:43:0:medium:Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)

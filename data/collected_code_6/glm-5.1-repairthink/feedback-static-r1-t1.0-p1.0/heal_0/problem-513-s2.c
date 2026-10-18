@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char **convert_tuple_to_list(char **tuple, int tuple_size, const char *suffix, int *list_size) {
+    if (tuple == NULL || suffix == NULL || list_size == NULL) {
+        return NULL;
+    }
+
+    *list_size = tuple_size * 2;
+    char **list = (char **)malloc(*list_size * sizeof(char *));
+    if (list == NULL) {
+        return NULL;
+    }
+
+    for (int i = 0; i < tuple_size; ++i) {
+        size_t original_len = strlen(tuple[i]);
+        size_t suffix_len = strlen(suffix);
+        size_t total_len = original_len + suffix_len;
+
+        list[i * 2] = (char *)malloc(original_len + 1);
+        if (list[i * 2] == NULL) {
+            for (int j = 0; j < i * 2; ++j) {
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+        strcpy(list[i * 2], tuple[i]);
+
+        list[i * 2 + 1] = (char *)malloc(total_len + 1);
+        if (list[i * 2 + 1] == NULL) {
+            free(list[i * 2]);
+            for (int j = 0; j < i * 2; ++j) {
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+        strcpy(list[i * 2 + 1], tuple[i]);
+        strcat(list[i * 2 + 1], suffix);
+    }
+
+    return list;
+}
+
+void free_list(char **list, int list_size) {
+    if (list == NULL) {
+        return;
+    }
+    for (int i = 0; i < list_size; ++i) {
+        free(list[i]);
+    }
+    free(list);
+}
+
+int main() {
+    char *tuple[] = {"apple", "banana", "cherry"};
+    int tuple_size = sizeof(tuple) / sizeof(tuple[0]);
+    const char *suffix = "_fruit";
+    int list_size = 0;
+
+    char **list = convert_tuple_to_list(tuple, tuple_size, suffix, &list_size);
+
+    if (list == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < list_size; ++i) {
+        printf("%s\n", list[i]);
+    }
+
+    free_list(list, list_size);
+
+    return EXIT_SUCCESS;
+}

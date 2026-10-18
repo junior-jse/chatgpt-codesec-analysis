@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-946.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-946.c:27:34: style: Same expression on both sides of '<='. [duplicateExpression]
+    memcpy(buffer, text, len + 1 <= len + 1 ? len + 1 : 0);
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-946.c:93:67: style: Same expression on both sides of '<='. [duplicateExpression]
+            memcpy(new_word, current_word, (current_word_len + 1) <= (current_word_len + 1) ? (current_word_len + 1) : 0);
+                                                                  ^

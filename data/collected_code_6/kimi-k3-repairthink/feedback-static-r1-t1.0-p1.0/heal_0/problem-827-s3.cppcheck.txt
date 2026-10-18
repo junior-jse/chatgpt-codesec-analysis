@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-827-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-827-s3.c:5:49: style: Parameter 'list_sizes' can be declared as pointer to const [constParameterPointer]
+int sum_column(int **lists, int num_lists, int *list_sizes, int column_index, long *result) {
+                                                ^

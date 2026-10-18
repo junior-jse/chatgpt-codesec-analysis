@@ -1,0 +1,2622 @@
+{
+  "cell": {
+    "model": "kimi-k3-repairthink",
+    "feedback": "static",
+    "measure": "static",
+    "tasks": [
+      450,
+      827,
+      516,
+      108,
+      536,
+      822,
+      469,
+      754,
+      528,
+      31,
+      771,
+      958,
+      522,
+      570,
+      174,
+      493,
+      620,
+      640,
+      175,
+      551,
+      562,
+      834,
+      885,
+      795,
+      700,
+      893,
+      65,
+      902,
+      290,
+      411,
+      591,
+      966,
+      102,
+      114,
+      715,
+      938,
+      482,
+      542,
+      674,
+      15,
+      317,
+      653,
+      772,
+      245,
+      843,
+      920,
+      957,
+      361,
+      423,
+      465,
+      231,
+      585,
+      869,
+      965,
+      110,
+      282,
+      538,
+      729,
+      779,
+      129,
+      350,
+      513,
+      696,
+      712,
+      921,
+      391,
+      444,
+      635,
+      833,
+      889,
+      36,
+      117,
+      393,
+      460,
+      480,
+      578,
+      604,
+      679,
+      718,
+      829,
+      945,
+      196,
+      260,
+      310,
+      425,
+      610,
+      691,
+      708,
+      748,
+      783,
+      969,
+      207,
+      367,
+      412,
+      805,
+      904,
+      130,
+      215,
+      418,
+      510,
+      757,
+      946,
+      120,
+      157,
+      161,
+      206,
+      240,
+      262,
+      265,
+      380,
+      387,
+      456,
+      500,
+      539,
+      618,
+      750,
+      788,
+      792,
+      802,
+      875,
+      937,
+      23,
+      27,
+      140,
+      272,
+      353,
+      661,
+      727,
+      927,
+      118,
+      128,
+      533,
+      544,
+      553,
+      769,
+      812,
+      73,
+      154,
+      568,
+      582,
+      26,
+      251,
+      263,
+      297,
+      301,
+      328,
+      400,
+      457,
+      548,
+      572,
+      665,
+      694,
+      721,
+      730,
+      740,
+      743,
+      824,
+      898,
+      933,
+      936,
+      943,
+      115,
+      348,
+      421,
+      464,
+      852,
+      956,
+      20,
+      858,
+      923,
+      326,
+      440,
+      593,
+      821,
+      70,
+      127,
+      298,
+      358,
+      392,
+      473,
+      484,
+      699,
+      198,
+      381,
+      495,
+      932,
+      131,
+      237,
+      315,
+      413,
+      415,
+      507,
+      703,
+      854,
+      906,
+      217,
+      322,
+      352,
+      537,
+      971
+    ],
+    "temp": 1.0,
+    "top_p": 1.0,
+    "max_rounds": 5,
+    "samples": 3,
+    "fuzz": false,
+    "root": "data/collected_code_6",
+    "gen_source": "feedback-static-r0-t1.0-p1.0",
+    "gen_source_reports": true,
+    "gen_source_model": "kimi-k3"
+  },
+  "model_id": "kimi-k3",
+  "reasoning": true,
+  "outcomes": {
+    "problem-102": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-102-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-102-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-108": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-110": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-110-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-110-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-118-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-129": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-129-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-130": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-131": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-131-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-140": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-157": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-157-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-161": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-174-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-175": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-175-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-198-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-198-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-20-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-207": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-207-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-207-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-217": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-23": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-23-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-231": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-237": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-237-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-245": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-245-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-26": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-260": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-260-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-27": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-282": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-290": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-290-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-297-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-301": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-31-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-315-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-322-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-348": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-348-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-348-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-350-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-352": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-352-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-358": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-358-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-358-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-380-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-381": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-381-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-393-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-411-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-413": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-444": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-444-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-450": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-456-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-456-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-460-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-465-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-469": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-473": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-473-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-482-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-482-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-493-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-510": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-510-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-510-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-516": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-516-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-516-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-522": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-528": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-528-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-533-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-551-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-551-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-562-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-562-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-570": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-570-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-582-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-604-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-618": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-620": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-620-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-635-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-640": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-640-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-640-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-665": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-679-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-691-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-696": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-70-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-700": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-703-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-708-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-721-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-727-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-730": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-730-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-740": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-754": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-757": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-757-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-757-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-771-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-779-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-792-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-802-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-805": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-812-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-812-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-821": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-821-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-827-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-827-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-829-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-843": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-843-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-854": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-858": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-869-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-875": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-875-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-885-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-885-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-889-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-889-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-893": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-893-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-893-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-898": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-898-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-904-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-920-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-923": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-923-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-932": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-933": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-933-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-933-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-937-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-938": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-938-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-943-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-945-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-958-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-965": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-965-s2": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-965-s3": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-971": {
+      "rounds_to_clean": 1,
+      "outcome": "clean"
+    },
+    "problem-108-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-117-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-118-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-140-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-15-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-154": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-154-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-157-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-174-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-196": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-196-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-206": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-206-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-215": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-23-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-263-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-298-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-301-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-301-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-31": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-310-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-381-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-387-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-391": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-391-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-391-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-400": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-400-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-411": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-411-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-425-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-450-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-464": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-469-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-473-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-480-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-495-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-513-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-528-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-533-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-538-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-542-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-553": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-653": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-653-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-679-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-694": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-694-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-703": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-703-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-708": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-715-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-727": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-727-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-73": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-73-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-740-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-754-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-771": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-772-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-779-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-788-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-795-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-802-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-805-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-805-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-822-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-833": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-833-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-869": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-885": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-902-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-920": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-937-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-946-s3": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-966": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-969": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-969-s2": {
+      "rounds_to_clean": 2,
+      "outcome": "clean"
+    },
+    "problem-115": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-115-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-118": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-128-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-128-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-15": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-15-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-263": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-298-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-310-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-326": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-326-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-350": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-421": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-456": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-464-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-464-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-465": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-465-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-533": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-537-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-538-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-542": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-582": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-604": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-604-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-653-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-674-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-691": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-712-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-772": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-788": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-829-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-854-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-869-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-902-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-906-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-946-s2": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-956": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-969-s3": {
+      "rounds_to_clean": 3,
+      "outcome": "clean"
+    },
+    "problem-114-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-115-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-117": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-174": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-196-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-310": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-350-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-413-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-421-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-440-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-450-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-495": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-495-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-507-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-538": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-542-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-544-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-679": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-712-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-715": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-73-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-740-s3": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-829": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-936-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-958": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-958-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-966-s2": {
+      "rounds_to_clean": 4,
+      "outcome": "clean"
+    },
+    "problem-114-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-128": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-206-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-272": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-272-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-326-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-361-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-413-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-421-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-440": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-507-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-537": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-537-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-582-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-694-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-712": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-748-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-779": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-833-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-945-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "clean"
+    },
+    "problem-108-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-114": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-117-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-120": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-120-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-120-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-127": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-127-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-127-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-129-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-130-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-130-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-131-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-140-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-154-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-161-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-161-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-175-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-198": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-20": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-20-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-215-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-215-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-217-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-217-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-231-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-231-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-237-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-240": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-240-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-240-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-245-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-251": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-251-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-251-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-26-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-26-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-260-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-262": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-262-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-262-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-263-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-265": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-265-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-265-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-27-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-27-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-272-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-282-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-282-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-290-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-297": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-297-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-298": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-31-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-315": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-315-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-317": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-317-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-317-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-322": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-322-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-328": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-328-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-328-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-352-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-353": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-353-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-353-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-36": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-36-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-36-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-361": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-361-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-367": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-367-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-367-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-380": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-380-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-387": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-387-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-392": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-392-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-392-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-393": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-393-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-400-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-412": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-412-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-412-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-415": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-415-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-415-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-418": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-418-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-418-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-423": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-423-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-423-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-425": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-425-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-440-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-444-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-457": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-457-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-457-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-460": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-460-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-469-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-480": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-480-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-482": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-484": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-484-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-484-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-493": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-493-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-500": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-500-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-500-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-507": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-513": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-513-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-522-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-522-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-536": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-536-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-536-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-539": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-539-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-539-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-544": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-544-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-548": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-548-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-548-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-551": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-553-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-553-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-562": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-568": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-568-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-568-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-570-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-572": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-572-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-572-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-578": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-578-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-578-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-585": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-585-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-585-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-591": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-591-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-591-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-593": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-593-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-593-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-610": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-610-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-610-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-618-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-618-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-620-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-635": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-635-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-65": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-65-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-65-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-661": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-661-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-661-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-665-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-665-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-674": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-674-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-691-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-696-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-696-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-699": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-699-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-699-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-70": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-70-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-700-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-700-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-708-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-715-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-718": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-718-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-718-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-721": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-721-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-729": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-729-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-729-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-730-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-743": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-743-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-743-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-748": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-748-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-750": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-750-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-750-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-754-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-769": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-769-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-769-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-771-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-772-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-783": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-783-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-783-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-788-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-792": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-792-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-795": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-795-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-802": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-812": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-821-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-822": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-822-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-824": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-824-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-824-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-827": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-834": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-834-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-834-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-843-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-852": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-852-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-852-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-854-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-858-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-858-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-875-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-889": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-898-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-902": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-904": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-904-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-906": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-906-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-920-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-921": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-921-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-921-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-923-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-927": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-927-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-927-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-932-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-932-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-936": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-936-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-937": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-938-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-943": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-943-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-945": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-946": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-956-s2": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-956-s3": {
+      "rounds_to_clean": 5,
+      "outcome": "not_cleaned"
+    },
+    "problem-957": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-957-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-957-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-966-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-971-s2": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    },
+    "problem-971-s3": {
+      "rounds_to_clean": 0,
+      "outcome": "clean_at_start"
+    }
+  }
+}

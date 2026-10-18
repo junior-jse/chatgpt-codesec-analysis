@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    size_t size;
+} Tuple;
+
+void remove_matching(Tuple *t1, Tuple *t2) {
+    if (t1 == NULL || t2 == NULL || t1->elements == NULL || t2->elements == NULL) {
+        return;
+    }
+
+    size_t i, j, k;
+    size_t new_size = t1->size;
+    int *new_elements = malloc(new_size * sizeof(int));
+
+    if (new_elements == NULL) {
+        return;
+    }
+
+    k = 0;
+    for (i = 0; i < t1->size; i++) {
+        int found = 0;
+        for (j = 0; j < t2->size; j++) {
+            if (t1->elements[i] == t2->elements[j]) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            new_elements[k++] = t1->elements[i];
+        }
+    }
+
+    free(t1->elements);
+    t1->elements = new_elements;
+    t1->size = k;
+}
+
+int main() {
+    int arr1[] = {1, 2, 3, 4, 5};
+    int arr2[] = {3, 4};
+
+    Tuple t1 = {arr1, 5};
+    Tuple t2 = {arr2, 2};
+
+    remove_matching(&t1, &t2);
+
+    printf("Resulting tuple: ");
+    for (size_t i = 0; i < t1.size; i++) {
+        printf("%d ", t1.elements[i]);
+    }
+    printf("\n");
+
+    free(t1.elements);
+
+    return 0;
+}

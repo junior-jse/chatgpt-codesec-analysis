@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    int value;
+    int count;
+} ValueCount;
+
+int count_similar_occurrences(const Tuple *tuples, size_t tuple_count, int target_count) {
+    if (tuples == NULL || tuple_count == 0 || target_count < 0) {
+        return -1;
+    }
+
+    ValueCount *counts = NULL;
+    size_t counts_size = 0;
+    size_t counts_capacity = 0;
+    int result = 0;
+
+    for (size_t i = 0; i < tuple_count; i++) {
+        if (tuples[i].data == NULL || tuples[i].size == 0) {
+            continue;
+        }
+
+        for (size_t j = 0; j < tuples[i].size; j++) {
+            int value = tuples[i].data[j];
+            int found = 0;
+
+            for (size_t k = 0; k < counts_size; k++) {
+                if (counts[k].value == value) {
+                    counts[k].count++;
+                    found = 1;
+                    break;
+                }
+            }
+
+            if (!found) {
+                if (counts_size >= counts_capacity) {
+                    size_t new_capacity = counts_capacity == 0 ? 16 : counts_capacity * 2;
+                    ValueCount *new_counts = realloc(counts, new_capacity * sizeof(ValueCount));
+                    if (new_counts == NULL) {
+                        free(counts);
+                        return -1;
+                    }
+                    counts = new_counts;
+                    counts_capacity = new_capacity;
+                }
+                counts[counts_size].value = value;
+                counts[counts_size].count = 1;
+                counts_size++;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < counts_size; i++) {
+        if (counts[i].count == target_count) {
+            result++;
+        }
+    }
+
+    free(counts);
+    return result;
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3, 2, 1, 1};
+    int data2[] = {4, 5, 4, 4, 5};
+    int data3[] = {6, 7, 6, 6, 7, 7, 7};
+
+    Tuple tuples[] = {
+        {data1, sizeof(data1) / sizeof(data1[0])},
+        {data2, sizeof(data2) / sizeof(data2[0])},
+        {data3, sizeof(data3) / sizeof(data3[0])}
+    };
+
+    size_t tuple_count = sizeof(tuples) / sizeof(tuples[0]);
+
+    int target_count = 3;
+    int result = count_similar_occurrences(tuples, tuple_count, target_count);
+
+    if (result >= 0) {
+        printf("Number of values occurring exactly %d times: %d\n", target_count, result);
+    } else {
+        printf("Error occurred during processing\n");
+        return EXIT_FAILURE;
+    }
+
+    target_count = 4;
+    result = count_similar_occurrences(tuples, tuple_count, target_count);
+
+    if (result >= 0) {
+        printf("Number of values occurring exactly %d times: %d\n", target_count, result);
+    } else {
+        printf("Error occurred during processing\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}

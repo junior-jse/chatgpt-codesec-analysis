@@ -1,0 +1,20 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-779.c:101:10: warning: Value stored to 'lists' during its initialization is never read [deadcode.DeadStores]
+  101 |     List lists[] = {
+      |          ^~~~~     ~
+  102 |         {a1, 3},
+      |         ~~~~~~~~
+  103 |         {a2, 3},
+      |         ~~~~~~~~
+  104 |         {a3, 2},
+      |         ~~~~~~~~
+  105 |         {a4, 4},
+      |         ~~~~~~~~
+  106 |         {a5, 2},
+      |         ~~~~~~~~
+  107 |         {a6, 1},
+      |         ~~~~~~~~
+  108 |         {a7, 1}
+      |         ~~~~~~~
+  109 |     };
+      |     ~
+1 warning generated.

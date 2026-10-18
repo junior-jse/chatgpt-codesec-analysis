@@ -1,0 +1,200 @@
+/* Repair history (previous round):
+ * - Flawfinder strlen was removed from add_group, add_value_to_group() and now appears in duplicate_string().
+ * - Flawfinder strcpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} KeyValuePair;
+
+typedef struct {
+    char *key;
+    char **values;
+    size_t count;
+    size_t capacity;
+} Group;
+
+typedef struct {
+    Group *groups;
+    size_t count;
+    size_t capacity;
+} Dictionary;
+
+Dictionary *dictionary_create(void) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->groups = NULL;
+    dict->count = 0;
+    dict->capacity = 0;
+    return dict;
+}
+
+void dictionary_free(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < dict->count; i++) {
+        free(dict->groups[i].key);
+        for (size_t j = 0; j < dict->groups[i].count; j++) {
+            free(dict->groups[i].values[j]);
+        }
+        free(dict->groups[i].values);
+    }
+    free(dict->groups);
+    free(dict);
+}
+
+static Group *find_group(Dictionary *dict, const char *key) {
+    for (size_t i = 0; i < dict->count; i++) {
+        if (strcmp(dict->groups[i].key, key) == 0) {
+            return &dict->groups[i];
+        }
+    }
+    return NULL;
+}
+
+static char *duplicate_string(const char *s) {
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(s);
+    char *copy = malloc(len + 1);
+    if (copy == NULL) {
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(copy, s, len + 1);
+    return copy;
+}
+
+static int add_group(Dictionary *dict, const char *key) {
+    if (dict->count == dict->capacity) {
+        size_t new_capacity = dict->capacity == 0 ? 4 : dict->capacity * 2;
+        Group *new_groups = realloc(dict->groups, new_capacity * sizeof(Group));
+        if (new_groups == NULL) {
+            return -1;
+        }
+        dict->groups = new_groups;
+        dict->capacity = new_capacity;
+    }
+
+    char *key_copy = duplicate_string(key);
+    if (key_copy == NULL) {
+        return -1;
+    }
+
+    dict->groups[dict->count].key = key_copy;
+    dict->groups[dict->count].values = NULL;
+    dict->groups[dict->count].count = 0;
+    dict->groups[dict->count].capacity = 0;
+    dict->count++;
+    return 0;
+}
+
+static int add_value_to_group(Group *group, const char *value) {
+    if (group->count == group->capacity) {
+        size_t new_capacity = group->capacity == 0 ? 4 : group->capacity * 2;
+        char **new_values = realloc(group->values, new_capacity * sizeof(char *));
+        if (new_values == NULL) {
+            return -1;
+        }
+        group->values = new_values;
+        group->capacity = new_capacity;
+    }
+
+    char *value_copy = duplicate_string(value);
+    if (value_copy == NULL) {
+        return -1;
+    }
+
+    group->values[group->count] = value_copy;
+    group->count++;
+    return 0;
+}
+
+int dictionary_add(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+
+    Group *group = find_group(dict, key);
+    if (group == NULL) {
+        if (add_group(dict, key) != 0) {
+            return -1;
+        }
+        group = &dict->groups[dict->count - 1];
+    }
+
+    return add_value_to_group(group, value);
+}
+
+Dictionary *group_key_value_pairs(const KeyValuePair *pairs, size_t count) {
+    if (pairs == NULL && count > 0) {
+        return NULL;
+    }
+
+    Dictionary *dict = dictionary_create();
+    if (dict == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < count; i++) {
+        if (pairs[i].key == NULL || pairs[i].value == NULL) {
+            dictionary_free(dict);
+            return NULL;
+        }
+        if (dictionary_add(dict, pairs[i].key, pairs[i].value) != 0) {
+            dictionary_free(dict);
+            return NULL;
+        }
+    }
+
+    return dict;
+}
+
+void dictionary_print(const Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < dict->count; i++) {
+        printf("%s: [", dict->groups[i].key);
+        for (size_t j = 0; j < dict->groups[i].count; j++) {
+            printf("%s", dict->groups[i].values[j]);
+            if (j < dict->groups[i].count - 1) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+}
+
+int main(void) {
+    KeyValuePair pairs[] = {
+        {"fruit", "apple"},
+        {"vegetable", "carrot"},
+        {"fruit", "banana"},
+        {"vegetable", "broccoli"},
+        {"fruit", "cherry"},
+        {"grain", "rice"}
+    };
+    size_t count = sizeof(pairs) / sizeof(pairs[0]);
+
+    Dictionary *dict = group_key_value_pairs(pairs, count);
+    if (dict == NULL) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return EXIT_FAILURE;
+    }
+
+    dictionary_print(dict);
+    dictionary_free(dict);
+
+    return EXIT_SUCCESS;
+}

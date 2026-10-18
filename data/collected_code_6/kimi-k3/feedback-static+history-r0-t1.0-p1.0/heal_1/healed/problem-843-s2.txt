@@ -1,0 +1,171 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+typedef struct {
+    long long value;
+    int prime_index;
+    int position;
+} HeapNode;
+
+typedef struct {
+    HeapNode *nodes;
+    int size;
+    int capacity;
+} MinHeap;
+
+MinHeap* create_heap(int capacity) {
+    MinHeap *heap = (MinHeap*)malloc(sizeof(MinHeap));
+    if (heap == NULL) {
+        return NULL;
+    }
+    heap->nodes = (HeapNode*)malloc(sizeof(HeapNode) * capacity);
+    if (heap->nodes == NULL) {
+        free(heap);
+        return NULL;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return heap;
+}
+
+void swap_nodes(HeapNode *a, HeapNode *b) {
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapify_up(MinHeap *heap, int index) {
+    while (index > 0) {
+        int parent = (index - 1) / 2;
+        if (heap->nodes[parent].value <= heap->nodes[index].value) {
+            break;
+        }
+        swap_nodes(&heap->nodes[parent], &heap->nodes[index]);
+        index = parent;
+    }
+}
+
+void heapify_down(MinHeap *heap, int index) {
+    while (1) {
+        int smallest = index;
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+        
+        if (left < heap->size && heap->nodes[left].value < heap->nodes[smallest].value) {
+            smallest = left;
+        }
+        if (right < heap->size && heap->nodes[right].value < heap->nodes[smallest].value) {
+            smallest = right;
+        }
+        if (smallest == index) {
+            break;
+        }
+        swap_nodes(&heap->nodes[index], &heap->nodes[smallest]);
+        index = smallest;
+    }
+}
+
+int push(MinHeap *heap, long long value, int prime_index, int position) {
+    if (heap->size >= heap->capacity) {
+        return 0;
+    }
+    heap->nodes[heap->size].value = value;
+    heap->nodes[heap->size].prime_index = prime_index;
+    heap->nodes[heap->size].position = position;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 1;
+}
+
+HeapNode pop(MinHeap *heap) {
+    HeapNode top = heap->nodes[0];
+    heap->size--;
+    if (heap->size > 0) {
+        heap->nodes[0] = heap->nodes[heap->size];
+        heapify_down(heap, 0);
+    }
+    return top;
+}
+
+void destroy_heap(MinHeap *heap) {
+    if (heap != NULL) {
+        free(heap->nodes);
+        free(heap);
+    }
+}
+
+long long nth_super_ugly_number(int n, const int *primes, int k) {
+    if (n <= 0 || primes == NULL || k <= 0) {
+        return -1;
+    }
+    
+    long long *ugly = (long long*)malloc(sizeof(long long) * n);
+    if (ugly == NULL) {
+        return -1;
+    }
+    
+    MinHeap *heap = create_heap(k);
+    if (heap == NULL) {
+        free(ugly);
+        return -1;
+    }
+    
+    ugly[0] = 1;
+    
+    for (int i = 0; i < k; i++) {
+        if (!push(heap, primes[i], i, 0)) {
+            destroy_heap(heap);
+            free(ugly);
+            return -1;
+        }
+    }
+    
+    for (int i = 1; i < n; i++) {
+        HeapNode min_node = pop(heap);
+        ugly[i] = min_node.value;
+        
+        int prime_idx = min_node.prime_index;
+        int pos = min_node.position;
+        
+        if (pos + 1 < n) {
+            long long next_value = ugly[pos + 1] * primes[prime_idx];
+            if (next_value > 0) {
+                push(heap, next_value, prime_idx, pos + 1);
+            }
+        }
+        
+        while (heap->size > 0 && heap->nodes[0].value == min_node.value) {
+            HeapNode dup = pop(heap);
+            int dup_prime_idx = dup.prime_index;
+            int dup_pos = dup.position;
+            if (dup_pos + 1 < n) {
+                long long next_val = ugly[dup_pos + 1] * primes[dup_prime_idx];
+                if (next_val > 0) {
+                    push(heap, next_val, dup_prime_idx, dup_pos + 1);
+                }
+            }
+        }
+    }
+    
+    long long result = ugly[n - 1];
+    destroy_heap(heap);
+    free(ugly);
+    return result;
+}
+
+int main() {
+    int primes[] = {2, 3, 5};
+    int k = sizeof(primes) / sizeof(primes[0]);
+    int n = 10;
+    
+    long long result = nth_super_ugly_number(n, primes, k);
+    if (result != -1) {
+        printf("%lld\n", result);
+    }
+    
+    return 0;
+}
+```

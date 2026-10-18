@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    double price;
+    char name[64];
+} Item;
+
+typedef struct {
+    Item *items;
+    size_t size;
+    size_t capacity;
+} MinHeap;
+
+static void swap_items(Item *a, Item *b)
+{
+    Item temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static int heap_init(MinHeap *heap, size_t capacity)
+{
+    if (heap == NULL || capacity == 0) {
+        return -1;
+    }
+    heap->items = malloc(capacity * sizeof(Item));
+    if (heap->items == NULL) {
+        return -1;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return 0;
+}
+
+static void heap_free(MinHeap *heap)
+{
+    if (heap != NULL && heap->items != NULL) {
+        free(heap->items);
+        heap->items = NULL;
+        heap->size = 0;
+        heap->capacity = 0;
+    }
+}
+
+static void heapify_down(MinHeap *heap, size_t idx)
+{
+    size_t smallest = idx;
+    size_t left = 2 * idx + 1;
+    size_t right = 2 * idx + 2;
+
+    if (left < heap->size && heap->items[left].price < heap->items[smallest].price) {
+        smallest = left;
+    }
+    if (right < heap->size && heap->items[right].price < heap->items[smallest].price) {
+        smallest = right;
+    }
+    if (smallest != idx) {
+        swap_items(&heap->items[idx], &heap->items[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+static void heapify_up(MinHeap *heap, size_t idx)
+{
+    while (idx > 0) {
+        size_t parent = (idx - 1) / 2;
+        if (heap->items[idx].price >= heap->items[parent].price) {
+            break;
+        }
+        swap_items(&heap->items[idx], &heap->items[parent]);
+        idx = parent;
+    }
+}
+
+static int heap_push(MinHeap *heap, const Item *item)
+{
+    if (heap == NULL || item == NULL || heap->size >= heap->capacity) {
+        return -1;
+    }
+    heap->items[heap->size] = *item;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+static int heap_pop(MinHeap *heap, Item *out)
+{
+    if (heap == NULL || out == NULL || heap->size == 0) {
+        return -1;
+    }
+    *out = heap->items[0];
+    heap->items[0] = heap->items[heap->size - 1];
+    heap->size--;
+    if (heap->size > 0) {
+        heapify_down(heap, 0);
+    }
+    return 0;
+}
+
+static int find_n_expensive(const Item *dataset, size_t dataset_size, size_t n, Item *result)
+{
+    MinHeap heap;
+    size_t i;
+    size_t result_count;
+
+    if (dataset == NULL || result == NULL || n == 0 || dataset_size == 0) {
+        return -1;
+    }
+    if (n > dataset_size) {
+        n = dataset_size;
+    }
+    if (heap_init(&heap, n) != 0) {
+        return -1;
+    }
+
+    for (i = 0; i < dataset_size; i++) {
+        if (heap.size < n) {
+            if (heap_push(&heap, &dataset[i]) != 0) {
+                heap_free(&heap);
+                return -1;
+            }
+        } else if (dataset[i].price > heap.items[0].price) {
+            heap.items[0] = dataset[i];
+            heapify_down(&heap, 0);
+        }
+    }
+
+    result_count = heap.size;
+    for (i = 0; i < result_count; i++) {
+        if (heap_pop(&heap, &result[result_count - 1 - i]) != 0) {
+            heap_free(&heap);
+            return -1;
+        }
+    }
+
+    heap_free(&heap);
+    return (int)result_count;
+}
+
+int main(void)
+{
+    Item dataset[] = {
+        {1, 19.99, "Item A"},
+        {2, 45.50, "Item B"},
+        {3, 12.75, "Item C"},
+        {4, 99.99, "Item D"},
+        {5, 5.00,  "Item E"},
+        {6, 67.25, "Item F"},
+        {7, 33.80, "Item G"},
+        {8, 150.00,"Item H"}
+    };
+    size_t dataset_size = sizeof(dataset) / sizeof(dataset[0]);
+    size_t n = 3;
+    Item *result;
+    int count;
+    int i;
+
+    result = malloc(n * sizeof(Item));
+    if (result == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    count = find_n_expensive(dataset, dataset_size, n, result);
+    if (count < 0) {
+        fprintf(stderr, "Error finding top items\n");
+        free(result);
+        return EXIT_FAILURE;
+    }
+
+    printf("Top %d most expensive items:\n", count);
+    for (i = 0; i < count; i++) {
+        printf("ID: %d, Name: %s, Price: %.2f\n",
+               result[i].id, result[i].name, result[i].price);
+    }
+
+    free(result);
+    return EXIT_SUCCESS;
+}

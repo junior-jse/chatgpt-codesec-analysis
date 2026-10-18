@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    void **values;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t count;
+} TupleList;
+
+/* Possible weaknesses found:
+ *  Parameter 'value' can be declared as pointer to const [constParameterPointer]
+ */
+static bool is_none(void *value) {
+    return value == NULL;
+}
+
+static bool tuple_all_none(const Tuple *tuple) {
+    if (tuple == NULL || tuple->values == NULL) {
+        return true;
+    }
+    for (size_t i = 0; i < tuple->size; i++) {
+        if (!is_none(tuple->values[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static void free_tuple(Tuple *tuple) {
+    if (tuple == NULL) {
+        return;
+    }
+    free(tuple->values);
+    tuple->values = NULL;
+    tuple->size = 0;
+}
+
+TupleList remove_all_none_tuples(TupleList *list) {
+    TupleList result;
+    result.tuples = NULL;
+    result.count = 0;
+
+    if (list == NULL || list->tuples == NULL || list->count == 0) {
+        return result;
+    }
+
+    result.tuples = malloc(sizeof(Tuple) * list->count);
+    if (result.tuples == NULL) {
+        return result;
+    }
+
+    size_t kept = 0;
+    for (size_t i = 0; i < list->count; i++) {
+        if (!tuple_all_none(&list->tuples[i])) {
+            result.tuples[kept] = list->tuples[i];
+            kept++;
+        } else {
+            free_tuple(&list->tuples[i]);
+        }
+    }
+    result.count = kept;
+
+    Tuple *shrunk = realloc(result.tuples, sizeof(Tuple) * kept);
+    if (shrunk != NULL || kept == 0) {
+        result.tuples = shrunk;
+    }
+
+    free(list->tuples);
+    list->tuples = NULL;
+    list->count = 0;
+
+    return result;
+}
+
+static Tuple create_tuple(void **values, size_t size) {
+    Tuple tuple;
+    tuple.values = malloc(sizeof(void *) * size);
+    if (tuple.values == NULL) {
+        tuple.size = 0;
+        return tuple;
+    }
+    for (size_t i = 0; i < size; i++) {
+        tuple.values[i] = values[i];
+    }
+    tuple.size = size;
+    return tuple;
+}
+
+static void print_tuple_list(const TupleList *list) {
+    if (list == NULL) {
+        printf("[]\n");
+        return;
+    }
+    printf("[");
+    for (size_t i = 0; i < list->count; i++) {
+        printf("(");
+        for (size_t j = 0; j < list->tuples[i].size; j++) {
+            if (list->tuples[i].values[j] == NULL) {
+                printf("None");
+            } else {
+                printf("%d", *((int *)list->tuples[i].values[j]));
+            }
+            if (j < list->tuples[i].size - 1) {
+                printf(", ");
+            }
+        }
+        printf(")");
+        if (i < list->count - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    int a = 1, b = 2, c = 3, d = 4;
+
+    void *v1[] = {NULL, NULL};
+    void *v2[] = {&a, NULL};
+    void *v3[] = {NULL, NULL, NULL};
+    void *v4[] = {&b, &c};
+    void *v5[] = {NULL, &d};
+
+    TupleList list;
+    list.count = 5;
+    list.tuples = malloc(sizeof(Tuple) * list.count);
+    if (list.tuples == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    list.tuples[0] = create_tuple(v1, 2);
+    list.tuples[1] = create_tuple(v2, 2);
+    list.tuples[2] = create_tuple(v3, 3);
+    list.tuples[3] = create_tuple(v4, 2);
+    list.tuples[4] = create_tuple(v5, 2);
+
+    printf("Original list: ");
+    print_tuple_list(&list);
+
+    TupleList filtered = remove_all_none_tuples(&list);
+
+    printf("Filtered list: ");
+    print_tuple_list(&filtered);
+
+    for (size_t i = 0; i < filtered.count; i++) {
+        free(filtered.tuples[i].values);
+    }
+    free(filtered.tuples);
+
+    return EXIT_SUCCESS;
+}

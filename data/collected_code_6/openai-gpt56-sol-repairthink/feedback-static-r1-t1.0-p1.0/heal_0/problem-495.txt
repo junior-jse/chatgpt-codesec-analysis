@@ -1,0 +1,92 @@
+#include <regex.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static int remove_lowercase_substrings(const char *input, char **output)
+{
+    regex_t regex;
+    regmatch_t match;
+    char *result;
+    size_t input_length;
+    size_t source_offset = 0;
+    size_t destination_offset = 0;
+    int status;
+
+    if (input == NULL || output == NULL) {
+        return -1;
+    }
+
+    *output = NULL;
+    input_length = strlen(input);
+
+    result = malloc(input_length + 1);
+    if (result == NULL) {
+        return -1;
+    }
+
+    status = regcomp(&regex, "[[:lower:]]+", REG_EXTENDED);
+    if (status != 0) {
+        free(result);
+        return -1;
+    }
+
+    while (source_offset < input_length) {
+        status = regexec(&regex, input + source_offset, 1, &match, 0);
+
+        if (status == REG_NOMATCH) {
+            size_t remaining = input_length - source_offset;
+            memcpy(result + destination_offset, input + source_offset, remaining);
+            destination_offset += remaining;
+            source_offset = input_length;
+            break;
+        }
+
+        if (status != 0 || match.rm_so < 0 || match.rm_eo <= match.rm_so) {
+            regfree(&regex);
+            free(result);
+            return -1;
+        }
+
+        size_t prefix_length = (size_t)match.rm_so;
+        size_t match_end = (size_t)match.rm_eo;
+
+        if (match_end > input_length - source_offset) {
+            regfree(&regex);
+            free(result);
+            return -1;
+        }
+
+        memcpy(result + destination_offset, input + source_offset, prefix_length);
+        destination_offset += prefix_length;
+        source_offset += match_end;
+    }
+
+    result[destination_offset] = '\0';
+    regfree(&regex);
+    *output = result;
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    char *output = NULL;
+
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    if (remove_lowercase_substrings(argv[1], &output) != 0) {
+        fputs("Failed to process the string.\n", stderr);
+        return EXIT_FAILURE;
+    }
+
+    if (puts(output) == EOF) {
+        free(output);
+        return EXIT_FAILURE;
+    }
+
+    free(output);
+    return EXIT_SUCCESS;
+}

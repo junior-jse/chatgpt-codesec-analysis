@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:51:13: style: Condition 'ret!=0' is always true [knownConditionTrueFalse]
+    if (ret != 0) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:50:30: note: Calling function 'extract_nth_element' returns -1
+    ret = extract_nth_element(NULL, 0, 0, &value);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:50:30: note: Assignment 'ret=extract_nth_element(NULL,0,0,&value)', assigned value is -1
+    ret = extract_nth_element(NULL, 0, 0, &value);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:51:13: note: Condition 'ret!=0' is always true
+    if (ret != 0) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:32:10: style: Variable 'tuple_array' can be declared as pointer to const [constVariablePointer]
+    int *tuple_array = (int *)(&list->data[n]);
+         ^

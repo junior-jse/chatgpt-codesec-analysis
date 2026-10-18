@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:147:73: style: Condition 'input_count>0U' is always true [knownConditionTrueFalse]
+    if ((filtered_list == NULL) && (output_count == 0U) && (input_count > 0U))
+                                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:140:44: note: Assignment 'input_count=sizeof(word_list)/sizeof(word_list[0])', assigned value is 5
+    size_t input_count = sizeof(word_list) / sizeof(word_list[0]);
+                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:147:73: note: Condition 'input_count>0U' is always true
+    if ((filtered_list == NULL) && (output_count == 0U) && (input_count > 0U))
+                                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:149:26: style: Condition 'remove_count>0U' is always true [knownConditionTrueFalse]
+        if (remove_count > 0U)
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:141:47: note: Assignment 'remove_count=sizeof(remove_list)/sizeof(remove_list[0])', assigned value is 2
+    size_t remove_count = sizeof(remove_list) / sizeof(remove_list[0]);
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:149:26: note: Condition 'remove_count>0U' is always true
+        if (remove_count > 0U)
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-507-s3.c:143:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^

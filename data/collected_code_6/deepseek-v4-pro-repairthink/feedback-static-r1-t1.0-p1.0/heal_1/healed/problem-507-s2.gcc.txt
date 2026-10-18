@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507-s2.c: In function 'create_node':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507-s2.c:30:1: error: implicit declaration of function '\U0000514d\U00008d39' [-Wimplicit-function-declaration]
+   30 | 免费(node);
+      | ^~~~

@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c: In function 'is_woodall':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:13:22: error: 'ULLONG_MAX' undeclared (first use in this function)
+   13 |         if (power > (ULLONG_MAX / 2)) {
+      |                      ^~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:3:1: note: 'ULLONG_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    2 | #include <stdbool.h>
+  +++ |+#include <limits.h>
+    3 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:13:22: note: each undeclared identifier is reported only once for each function it appears in
+   13 |         if (power > (ULLONG_MAX / 2)) {
+      |                      ^~~~~~~~~~

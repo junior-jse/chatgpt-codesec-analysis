@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c:64:23: style: Condition 'range_end>=current' is always true [knownConditionTrueFalse]
+        if (range_end >= current) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c:47:27: note: Assuming that condition 'ranges[i].end<current' is not redundant
+        if (ranges[i].end < current) {
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c:51:29: note: Assuming condition is false
+        if (ranges[i].start > end) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c:56:23: note: range_end is assigned 'ranges[i].end' here.
+        int range_end = ranges[i].end;
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-110-s3.c:64:23: note: Condition 'range_end>=current' is always true
+        if (range_end >= current) {
+                      ^

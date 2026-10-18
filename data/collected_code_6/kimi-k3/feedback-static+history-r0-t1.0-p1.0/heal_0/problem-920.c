@@ -1,0 +1,200 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *values;
+    int size;
+    int is_none;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    int count;
+    int capacity;
+} TupleList;
+
+int init_tuple_list(TupleList *list, int capacity) {
+    if (list == NULL || capacity <= 0) {
+        return -1;
+    }
+    list->tuples = (Tuple *)malloc(sizeof(Tuple) * (size_t)capacity);
+    if (list->tuples == NULL) {
+        return -1;
+    }
+    list->count = 0;
+    list->capacity = capacity;
+    return 0;
+}
+
+int add_tuple(TupleList *list, int *values, int size) {
+    if (list == NULL || size <= 0) {
+        return -1;
+    }
+    if (list->count >= list->capacity) {
+        return -1;
+    }
+    
+    list->tuples[list->count].values = (int *)malloc(sizeof(int) * (size_t)size);
+    if (list->tuples[list->count].values == NULL) {
+        return -1;
+    }
+    
+    if (values != NULL) {
+        memcpy(list->tuples[list->count].values, values, sizeof(int) * (size_t)size);
+        list->tuples[list->count].is_none = 0;
+    } else {
+        memset(list->tuples[list->count].values, 0, sizeof(int) * (size_t)size);
+        list->tuples[list->count].is_none = 1;
+    }
+    
+    list->tuples[list->count].size = size;
+    list->count++;
+    return 0;
+}
+
+int is_all_none(const Tuple *tuple) {
+    if (tuple == NULL) {
+        return 1;
+    }
+    return tuple->is_none;
+}
+
+int remove_all_none_tuples(TupleList *list) {
+    if (list == NULL || list->tuples == NULL) {
+        return -1;
+    }
+    
+    int write_idx = 0;
+    int removed_count = 0;
+    
+    for (int read_idx = 0; read_idx < list->count; read_idx++) {
+        if (!is_all_none(&list->tuples[read_idx])) {
+            if (write_idx != read_idx) {
+                list->tuples[write_idx] = list->tuples[read_idx];
+            }
+            write_idx++;
+        } else {
+            free(list->tuples[read_idx].values);
+            list->tuples[read_idx].values = NULL;
+            removed_count++;
+        }
+    }
+    
+    list->count = write_idx;
+    return removed_count;
+}
+
+void free_tuple_list(TupleList *list) {
+    if (list == NULL) {
+        return;
+    }
+    if (list->tuples != NULL) {
+        for (int i = 0; i < list->count; i++) {
+            if (list->tuples[i].values != NULL) {
+                free(list->tuples[i].values);
+                list->tuples[i].values = NULL;
+            }
+        }
+        free(list->tuples);
+        list->tuples = NULL;
+    }
+    list->count = 0;
+    list->capacity = 0;
+}
+
+void print_tuple_list(const TupleList *list) {
+    if (list == NULL) {
+        return;
+    }
+    printf("[");
+    for (int i = 0; i < list->count; i++) {
+        printf("(");
+        if (list->tuples[i].is_none) {
+            for (int j = 0; j < list->tuples[i].size; j++) {
+                printf("None");
+                if (j < list->tuples[i].size - 1) {
+                    printf(", ");
+                }
+            }
+        } else {
+            for (int j = 0; j < list->tuples[i].size; j++) {
+                printf("%d", list->tuples[i].values[j]);
+                if (j < list->tuples[i].size - 1) {
+                    printf(", ");
+                }
+            }
+        }
+        printf(")");
+        if (i < list->count - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    TupleList list;
+    int result;
+    
+    result = init_tuple_list(&list, 10);
+    if (result != 0) {
+        fprintf(stderr, "Failed to initialize tuple list\n");
+        return EXIT_FAILURE;
+    }
+    
+    int vals1[] = {1, 2, 3};
+    int vals2[] = {4, 5, 6};
+    int vals3[] = {7, 8, 9};
+    
+    result = add_tuple(&list, vals1, 3);
+    if (result != 0) {
+        fprintf(stderr, "Failed to add tuple\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    result = add_tuple(&list, NULL, 3);
+    if (result != 0) {
+        fprintf(stderr, "Failed to add tuple\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    result = add_tuple(&list, vals2, 3);
+    if (result != 0) {
+        fprintf(stderr, "Failed to add tuple\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    result = add_tuple(&list, NULL, 3);
+    if (result != 0) {
+        fprintf(stderr, "Failed to add tuple\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    result = add_tuple(&list, vals3, 3);
+    if (result != 0) {
+        fprintf(stderr, "Failed to add tuple\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Before removal:\n");
+    print_tuple_list(&list);
+    
+    int removed = remove_all_none_tuples(&list);
+    if (removed < 0) {
+        fprintf(stderr, "Failed to remove tuples\n");
+        free_tuple_list(&list);
+        return EXIT_FAILURE;
+    }
+    
+    printf("After removal (%d tuples removed):\n", removed);
+    print_tuple_list(&list);
+    
+    free_tuple_list(&list);
+    return EXIT_SUCCESS;
+}

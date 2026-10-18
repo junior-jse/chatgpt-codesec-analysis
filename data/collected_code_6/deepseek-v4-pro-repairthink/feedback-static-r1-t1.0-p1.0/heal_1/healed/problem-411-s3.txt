@@ -1,0 +1,79 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *snake_to_camel(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t capacity = 16;
+    char *result = malloc(capacity);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t result_index = 0;
+    size_t i = 0;
+
+    while (input[i] != '\0') {
+        if (input[i] == '_' && input[i + 1] != '\0' && islower((unsigned char)input[i + 1])) {
+            if (result_index + 2 > capacity) {
+                capacity *= 2;
+                char *tmp = realloc(result, capacity);
+                if (tmp == NULL) {
+                    free(result);
+                    return NULL;
+                }
+                result = tmp;
+            }
+            result[result_index++] = toupper((unsigned char)input[i + 1]);
+            i += 2;
+        } else {
+            if (result_index + 2 > capacity) {
+                capacity *= 2;
+                char *tmp = realloc(result, capacity);
+                if (tmp == NULL) {
+                    free(result);
+                    return NULL;
+                }
+                result = tmp;
+            }
+            result[result_index++] = input[i++];
+        }
+    }
+
+    result[result_index] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "hello_world",
+        "snake_case_string",
+        "alreadyCamel",
+        "multiple__underscores",
+        "_leading_underscore",
+        "trailing_underscore_",
+        "",
+        "no_underscores_here",
+        "a_b_c_d_e"
+    };
+
+    size_t num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char *converted = snake_to_camel(test_cases[i]);
+        if (converted != NULL) {
+            printf("\"%s\" -> \"%s\"\n", test_cases[i], converted);
+            free(converted);
+        } else {
+            printf("\"%s\" -> NULL\n", test_cases[i]);
+        }
+    }
+
+    return 0;
+}
+```

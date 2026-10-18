@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-114-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-114-s2.c:50:45: style: Condition 'sorted_tuples!=NULL' is always true [knownConditionTrueFalse]
+    if (tuple_list != NULL && sorted_tuples != NULL && list_size > 0) {
+                                            ^

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-936-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-936-s3.c:19:56: style: Parameter 'arg' can be declared as pointer to const. However it seems that 'compare_tuples' is a callback function, if 'arg' is declared with const you might also need to cast function pointer(s). [constParameterCallback]
+int compare_tuples(const void *a, const void *b, void *arg) {
+                                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-936-s3.c:55:48: note: You might need to cast the function pointer here
+    qsort_r(tuples, tuple_size, sizeof(Tuple), compare_tuples, arg);
+                                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-936-s3.c:19:56: note: Parameter 'arg' can be declared as pointer to const
+int compare_tuples(const void *a, const void *b, void *arg) {
+                                                       ^

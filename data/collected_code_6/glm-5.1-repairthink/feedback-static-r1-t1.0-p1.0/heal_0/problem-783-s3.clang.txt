@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-783-s3.c:39:24: error: call to undeclared library function 'fmod' with type 'double (double, double)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   39 |         hsv.h = 60.0 * fmod(((g - b) / delta), 6.0);
+      |                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-783-s3.c:39:24: note: include the header <math.h> or explicitly provide a declaration for 'fmod'
+1 error generated.

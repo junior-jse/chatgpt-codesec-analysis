@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int find_min_difference(int tuples[][2], int size) {
+    if (size <= 0) {
+        return -1;
+    }
+    
+    int min_diff = abs(tuples[0][0] - tuples[0][1]);
+    
+    for (int i = 1; i < size; i++) {
+        int diff = abs(tuples[i][0] - tuples[i][1]);
+        if (diff < min_diff) {
+            min_diff = diff;
+        }
+    }
+    
+    return min_diff;
+}
+
+int main(void) {
+    int tuples[][2] = {{3, 8}, {10, 4}, {5, 5}, {12, 7}};
+    int size = sizeof(tuples) / sizeof(tuples[0]);
+    
+    int result = find_min_difference(tuples, size);
+    
+    if (result >= 0) {
+        printf("Minimum difference: %d\n", result);
+    } else {
+        printf("Invalid input\n");
+    }
+    
+    return 0;
+}

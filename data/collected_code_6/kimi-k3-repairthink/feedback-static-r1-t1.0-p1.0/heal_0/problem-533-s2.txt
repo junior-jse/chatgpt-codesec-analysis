@@ -1,0 +1,146 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef enum {
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_STRING
+} DataType;
+
+typedef struct {
+    DataType type;
+    union {
+        int i;
+        float f;
+        char *s;
+    } data;
+} TupleElement;
+
+typedef struct {
+    TupleElement *elements;
+    size_t size;
+} Tuple;
+
+void removeType(Tuple *tuple, DataType typeToRemove) {
+    if (tuple == NULL || tuple->elements == NULL) {
+        return;
+    }
+
+    size_t writeIndex = 0;
+    for (size_t i = 0; i < tuple->size; i++) {
+        if (tuple->elements[i].type != typeToRemove) {
+            if (writeIndex != i) {
+                tuple->elements[writeIndex] = tuple->elements[i];
+            }
+            writeIndex++;
+        } else {
+            if (tuple->elements[i].type == TYPE_STRING) {
+                free(tuple->elements[i].data.s);
+                tuple->elements[i].data.s = NULL;
+            }
+        }
+    }
+    tuple->size = writeIndex;
+}
+
+void printTuple(const Tuple *tuple) {
+    if (tuple == NULL || tuple->elements == NULL) {
+        printf("()\n");
+        return;
+    }
+    printf("(");
+    for (size_t i = 0; i < tuple->size; i++) {
+        if (i > 0) {
+            printf(", ");
+        }
+        switch (tuple->elements[i].type) {
+            case TYPE_INT:
+                printf("%d", tuple->elements[i].data.i);
+                break;
+            case TYPE_FLOAT:
+                printf("%.2f", tuple->elements[i].data.f);
+                break;
+            case TYPE_STRING:
+                printf("\"%s\"", tuple->elements[i].data.s);
+                break;
+        }
+    }
+    printf(")\n");
+}
+
+void freeTuple(Tuple *tuple) {
+    if (tuple == NULL) {
+        return;
+    }
+    if (tuple->elements != NULL) {
+        for (size_t i = 0; i < tuple->size; i++) {
+            if (tuple->elements[i].type == TYPE_STRING) {
+                free(tuple->elements[i].data.s);
+            }
+        }
+        free(tuple->elements);
+        tuple->elements = NULL;
+    }
+    tuple->size = 0;
+}
+
+int main(void) {
+    Tuple tuple;
+    tuple.size = 6;
+    tuple.elements = (TupleElement *)malloc(tuple.size * sizeof(TupleElement));
+    if (tuple.elements == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    tuple.elements[0].type = TYPE_INT;
+    tuple.elements[0].data.i = 10;
+
+    tuple.elements[1].type = TYPE_FLOAT;
+    tuple.elements[1].data.f = 20.5f;
+
+    tuple.elements[2].type = TYPE_STRING;
+    tuple.elements[2].data.s = (char *)malloc(6);
+    if (tuple.elements[2].data.s == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(tuple.elements);
+        return EXIT_FAILURE;
+    }
+    strcpy(tuple.elements[2].data.s, "hello");
+
+    tuple.elements[3].type = TYPE_INT;
+    tuple.elements[3].data.i = 30;
+
+    tuple.elements[4].type = TYPE_STRING;
+    tuple.elements[4].data.s = (char *)malloc(6);
+    if (tuple.elements[4].data.s == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(tuple.elements[2].data.s);
+        free(tuple.elements);
+        return EXIT_FAILURE;
+    }
+    strcpy(tuple.elements[4].data.s, "world");
+
+    tuple.elements[5].type = TYPE_FLOAT;
+    tuple.elements[5].data.f = 40.75f;
+
+    printf("Original tuple: ");
+    printTuple(&tuple);
+
+    removeType(&tuple, TYPE_STRING);
+
+    printf("After removing strings: ");
+    printTuple(&tuple);
+
+    removeType(&tuple, TYPE_FLOAT);
+
+    printf("After removing floats: ");
+    printTuple(&tuple);
+
+    freeTuple(&tuple);
+
+    return EXIT_SUCCESS;
+}
+```

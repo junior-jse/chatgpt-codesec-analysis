@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *snake_to_camel(const char *snake_str, size_t len) {
+    if (!snake_str) {
+        return NULL;
+    }
+
+    char *result = malloc(len + 1);
+    if (!result) {
+        return NULL;
+    }
+
+    size_t dst_idx = 0;
+
+    for (size_t i = 0; i < len; ++i) {
+        if (snake_str[i] == '_' && i + 1 < len && islower((unsigned char)snake_str[i + 1])) {
+            result[dst_idx++] = toupper((unsigned char)snake_str[i + 1]);
+            i++;
+        } else {
+            result[dst_idx++] = snake_str[i];
+        }
+    }
+
+    result[dst_idx] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char *input = "this_is_a_snake_case_string";
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(input);
+    char *output = snake_to_camel(input, len);
+    
+    if (output) {
+        printf("%s\n", output);
+        free(output);
+    } else {
+        fprintf(stderr, "Conversion failed\n");
+        return 1;
+    }
+    
+    return 0;
+}

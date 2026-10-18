@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char **shortlist_long_words(const char *words[], int word_count, size_t n, int *out_count) {
+    char **result = NULL;
+    int count = 0;
+
+    /* Possible weaknesses found:
+     *  Assuming condition 'out_count==NULL' is false
+     *  Assuming condition 'word_count<=0' is false
+     */
+    if (words == NULL || out_count == NULL || word_count <= 0) {
+        if (out_count != NULL) {
+            *out_count = 0;
+        }
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     *  Condition 'word_count>0' is always true
+     *  Condition 'word_count>0' is always true [knownConditionTrueFalse]
+     */
+    if (word_count > 0) {
+        result = malloc((size_t)word_count * sizeof(char *));
+    } else {
+        /* Possible weaknesses found:
+         *  Condition 'out_count!=NULL' is always true
+         *  Condition 'out_count!=NULL' is always true [knownConditionTrueFalse]
+         */
+        if (out_count != NULL) {
+            *out_count = 0;
+        }
+        return NULL;
+    }
+
+    if (result == NULL) {
+        *out_count = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < word_count; i++) {
+        if (words[i] != NULL) {
+            /* Possible weaknesses found:
+             * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+             */
+            size_t len = strlen(words[i]);
+            if (len > n) {
+                /* Possible weaknesses found:
+                 * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+                 */
+                result[count] = (char *)words[i];
+                count++;
+            }
+        }
+    }
+
+    if (count == 0) {
+        free(result);
+        *out_count = 0;
+        return NULL;
+    }
+
+    char **shrunk = realloc(result, (size_t)count * sizeof(char *));
+    if (shrunk != NULL) {
+        result = shrunk;
+    } else {
+        free(result);
+        *out_count = 0;
+        return NULL;
+    }
+
+    *out_count = count;
+    return result;
+}
+
+int main(void) {
+    const char *words[] = {"apple", "banana", "kiwi", "strawberry", "plum", "watermelon"};
+    int word_count = (int)(sizeof(words) / sizeof(words[0]));
+    size_t n = 5;
+    int shortlisted_count = 0;
+
+    char **shortlisted = shortlist_long_words(words, word_count, n, &shortlisted_count);
+
+    if (shortlisted == NULL || shortlisted_count == 0) {
+        printf("No words longer than %zu characters found.\n", n);
+        return 0;
+    }
+
+    printf("Words longer than %zu characters:\n", n);
+    for (int i = 0; i < shortlisted_count; i++) {
+        printf("%s\n", shortlisted[i]);
+    }
+
+    free(shortlisted);
+    return 0;
+}

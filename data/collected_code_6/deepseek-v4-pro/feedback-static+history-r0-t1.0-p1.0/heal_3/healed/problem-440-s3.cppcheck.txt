@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-440-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-440-s3.c:40:13: style: Condition 'len>0' is always true [knownConditionTrueFalse]
+    if (len > 0) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-440-s3.c:31:13: note: Assuming that condition 'len==0' is not redundant
+    if (len == 0 || len >= 65535) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-440-s3.c:36:16: note: Assuming condition is false
+    if (buffer == NULL) {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-440-s3.c:40:13: note: Condition 'len>0' is always true
+    if (len > 0) {
+            ^

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-154.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-154.c:5:68: style: Parameter 'indices' can be declared as pointer to const [constParameterPointer]
+int** extract_elements(int** input_array, int rows, int cols, int* indices, int indices_count, int** output_array, int** output_cols, int* output_rows) {
+                                                                   ^

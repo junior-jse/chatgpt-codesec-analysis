@@ -1,0 +1,166 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *data;
+    size_t top;
+    size_t capacity;
+} Stack;
+
+static int stack_init(Stack *stack, size_t capacity)
+{
+    if (stack == NULL || capacity == 0) {
+        return -1;
+    }
+
+    stack->data = (char *)malloc(capacity * sizeof(char));
+    if (stack->data == NULL) {
+        return -1;
+    }
+
+    stack->top = 0;
+    stack->capacity = capacity;
+    return 0;
+}
+
+static void stack_destroy(Stack *stack)
+{
+    if (stack != NULL) {
+        free(stack->data);
+        stack->data = NULL;
+        stack->top = 0;
+        stack->capacity = 0;
+    }
+}
+
+static int stack_push(Stack *stack, char ch)
+{
+    if (stack == NULL || stack->data == NULL) {
+        return -1;
+    }
+
+    if (stack->top >= stack->capacity) {
+        return -1;
+    }
+
+    stack->data[stack->top] = ch;
+    stack->top++;
+    return 0;
+}
+
+static int stack_pop(Stack *stack, char *ch)
+{
+    if (stack == NULL || stack->data == NULL || ch == NULL) {
+        return -1;
+    }
+
+    if (stack->top == 0) {
+        return -1;
+    }
+
+    stack->top--;
+    *ch = stack->data[stack->top];
+    return 0;
+}
+
+static int is_matching_pair(char open, char close)
+{
+    if (open == '(' && close == ')') {
+        return 1;
+    }
+    if (open == '[' && close == ']') {
+        return 1;
+    }
+    if (open == '{' && close == '}') {
+        return 1;
+    }
+    return 0;
+}
+
+static int is_opening_bracket(char ch)
+{
+    return (ch == '(' || ch == '[' || ch == '{');
+}
+
+static int is_closing_bracket(char ch)
+{
+    return (ch == ')' || ch == ']' || ch == '}');
+}
+
+int is_balanced(const char *expression)
+{
+    Stack stack;
+    size_t i;
+    size_t length;
+    char popped;
+    int result = 0;
+
+    if (expression == NULL) {
+        return 0;
+    }
+
+    length = strlen(expression);
+    if (length == 0) {
+        return 1;
+    }
+
+    if (stack_init(&stack, length) != 0) {
+        return 0;
+    }
+
+    for (i = 0; i < length; i++) {
+        char ch = expression[i];
+
+        if (is_opening_bracket(ch)) {
+            if (stack_push(&stack, ch) != 0) {
+                result = 0;
+                goto cleanup;
+            }
+        } else if (is_closing_bracket(ch)) {
+            if (stack_pop(&stack, &popped) != 0) {
+                result = 0;
+                goto cleanup;
+            }
+            if (!is_matching_pair(popped, ch)) {
+                result = 0;
+                goto cleanup;
+            }
+        }
+    }
+
+    result = (stack.top == 0) ? 1 : 0;
+
+cleanup:
+    stack_destroy(&stack);
+    return result;
+}
+
+int main(void)
+{
+    const char *test_expressions[] = {
+        "(a+b)",
+        "{a+(b-c)*d}",
+        "[(a+b)*(c-d)]",
+        "((a+b)",
+        "{a+b)",
+        "a+b",
+        "([)]",
+        "{[()]}",
+        "",
+        "((("
+    };
+
+    size_t num_tests = sizeof(test_expressions) / sizeof(test_expressions[0]);
+    size_t i;
+
+    for (i = 0; i < num_tests; i++) {
+        if (is_balanced(test_expressions[i])) {
+            printf("Expression \"%s\" is balanced.\n", test_expressions[i]);
+        } else {
+            printf("Expression \"%s\" is not balanced.\n", test_expressions[i]);
+        }
+    }
+
+    return 0;
+}

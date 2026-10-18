@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-593-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-593-s2.c:15:14: style: Array index 'ip_len' is used before limits check. [arrayIndexThenCheck]
+    while (ip[ip_len] != '\0' && ip_len < sizeof(temp) - 1) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-593-s2.c:42:21: style: Array index 'token_len' is used before limits check. [arrayIndexThenCheck]
+        while (start[token_len] != '\0' && token_len < sizeof(result) - current_len - 1) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-593-s2.c:56:18: style: Array index 'result_len' is used before limits check. [arrayIndexThenCheck]
+    while (result[result_len] != '\0' && result_len < 15) {
+                 ^

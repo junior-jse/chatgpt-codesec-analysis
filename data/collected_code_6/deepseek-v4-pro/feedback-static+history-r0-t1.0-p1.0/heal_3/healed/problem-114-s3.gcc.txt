@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c: In function 'tuple_duplicate':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:30:21: error: 'INT_MAX' undeclared (first use in this function)
+   30 |     if (src->size > INT_MAX / (int)sizeof(int)) {
+      |                     ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:4:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    3 | #include <string.h>
+  +++ |+#include <limits.h>
+    4 | #include <stdint.h>
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:30:21: note: each undeclared identifier is reported only once for each function it appears in
+   30 |     if (src->size > INT_MAX / (int)sizeof(int)) {
+      |                     ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c: In function 'assign_frequencies':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:66:23: error: 'INT_MAX' undeclared (first use in this function)
+   66 |     if (tuple_count > INT_MAX / (int)sizeof(TupleFrequency)) {
+      |                       ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:66:23: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'

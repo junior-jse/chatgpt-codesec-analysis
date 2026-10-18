@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-393-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-393-s2.c:21:50: style: Parameter 'lists' can be declared as const array [constParameter]
+static const Node *find_longest_list(Node *const lists[], size_t count, size_t *max_length)
+                                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-393-s2.c:89:12: style: Variable 'lengths' can be declared as const array [constVariable]
+    size_t lengths[] = {2, 4, 3};
+           ^

@@ -1,0 +1,74 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int *values;
+    int count;
+} Tuple;
+
+typedef struct {
+    Tuple *data;
+    int count;
+} TupleList;
+
+TupleList remove_all_none_tuples(TupleList list) {
+    TupleList result;
+    result.data = (Tuple *)malloc(list.count * sizeof(Tuple));
+    if (result.data == NULL) {
+        result.count = 0;
+        result.data = NULL;
+        return result;
+    }
+    result.count = 0;
+
+    for (int i = 0; i < list.count; i++) {
+        int all_none = 1;
+        for (int j = 0; j < list.data[i].count; j++) {
+            if (list.data[i].values[j] != 0) {
+                all_none = 0;
+                break;
+            }
+        }
+
+        if (!all_none) {
+            result.data[result.count] = list.data[i];
+            result.count++;
+        }
+    }
+
+    Tuple *temp = (Tuple *)realloc(result.data, result.count * sizeof(Tuple));
+    if (temp != NULL || result.count == 0) {
+        result.data = temp;
+    }
+
+    return result;
+}
+
+int main() {
+    int v1[] = {0, 0, 0};
+    int v2[] = {0, 1, 0};
+    int v3[] = {5, 0, 0};
+    int v4[] = {0, 0};
+
+    Tuple t1 = {v1, 3};
+    Tuple t2 = {v2, 3};
+    Tuple t3 = {v3, 3};
+    Tuple t4 = {v4, 2};
+
+    Tuple original_data[] = {t1, t2, t3, t4};
+    TupleList list = {original_data, 4};
+
+    TupleList filtered = remove_all_none_tuples(list);
+
+    for (int i = 0; i < filtered.count; i++) {
+        for (int j = 0; j < filtered.data[i].count; j++) {
+            printf("%d ", filtered.data[i].values[j]);
+        }
+        printf("\n");
+    }
+
+    free(filtered.data);
+
+    return 0;
+}

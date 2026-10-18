@@ -1,0 +1,1 @@
+problem-772-s2.c:87:0:low:Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)

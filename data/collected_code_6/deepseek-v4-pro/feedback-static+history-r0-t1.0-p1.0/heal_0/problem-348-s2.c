@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+unsigned long long count_sequences_with_nonnegative_prefix_sums(int length, const int *values, int num_values) {
+    int i, j, k;
+    int min_val = values[0], max_val = values[0];
+    unsigned long long *prev = NULL, *curr = NULL;
+    unsigned long long result = 0;
+    int offset, max_sum;
+
+    for (i = 1; i < num_values; i++) {
+        if (values[i] < min_val) min_val = values[i];
+        if (values[i] > max_val) max_val = values[i];
+    }
+
+    if (max_val < 0) {
+        return 0;
+    }
+    if (min_val > 0) {
+        min_val = 0;
+    }
+
+    if (length <= 0) {
+        return 0;
+    }
+
+    max_sum = length * max_val;
+    if (max_sum < 0) {
+        return 0;
+    }
+
+    offset = -min_val * length;
+    int dp_size = max_sum + offset + 2;
+    if (dp_size <= 0) {
+        return 0;
+    }
+
+    prev = (unsigned long long *)calloc(dp_size, sizeof(unsigned long long));
+    curr = (unsigned long long *)calloc(dp_size, sizeof(unsigned long long));
+    if (prev == NULL || curr == NULL) {
+        free(prev);
+        free(curr);
+        return 0;
+    }
+
+    for (i = 0; i < num_values; i++) {
+        int shifted = offset + values[i];
+        if (shifted >= 0 && shifted < dp_size) {
+            if (values[i] >= 0 || shifted >= 0) {
+                prev[shifted] += 1;
+            }
+        }
+    }
+
+    for (j = 1; j < length; j++) {
+        for (k = 0; k < dp_size; k++) {
+            curr[k] = 0;
+        }
+        for (k = 0; k < dp_size; k++) {
+            if (prev[k] > 0) {
+                for (i = 0; i < num_values; i++) {
+                    int new_sum = k + values[i];
+                    if (new_sum >= offset) {
+                        if (new_sum < dp_size) {
+                            curr[new_sum] += prev[k];
+                        }
+                    }
+                }
+            }
+        }
+        unsigned long long *tmp = prev;
+        prev = curr;
+        curr = tmp;
+    }
+
+    for (k = offset; k < dp_size; k++) {
+        result += prev[k];
+    }
+
+    free(prev);
+    free(curr);
+    return result;
+}
+
+int main(void) {
+    int values[] = {-1, 1};
+    int length = 3;
+    int num_values = 2;
+
+    unsigned long long count = count_sequences_with_nonnegative_prefix_sums(length, values, num_values);
+    printf("%llu\n", count);
+
+    return 0;
+}

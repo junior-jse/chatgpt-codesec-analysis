@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    void **elements;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t size;
+} List;
+
+List *create_list(size_t size) {
+    List *list = (List *)malloc(sizeof(List));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->tuples = (Tuple *)calloc(size, sizeof(Tuple));
+    if (list->tuples == NULL) {
+        free(list);
+        return NULL;
+    }
+    list->size = size;
+    return list;
+}
+
+void destroy_list(List *list) {
+    if (list == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < list->size; i++) {
+        if (list->tuples[i].elements != NULL) {
+            free(list->tuples[i].elements);
+        }
+    }
+    free(list->tuples);
+    free(list);
+}
+
+void *extract_nth_element(List *list, size_t tuple_index, size_t element_index) {
+    if (list == NULL || tuple_index >= list->size) {
+        return NULL;
+    }
+    Tuple *tuple = &list->tuples[tuple_index];
+    if (tuple->elements == NULL || element_index >= tuple->size) {
+        return NULL;
+    }
+    return tuple->elements[element_index];
+}
+
+int main(void) {
+    List *list = create_list(3);
+    if (list == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    list->tuples[0].size = 2;
+    list->tuples[0].elements = (void **)malloc(2 * sizeof(void *));
+    list->tuples[0].elements[0] = (void *)10;
+    list->tuples[0].elements[1] = (void *)20;
+
+    list->tuples[1].size = 3;
+    list->tuples[1].elements = (void **)malloc(3 * sizeof(void *));
+    list->tuples[1].elements[0] = (void *)30;
+    list->tuples[1].elements[1] = (void *)40;
+    list->tuples[1].elements[2] = (void *)50;
+
+    list->tuples[2].size = 1;
+    list->tuples[2].elements = (void **)malloc(1 * sizeof(void *));
+    list->tuples[2].elements[0] = (void *)60;
+
+    void *element = extract_nth_element(list, 1, 1);
+    if (element != NULL) {
+        printf("%ld\n", (long)element);
+    }
+
+    destroy_list(list);
+    return EXIT_SUCCESS;
+}

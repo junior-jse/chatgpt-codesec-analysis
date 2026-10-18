@@ -1,0 +1,54 @@
+# Analysis
+
+The flagged weakness (CWE-126, buffer over-read) comes from `strlen(str)`, which scans memory until it finds a `\0`. If the caller passes a non-null-terminated buffer, `strlen` reads out of bounds. The standard fix is to use `strnlen()` with an explicit upper bound, so the scan is capped even for malformed input. I'll also define `_POSIX_C_SOURCE` so `strnlen` is properly declared under strict compilation.
+
+# Fixed Code
+
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define MAX_STRING_LENGTH 4096
+
+bool has_all_unique_chars(const char *str) {
+    if (str == NULL) {
+        return false;
+    }
+
+    bool seen[256] = {false};
+    size_t len = strnlen(str, MAX_STRING_LENGTH);
+
+    for (size_t i = 0; i < len; i++) {
+        unsigned char c = (unsigned char)str[i];
+        if (seen[c]) {
+            return false;
+        }
+        seen[c] = true;
+    }
+
+    return true;
+}
+
+int main(void) {
+    const char *test1 = "abcdefg";
+    const char *test2 = "hello";
+    const char *test3 = "";
+    const char *test4 = "aAbBcC";
+
+    printf("\"%s\": %s\n", test1, has_all_unique_chars(test1) ? "true" : "false");
+    printf("\"%s\": %s\n", test2, has_all_unique_chars(test2) ? "true" : "false");
+    printf("\"%s\": %s\n", test3, has_all_unique_chars(test3) ? "true" : "false");
+    printf("\"%s\": %s\n", test4, has_all_unique_chars(test4) ? "true" : "false");
+
+    return 0;
+}
+```
+
+# Key Changes
+
+1. **`strnlen(str, MAX_STRING_LENGTH)` instead of `strlen(str)`** — the scan is bounded to 4096 bytes, eliminating the unbounded over-read on non-terminated input (CWE-126).
+2. **`#define _POSIX_C_SOURCE 200809L`** — ensures `strnlen()` is declared by `<string.h>` in POSIX-compliant environments when compiling with strict flags (e.g., `-std=c11 -Wall -Werror`).
+3. **`MAX_STRING_LENGTH` constant** — a named, tunable limit rather than a magic number; the rest of the logic (NULL guard, `unsigned char` indexing into `seen[256]`) was already sound and is unchanged.

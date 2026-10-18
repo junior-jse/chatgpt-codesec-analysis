@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int remove_duplicate_words(char **words, int count) {
+    if (words == NULL || count <= 0) {
+        return 0;
+    }
+
+    int unique_count = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (words[i] == NULL) {
+            continue;
+        }
+
+        int is_duplicate = 0;
+        for (int j = 0; j < unique_count; j++) {
+            if (words[j] != NULL && strcmp(words[i], words[j]) == 0) {
+                is_duplicate = 1;
+                break;
+            }
+        }
+
+        if (!is_duplicate) {
+            if (unique_count != i) {
+                words[unique_count] = words[i];
+                words[i] = NULL;
+            }
+            unique_count++;
+        } else {
+            free(words[i]);
+            words[i] = NULL;
+        }
+    }
+
+    return unique_count;
+}
+
+int main(void) {
+    char **word_list = malloc(7 * sizeof(char *));
+    if (word_list == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    word_list[0] = strdup("apple");
+    word_list[1] = strdup("banana");
+    word_list[2] = strdup("apple");
+    word_list[3] = strdup("cherry");
+    word_list[4] = strdup("banana");
+    word_list[5] = strdup("date");
+    word_list[6] = strdup("cherry");
+
+    if (word_list[0] == NULL || word_list[1] == NULL || word_list[2] == NULL ||
+        word_list[3] == NULL || word_list[4] == NULL || word_list[5] == NULL ||
+        word_list[6] == NULL) {
+        for (int i = 0; i < 7; i++) {
+            free(word_list[i]);
+        }
+        free(word_list);
+        return EXIT_FAILURE;
+    }
+
+    int original_count = 7;
+    int unique_count = remove_duplicate_words(word_list, original_count);
+
+    for (int i = 0; i < unique_count; i++) {
+        printf("%s\n", word_list[i]);
+    }
+
+    for (int i = 0; i < unique_count; i++) {
+        free(word_list[i]);
+    }
+
+    free(word_list);
+
+    return EXIT_SUCCESS;
+}

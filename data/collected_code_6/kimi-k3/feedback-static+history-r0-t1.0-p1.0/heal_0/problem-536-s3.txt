@@ -1,0 +1,114 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    Node *tail;
+    size_t size;
+} LinkedList;
+
+void list_init(LinkedList *list) {
+    if (list != NULL) {
+        list->head = NULL;
+        list->tail = NULL;
+        list->size = 0;
+    }
+}
+
+bool list_append(LinkedList *list, int data) {
+    if (list == NULL) {
+        return false;
+    }
+    
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return false;
+    }
+    
+    new_node->data = data;
+    new_node->next = NULL;
+    
+    if (list->head == NULL) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        list->tail->next = new_node;
+        list->tail = new_node;
+    }
+    
+    list->size++;
+    return true;
+}
+
+bool list_get_nth(const LinkedList *list, size_t n, int *result) {
+    if (list == NULL || result == NULL || n >= list->size) {
+        return false;
+    }
+    
+    Node *current = list->head;
+    for (size_t i = 0; i < n; i++) {
+        if (current == NULL) {
+            return false;
+        }
+        current = current->next;
+    }
+    
+    if (current == NULL) {
+        return false;
+    }
+    
+    *result = current->data;
+    return true;
+}
+
+void list_destroy(LinkedList *list) {
+    if (list == NULL) {
+        return;
+    }
+    
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+    
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+int main(void) {
+    LinkedList list;
+    list_init(&list);
+    
+    for (int i = 1; i <= 10; i++) {
+        if (!list_append(&list, i * 10)) {
+            fprintf(stderr, "Failed to allocate memory\n");
+            list_destroy(&list);
+            return EXIT_FAILURE;
+        }
+    }
+    
+    size_t n = 3;
+    int value;
+    
+    if (list_get_nth(&list, n, &value)) {
+        printf("Element at index %zu: %d\n", n, value);
+    } else {
+        fprintf(stderr, "Index %zu is out of bounds\n", n);
+        list_destroy(&list);
+        return EXIT_FAILURE;
+    }
+    
+    list_destroy(&list);
+    return EXIT_SUCCESS;
+}
+```

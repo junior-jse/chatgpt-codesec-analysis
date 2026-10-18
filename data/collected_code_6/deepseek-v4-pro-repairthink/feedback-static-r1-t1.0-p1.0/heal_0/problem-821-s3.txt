@@ -1,0 +1,159 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct KeyValue {
+    char *key;
+    char *value;
+    struct KeyValue *next;
+} KeyValue;
+
+typedef struct {
+    KeyValue *head;
+} Dictionary;
+
+Dictionary *create_dictionary(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->head = NULL;
+    return dict;
+}
+
+void destroy_dictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        KeyValue *next = current->next;
+        free(current->key);
+        free(current->value);
+        free(current);
+        current = next;
+    }
+    free(dict);
+}
+
+int add_entry(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return 0;
+    }
+
+    char *key_copy = (char *)malloc(strlen(key) + 1);
+    if (key_copy == NULL) {
+        return 0;
+    }
+    strcpy(key_copy, key);
+
+    char *value_copy = (char *)malloc(strlen(value) + 1);
+    if (value_copy == NULL) {
+        free(key_copy);
+        return 0;
+    }
+    strcpy(value_copy, value);
+
+    KeyValue *new_entry = (KeyValue *)malloc(sizeof(KeyValue));
+    if (new_entry == NULL) {
+        free(key_copy);
+        free(value_copy);
+        return 0;
+    }
+
+    new_entry->key = key_copy;
+    new_entry->value = value_copy;
+    new_entry->next = dict->head;
+    dict->head = new_entry;
+    return 1;
+}
+
+Dictionary *merge_dictionaries(Dictionary *dict1, Dictionary *dict2) {
+    if (dict1 == NULL || dict2 == NULL) {
+        return NULL;
+    }
+
+    Dictionary *merged = create_dictionary();
+    if (merged == NULL) {
+        return NULL;
+    }
+
+    KeyValue *current = dict1->head;
+    while (current != NULL) {
+        if (!add_entry(merged, current->key, current->value)) {
+            destroy_dictionary(merged);
+            return NULL;
+        }
+        current = current->next;
+    }
+
+    current = dict2->head;
+    while (current != NULL) {
+        KeyValue *existing = merged->head;
+        int found = 0;
+        while (existing != NULL) {
+            if (strcmp(existing->key, current->key) == 0) {
+                free(existing->value);
+                existing->value = (char *)malloc(strlen(current->value) + 1);
+                if (existing->value == NULL) {
+                    destroy_dictionary(merged);
+                    return NULL;
+                }
+                strcpy(existing->value, current->value);
+                found = 1;
+                break;
+            }
+            existing = existing->next;
+        }
+        if (!found) {
+            if (!add_entry(merged, current->key, current->value)) {
+                destroy_dictionary(merged);
+                return NULL;
+            }
+        }
+        current = current->next;
+    }
+
+    return merged;
+}
+
+void print_dictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        printf("%s: %s\n", current->key, current->value);
+        current = current->next;
+    }
+}
+
+int main(void) {
+    Dictionary *dict1 = create_dictionary();
+    Dictionary *dict2 = create_dictionary();
+    Dictionary *merged = NULL;
+
+    if (dict1 == NULL || dict2 == NULL) {
+        destroy_dictionary(dict1);
+        destroy_dictionary(dict2);
+        return 1;
+    }
+
+    add_entry(dict1, "a", "1");
+    add_entry(dict1, "b", "2");
+    add_entry(dict2, "b", "3");
+    add_entry(dict2, "c", "4");
+
+    merged = merge_dictionaries(dict1, dict2);
+    if (merged != NULL) {
+        print_dictionary(merged);
+        destroy_dictionary(merged);
+    }
+
+    destroy_dictionary(dict1);
+    destroy_dictionary(dict2);
+
+    return 0;
+}
+```

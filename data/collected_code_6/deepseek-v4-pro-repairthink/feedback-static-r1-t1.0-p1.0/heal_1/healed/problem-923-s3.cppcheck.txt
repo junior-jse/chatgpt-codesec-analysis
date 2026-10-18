@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:44:14: style: Local variable 'i' shadows outer variable [shadowVariable]
+    for (int i = 0; i <= len1; i++) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:27:12: note: Shadowed declaration
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:44:14: note: Shadow variable
+    for (int i = 0; i <= len1; i++) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:58:17: style: Local variable 'i' shadows outer variable [shadowVariable]
+    for (size_t i = 0; i < rows; i++) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:27:12: note: Shadowed declaration
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-923-s3.c:58:17: note: Shadow variable
+    for (size_t i = 0; i < rows; i++) {
+                ^

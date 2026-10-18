@@ -1,0 +1,10 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-618-s2.c:25:13: error: call to undeclared function 'free_list'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   25 |             free_list(result_head);
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-618-s2.c:46:6: error: conflicting types for 'free_list'
+   46 | void free_list(Node* head) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-618-s2.c:25:13: note: previous implicit declaration is here
+   25 |             free_list(result_head);
+      |             ^
+2 errors generated.

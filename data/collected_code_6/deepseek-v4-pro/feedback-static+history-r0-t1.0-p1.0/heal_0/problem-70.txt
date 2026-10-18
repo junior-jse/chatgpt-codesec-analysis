@@ -1,0 +1,42 @@
+```c
+#include <stdio.h>
+
+int tuples_equal_length(const int *tuples, int tuple_count, const int *lengths) {
+    if (tuples == NULL || lengths == NULL || tuple_count <= 0) {
+        return 0;
+    }
+    
+    int first_length = lengths[0];
+    if (first_length < 0) {
+        return 0;
+    }
+    
+    for (int i = 1; i < tuple_count; i++) {
+        if (lengths[i] < 0 || lengths[i] != first_length) {
+            return 0;
+        }
+    }
+    
+    return 1;
+}
+
+int main(void) {
+    int tuple1[] = {1, 2, 3};
+    int tuple2[] = {4, 5, 6};
+    int tuple3[] = {7, 8, 9};
+    
+    const int *tuples[] = {
+        tuple1,
+        tuple2,
+        tuple3
+    };
+    
+    int lengths[] = {3, 3, 3};
+    
+    int result = tuples_equal_length((const int *)tuples, 3, lengths);
+    
+    printf("%d\n", result);
+    
+    return 0;
+}
+```

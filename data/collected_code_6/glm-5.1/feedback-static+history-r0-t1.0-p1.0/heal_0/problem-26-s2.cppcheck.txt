@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-26-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-26-s2.c:54:46: style: Condition 'res3' is always false [knownConditionTrueFalse]
+    printf("NULL list all 3-elements: %s\n", res3 ? "true" : "false");
+                                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-26-s2.c:50:37: note: Calling function 'check_all_k_elements' returns 0
+    bool res3 = check_all_k_elements(NULL, 3);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-26-s2.c:50:37: note: Assignment 'res3=check_all_k_elements(NULL,3)', assigned value is 0
+    bool res3 = check_all_k_elements(NULL, 3);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-26-s2.c:54:46: note: Condition 'res3' is always false
+    printf("NULL list all 3-elements: %s\n", res3 ? "true" : "false");
+                                             ^

@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int *data;
+    int size;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+} List;
+
+Node *create_node(int *data, int size) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (!node) {
+        return NULL;
+    }
+    node->data = data;
+    node->size = size;
+    node->next = NULL;
+    return node;
+}
+
+void append_node(List *list, int *data, int size) {
+    Node *node = create_node(data, size);
+    if (!node) {
+        return;
+    }
+    if (!list->head) {
+        list->head = node;
+        return;
+    }
+    Node *current = list->head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = node;
+}
+
+void free_list(List *list) {
+    Node *current = list->head;
+    while (current) {
+        Node *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+    list->head = NULL;
+}
+
+Node **list_to_array(List *list, int *count) {
+    int length = 0;
+    Node *current = list->head;
+    while (current) {
+        length++;
+        current = current->next;
+    }
+    *count = length;
+    if (length == 0) {
+        return NULL;
+    }
+    Node **array = (Node **)malloc(length * sizeof(Node *));
+    if (!array) {
+        return NULL;
+    }
+    current = list->head;
+    for (int i = 0; i < length; i++) {
+        array[i] = current;
+        current = current->next;
+    }
+    return array;
+}
+
+void array_to_list(List *list, Node **array, int count) {
+    list->head = NULL;
+    if (count == 0) {
+        return;
+    }
+    list->head = array[0];
+    Node *current = list->head;
+    for (int i = 1; i < count; i++) {
+        current->next = array[i];
+        current = current->next;
+    }
+    current->next = NULL;
+}
+
+int compare_nodes(const void *a, const void *b, void *index_ptr) {
+    int index = *(int *)index_ptr;
+    Node *node_a = *(Node **)a;
+    Node *node_b = *(Node **)b;
+    if (node_a->size <= index || node_b->size <= index) {
+        if (node_a->size <= index && node_b->size <= index) {
+            return 0;
+        }
+        return node_a->size <= index ? 1 : -1;
+    }
+    if (node_a->data[index] < node_b->data[index]) {
+        return -1;
+    }
+    if (node_a->data[index] > node_b->data[index]) {
+        return 1;
+    }
+    return 0;
+}
+
+int sort_list_by_index(List *list, int index) {
+    if (!list) {
+        return -1;
+    }
+    int count = 0;
+    Node **array = list_to_array(list, &count);
+    if (count == 0) {
+        return 0;
+    }
+    if (!array) {
+        return -1;
+    }
+    void *index_ptr = &index;
+    qsort_r(array, count, sizeof(Node *), compare_nodes, index_ptr);
+    array_to_list(list, array, count);
+    free(array);
+    return 0;
+}
+
+int main(void) {
+    List list = {NULL};
+    int data1[] = {3, 2, 1};
+    int data2[] = {1, 4, 2};
+    int data3[] = {2, 0, 5};
+    int data4[] = {0, 1, 3};
+
+    append_node(&list, data1, 3);
+    append_node(&list, data2, 3);
+    append_node(&list, data3, 3);
+    append_node(&list, data4, 3);
+
+    sort_list_by_index(&list, 0);
+
+    Node *current = list.head;
+    while (current) {
+        printf("[%d, %d, %d]\n", current->data[0], current->data[1], current->data[2]);
+        current = current->next;
+    }
+
+    free_list(&list);
+    return 0;
+}

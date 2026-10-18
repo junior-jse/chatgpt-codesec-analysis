@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+
+bool is_woodall(unsigned long long n) {
+    if (n == 0) {
+        return false;
+    }
+    
+    unsigned long long k = 1;
+    unsigned long long value = 1;
+    
+    while (value < n) {
+        if (k > ULLONG_MAX / 2) {
+            break;
+        }
+        
+        unsigned long long next_k = k + 1;
+        unsigned long long power = 1ULL << next_k;
+        
+        if (next_k > ULLONG_MAX / power) {
+            break;
+        }
+        
+        value = next_k * power - 1;
+        k = next_k;
+    }
+    
+    return value == n;
+}
+
+int main(void) {
+    unsigned long long test_numbers[] = {1, 7, 23, 63, 159, 383, 896, 0, 2, 10};
+    size_t count = sizeof(test_numbers) / sizeof(test_numbers[0]);
+    
+    for (size_t i = 0; i < count; i++) {
+        if (is_woodall(test_numbers[i])) {
+            printf("%llu is a Woodall number\n", test_numbers[i]);
+        } else {
+            printf("%llu is not a Woodall number\n", test_numbers[i]);
+        }
+    }
+    
+    return 0;
+}

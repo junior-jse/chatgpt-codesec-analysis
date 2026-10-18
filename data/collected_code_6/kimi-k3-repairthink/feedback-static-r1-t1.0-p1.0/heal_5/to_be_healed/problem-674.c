@@ -1,0 +1,212 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdint.h>
+
+#define INITIAL_CAPACITY 16
+#define MAX_INPUT_LEN 1048576
+
+typedef struct {
+    char **words;
+    size_t count;
+    size_t capacity;
+} WordCollection;
+
+void init_collection(WordCollection *wc, size_t capacity) {
+    if (wc == NULL) {
+        fprintf(stderr, "Invalid collection\n");
+        exit(EXIT_FAILURE);
+    }
+    if (capacity == 0) {
+        capacity = INITIAL_CAPACITY;
+    }
+    wc->words = malloc(capacity * sizeof(char *));
+    if (wc->words == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    wc->count = 0;
+    wc->capacity = capacity;
+}
+
+void free_collection(WordCollection *wc) {
+    size_t i;
+    if (wc == NULL || wc->words == NULL) {
+        return;
+    }
+    for (i = 0; i < wc->count; i++) {
+        free(wc->words[i]);
+    }
+    free(wc->words);
+    wc->words = NULL;
+    wc->count = 0;
+    wc->capacity = 0;
+}
+
+int word_exists(const WordCollection *wc, const char *word) {
+    size_t i;
+    if (wc == NULL || word == NULL) {
+        return 0;
+    }
+    for (i = 0; i < wc->count; i++) {
+        if (wc->words[i] != NULL && strcmp(wc->words[i], word) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int add_word(WordCollection *wc, const char *word) {
+    char *new_word;
+    char **temp;
+    size_t word_len;
+    size_t alloc_size;
+    /* Possible weaknesses found:
+     *  The scope of the variable 'new_capacity' can be reduced. [variableScope]
+     */
+    size_t new_capacity;
+
+    if (wc == NULL || word == NULL) {
+        return 0;
+    }
+
+    if (wc->count >= wc->capacity) {
+        if (wc->capacity > (SIZE_MAX / sizeof(char *)) / 2) {
+            return 0;
+        }
+        new_capacity = (wc->capacity == 0) ? INITIAL_CAPACITY : wc->capacity * 2;
+        temp = realloc(wc->words, new_capacity * sizeof(char *));
+        if (temp == NULL) {
+            return 0;
+        }
+        wc->words = temp;
+        wc->capacity = new_capacity;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    word_len = strlen(word);
+    alloc_size = word_len + 1;
+    new_word = malloc(alloc_size);
+    if (new_word == NULL) {
+        return 0;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(new_word, word, alloc_size);
+    wc->words[wc->count] = new_word;
+    wc->count++;
+    return 1;
+}
+
+static int append_word(char *output, size_t output_size, size_t *out_idx,
+                       const char *word, size_t word_len, int *first_word) {
+    size_t space_left;
+    size_t prefix;
+
+    if (output == NULL || out_idx == NULL || word == NULL || first_word == NULL) {
+        return 0;
+    }
+    if (*out_idx >= output_size) {
+        return 0;
+    }
+    space_left = output_size - *out_idx;
+    prefix = (*first_word) ? (size_t)0 : (size_t)1;
+    if (space_left <= prefix || word_len >= space_left - prefix) {
+        return 0;
+    }
+    if (prefix != 0) {
+        output[*out_idx] = ' ';
+        (*out_idx)++;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(output + *out_idx, word, word_len);
+    *out_idx += word_len;
+    output[*out_idx] = '\0';
+    *first_word = 0;
+    return 1;
+}
+
+void remove_duplicate_words(const char *input, char *output, size_t output_size) {
+    WordCollection seen;
+    char *buffer;
+    size_t buffer_size;
+    size_t buf_idx = 0;
+    size_t out_idx = 0;
+    size_t i;
+    int first_word = 1;
+
+    if (input == NULL || output == NULL || output_size == 0) {
+        return;
+    }
+
+    output[0] = '\0';
+
+    buffer_size = strnlen(input, MAX_INPUT_LEN) + 1;
+    buffer = malloc(buffer_size);
+    if (buffer == NULL) {
+        return;
+    }
+
+    init_collection(&seen, INITIAL_CAPACITY);
+
+    for (i = 0; input[i] != '\0'; i++) {
+        if (isspace((unsigned char)input[i])) {
+            if (buf_idx > 0) {
+                buffer[buf_idx] = '\0';
+                if (!word_exists(&seen, buffer)) {
+                    if (!add_word(&seen, buffer)) {
+                        free(buffer);
+                        free_collection(&seen);
+                        output[output_size - 1] = '\0';
+                        return;
+                    }
+                    append_word(output, output_size, &out_idx, buffer, buf_idx, &first_word);
+                }
+                buf_idx = 0;
+            }
+        } else {
+            if (buf_idx < buffer_size - 1) {
+                buffer[buf_idx] = input[i];
+                buf_idx++;
+            }
+        }
+    }
+
+    if (buf_idx > 0) {
+        buffer[buf_idx] = '\0';
+        if (!word_exists(&seen, buffer)) {
+            append_word(output, output_size, &out_idx, buffer, buf_idx, &first_word);
+        }
+    }
+
+    output[output_size - 1] = '\0';
+    free(buffer);
+    free_collection(&seen);
+}
+
+int main(void) {
+    const char *test_string = "hello world hello this is is a test world";
+    size_t input_len = strnlen(test_string, MAX_INPUT_LEN);
+    size_t result_size = input_len + 1;
+    char *result = malloc(result_size);
+
+    if (result == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    remove_duplicate_words(test_string, result, result_size);
+    printf("Original: %s\n", test_string);
+    printf("Result:   %s\n", result);
+
+    free(result);
+    return 0;
+}

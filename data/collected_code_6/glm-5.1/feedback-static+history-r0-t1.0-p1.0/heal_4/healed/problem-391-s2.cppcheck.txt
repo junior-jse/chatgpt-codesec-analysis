@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-391-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-391-s2.c:46:25: style: Condition 'i<sizes[0]' is always true [knownConditionTrueFalse]
+        if (i >= 0 && i < sizes[0]) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-391-s2.c:44:23: note: Assuming that condition 'i<sizes[0]' is not redundant
+    for (int i = 0; i < sizes[0]; i++) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-391-s2.c:46:25: note: Condition 'i<sizes[0]' is always true
+        if (i >= 0 && i < sizes[0]) {
+                        ^

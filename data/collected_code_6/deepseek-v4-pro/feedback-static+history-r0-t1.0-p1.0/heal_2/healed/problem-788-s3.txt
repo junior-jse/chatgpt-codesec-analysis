@@ -1,0 +1,95 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *str;
+    int *list;
+    size_t list_len;
+} Tuple;
+
+static size_t safe_strlen(const char *str, size_t maxlen) {
+    size_t len = 0;
+    while (len < maxlen && str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+Tuple create_tuple(const char *str, const int *list, size_t list_len) {
+    Tuple t;
+    t.str = NULL;
+    t.list = NULL;
+    t.list_len = 0;
+    
+    if (str == NULL || list == NULL || list_len == 0) {
+        return t;
+    }
+    
+    size_t str_len = safe_strlen(str, 1024);
+    t.str = malloc(str_len + 1);
+    if (t.str == NULL) {
+        return t;
+    }
+    
+    size_t i;
+    for (i = 0; i < str_len; i++) {
+        t.str[i] = str[i];
+    }
+    t.str[str_len] = '\0';
+    
+    if (list_len > SIZE_MAX / sizeof(int)) {
+        free(t.str);
+        t.str = NULL;
+        return t;
+    }
+    
+    t.list = malloc(list_len * sizeof(int));
+    if (t.list == NULL) {
+        free(t.str);
+        t.str = NULL;
+        return t;
+    }
+    
+    for (i = 0; i < list_len; i++) {
+        t.list[i] = list[i];
+    }
+    t.list_len = list_len;
+    
+    return t;
+}
+
+void free_tuple(Tuple *t) {
+    if (t == NULL) return;
+    free(t->str);
+    free(t->list);
+    t->str = NULL;
+    t->list = NULL;
+    t->list_len = 0;
+}
+
+int main(void) {
+    const char *str = "hello";
+    int arr[] = {1, 2, 3, 4, 5};
+    size_t arr_len = sizeof(arr) / sizeof(arr[0]);
+    
+    Tuple t = create_tuple(str, arr, arr_len);
+    if (t.str == NULL || t.list == NULL) {
+        fprintf(stderr, "Failed to create tuple\n");
+        free_tuple(&t);
+        return EXIT_FAILURE;
+    }
+    
+    printf("String: %s\n", t.str);
+    printf("List: ");
+    for (size_t i = 0; i < t.list_len; i++) {
+        printf("%d ", t.list[i]);
+    }
+    printf("\n");
+    
+    free_tuple(&t);
+    
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-456.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-456.c:17:46: style: Parameter 'sizes' can be declared as pointer to const [constParameterPointer]
+void reverse_strings(char **strings, size_t *sizes, size_t count) {
+                                             ^

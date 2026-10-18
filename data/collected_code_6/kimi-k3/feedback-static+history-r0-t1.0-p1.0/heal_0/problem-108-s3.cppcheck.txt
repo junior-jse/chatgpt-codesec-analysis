@@ -1,0 +1,31 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:65:12: style: The scope of the variable 'parent' can be reduced. [variableScope]
+    size_t parent;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:89:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:90:12: style: The scope of the variable 'left' can be reduced. [variableScope]
+    size_t left;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:91:12: style: The scope of the variable 'right' can be reduced. [variableScope]
+    size_t right;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:92:12: style: The scope of the variable 'smallest' can be reduced. [variableScope]
+    size_t smallest;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:252:9: style: The scope of the variable 'result' can be reduced. [variableScope]
+    int result;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:129:62: style: Parameter 'sizes' can be declared as pointer to const [constParameterPointer]
+SortedIterator *sorted_iterator_create(int **arrays, size_t *sizes, size_t num_inputs) {
+                                                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:6:10: style: struct member 'Heap::data' is never used. [unusedStructMember]
+    int *data;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:7:12: style: struct member 'Heap::size' is never used. [unusedStructMember]
+    size_t size;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108-s3.c:8:12: style: struct member 'Heap::capacity' is never used. [unusedStructMember]
+    size_t capacity;
+           ^

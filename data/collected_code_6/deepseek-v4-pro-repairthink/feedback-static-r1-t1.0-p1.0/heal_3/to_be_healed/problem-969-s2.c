@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Tuple {
+    int initial;
+    char *data;
+    struct Tuple *next;
+} Tuple;
+
+void free_tuple_list(Tuple *head);
+
+Tuple *join_tuples(Tuple *head) {
+    if (head == NULL) {
+        return NULL;
+    }
+    Tuple *result = NULL;
+    Tuple *result_tail = NULL;
+    Tuple *current = head;
+    while (current != NULL) {
+        Tuple *existing = result;
+        while (existing != NULL) {
+            if (existing->initial == current->initial) {
+                /* Possible weaknesses found:
+                 * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+                 */
+                size_t len = strlen(existing->data) + strlen(current->data) + 1;
+                char *new_data = malloc(len);
+                if (new_data == NULL) {
+                    free_tuple_list(result);
+                    return NULL;
+                }
+                snprintf(new_data, len, "%s%s", existing->data, current->data);
+                free(existing->data);
+                existing->data = new_data;
+                break;
+            }
+            existing = existing->next;
+        }
+        if (existing == NULL) {
+            Tuple *new_tuple = malloc(sizeof(Tuple));
+            if (new_tuple == NULL) {
+                free_tuple_list(result);
+                return NULL;
+            }
+            new_tuple->initial = current->initial;
+            /* Possible weaknesses found:
+             * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+             */
+            size_t data_len = strlen(current->data) + 1;
+            new_tuple->data = malloc(data_len);
+            if (new_tuple->data == NULL) {
+                free(new_tuple);
+                free_tuple_list(result);
+                return NULL;
+            }
+            snprintf(new_tuple->data, data_len, "%s", current->data);
+            new_tuple->next = NULL;
+            if (result == NULL) {
+                result = new_tuple;
+                result_tail = new_tuple;
+            } else {
+                result_tail->next = new_tuple;
+                result_tail = new_tuple;
+            }
+        }
+        current = current->next;
+    }
+    return result;
+}
+
+void free_tuple_list(Tuple *head) {
+    Tuple *current = head;
+    while (current != NULL) {
+        Tuple *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Tuple *head = NULL;
+    Tuple *tail = NULL;
+    int initials[] = {1, 2, 1, 3, 2};
+    const char *datas[] = {"a", "b", "c", "d", "e"};
+    size_t count = sizeof(initials) / sizeof(initials[0]);
+    for (size_t i = 0; i < count; i++) {
+        Tuple *new_tuple = malloc(sizeof(Tuple));
+        if (new_tuple == NULL) {
+            free_tuple_list(head);
+            return 1;
+        }
+        new_tuple->initial = initials[i];
+        /* Possible weaknesses found:
+         * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+         */
+        size_t len = strlen(datas[i]) + 1;
+        new_tuple->data = malloc(len);
+        if (new_tuple->data == NULL) {
+            free(new_tuple);
+            free_tuple_list(head);
+            return 1;
+        }
+        snprintf(new_tuple->data, len, "%s", datas[i]);
+        new_tuple->next = NULL;
+        if (head == NULL) {
+            head = new_tuple;
+            tail = new_tuple;
+        } else {
+            tail->next = new_tuple;
+            tail = new_tuple;
+        }
+    }
+    Tuple *joined = join_tuples(head);
+    if (joined != NULL) {
+        Tuple *current = joined;
+        while (current != NULL) {
+            printf("%d: %s\n", current->initial, current->data);
+            current = current->next;
+        }
+    }
+    free_tuple_list(head);
+    free_tuple_list(joined);
+    return 0;
+}

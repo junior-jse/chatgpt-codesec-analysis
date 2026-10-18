@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:6:35: style: Parameter 'arr1' can be declared as const array [constParameter]
+void findThreeClosestElements(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3) {
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:6:55: style: Parameter 'arr2' can be declared as const array [constParameter]
+void findThreeClosestElements(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3) {
+                                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-938.c:6:75: style: Parameter 'arr3' can be declared as const array [constParameter]
+void findThreeClosestElements(int arr1[], int n1, int arr2[], int n2, int arr3[], int n3) {
+                                                                          ^

@@ -1,0 +1,64 @@
+```c
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#include <stdbool.h>
+
+char find_first_repeated(const char *str)
+{
+    bool seen[UCHAR_MAX + 1] = {false};
+    const unsigned char *p;
+
+    if (str == NULL) {
+        return '\0';
+    }
+
+    for (p = (const unsigned char *)str; *p != '\0'; p++) {
+        if (seen[*p]) {
+            return (char)*p;
+        }
+        seen[*p] = true;
+    }
+
+    return '\0';
+}
+
+int main(void)
+{
+    const char *test1 = "hello world";
+    const char *test2 = "abcdefg";
+    const char *test3 = "programming";
+    const char *test4 = "";
+    char result;
+
+    result = find_first_repeated(test1);
+    if (result != '\0') {
+        printf("First repeated character in \"%s\": %c\n", test1, result);
+    } else {
+        printf("No repeated character in \"%s\"\n", test1);
+    }
+
+    result = find_first_repeated(test2);
+    if (result != '\0') {
+        printf("First repeated character in \"%s\": %c\n", test2, result);
+    } else {
+        printf("No repeated character in \"%s\"\n", test2);
+    }
+
+    result = find_first_repeated(test3);
+    if (result != '\0') {
+        printf("First repeated character in \"%s\": %c\n", test3, result);
+    } else {
+        printf("No repeated character in \"%s\"\n", test3);
+    }
+
+    result = find_first_repeated(test4);
+    if (result != '\0') {
+        printf("First repeated character in \"%s\": %c\n", test4, result);
+    } else {
+        printf("No repeated character in empty string\n");
+    }
+
+    return 0;
+}
+```

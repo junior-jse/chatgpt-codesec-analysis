@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-391.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-391.c:70:46: style: Parameter 'levels' can be declared as pointer to const [constParameterPointer]
+Dict *lists_to_nested_dict(char **keys, int *levels, char **values, int count) {
+                                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-391.c:80:19: style: Variable 'key_part' can be declared as pointer to const [constVariablePointer]
+            char *key_part = keys[i];
+                  ^

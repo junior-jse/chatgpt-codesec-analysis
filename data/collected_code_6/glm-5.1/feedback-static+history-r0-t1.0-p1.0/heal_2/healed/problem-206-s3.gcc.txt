@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206-s3.c: In function 'concatenate_adjacent':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206-s3.c:56:9: error: implicit declaration of function 'memcpy_s'; did you mean 'memcpy'? [-Wimplicit-function-declaration]
+   56 |         memcpy_s(result[i], total_len + 1, tuples[i].second, len1);
+      |         ^~~~~~~~
+      |         memcpy

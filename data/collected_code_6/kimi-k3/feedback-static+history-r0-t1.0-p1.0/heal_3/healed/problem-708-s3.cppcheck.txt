@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c:77:44: warning: Either the condition 'str_len<max_len' is redundant or the array 'test_string[14]' is accessed at index 1023, which is out of bounds. [arrayIndexOutOfBoundsCond]
+    while (str_len < max_len && test_string[str_len] != '\0') {
+                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c:73:22: note: Assignment 'max_len=1024', assigned value is 1024
+    size_t max_len = 1024;
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c:77:20: note: Assuming that condition 'str_len<max_len' is not redundant
+    while (str_len < max_len && test_string[str_len] != '\0') {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c:77:44: note: Array index out of bounds
+    while (str_len < max_len && test_string[str_len] != '\0') {
+                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-708-s3.c:72:10: style: Variable 'test_string' can be declared as const array [constVariable]
+    char test_string[] = "Hello, World!";
+         ^

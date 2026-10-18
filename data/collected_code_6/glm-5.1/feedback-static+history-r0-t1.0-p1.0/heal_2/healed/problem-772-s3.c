@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+void remove_words_of_length_k(char *str, size_t k, size_t buffer_size) {
+    if (str == NULL || k == 0 || buffer_size == 0) {
+        return;
+    }
+
+    char *read = str;
+    char *write = str;
+    char *buf_end = str + buffer_size - 1;
+
+    while (*read && write <= buf_end) {
+        while (*read && isspace((unsigned char)*read) && read <= buf_end) {
+            read++;
+        }
+
+        if (!*read || read > buf_end) {
+            break;
+        }
+
+        char *word_start = read;
+
+        while (*read && !isspace((unsigned char)*read) && read <= buf_end) {
+            read++;
+        }
+
+        size_t word_len = (size_t)(read - word_start);
+
+        if (word_len != k) {
+            if (write != str) {
+                if (write < buf_end) {
+                    *write = ' ';
+                    write++;
+                } else {
+                    break;
+                }
+            }
+            size_t copy_len = word_len;
+            if (write + copy_len > buf_end) {
+                copy_len = (size_t)(buf_end - write);
+            }
+            memmove(write, word_start, copy_len);
+            write += copy_len;
+        }
+    }
+
+    if (write <= buf_end) {
+        *write = '\0';
+    } else {
+        *buf_end = '\0';
+    }
+}
+
+int main() {
+    char str[] = "This is a test string for removing words";
+    size_t k = 4;
+    size_t buffer_size = sizeof(str);
+
+    printf("Original: \"%s\"\n", str);
+    remove_words_of_length_k(str, k, buffer_size);
+    printf("Modified: \"%s\"\n", str);
+
+    return 0;
+}

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-748-s2.c:49:17: warning: Value stored to 'result_capacity' is never read [deadcode.DeadStores]
+   49 |                 result_capacity = result_len + remaining + 1;
+      |                 ^                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.

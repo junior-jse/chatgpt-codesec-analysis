@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-26-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-26-s2.c:60:51: style: Condition 'res3==CHECK_NULL_LIST' is always true [knownConditionTrueFalse]
+    printf("NULL list all 3-elements: %s\n", res3 == CHECK_NULL_LIST ? "invalid (NULL)" : (res3 == CHECK_TRUE ? "true" : "false"));
+                                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-26-s2.c:56:49: note: Calling function 'check_all_k_elements' returns 2
+    enum CheckResult res3 = check_all_k_elements(NULL, 3);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-26-s2.c:56:49: note: Assignment 'res3=check_all_k_elements(NULL,3)', assigned value is 2
+    enum CheckResult res3 = check_all_k_elements(NULL, 3);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-26-s2.c:60:51: note: Condition 'res3==CHECK_NULL_LIST' is always true
+    printf("NULL list all 3-elements: %s\n", res3 == CHECK_NULL_LIST ? "invalid (NULL)" : (res3 == CHECK_TRUE ? "true" : "false"));
+                                                  ^

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-956.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-956.c:30:17: warning: Either the condition 'len>65536' is redundant or the array 'input[22]' is accessed at index 65536, which is out of bounds. [arrayIndexOutOfBoundsCond]
+    while (input[len] != '\0') {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-956.c:32:17: note: Assuming that condition 'len>65536' is not redundant
+        if (len > 65536) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-956.c:30:17: note: Array index out of bounds
+    while (input[len] != '\0') {
+                ^

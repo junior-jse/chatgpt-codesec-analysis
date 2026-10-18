@@ -1,0 +1,122 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    char *key;
+    char *value;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    size_t size;
+} Dictionary;
+
+void initDictionary(Dictionary *dict) {
+    if (dict != NULL) {
+        dict->head = NULL;
+        dict->size = 0;
+    }
+}
+
+bool isEmpty(const Dictionary *dict) {
+    if (dict == NULL) {
+        return true;
+    }
+    return (dict->head == NULL && dict->size == 0);
+}
+
+bool insert(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return false;
+    }
+
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return false;
+    }
+
+    size_t keyLen = strlen(key) + 1;
+    newNode->key = (char *)malloc(keyLen);
+    if (newNode->key == NULL) {
+        free(newNode);
+        return false;
+    }
+    memcpy(newNode->key, key, keyLen);
+
+    size_t valueLen = strlen(value) + 1;
+    newNode->value = (char *)malloc(valueLen);
+    if (newNode->value == NULL) {
+        free(newNode->key);
+        free(newNode);
+        return false;
+    }
+    memcpy(newNode->value, value, valueLen);
+
+    newNode->next = dict->head;
+    dict->head = newNode;
+    dict->size++;
+
+    return true;
+}
+
+void freeDictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+
+    Node *current = dict->head;
+    Node *next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current->key);
+        free(current->value);
+        free(current);
+        current = next;
+    }
+
+    dict->head = NULL;
+    dict->size = 0;
+}
+
+int main(void) {
+    Dictionary dict;
+    initDictionary(&dict);
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty\n");
+    } else {
+        printf("Dictionary is not empty\n");
+    }
+
+    if (!insert(&dict, "name", "John")) {
+        fprintf(stderr, "Failed to insert element\n");
+        freeDictionary(&dict);
+        return EXIT_FAILURE;
+    }
+
+    if (isEmpty(&dict)) {
+        printf("Dictionary is empty\n");
+    } else {
+        printf("Dictionary is not empty\n");
+    }
+
+    freeDictionary(&dict);
+
+    return EXIT_SUCCESS;
+}
+```
+
+**Summary of fixes applied:**
+
+1. **CWE-119/CWE-120 (fixed-size buffers):** Replaced the statically-sized `key[MAX_KEY_SIZE]` and `value[MAX_VALUE_SIZE]` arrays with dynamically allocated `char *` pointers. Memory is now allocated to exactly fit the input strings (`strlen + 1`), eliminating both truncation of oversized inputs and wasted space, with no artificial size restriction.
+
+2. **CWE-120 (`strncpy` misuse):** Removed `strncpy` entirely. Since the destination buffers are now sized precisely, `memcpy` with the exact byte count (including the null terminator) is safe and guarantees proper termination.
+
+3. **Memory leak fix:** `freeDictionary` now releases `key` and `value` for every node before freeing the node itself, which is required by the new dynamic allocation scheme.
+
+4. **Robust error handling:** If the `value` allocation fails after `key` succeeded, the already-allocated `key` and the node are freed before returning `false`, preventing leaks on partial failure.

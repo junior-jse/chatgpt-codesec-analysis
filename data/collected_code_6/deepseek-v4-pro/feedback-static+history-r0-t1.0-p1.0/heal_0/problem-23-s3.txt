@@ -1,0 +1,101 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int value;
+    struct Node *next;
+} Node;
+
+typedef struct ListNode {
+    Node *head;
+    struct ListNode *next;
+} ListNode;
+
+int list_sum(Node *head) {
+    int sum = 0;
+    while (head) {
+        sum += head->value;
+        head = head->next;
+    }
+    return sum;
+}
+
+int max_sum_of_lists(ListNode *list_head) {
+    if (!list_head) return 0;
+    int max_sum = 0;
+    int first = 1;
+    while (list_head) {
+        int sum = list_sum(list_head->head);
+        if (first || sum > max_sum) {
+            max_sum = sum;
+            first = 0;
+        }
+        list_head = list_head->next;
+    }
+    return max_sum;
+}
+
+Node *create_node(int value) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (!node) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    node->value = value;
+    node->next = NULL;
+    return node;
+}
+
+ListNode *create_list_node(Node *head) {
+    ListNode *lnode = (ListNode *)malloc(sizeof(ListNode));
+    if (!lnode) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    lnode->head = head;
+    lnode->next = NULL;
+    return lnode;
+}
+
+void free_nodes(Node *head) {
+    while (head) {
+        Node *tmp = head;
+        head = head->next;
+        free(tmp);
+    }
+}
+
+void free_list_nodes(ListNode *head) {
+    while (head) {
+        ListNode *tmp = head;
+        head = head->next;
+        free_nodes(tmp->head);
+        free(tmp);
+    }
+}
+
+int main() {
+    Node *n1 = create_node(1);
+    n1->next = create_node(2);
+    n1->next->next = create_node(3);
+
+    Node *n2 = create_node(-1);
+    n2->next = create_node(10);
+
+    Node *n3 = create_node(5);
+
+    ListNode *l1 = create_list_node(n1);
+    ListNode *l2 = create_list_node(n2);
+    ListNode *l3 = create_list_node(n3);
+
+    l1->next = l2;
+    l2->next = l3;
+
+    int result = max_sum_of_lists(l1);
+    printf("Maximum sum: %d\n", result);
+
+    free_list_nodes(l1);
+    return 0;
+}
+```

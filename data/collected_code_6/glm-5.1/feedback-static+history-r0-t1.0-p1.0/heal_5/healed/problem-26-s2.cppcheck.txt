@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-26-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-26-s2.c:68:34: style: Condition 'res3==CHECK_NULL_LIST' is always true [knownConditionTrueFalse]
+    const char *res3_str = (res3 == CHECK_NULL_LIST) ? "invalid (NULL)" : ((res3 == CHECK_TRUE) ? "true" : "false");
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-26-s2.c:63:49: note: Calling function 'check_all_k_elements' returns 2
+    enum CheckResult res3 = check_all_k_elements(null_list_ptr, 3);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-26-s2.c:63:49: note: Assignment 'res3=check_all_k_elements(null_list_ptr,3)', assigned value is 2
+    enum CheckResult res3 = check_all_k_elements(null_list_ptr, 3);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-26-s2.c:68:34: note: Condition 'res3==CHECK_NULL_LIST' is always true
+    const char *res3_str = (res3 == CHECK_NULL_LIST) ? "invalid (NULL)" : ((res3 == CHECK_TRUE) ? "true" : "false");
+                                 ^

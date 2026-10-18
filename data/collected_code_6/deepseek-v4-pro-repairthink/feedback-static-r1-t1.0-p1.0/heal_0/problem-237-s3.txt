@@ -1,0 +1,117 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    int occurrences;
+} Record;
+
+typedef struct {
+    Record *records;
+    size_t size;
+    size_t capacity;
+} RecordList;
+
+void init_record_list(RecordList *list) {
+    list->records = NULL;
+    list->size = 0;
+    list->capacity = 0;
+}
+
+void free_record_list(RecordList *list) {
+    if (list->records != NULL) {
+        free(list->records);
+        list->records = NULL;
+    }
+    list->size = 0;
+    list->capacity = 0;
+}
+
+int add_record(RecordList *list, int id) {
+    for (size_t i = 0; i < list->size; i++) {
+        if (list->records[i].id == id) {
+            list->records[i].occurrences++;
+            return 1;
+        }
+    }
+    
+    if (list->size == list->capacity) {
+        size_t new_capacity = (list->capacity == 0) ? 8 : list->capacity * 2;
+        Record *new_records = (Record *)realloc(list->records, new_capacity * sizeof(Record));
+        if (new_records == NULL) {
+            return 0;
+        }
+        list->records = new_records;
+        list->capacity = new_capacity;
+    }
+    
+    list->records[list->size].id = id;
+    list->records[list->size].occurrences = 1;
+    list->size++;
+    return 1;
+}
+
+int check_similar_occurrences(const int *tuples, size_t tuple_size) {
+    if (tuples == NULL || tuple_size == 0) {
+        return 0;
+    }
+    
+    RecordList list;
+    init_record_list(&list);
+    
+    for (size_t i = 0; i < tuple_size; i++) {
+        if (!add_record(&list, tuples[i])) {
+            free_record_list(&list);
+            return 0;
+        }
+    }
+    
+    if (list.size == 0) {
+        free_record_list(&list);
+        return 0;
+    }
+    
+    int target_occurrences = list.records[0].occurrences;
+    int result = 1;
+    
+    for (size_t i = 1; i < list.size; i++) {
+        if (list.records[i].occurrences != target_occurrences) {
+            result = 0;
+            break;
+        }
+    }
+    
+    free_record_list(&list);
+    return result;
+}
+
+int main(void) {
+    int tuples1[] = {1, 2, 1, 3, 2, 3};
+    size_t size1 = sizeof(tuples1) / sizeof(tuples1[0]);
+    printf("%d\n", check_similar_occurrences(tuples1, size1));
+    
+    int tuples2[] = {1, 2, 1, 3, 2};
+    size_t size2 = sizeof(tuples2) / sizeof(tuples2[0]);
+    printf("%d\n", check_similar_occurrences(tuples2, size2));
+    
+    int tuples3[] = {5, 5, 5, 5};
+    size_t size3 = sizeof(tuples3) / sizeof(tuples3[0]);
+    printf("%d\n", check_similar_occurrences(tuples3, size3));
+    
+    int tuples4[] = {1, 2, 3, 4};
+    size_t size4 = sizeof(tuples4) / sizeof(tuples4[0]);
+    printf("%d\n", check_similar_occurrences(tuples4, size4));
+    
+    int tuples5[] = {};
+    size_t size5 = sizeof(tuples5) / sizeof(tuples5[0]);
+    printf("%d\n", check_similar_occurrences(tuples5, size5));
+    
+    int *tuples6 = NULL;
+    size_t size6 = 0;
+    printf("%d\n", check_similar_occurrences(tuples6, size6));
+    
+    return 0;
+}
+```

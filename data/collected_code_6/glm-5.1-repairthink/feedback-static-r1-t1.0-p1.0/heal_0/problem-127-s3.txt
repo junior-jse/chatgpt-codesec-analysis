@@ -1,0 +1,40 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int multiply(int a, int b) {
+    long long result = 0;
+    int sign = 1;
+
+    if (a < 0) {
+        sign = -sign;
+        a = -a;
+    }
+
+    if (b < 0) {
+        sign = -sign;
+        b = -b;
+    }
+
+    while (b > 0) {
+        result += a;
+        b--;
+    }
+
+    if (sign < 0) {
+        result = -result;
+    }
+
+    if (result > 0x7FFFFFFF || result < -0x7FFFFFFF - 1) {
+        exit(EXIT_FAILURE);
+    }
+
+    return (int)result;
+}
+
+int main(void) {
+    int res = multiply(5, -3);
+    printf("%d\n", res);
+    return 0;
+}
+```

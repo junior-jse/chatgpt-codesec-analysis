@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char **split_at_uppercase(const char *str, int *count) {
+    if (count == NULL) return NULL;
+    if (str == NULL) {
+        *count = 0;
+        return NULL;
+    }
+
+    size_t len = strlen(str);
+    size_t *positions = malloc((len + 1) * sizeof(size_t));
+    if (positions == NULL) {
+        *count = 0;
+        return NULL;
+    }
+
+    size_t pos_count = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (isupper((unsigned char)str[i])) {
+            positions[pos_count++] = i;
+        }
+    }
+
+    char **result = malloc((pos_count + 2) * sizeof(char *));
+    if (result == NULL) {
+        free(positions);
+        *count = 0;
+        return NULL;
+    }
+
+    size_t result_count = 0;
+    size_t start = 0;
+
+    if (pos_count == 0) {
+        result[0] = malloc(len + 1);
+        if (result[0] == NULL) {
+            free(result);
+            free(positions);
+            *count = 0;
+            return NULL;
+        }
+        memcpy(result[0], str, len);
+        result[0][len] = '\0';
+        result_count = 1;
+    } else {
+        for (size_t i = 0; i < pos_count; i++) {
+            if (positions[i] > start) {
+                size_t seg_len = positions[i] - start;
+                result[result_count] = malloc(seg_len + 1);
+                if (result[result_count] == NULL) {
+                    for (size_t j = 0; j < result_count; j++) {
+                        free(result[j]);
+                    }
+                    free(result);
+                    free(positions);
+                    *count = 0;
+                    return NULL;
+                }
+                memcpy(result[result_count], str + start, seg_len);
+                result[result_count][seg_len] = '\0';
+                result_count++;
+            }
+            start = positions[i];
+        }
+
+        if (start < len) {
+            size_t seg_len = len - start;
+            result[result_count] = malloc(seg_len + 1);
+            if (result[result_count] == NULL) {
+                for (size_t j = 0; j < result_count; j++) {
+                    free(result[j]);
+                }
+                free(result);
+                free(positions);
+                *count = 0;
+                return NULL;
+            }
+            memcpy(result[result_count], str + start, seg_len);
+            result[result_count][seg_len] = '\0';
+            result_count++;
+        }
+    }
+
+    result[result_count] = NULL;
+    *count = (int)result_count;
+    free(positions);
+    return result;
+}
+
+void free_split_result(char **result) {
+    if (result == NULL) return;
+
+    for (int i = 0; result[i] != NULL; i++) {
+        free(result[i]);
+    }
+    free(result);
+}
+
+int main(void) {
+    const char *test_string = "helloWorldThisIsATest";
+    int count;
+
+    char **parts = split_at_uppercase(test_string, &count);
+
+    if (parts != NULL) {
+        printf("Split result:\n");
+        for (int i = 0; i < count; i++) {
+            printf("%s\n", parts[i]);
+        }
+        free_split_result(parts);
+    } else {
+        printf("Failed to split string\n");
+    }
+
+    return 0;
+}

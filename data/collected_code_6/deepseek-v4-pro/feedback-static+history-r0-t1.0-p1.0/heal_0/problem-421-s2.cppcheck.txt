@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-421-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-421-s2.c:80:16: style: Condition 'result!=NULL' is always false [knownConditionTrueFalse]
+    if (result != NULL) {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-421-s2.c:79:26: note: Calling function 'concat_tuple' returns 0
+    result = concat_tuple(NULL, 3, "|");
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-421-s2.c:79:26: note: Assignment 'result=concat_tuple(NULL,3,"|")', assigned value is 0
+    result = concat_tuple(NULL, 3, "|");
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-421-s2.c:80:16: note: Condition 'result!=NULL' is always false
+    if (result != NULL) {
+               ^

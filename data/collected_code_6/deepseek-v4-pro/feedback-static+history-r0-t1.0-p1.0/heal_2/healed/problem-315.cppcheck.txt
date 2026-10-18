@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:34:33: style: Condition 'current_len<dest_size' is always true [knownConditionTrueFalse]
+                if (current_len < dest_size) {
+                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:33:34: note: dest_size is assigned 'current_len+1' here.
+                size_t dest_size = current_len + 1;
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:34:33: note: Condition 'current_len<dest_size' is always true
+                if (current_len < dest_size) {
+                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:56:25: style: Condition 'current_len<dest_size' is always true [knownConditionTrueFalse]
+        if (current_len < dest_size) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:55:26: note: dest_size is assigned 'current_len+1' here.
+        size_t dest_size = current_len + 1;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315.c:56:25: note: Condition 'current_len<dest_size' is always true
+        if (current_len < dest_size) {
+                        ^

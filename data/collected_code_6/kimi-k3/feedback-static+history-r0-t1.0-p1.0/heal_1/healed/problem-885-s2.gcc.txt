@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-885-s2.c: In function 'isIsomorphic':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-885-s2.c:11:31: error: 'SIZE_MAX' undeclared (first use in this function)
+   11 |     size_t len_s = strnlen(s, SIZE_MAX);
+      |                               ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-885-s2.c:5:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; this is probably fixable by adding '#include <stdint.h>'
+    4 | #include <limits.h>
+  +++ |+#include <stdint.h>
+    5 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-885-s2.c:11:31: note: each undeclared identifier is reported only once for each function it appears in
+   11 |     size_t len_s = strnlen(s, SIZE_MAX);
+      |                               ^~~~~~~~

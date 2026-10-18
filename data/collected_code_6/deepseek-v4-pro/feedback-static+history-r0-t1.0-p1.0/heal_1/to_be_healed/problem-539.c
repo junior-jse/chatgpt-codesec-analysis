@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef struct Node {
+    double data;
+    struct Node *next;
+} Node;
+
+Node *create_node(double value) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = value;
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node *append_node(Node *head, double value) {
+    Node *new_node = create_node(value);
+    if (new_node == NULL) {
+        return NULL;
+    }
+    
+    if (head == NULL) {
+        return new_node;
+    }
+    
+    Node *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+/* Possible weaknesses found:
+ *  Parameter 'bases' can be declared as pointer to const [constParameterPointer]
+ */
+void map_power(int *bases, int size, Node **result) {
+    if (result == NULL || bases == NULL || size <= 0) {
+        return;
+    }
+    
+    *result = NULL;
+    
+    for (int i = 0; i < size; i++) {
+        double value = pow((double)bases[i], (double)i);
+        Node *new_head = append_node(*result, value);
+        if (new_head == NULL) {
+            free_list(*result);
+            *result = NULL;
+            return;
+        }
+        *result = new_head;
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%.2f ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int bases[] = {2, 3, 4, 5, 6};
+    int size = sizeof(bases) / sizeof(bases[0]);
+    Node *result = NULL;
+    
+    map_power(bases, size, &result);
+    
+    if (result != NULL) {
+        print_list(result);
+        free_list(result);
+    }
+    
+    return 0;
+}

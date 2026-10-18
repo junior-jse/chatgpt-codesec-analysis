@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-317.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-317.c:89:20: style: The comparison 'value_size > value_copy_capacity' is always false because 'value_size' and 'value_copy_capacity' represent the same value. [knownConditionTrueFalse]
+    if (value_size > value_copy_capacity) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-317.c:88:34: note: 'value_copy_capacity' is assigned value 'value_size' here.
+    size_t value_copy_capacity = value_size;
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-317.c:89:20: note: The comparison 'value_size > value_copy_capacity' is always false because 'value_size' and 'value_copy_capacity' represent the same value.
+    if (value_size > value_copy_capacity) {
+                   ^

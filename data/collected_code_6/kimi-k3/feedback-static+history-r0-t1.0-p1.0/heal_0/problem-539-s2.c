@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <errno.h>
+
+typedef struct {
+    double *data;
+    size_t size;
+} List;
+
+static double power_operation(double base, size_t index)
+{
+    return pow(base, (double)index);
+}
+
+List create_power_list(double base, size_t count)
+{
+    List result = {NULL, 0};
+    
+    if (count == 0)
+    {
+        return result;
+    }
+    
+    result.data = (double *)malloc(count * sizeof(double));
+    if (result.data == NULL)
+    {
+        return result;
+    }
+    
+    result.size = count;
+    
+    for (size_t i = 0; i < count; i++)
+    {
+        result.data[i] = power_operation(base, i);
+    }
+    
+    return result;
+}
+
+void free_list(List *list)
+{
+    if (list != NULL)
+    {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+    }
+}
+
+int main(void)
+{
+    double base;
+    size_t count;
+    
+    printf("Enter base number: ");
+    if (scanf("%lf", &base) != 1)
+    {
+        fprintf(stderr, "Invalid input for base\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Enter count: ");
+    if (scanf("%zu", &count) != 1)
+    {
+        fprintf(stderr, "Invalid input for count\n");
+        return EXIT_FAILURE;
+    }
+    
+    List power_list = create_power_list(base, count);
+    
+    if (power_list.data == NULL && count > 0)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Power list: ");
+    for (size_t i = 0; i < power_list.size; i++)
+    {
+        printf("%.2f ", power_list.data[i]);
+    }
+    printf("\n");
+    
+    free_list(&power_list);
+    
+    return EXIT_SUCCESS;
+}

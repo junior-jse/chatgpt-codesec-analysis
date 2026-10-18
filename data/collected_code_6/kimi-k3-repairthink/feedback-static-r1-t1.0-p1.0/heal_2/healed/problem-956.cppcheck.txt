@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:81:30: style: Condition 'buf_size<=len' is always false [knownConditionTrueFalse]
+                if (buf_size <= len) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:80:26: note: buf_size is assigned 'len+1' here.
+                buf_size = len + 1;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:81:30: note: Condition 'buf_size<=len' is always false
+                if (buf_size <= len) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:133:30: style: Condition 'buf_size<=len' is always false [knownConditionTrueFalse]
+                if (buf_size <= len) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:132:26: note: buf_size is assigned 'len+1' here.
+                buf_size = len + 1;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-956.c:133:30: note: Condition 'buf_size<=len' is always false
+                if (buf_size <= len) {
+                             ^

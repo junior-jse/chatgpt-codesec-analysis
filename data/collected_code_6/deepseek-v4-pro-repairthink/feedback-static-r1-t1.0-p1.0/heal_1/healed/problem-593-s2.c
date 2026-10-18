@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void remove_leading_zeros(char *ip) {
+    if (ip == NULL) return;
+
+    size_t len = strlen(ip);
+    if (len > 15) return;
+
+    char temp[16];
+    strcpy(temp, ip);
+
+    char result[16] = "";
+    char *saveptr;
+    char *token = strtok_r(temp, ".", &saveptr);
+    int first = 1;
+    int pos = 0;
+
+    while (token != NULL) {
+        char *start = token;
+        while (*start == '0' && *(start + 1) != '\0') {
+            start++;
+        }
+
+        int written;
+        if (!first) {
+            written = snprintf(result + pos, sizeof(result) - pos, ".%s", start);
+        } else {
+            written = snprintf(result + pos, sizeof(result) - pos, "%s", start);
+            first = 0;
+        }
+
+        if (written < 0 || (size_t)written >= sizeof(result) - pos) {
+            break;
+        }
+        pos += written;
+
+        token = strtok_r(NULL, ".", &saveptr);
+    }
+
+    result[sizeof(result) - 1] = '\0';
+    snprintf(ip, 16, "%s", result);
+}
+
+int main(void) {
+    char ip1[] = "192.168.001.001";
+    remove_leading_zeros(ip1);
+    printf("%s\n", ip1);
+
+    char ip2[] = "010.000.000.010";
+    remove_leading_zeros(ip2);
+    printf("%s\n", ip2);
+
+    char ip3[] = "0.0.0.0";
+    remove_leading_zeros(ip3);
+    printf("%s\n", ip3);
+
+    char ip4[] = "255.255.255.255";
+    remove_leading_zeros(ip4);
+    printf("%s\n", ip4);
+
+    return 0;
+}

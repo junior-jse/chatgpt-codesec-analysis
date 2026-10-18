@@ -1,0 +1,153 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+    struct List *next;
+} List;
+
+Node *reverseNodeList(Node *head) {
+    Node *prev = NULL;
+    Node *current = head;
+    Node *next = NULL;
+    
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    
+    return prev;
+}
+
+void reverseListOfLists(List *listOfLists) {
+    List *currentList = listOfLists;
+    
+    while (currentList != NULL) {
+        currentList->head = reverseNodeList(currentList->head);
+        currentList = currentList->next;
+    }
+}
+
+Node *createNode(int data) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+List *createList() {
+    List *newList = (List *)malloc(sizeof(List));
+    if (newList == NULL) {
+        return NULL;
+    }
+    newList->head = NULL;
+    newList->next = NULL;
+    return newList;
+}
+
+void appendNode(Node **head, int data) {
+    Node *newNode = createNode(data);
+    if (newNode == NULL) {
+        return;
+    }
+    
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        Node *current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+void printListOfLists(List *listOfLists) {
+    List *currentList = listOfLists;
+    int listNum = 1;
+    
+    while (currentList != NULL) {
+        printf("List %d: ", listNum++);
+        Node *currentNode = currentList->head;
+        while (currentNode != NULL) {
+            printf("%d ", currentNode->data);
+            currentNode = currentNode->next;
+        }
+        printf("\n");
+        currentList = currentList->next;
+    }
+}
+
+void freeNodeList(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void freeListOfLists(List *listOfLists) {
+    List *currentList = listOfLists;
+    while (currentList != NULL) {
+        List *nextList = currentList->next;
+        freeNodeList(currentList->head);
+        free(currentList);
+        currentList = nextList;
+    }
+}
+
+int main() {
+    List *listOfLists = NULL;
+    List *tail = NULL;
+    int i, j;
+    int testData[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+    
+    for (i = 0; i < 3; i++) {
+        List *newList = createList();
+        if (newList == NULL) {
+            freeListOfLists(listOfLists);
+            return 1;
+        }
+        
+        for (j = 0; j < 4; j++) {
+            appendNode(&(newList->head), testData[i][j]);
+        }
+        
+        if (listOfLists == NULL) {
+            listOfLists = newList;
+            tail = newList;
+        } else {
+            tail->next = newList;
+            tail = newList;
+        }
+    }
+    
+    printf("Before reversal:\n");
+    printListOfLists(listOfLists);
+    
+    reverseListOfLists(listOfLists);
+    
+    printf("\nAfter reversal:\n");
+    printListOfLists(listOfLists);
+    
+    freeListOfLists(listOfLists);
+    
+    return 0;
+}
+```

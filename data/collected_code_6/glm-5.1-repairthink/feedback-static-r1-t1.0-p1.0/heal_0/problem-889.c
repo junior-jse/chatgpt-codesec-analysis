@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node** reverse_lists(Node** lists, int count) {
+    if (lists == NULL || count <= 0) {
+        return NULL;
+    }
+
+    for (int i = 0; i < count; i++) {
+        Node* prev = NULL;
+        Node* curr = lists[i];
+        Node* next = NULL;
+
+        while (curr != NULL) {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        lists[i] = prev;
+    }
+
+    return lists;
+}
+
+void free_lists(Node** lists, int count) {
+    if (lists == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        Node* curr = lists[i];
+        while (curr != NULL) {
+            Node* next = curr->next;
+            free(curr);
+            curr = next;
+        }
+    }
+
+    free(lists);
+}
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int main(void) {
+    int list_count = 3;
+    Node** lists = (Node**)malloc(list_count * sizeof(Node*));
+    if (lists == NULL) {
+        return 1;
+    }
+
+    lists[0] = create_node(1);
+    if (lists[0] == NULL) { free(lists); return 1; }
+    lists[0]->next = create_node(2);
+    if (lists[0]->next == NULL) { free(lists[0]); free(lists); return 1; }
+    lists[0]->next->next = create_node(3);
+    if (lists[0]->next->next == NULL) { free(lists[0]->next); free(lists[0]); free(lists); return 1; }
+
+    lists[1] = create_node(4);
+    if (lists[1] == NULL) { free(lists[0]->next->next); free(lists[0]->next); free(lists[0]); free(lists); return 1; }
+    lists[1]->next = create_node(5);
+    if (lists[1]->next == NULL) { free(lists[1]); free(lists[0]->next->next); free(lists[0]->next); free(lists[0]); free(lists); return 1; }
+
+    lists[2] = create_node(6);
+    if (lists[2] == NULL) { free(lists[1]->next); free(lists[1]); free(lists[0]->next->next); free(lists[0]->next); free(lists[0]); free(lists); return 1; }
+
+    lists = reverse_lists(lists, list_count);
+    if (lists == NULL) {
+        return 1;
+    }
+
+    for (int i = 0; i < list_count; i++) {
+        Node* curr = lists[i];
+        while (curr != NULL) {
+            printf("%d ", curr->data);
+            curr = curr->next;
+        }
+        printf("\n");
+    }
+
+    free_lists(lists, list_count);
+
+    return 0;
+}

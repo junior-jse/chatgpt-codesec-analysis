@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:68:25: style: Parameter 'dividend' can be declared as pointer to const [constParameterPointer]
+int compare_arrays(int* dividend, int dividend_len, int* divisor, int divisor_len) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:68:58: style: Parameter 'divisor' can be declared as pointer to const [constParameterPointer]
+int compare_arrays(int* dividend, int dividend_len, int* divisor, int divisor_len) {
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:80:27: style: Parameter 'dividend' can be declared as pointer to const [constParameterPointer]
+int* subtract_arrays(int* dividend, int dividend_len, int* divisor, int divisor_len, int* result_len) {
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:154:10: style: Variable 'remainder' can be declared as pointer to const [constVariablePointer]
+    int* remainder = (int*)malloc(sizeof(int) * dividend_len);
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:231:26: style: Parameter 'array' can be declared as pointer to const [constParameterPointer]
+Node* array_to_list(int* array, int length) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-358.c:162:23: style: Variable 'remainder_len' is assigned a value that is never used. [unreadVariable]
+    int remainder_len = 0;
+                      ^

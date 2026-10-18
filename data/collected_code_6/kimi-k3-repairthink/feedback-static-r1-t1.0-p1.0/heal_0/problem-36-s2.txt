@@ -1,0 +1,78 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int find_nth_digit(long long numerator, long long denominator, int n)
+{
+    if (denominator == 0 || n < 1) {
+        return -1;
+    }
+
+    if (numerator < 0) {
+        if (numerator == LLONG_MIN) {
+            return -1;
+        }
+        numerator = -numerator;
+    }
+
+    if (denominator < 0) {
+        if (denominator == LLONG_MIN) {
+            return -1;
+        }
+        denominator = -denominator;
+    }
+
+    long long remainder = numerator % denominator;
+
+    for (int i = 0; i < n; i++) {
+        if (remainder > LLONG_MAX / 10) {
+            return -1;
+        }
+        remainder *= 10;
+        int digit = (int)(remainder / denominator);
+        remainder %= denominator;
+        if (i == n - 1) {
+            return digit;
+        }
+    }
+
+    return -1;
+}
+
+int main(void)
+{
+    long long numerator = 0;
+    long long denominator = 0;
+    int n = 0;
+
+    printf("Enter numerator: ");
+    if (scanf("%lld", &numerator) != 1) {
+        fprintf(stderr, "Invalid input for numerator.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter denominator: ");
+    if (scanf("%lld", &denominator) != 1) {
+        fprintf(stderr, "Invalid input for denominator.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter position n: ");
+    if (scanf("%d", &n) != 1) {
+        fprintf(stderr, "Invalid input for position.\n");
+        return EXIT_FAILURE;
+    }
+
+    int digit = find_nth_digit(numerator, denominator, n);
+
+    if (digit < 0) {
+        fprintf(stderr, "Error: invalid parameters or overflow occurred.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("The %dth digit of the fractional part is: %d\n", n, digit);
+
+    return EXIT_SUCCESS;
+}
+```

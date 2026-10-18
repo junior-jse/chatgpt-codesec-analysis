@@ -1,0 +1,240 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Pair {
+    char *key;
+    char *value;
+} Pair;
+
+typedef struct Node {
+    char *value;
+    struct Node *next;
+} Node;
+
+typedef struct Entry {
+    char *key;
+    Node *head;
+    Node *tail;
+    struct Entry *next;
+} Entry;
+
+typedef struct {
+    Entry *head;
+    size_t size;
+} Map;
+
+static char *duplicate_string(const char *s) {
+    size_t len;
+    char *copy;
+
+    if (s == NULL) {
+        return NULL;
+    }
+
+    len = strlen(s);
+    copy = malloc(len + 1);
+    if (copy == NULL) {
+        return NULL;
+    }
+
+    memcpy(copy, s, len + 1);
+    return copy;
+}
+
+static Node *create_node(const char *value) {
+    Node *node = malloc(sizeof(Node));
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->value = duplicate_string(value);
+    if (node->value == NULL) {
+        free(node);
+        return NULL;
+    }
+
+    node->next = NULL;
+    return node;
+}
+
+static Entry *create_entry(const char *key) {
+    Entry *entry = malloc(sizeof(Entry));
+    if (entry == NULL) {
+        return NULL;
+    }
+
+    entry->key = duplicate_string(key);
+    if (entry->key == NULL) {
+        free(entry);
+        return NULL;
+    }
+
+    entry->head = NULL;
+    entry->tail = NULL;
+    entry->next = NULL;
+    return entry;
+}
+
+static Entry *find_entry(Map *map, const char *key) {
+    Entry *current;
+
+    if (map == NULL || key == NULL) {
+        return NULL;
+    }
+
+    current = map->head;
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+static int add_to_map(Map *map, const char *key, const char *value) {
+    Entry *entry;
+    Node *node;
+
+    if (map == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+
+    entry = find_entry(map, key);
+    if (entry == NULL) {
+        entry = create_entry(key);
+        if (entry == NULL) {
+            return -1;
+        }
+        entry->next = map->head;
+        map->head = entry;
+        map->size++;
+    }
+
+    node = create_node(value);
+    if (node == NULL) {
+        return -1;
+    }
+
+    if (entry->tail != NULL) {
+        entry->tail->next = node;
+    } else {
+        entry->head = node;
+    }
+    entry->tail = node;
+
+    return 0;
+}
+
+static void free_nodes(Node *head) {
+    Node *current = head;
+    Node *next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current->value);
+        free(current);
+        current = next;
+    }
+}
+
+static void free_map(Map *map) {
+    Entry *current;
+    Entry *next;
+
+    if (map == NULL) {
+        return;
+    }
+
+    current = map->head;
+    while (current != NULL) {
+        next = current->next;
+        free_nodes(current->head);
+        free(current->key);
+        free(current);
+        current = next;
+    }
+
+    map->head = NULL;
+    map->size = 0;
+}
+
+static Map *group_pairs(const Pair *pairs, size_t count) {
+    Map *map;
+    size_t i;
+
+    if (pairs == NULL && count > 0) {
+        return NULL;
+    }
+
+    map = malloc(sizeof(Map));
+    if (map == NULL) {
+        return NULL;
+    }
+
+    map->head = NULL;
+    map->size = 0;
+
+    for (i = 0; i < count; i++) {
+        if (add_to_map(map, pairs[i].key, pairs[i].value) != 0) {
+            free_map(map);
+            free(map);
+            return NULL;
+        }
+    }
+
+    return map;
+}
+
+static void print_map(const Map *map) {
+    Entry *entry;
+    Node *node;
+
+    if (map == NULL) {
+        return;
+    }
+
+    entry = map->head;
+    while (entry != NULL) {
+        printf("%s: [", entry->key);
+        node = entry->head;
+        while (node != NULL) {
+            printf("%s", node->value);
+            if (node->next != NULL) {
+                printf(", ");
+            }
+            node = node->next;
+        }
+        printf("]\n");
+        entry = entry->next;
+    }
+}
+
+int main(void) {
+    Pair pairs[] = {
+        {"fruit", "apple"},
+        {"vegetable", "carrot"},
+        {"fruit", "banana"},
+        {"vegetable", "broccoli"},
+        {"fruit", "cherry"},
+        {"dairy", "milk"},
+        {"dairy", "cheese"}
+    };
+    size_t count = sizeof(pairs) / sizeof(pairs[0]);
+    Map *map;
+
+    map = group_pairs(pairs, count);
+    if (map == NULL) {
+        fprintf(stderr, "Failed to group pairs\n");
+        return EXIT_FAILURE;
+    }
+
+    print_map(map);
+
+    free_map(map);
+    free(map);
+
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:124:9: style: Variable 't1' can be declared as const array [constVariable]
+    int t1[] = {1, 2};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:125:9: style: Variable 't2' can be declared as const array [constVariable]
+    int t2[] = {3, 4, 5};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:126:9: style: Variable 't3' can be declared as const array [constVariable]
+    int t3[] = {6, 7};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:127:9: style: Variable 't4' can be declared as const array [constVariable]
+    int t4[] = {8, 9, 10, 11};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:128:9: style: Variable 't5' can be declared as const array [constVariable]
+    int t5[] = {12, 13};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s3.c:129:9: style: Variable 't6' can be declared as const array [constVariable]
+    int t6[] = {14};
+        ^

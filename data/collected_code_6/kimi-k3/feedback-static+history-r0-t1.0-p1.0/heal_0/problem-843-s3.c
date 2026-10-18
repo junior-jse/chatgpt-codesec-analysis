@@ -1,0 +1,161 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+typedef struct {
+    long long value;
+    int prime_index;
+    int ugly_index;
+} HeapNode;
+
+typedef struct {
+    HeapNode *data;
+    int size;
+    int capacity;
+} MinHeap;
+
+static void swap_nodes(HeapNode *a, HeapNode *b) {
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static void heapify_up(MinHeap *heap, int idx) {
+    while (idx > 0) {
+        int parent = (idx - 1) / 2;
+        if (heap->data[parent].value <= heap->data[idx].value) {
+            break;
+        }
+        swap_nodes(&heap->data[parent], &heap->data[idx]);
+        idx = parent;
+    }
+}
+
+static void heapify_down(MinHeap *heap, int idx) {
+    while (1) {
+        int left = 2 * idx + 1;
+        int right = 2 * idx + 2;
+        int smallest = idx;
+        
+        if (left < heap->size && heap->data[left].value < heap->data[smallest].value) {
+            smallest = left;
+        }
+        if (right < heap->size && heap->data[right].value < heap->data[smallest].value) {
+            smallest = right;
+        }
+        if (smallest == idx) {
+            break;
+        }
+        swap_nodes(&heap->data[idx], &heap->data[smallest]);
+        idx = smallest;
+    }
+}
+
+static int heap_push(MinHeap *heap, HeapNode node) {
+    if (heap->size >= heap->capacity) {
+        int new_capacity = heap->capacity * 2;
+        HeapNode *new_data = (HeapNode *)realloc(heap->data, (size_t)new_capacity * sizeof(HeapNode));
+        if (new_data == NULL) {
+            return -1;
+        }
+        heap->data = new_data;
+        heap->capacity = new_capacity;
+    }
+    heap->data[heap->size] = node;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+static HeapNode heap_pop(MinHeap *heap) {
+    HeapNode top = heap->data[0];
+    heap->size--;
+    if (heap->size > 0) {
+        heap->data[0] = heap->data[heap->size];
+        heapify_down(heap, 0);
+    }
+    return top;
+}
+
+long long nth_super_ugly_number(int n, const int *primes, int k) {
+    if (n <= 0 || primes == NULL || k <= 0) {
+        return -1;
+    }
+    
+    long long *ugly = (long long *)malloc((size_t)n * sizeof(long long));
+    if (ugly == NULL) {
+        return -1;
+    }
+    
+    MinHeap heap;
+    heap.capacity = k;
+    heap.size = 0;
+    heap.data = (HeapNode *)malloc((size_t)k * sizeof(HeapNode));
+    if (heap.data == NULL) {
+        free(ugly);
+        return -1;
+    }
+    
+    ugly[0] = 1;
+    
+    for (int i = 0; i < k; i++) {
+        HeapNode node;
+        node.value = (long long)primes[i];
+        node.prime_index = i;
+        node.ugly_index = 0;
+        if (heap_push(&heap, node) != 0) {
+            free(heap.data);
+            free(ugly);
+            return -1;
+        }
+    }
+    
+    for (int i = 1; i < n; i++) {
+        HeapNode top = heap_pop(&heap);
+        ugly[i] = top.value;
+        
+        while (heap.size > 0 && heap.data[0].value == top.value) {
+            HeapNode dup = heap_pop(&heap);
+            HeapNode next;
+            next.value = ugly[dup.ugly_index + 1] * (long long)primes[dup.prime_index];
+            next.prime_index = dup.prime_index;
+            next.ugly_index = dup.ugly_index + 1;
+            if (heap_push(&heap, next) != 0) {
+                free(heap.data);
+                free(ugly);
+                return -1;
+            }
+        }
+        
+        HeapNode next;
+        next.value = ugly[top.ugly_index + 1] * (long long)primes[top.prime_index];
+        next.prime_index = top.prime_index;
+        next.ugly_index = top.ugly_index + 1;
+        if (heap_push(&heap, next) != 0) {
+            free(heap.data);
+            free(ugly);
+            return -1;
+        }
+    }
+    
+    long long result = ugly[n - 1];
+    free(heap.data);
+    free(ugly);
+    return result;
+}
+
+int main(void) {
+    int primes[] = {2, 7, 13, 19};
+    int k = (int)(sizeof(primes) / sizeof(primes[0]));
+    int n = 12;
+    
+    long long result = nth_super_ugly_number(n, primes, k);
+    if (result < 0) {
+        fprintf(stderr, "Error: invalid input or allocation failure\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("The %dth super ugly number is: %lld\n", n, result);
+    return EXIT_SUCCESS;
+}

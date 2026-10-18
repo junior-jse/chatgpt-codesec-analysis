@@ -1,0 +1,7 @@
+during IPA pass: analyzer
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-513.c: In function 'convert_tuple_to_list':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-513.c:56:19: internal compiler error: Segmentation fault: 11
+   56 |     char *token = strtok(content, ",");
+      |                   ^~~~~~~~~~~~~~~~~~~~
+Please submit a full bug report, with preprocessed source (by using -freport-bug).
+See <https://github.com/Homebrew/homebrew-core/issues> for instructions.

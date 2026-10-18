@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-352.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-352.c:15:16: error: Array 'str[1]' accessed at index 8191, which is out of bounds. [arrayIndexOutOfBounds]
+        if (str[i] == '\0') {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-352.c:14:26: note: Assuming that condition 'i<8192' is not redundant
+    for (size_t i = 0; i < MAX_STRING_LENGTH; i++) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-352.c:15:16: note: Array index out of bounds
+        if (str[i] == '\0') {
+               ^

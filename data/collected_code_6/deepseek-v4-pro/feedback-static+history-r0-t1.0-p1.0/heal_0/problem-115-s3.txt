@@ -1,0 +1,41 @@
+```c
+#include <stdio.h>
+#include <stdbool.h>
+
+typedef struct {
+    int key_count;
+} Dict;
+
+bool all_dicts_empty(Dict *dicts, size_t size) {
+    if (dicts == NULL || size == 0) {
+        return true;
+    }
+    
+    for (size_t i = 0; i < size; i++) {
+        if (dicts[i].key_count != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main(void) {
+    Dict empty1 = {0};
+    Dict empty2 = {0};
+    Dict empty3 = {0};
+    Dict non_empty = {3};
+    
+    Dict all_empty[] = {empty1, empty2, empty3};
+    Dict has_non_empty[] = {empty1, non_empty, empty3};
+    Dict single_empty[] = {empty1};
+    
+    printf("All empty test: %s\n", 
+           all_dicts_empty(all_empty, sizeof(all_empty)/sizeof(all_empty[0])) ? "true" : "false");
+    printf("Has non-empty test: %s\n", 
+           all_dicts_empty(has_non_empty, sizeof(has_non_empty)/sizeof(has_non_empty[0])) ? "true" : "false");
+    printf("Single empty test: %s\n", 
+           all_dicts_empty(single_empty, sizeof(single_empty)/sizeof(single_empty[0])) ? "true" : "false");
+    
+    return 0;
+}
+```

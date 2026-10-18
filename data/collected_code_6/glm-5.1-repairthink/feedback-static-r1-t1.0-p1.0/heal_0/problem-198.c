@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+typedef struct {
+    double a;
+    double b;
+} Ellipse;
+
+typedef struct {
+    double x[3];
+    double y[3];
+} Triangle;
+
+double triangle_area(const Triangle *t) {
+    return 0.5 * fabs((t->x[1] - t->x[0]) * (t->y[2] - t->y[0]) - 
+                       (t->x[2] - t->x[0]) * (t->y[1] - t->y[0]));
+}
+
+void largest_inscribed_triangle(const Ellipse *e, Triangle *t) {
+    if (e == NULL || t == NULL) {
+        exit(EXIT_FAILURE);
+    }
+
+    if (e->a <= 0.0 || e->b <= 0.0) {
+        exit(EXIT_FAILURE);
+    }
+
+    double theta1 = M_PI / 2.0;
+    double theta2 = M_PI / 2.0 + (2.0 * M_PI / 3.0);
+    double theta3 = M_PI / 2.0 + (4.0 * M_PI / 3.0);
+
+    t->x[0] = e->a * cos(theta1);
+    t->y[0] = e->b * sin(theta1);
+
+    t->x[1] = e->a * cos(theta2);
+    t->y[1] = e->b * sin(theta2);
+
+    t->x[2] = e->a * cos(theta3);
+    t->y[2] = e->b * sin(theta3);
+}
+
+int main(void) {
+    Ellipse e;
+    e.a = 5.0;
+    e.b = 3.0;
+
+    Triangle t;
+
+    largest_inscribed_triangle(&e, &t);
+
+    double area = triangle_area(&t);
+
+    printf("Ellipse semi-major axis a = %f, semi-minor axis b = %f\n", e.a, e.b);
+    printf("Largest inscribed triangle area: %f\n", area);
+    printf("Vertices:\n");
+    for (int i = 0; i < 3; ++i) {
+        printf("(%f, %f)\n", t.x[i], t.y[i]);
+    }
+
+    return 0;
+}

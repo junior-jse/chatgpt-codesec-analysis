@@ -1,0 +1,1 @@
+fatal error: error in backend: LLVM was not compiled with Z3 support, rebuild with -DLLVM_ENABLE_Z3_SOLVER=ON

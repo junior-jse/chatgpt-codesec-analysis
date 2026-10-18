@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t length;
+} IntList;
+
+typedef struct {
+    IntList *lists;
+    size_t count;
+} ListOfLists;
+
+ListOfLists find_max_length_lists(const IntList *lists, size_t count) {
+    ListOfLists result;
+    result.lists = NULL;
+    result.count = 0;
+    
+    if (lists == NULL || count == 0) {
+        return result;
+    }
+    
+    size_t max_len = 0;
+    size_t max_count = 0;
+    
+    for (size_t i = 0; i < count; i++) {
+        if (lists[i].length > max_len) {
+            max_len = lists[i].length;
+            max_count = 1;
+        } else if (lists[i].length == max_len) {
+            max_count++;
+        }
+    }
+    
+    IntList *max_lists = malloc(max_count * sizeof(IntList));
+    if (max_lists == NULL) {
+        return result;
+    }
+    
+    size_t idx = 0;
+    for (size_t i = 0; i < count; i++) {
+        if (lists[i].length == max_len) {
+            max_lists[idx].data = lists[i].data;
+            max_lists[idx].length = lists[i].length;
+            idx++;
+        }
+    }
+    
+    result.lists = max_lists;
+    result.count = max_count;
+    return result;
+}
+
+void free_list_of_lists(ListOfLists *lol) {
+    if (lol != NULL) {
+        free(lol->lists);
+        lol->lists = NULL;
+        lol->count = 0;
+    }
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3};
+    int data2[] = {4, 5};
+    int data3[] = {6, 7, 8, 9};
+    int data4[] = {10, 11, 12, 13};
+    int data5[] = {14};
+    
+    IntList lists[] = {
+        {data1, 3},
+        {data2, 2},
+        {data3, 4},
+        {data4, 4},
+        {data5, 1}
+    };
+    size_t num_lists = sizeof(lists) / sizeof(lists[0]);
+    
+    ListOfLists result = find_max_length_lists(lists, num_lists);
+    
+    if (result.lists == NULL) {
+        fprintf(stderr, "Error: Failed to allocate memory or empty input\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Found %zu list(s) with maximum length %zu:\n", result.count, 
+           result.count > 0 ? result.lists[0].length : 0);
+    
+    for (size_t i = 0; i < result.count; i++) {
+        printf("List %zu: [", i + 1);
+        for (size_t j = 0; j < result.lists[i].length; j++) {
+            printf("%d", result.lists[i].data[j]);
+            if (j < result.lists[i].length - 1) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+    
+    free_list_of_lists(&result);
+    
+    return EXIT_SUCCESS;
+}

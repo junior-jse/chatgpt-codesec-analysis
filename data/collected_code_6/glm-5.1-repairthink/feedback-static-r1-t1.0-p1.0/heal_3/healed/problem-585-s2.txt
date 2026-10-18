@@ -1,0 +1,124 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *name;
+    double price;
+} Item;
+
+Item create_item(const char *name, double price) {
+    Item item;
+    item.name = NULL;
+    item.price = price;
+    if (name != NULL) {
+        size_t len = strlen(name);
+        item.name = (char *)malloc(len + 1);
+        if (item.name != NULL) {
+            snprintf(item.name, len + 1, "%s", name);
+        }
+    }
+    return item;
+}
+
+void free_item(Item *item) {
+    if (item != NULL) {
+        free(item->name);
+        item->name = NULL;
+    }
+}
+
+void swap(Item *a, Item *b) {
+    Item temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void min_heapify(Item *heap, int heap_size, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < heap_size && heap[left].price < heap[smallest].price) {
+        smallest = left;
+    }
+
+    if (right < heap_size && heap[right].price < heap[smallest].price) {
+        smallest = right;
+    }
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        min_heapify(heap, heap_size, smallest);
+    }
+}
+
+void build_min_heap(Item *heap, int heap_size) {
+    for (int i = (heap_size / 2) - 1; i >= 0; i--) {
+        min_heapify(heap, heap_size, i);
+    }
+}
+
+Item* find_n_expensive(Item *dataset, int dataset_size, int n, int *result_size) {
+    if (dataset == NULL || dataset_size <= 0 || n <= 0) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    int k = (n < dataset_size) ? n : dataset_size;
+    Item *heap = (Item*)malloc(k * sizeof(Item));
+    if (heap == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < k; i++) {
+        heap[i] = create_item(dataset[i].name, dataset[i].price);
+    }
+
+    build_min_heap(heap, k);
+
+    for (int i = k; i < dataset_size; i++) {
+        if (dataset[i].price > heap[0].price) {
+            free_item(&heap[0]);
+            heap[0] = create_item(dataset[i].name, dataset[i].price);
+            min_heapify(heap, k, 0);
+        }
+    }
+
+    *result_size = k;
+    return heap;
+}
+
+int main(void) {
+    Item dataset[7];
+    dataset[0] = create_item("Item A", 10.50);
+    dataset[1] = create_item("Item B", 150.00);
+    dataset[2] = create_item("Item C", 25.75);
+    dataset[3] = create_item("Item D", 99.99);
+    dataset[4] = create_item("Item E", 200.00);
+    dataset[5] = create_item("Item F", 5.00);
+    dataset[6] = create_item("Item G", 85.00);
+
+    int dataset_size = sizeof(dataset) / sizeof(dataset[0]);
+    int n = 3;
+    int result_size = 0;
+
+    Item *result = find_n_expensive(dataset, dataset_size, n, &result_size);
+
+    if (result != NULL) {
+        for (int i = 0; i < result_size; i++) {
+            printf("%s: %.2f\n", result[i].name, result[i].price);
+            free_item(&result[i]);
+        }
+        free(result);
+    }
+
+    for (int i = 0; i < dataset_size; i++) {
+        free_item(&dataset[i]);
+    }
+
+    return 0;
+}
+```

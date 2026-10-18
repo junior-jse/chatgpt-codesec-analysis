@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-473.c: In function 'tuples_equal_unordered':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-473.c:101:5: error: implicit declaration of function 'memcpy_s'; did you mean 'memcpy'? [-Wimplicit-function-declaration]
+  101 |     memcpy_s(s1, t1.size * sizeof(int), t1.elements, t1.size * sizeof(int));
+      |     ^~~~~~~~
+      |     memcpy

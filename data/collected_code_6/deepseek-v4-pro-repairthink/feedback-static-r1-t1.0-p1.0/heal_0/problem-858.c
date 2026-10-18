@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    void *data;
+    struct ListNode *next;
+};
+
+struct List {
+    struct ListNode *head;
+};
+
+int square_list_count(struct List *list_of_lists) {
+    int count = 0;
+    struct ListNode *current;
+    
+    if (list_of_lists == NULL) {
+        return 0;
+    }
+    
+    current = list_of_lists->head;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    
+    return count * count;
+}
+
+int main(void) {
+    struct List *inner_list1 = malloc(sizeof(struct List));
+    struct List *inner_list2 = malloc(sizeof(struct List));
+    struct List *inner_list3 = malloc(sizeof(struct List));
+    struct List *outer_list = malloc(sizeof(struct List));
+    
+    if (inner_list1 == NULL || inner_list2 == NULL || 
+        inner_list3 == NULL || outer_list == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(outer_list);
+        return EXIT_FAILURE;
+    }
+    
+    inner_list1->head = NULL;
+    inner_list2->head = NULL;
+    inner_list3->head = NULL;
+    
+    struct ListNode *node1 = malloc(sizeof(struct ListNode));
+    struct ListNode *node2 = malloc(sizeof(struct ListNode));
+    struct ListNode *node3 = malloc(sizeof(struct ListNode));
+    
+    if (node1 == NULL || node2 == NULL || node3 == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(node1);
+        free(node2);
+        free(node3);
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(outer_list);
+        return EXIT_FAILURE;
+    }
+    
+    node1->data = inner_list1;
+    node1->next = node2;
+    node2->data = inner_list2;
+    node2->next = node3;
+    node3->data = inner_list3;
+    node3->next = NULL;
+    
+    outer_list->head = node1;
+    
+    int result = square_list_count(outer_list);
+    printf("Number of lists squared: %d\n", result);
+    
+    free(node1);
+    free(node2);
+    free(node3);
+    free(inner_list1);
+    free(inner_list2);
+    free(inner_list3);
+    free(outer_list);
+    
+    return EXIT_SUCCESS;
+}

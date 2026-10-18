@@ -1,0 +1,80 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+long long max_product_pairs(Tuple *list, size_t size, int *index1, int *index2) {
+    if (list == NULL || size < 2 || index1 == NULL || index2 == NULL) {
+        return LLONG_MIN;
+    }
+
+    long long max1 = LLONG_MIN, max2 = LLONG_MIN;
+    long long min1 = LLONG_MAX, min2 = LLONG_MAX;
+    int max1_idx = -1, min1_idx = -1;
+    int max2_idx = -1, min2_idx = -1;
+
+    for (size_t i = 0; i < size; i++) {
+        long long prod = (long long)list[i].first * list[i].second;
+
+        if (prod > max1) {
+            max2 = max1;
+            max2_idx = max1_idx;
+            max1 = prod;
+            max1_idx = (int)i;
+        } else if (prod > max2) {
+            max2 = prod;
+            max2_idx = (int)i;
+        }
+
+        if (prod < min1) {
+            min2 = min1;
+            min2_idx = min1_idx;
+            min1 = prod;
+            min1_idx = (int)i;
+        } else if (prod < min2) {
+            min2 = prod;
+            min2_idx = (int)i;
+        }
+    }
+
+    long long product1 = max1 * max2;
+    long long product2 = min1 * min2;
+
+    if (product1 >= product2) {
+        *index1 = max1_idx;
+        *index2 = max2_idx;
+        return product1;
+    } else {
+        *index1 = min1_idx;
+        *index2 = min2_idx;
+        return product2;
+    }
+}
+
+int main(void) {
+    Tuple list[] = {{1, 2}, {3, 4}, {-5, 6}, {7, -8}, {2, 3}};
+    size_t size = sizeof(list) / sizeof(list[0]);
+    int index1 = -1, index2 = -1;
+
+    long long result = max_product_pairs(list, size, &index1, &index2);
+
+    if (result != LLONG_MIN) {
+        printf("Maximum product: %lld\n", result);
+        printf("Indices: %d, %d\n", index1, index2);
+        printf("Tuples: (%d, %d) and (%d, %d)\n", 
+               list[index1].first, list[index1].second,
+               list[index2].first, list[index2].second);
+    } else {
+        printf("Invalid input\n");
+    }
+
+    free(NULL);
+
+    return 0;
+}
+```

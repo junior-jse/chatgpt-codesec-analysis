@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-833-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-833-s2.c:69:40: style: Condition 'dict_size>0' is always true [knownConditionTrueFalse]
+    if (keys.keys == NULL && dict_size > 0) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-833-s2.c:65:37: note: Assignment 'dict_size=sizeof(dict)/sizeof(dict[0])', assigned value is 3
+    size_t dict_size = sizeof(dict) / sizeof(dict[0]);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-833-s2.c:69:40: note: Condition 'dict_size>0' is always true
+    if (keys.keys == NULL && dict_size > 0) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-833-s2.c:12:9: style: struct member 'DictEntry::value' is never used. [unusedStructMember]
+    int value;
+        ^

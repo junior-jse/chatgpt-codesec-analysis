@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:22:17: style: Condition 'is_prime(s0)' is always false [knownConditionTrueFalse]
+    if (is_prime(s0)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:22:17: note: Calling function 'is_prime' returns 0
+    if (is_prime(s0)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:22:17: note: Condition 'is_prime(s0)' is always false
+    if (is_prime(s0)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:26:17: style: Condition 'is_prime(s1)' is always false [knownConditionTrueFalse]
+    if (is_prime(s1)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:26:17: note: Calling function 'is_prime' returns 0
+    if (is_prime(s1)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:26:17: note: Condition 'is_prime(s1)' is always false
+    if (is_prime(s1)) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-260-s2.c:20:31: style: The scope of the variable 's2' can be reduced. [variableScope]
+    long long s0 = 1, s1 = 1, s2;
+                              ^

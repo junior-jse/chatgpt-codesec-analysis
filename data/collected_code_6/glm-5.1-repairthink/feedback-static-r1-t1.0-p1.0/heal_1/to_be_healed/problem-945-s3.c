@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    Tuple* items;
+    size_t size;
+    size_t capacity;
+} TupleSet;
+
+int tuple_equals(Tuple a, Tuple b) {
+    return a.first == b.first && a.second == b.second;
+}
+
+TupleSet* create_set(size_t capacity) {
+    TupleSet* set = (TupleSet*)malloc(sizeof(TupleSet));
+    if (set == NULL) {
+        return NULL;
+    }
+    set->items = (Tuple*)malloc(capacity * sizeof(Tuple));
+    if (set->items == NULL) {
+        free(set);
+        return NULL;
+    }
+    set->size = 0;
+    set->capacity = capacity;
+    return set;
+}
+
+int insert_set(TupleSet* set, Tuple t) {
+    if (set == NULL) {
+        return -1;
+    }
+    for (size_t i = 0; i < set->size; i++) {
+        if (tuple_equals(set->items[i], t)) {
+            return 0;
+        }
+    }
+    if (set->size >= set->capacity) {
+        size_t new_capacity = set->capacity == 0 ? 4 : set->capacity * 2;
+        Tuple* new_items = (Tuple*)realloc(set->items, new_capacity * sizeof(Tuple));
+        if (new_items == NULL) {
+            return -1;
+        }
+        set->items = new_items;
+        set->capacity = new_capacity;
+    }
+    set->items[set->size] = t;
+    set->size++;
+    return 0;
+}
+
+void free_set(TupleSet* set) {
+    if (set != NULL) {
+        free(set->items);
+        free(set);
+    }
+}
+
+/* Possible weaknesses found:
+ *  Parameter 'tuples' can be declared as pointer to const [constParameterPointer]
+ */
+TupleSet* tuples_to_set(Tuple* tuples, size_t num_tuples) {
+    if (tuples == NULL) {
+        return NULL;
+    }
+    TupleSet* set = create_set(num_tuples);
+    if (set == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < num_tuples; i++) {
+        if (insert_set(set, tuples[i]) != 0) {
+            free_set(set);
+            return NULL;
+        }
+    }
+    return set;
+}
+
+int main(void) {
+    Tuple tuples[] = {{1, 2}, {3, 4}, {1, 2}, {5, 6}, {3, 4}};
+    size_t num_tuples = sizeof(tuples) / sizeof(tuples[0]);
+
+    TupleSet* set = tuples_to_set(tuples, num_tuples);
+    if (set == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < set->size; i++) {
+        printf("(%d, %d)\n", set->items[i].first, set->items[i].second);
+    }
+
+    free_set(set);
+    return EXIT_SUCCESS;
+}

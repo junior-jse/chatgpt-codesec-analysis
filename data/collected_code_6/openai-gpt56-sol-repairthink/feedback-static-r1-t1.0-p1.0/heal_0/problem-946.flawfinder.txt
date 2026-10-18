@@ -1,0 +1,1 @@
+problem-946.c:133:0:low:Flawfinder fgetc: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)

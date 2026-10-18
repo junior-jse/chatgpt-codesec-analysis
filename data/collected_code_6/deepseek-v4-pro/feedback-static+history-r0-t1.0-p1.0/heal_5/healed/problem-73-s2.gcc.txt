@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c: In function 'split_string':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-73-s2.c:62:21: error: implicit declaration of function 'free_tokens' [-Wimplicit-function-declaration]
+   62 |                     free_tokens(tokens, token_count);
+      |                     ^~~~~~~~~~~

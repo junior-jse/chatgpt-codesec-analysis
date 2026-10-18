@@ -1,0 +1,77 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int* modified_rle_encode(const int* list, int size, int* out_size) {
+    if (list == NULL || out_size == NULL) {
+        return NULL;
+    }
+
+    if (size == 0) {
+        *out_size = 0;
+        return malloc(1);
+    }
+
+    int capacity = size * 2;
+    int* encoded = malloc(capacity * sizeof(int));
+    if (encoded == NULL) {
+        return NULL;
+    }
+
+    int count = 1;
+    int out_idx = 0;
+
+    for (int i = 1; i < size; i++) {
+        if (list[i] == list[i - 1]) {
+            count++;
+        } else {
+            if (count > 1) {
+                encoded[out_idx++] = count;
+            }
+            encoded[out_idx++] = list[i - 1];
+            count = 1;
+        }
+    }
+
+    if (count > 1) {
+        encoded[out_idx++] = count;
+    }
+    encoded[out_idx++] = list[size - 1];
+
+    *out_size = out_idx;
+    int* temp = realloc(encoded, out_idx * sizeof(int));
+    if (temp != NULL) {
+        encoded = temp;
+    }
+
+    return encoded;
+}
+
+int main() {
+    int list[] = {1, 1, 1, 2, 3, 3, 4, 4, 4, 4, 5};
+    int size = sizeof(list) / sizeof(list[0]);
+    int out_size = 0;
+
+    int* encoded = modified_rle_encode(list, size, &out_size);
+
+    if (encoded == NULL) {
+        return 1;
+    }
+
+    printf("Original: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", list[i]);
+    }
+    printf("\n");
+
+    printf("Encoded: ");
+    for (int i = 0; i < out_size; i++) {
+        printf("%d ", encoded[i]);
+    }
+    printf("\n");
+
+    free(encoded);
+
+    return 0;
+}
+```

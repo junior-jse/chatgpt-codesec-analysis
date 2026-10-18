@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *add_spaces_before_capitals(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t input_len = strlen(input);
+    if (input_len == 0) {
+        char *result = (char *)malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    size_t space_count = 0;
+    for (size_t i = 1; i < input_len; i++) {
+        if (isupper((unsigned char)input[i])) {
+            space_count++;
+        }
+    }
+
+    size_t result_len = input_len + space_count + 1;
+    char *result = (char *)malloc(result_len);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t dst_pos = 0;
+    result[dst_pos++] = input[0];
+
+    for (size_t i = 1; i < input_len; i++) {
+        if (isupper((unsigned char)input[i])) {
+            if (dst_pos < result_len) {
+                result[dst_pos++] = ' ';
+            }
+        }
+        if (dst_pos < result_len) {
+            result[dst_pos++] = input[i];
+        }
+    }
+
+    if (dst_pos < result_len) {
+        result[dst_pos] = '\0';
+    } else {
+        result[result_len - 1] = '\0';
+    }
+
+    return result;
+}
+
+int main(void) {
+    const char *test1 = "HelloWorldExample";
+    const char *test2 = "thisIsASampleString";
+    const char *test3 = "already separated words";
+    const char *test4 = "";
+    const char *test5 = "UPPERCASE";
+    const char *test6 = "noSpacesHere";
+
+    char *result1 = add_spaces_before_capitals(test1);
+    char *result2 = add_spaces_before_capitals(test2);
+    char *result3 = add_spaces_before_capitals(test3);
+    char *result4 = add_spaces_before_capitals(test4);
+    char *result5 = add_spaces_before_capitals(test5);
+    char *result6 = add_spaces_before_capitals(test6);
+
+    printf("Input: %s\nOutput: %s\n\n", test1, result1 ? result1 : "NULL");
+    printf("Input: %s\nOutput: %s\n\n", test2, result2 ? result2 : "NULL");
+    printf("Input: %s\nOutput: %s\n\n", test3, result3 ? result3 : "NULL");
+    printf("Input: %s\nOutput: %s\n\n", test4, result4 ? result4 : "NULL");
+    printf("Input: %s\nOutput: %s\n\n", test5, result5 ? result5 : "NULL");
+    printf("Input: %s\nOutput: %s\n\n", test6, result6 ? result6 : "NULL");
+
+    free(result1);
+    free(result2);
+    free(result3);
+    free(result4);
+    free(result5);
+    free(result6);
+
+    return 0;
+}

@@ -1,0 +1,102 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *key;
+    int value;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node **buckets;
+    int size;
+} Dictionary;
+
+Dictionary *dict_create(int size) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    dict->size = size;
+    dict->buckets = calloc(size, sizeof(Node *));
+    return dict;
+}
+
+void dict_set(Dictionary *dict, const char *key, int value) {
+    int index = (unsigned long)key % dict->size;
+    Node *current = dict->buckets[index];
+    while (current) {
+        if (strcmp(current->key, key) == 0) {
+            current->value = value;
+            return;
+        }
+        current = current->next;
+    }
+    Node *new_node = malloc(sizeof(Node));
+    new_node->key = strdup(key);
+    new_node->value = value;
+    new_node->next = dict->buckets[index];
+    dict->buckets[index] = new_node;
+}
+
+int dict_get(Dictionary *dict, const char *key, int default_value) {
+    int index = (unsigned long)key % dict->size;
+    Node *current = dict->buckets[index];
+    while (current) {
+        if (strcmp(current->key, key) == 0) {
+            return current->value;
+        }
+        current = current->next;
+    }
+    return default_value;
+}
+
+void dict_add(Dictionary *dest, Dictionary *src) {
+    for (int i = 0; i < src->size; i++) {
+        Node *current = src->buckets[i];
+        while (current) {
+            int existing_value = dict_get(dest, current->key, 0);
+            dict_set(dest, current->key, existing_value + current->value);
+            current = current->next;
+        }
+    }
+}
+
+void dict_free(Dictionary *dict) {
+    for (int i = 0; i < dict->size; i++) {
+        Node *current = dict->buckets[i];
+        while (current) {
+            Node *temp = current;
+            current = current->next;
+            free(temp->key);
+            free(temp);
+        }
+    }
+    free(dict->buckets);
+    free(dict);
+}
+
+int main(void) {
+    Dictionary *dict1 = dict_create(32);
+    Dictionary *dict2 = dict_create(32);
+
+    dict_set(dict1, "a", 10);
+    dict_set(dict1, "b", 20);
+    dict_set(dict1, "c", 30);
+
+    dict_set(dict2, "b", 50);
+    dict_set(dict2, "c", 60);
+    dict_set(dict2, "d", 70);
+
+    dict_add(dict1, dict2);
+
+    printf("a: %d\n", dict_get(dict1, "a", 0));
+    printf("b: %d\n", dict_get(dict1, "b", 0));
+    printf("c: %d\n", dict_get(dict1, "c", 0));
+    printf("d: %d\n", dict_get(dict1, "d", 0));
+
+    dict_free(dict1);
+    dict_free(dict2);
+
+    return 0;
+}
+```

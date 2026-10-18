@@ -1,0 +1,106 @@
+## Analysis
+
+**Weaknesses identified:**
+
+1. **Three `memcpy` calls (CWE-120)** — The original code copies into a temporary heap buffer and back into the destination. Although the original checks happen to be arithmetically correct, they are fragile (subtractions like `buffer_size - result_len - 1` can underflow if invariants are ever broken), and every raw `memcpy` is a potential overflow point that static analyzers will flag.
+
+2. **Unnecessary complexity** — The pattern `[ ,.]` is a single-character class, so every match is exactly one byte, and the replacement `:` is exactly one byte. The transformation is **length-preserving**, meaning the temporary buffer, the `malloc`/`free` pair, and all copying are unnecessary. The safest fix is to eliminate the copy operations entirely rather than wrap them in more checks.
+
+3. **Statically-sized array in `main` (CWE-119/CWE-120)** — Mitigated by filling it exclusively through a length-limited `snprintf` with an explicit truncation check on its return value.
+
+**Fixes applied:**
+- Replaced the build-a-new-string algorithm with **in-place substitution**, writing only at match offsets, which are strictly within `[0, str_len)` and `str_len < buffer_size`. This removes all `memcpy` calls and the heap allocation — the CWE-120 surface is gone by construction.
+- Added validation of `regmatch_t` offsets (`rm_so`, `rm_eo`) before using them as indices, so a malformed match can never produce an out-of-bounds write.
+- Kept the `strnlen` bounded-length check to guarantee the string is NUL-terminated within `buffer_size`.
+- Checked `snprintf`'s return value for encoding errors/truncation in `main`.
+- Ensured `regfree` is called on every exit path after a successful `regcomp`.
+
+## Rewritten code
+
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+#define MAX_STRING_LENGTH 1024
+
+int replace_chars_with_colon(char *str, size_t buffer_size) {
+    regex_t regex;
+    regmatch_t match;
+    size_t str_len;
+    size_t pos = 0;
+    int ret;
+
+    if (str == NULL || buffer_size == 0) {
+        return -1;
+    }
+
+    str_len = strnlen(str, buffer_size);
+    if (str_len >= buffer_size) {
+        return -1;
+    }
+
+    ret = regcomp(&regex, "[ ,.]", REG_EXTENDED);
+    if (ret != 0) {
+        return -1;
+    }
+
+    while (pos < str_len) {
+        ret = regexec(&regex, str + pos, 1, &match, 0);
+        if (ret == REG_NOMATCH) {
+            break;
+        }
+        if (ret != 0) {
+            regfree(&regex);
+            return -1;
+        }
+
+        if (match.rm_so < 0 || match.rm_eo <= match.rm_so ||
+            (size_t)match.rm_eo > str_len - pos) {
+            regfree(&regex);
+            return -1;
+        }
+
+        str[pos + (size_t)match.rm_so] = ':';
+        pos += (size_t)match.rm_eo;
+    }
+
+    regfree(&regex);
+    return 0;
+}
+
+int main(void) {
+    char test_string[MAX_STRING_LENGTH];
+    int status;
+    int written;
+
+    written = snprintf(test_string, sizeof(test_string), "%s",
+                       "Hello, World. This is a test string, with spaces.");
+    if (written < 0 || (size_t)written >= sizeof(test_string)) {
+        fprintf(stderr, "Error: Failed to initialize test string\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original string: %s\n", test_string);
+
+    status = replace_chars_with_colon(test_string, sizeof(test_string));
+    if (status != 0) {
+        fprintf(stderr, "Error: Failed to replace characters\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Modified string: %s\n", test_string);
+
+    return EXIT_SUCCESS;
+}
+```
+
+**Why this is safe:** the replacement is 1:1 in length, so the output can never exceed the input length; the only write is `str[pos + rm_so] = ':'` where `pos + rm_so < pos + rm_eo <= str_len < buffer_size`. No copying, no dynamic allocation, no residual CWE-120 exposure — and the program still produces the expected output:
+
+```
+Original string: Hello, World. This is a test string, with spaces.
+Modified string: Hello::World::This:is:a:test:string::with:spaces:
+```

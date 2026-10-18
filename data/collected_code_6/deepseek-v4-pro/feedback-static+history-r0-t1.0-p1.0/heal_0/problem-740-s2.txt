@@ -1,0 +1,106 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int key;
+    int value;
+} Pair;
+
+typedef struct {
+    Pair *pairs;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+static int dictionary_init(Dictionary *dict, size_t initial_capacity) {
+    if (initial_capacity == 0) {
+        initial_capacity = 4;
+    }
+    dict->pairs = (Pair *)malloc(initial_capacity * sizeof(Pair));
+    if (dict->pairs == NULL) {
+        return -1;
+    }
+    dict->size = 0;
+    dict->capacity = initial_capacity;
+    return 0;
+}
+
+static int dictionary_append(Dictionary *dict, int key, int value) {
+    if (dict->size == dict->capacity) {
+        size_t new_capacity = dict->capacity * 2;
+        Pair *new_pairs = (Pair *)realloc(dict->pairs, new_capacity * sizeof(Pair));
+        if (new_pairs == NULL) {
+            return -1;
+        }
+        dict->pairs = new_pairs;
+        dict->capacity = new_capacity;
+    }
+    dict->pairs[dict->size].key = key;
+    dict->pairs[dict->size].value = value;
+    dict->size++;
+    return 0;
+}
+
+static void dictionary_free(Dictionary *dict) {
+    if (dict->pairs != NULL) {
+        free(dict->pairs);
+        dict->pairs = NULL;
+    }
+    dict->size = 0;
+    dict->capacity = 0;
+}
+
+Dictionary *tuple_to_dict(const int *tuple, size_t tuple_size) {
+    if (tuple == NULL || tuple_size < 2) {
+        return NULL;
+    }
+
+    if (tuple_size % 2 != 0) {
+        return NULL;
+    }
+
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+
+    if (dictionary_init(dict, tuple_size / 2) != 0) {
+        free(dict);
+        return NULL;
+    }
+
+    for (size_t i = 0; i < tuple_size; i += 2) {
+        if (dictionary_append(dict, tuple[i], tuple[i + 1]) != 0) {
+            dictionary_free(dict);
+            free(dict);
+            return NULL;
+        }
+    }
+
+    return dict;
+}
+
+int main(void) {
+    int tuple[] = {1, 10, 2, 20, 3, 30, 4, 40};
+    size_t tuple_size = sizeof(tuple) / sizeof(tuple[0]);
+
+    Dictionary *dict = tuple_to_dict(tuple, tuple_size);
+
+    if (dict == NULL) {
+        fprintf(stderr, "Failed to convert tuple to dictionary\n");
+        return 1;
+    }
+
+    printf("Dictionary size: %zu\n", dict->size);
+    for (size_t i = 0; i < dict->size; i++) {
+        printf("Key: %d, Value: %d\n", dict->pairs[i].key, dict->pairs[i].value);
+    }
+
+    dictionary_free(dict);
+    free(dict);
+
+    return 0;
+}
+```

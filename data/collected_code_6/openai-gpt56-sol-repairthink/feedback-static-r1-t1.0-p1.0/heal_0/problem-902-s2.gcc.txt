@@ -1,0 +1,15 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c: In function 'dictionary_add':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c:94:62: error: 'LONG_MAX' undeclared (first use in this function)
+   94 |             if ((value > 0 && dictionary->entries[i].value > LONG_MAX - value) ||
+      |                                                              ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c:5:1: note: 'LONG_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    4 | #include <errno.h>
+  +++ |+#include <limits.h>
+    5 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c:94:62: note: each undeclared identifier is reported only once for each function it appears in
+   94 |             if ((value > 0 && dictionary->entries[i].value > LONG_MAX - value) ||
+      |                                                              ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c:95:62: error: 'LONG_MIN' undeclared (first use in this function)
+   95 |                 (value < 0 && dictionary->entries[i].value < LONG_MIN - value)) {
+      |                                                              ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-902-s2.c:95:62: note: 'LONG_MIN' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'

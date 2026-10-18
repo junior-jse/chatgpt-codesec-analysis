@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct ListOfLists {
+    Node *head;
+    struct ListOfLists *next;
+} ListOfLists;
+
+Node *create_node(int data) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+ListOfLists *create_list_of_lists() {
+    ListOfLists *lol = (ListOfLists *)malloc(sizeof(ListOfLists));
+    if (lol == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    lol->head = NULL;
+    lol->next = NULL;
+    return lol;
+}
+
+Node *reverse_list(Node *head) {
+    Node *prev = NULL;
+    Node *current = head;
+    Node *next = NULL;
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+}
+
+void reverse_each_list(ListOfLists *lol) {
+    ListOfLists *current_lol = lol;
+    while (current_lol != NULL) {
+        if (current_lol->head != NULL) {
+            current_lol->head = reverse_list(current_lol->head);
+        }
+        current_lol = current_lol->next;
+    }
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    Node *next;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void free_list_of_lists(ListOfLists *lol) {
+    ListOfLists *current_lol = lol;
+    ListOfLists *next_lol;
+    while (current_lol != NULL) {
+        next_lol = current_lol->next;
+        free_list(current_lol->head);
+        free(current_lol);
+        current_lol = next_lol;
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void print_list_of_lists(ListOfLists *lol) {
+    ListOfLists *current_lol = lol;
+    while (current_lol != NULL) {
+        print_list(current_lol->head);
+        current_lol = current_lol->next;
+    }
+}
+
+int main() {
+    ListOfLists *lol = create_list_of_lists();
+    lol->head = create_node(1);
+    lol->head->next = create_node(2);
+    lol->head->next->next = create_node(3);
+    
+    lol->next = create_list_of_lists();
+    lol->next->head = create_node(4);
+    lol->next->head->next = create_node(5);
+    
+    lol->next->next = create_list_of_lists();
+    lol->next->next->head = create_node(6);
+    lol->next->next->head->next = create_node(7);
+    lol->next->next->head->next->next = create_node(8);
+    lol->next->next->head->next->next->next = create_node(9);
+    
+    printf("Before reversal:\n");
+    print_list_of_lists(lol);
+    
+    reverse_each_list(lol);
+    
+    printf("After reversal:\n");
+    print_list_of_lists(lol);
+    
+    free_list_of_lists(lol);
+    
+    return 0;
+}

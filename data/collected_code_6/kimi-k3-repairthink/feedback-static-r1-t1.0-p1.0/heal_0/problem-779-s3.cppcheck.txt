@@ -1,0 +1,28 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:71:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:93:12: style: The scope of the variable 'new_capacity' can be reduced. [variableScope]
+    size_t new_capacity;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:136:9: style: The scope of the variable 'is_duplicate' can be reduced. [variableScope]
+    int is_duplicate;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:163:9: style: Variable 'data1' can be declared as const array [constVariable]
+    int data1[] = {1, 2, 3};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:164:9: style: Variable 'data2' can be declared as const array [constVariable]
+    int data2[] = {4, 5};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:165:9: style: Variable 'data3' can be declared as const array [constVariable]
+    int data3[] = {1, 2, 3};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:166:9: style: Variable 'data4' can be declared as const array [constVariable]
+    int data4[] = {6, 7, 8, 9};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:167:9: style: Variable 'data5' can be declared as const array [constVariable]
+    int data5[] = {4, 5};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-779-s3.c:168:9: style: Variable 'data6' can be declared as const array [constVariable]
+    int data6[] = {1, 2, 4};
+        ^

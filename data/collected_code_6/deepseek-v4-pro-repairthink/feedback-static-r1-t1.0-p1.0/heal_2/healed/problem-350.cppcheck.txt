@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-350.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-350.c:14:42: warning: Either the condition 'len<2048' is redundant or the array 'str[1]' is accessed at index 2047, which is out of bounds. [arrayIndexOutOfBoundsCond]
+    while (len < MAX_STRING_LENGTH && str[len] != '\0') {
+                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-350.c:14:16: note: Assuming that condition 'len<2048' is not redundant
+    while (len < MAX_STRING_LENGTH && str[len] != '\0') {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-350.c:14:42: note: Array index out of bounds
+    while (len < MAX_STRING_LENGTH && str[len] != '\0') {
+                                         ^

@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *key;
+    void *value;
+    struct Node *next;
+} Node;
+
+typedef struct Dictionary {
+    Node **buckets;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+Dictionary *dict_create(size_t capacity) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    if (!dict) return NULL;
+    dict->buckets = calloc(capacity, sizeof(Node *));
+    if (!dict->buckets) {
+        free(dict);
+        return NULL;
+    }
+    dict->size = 0;
+    dict->capacity = capacity;
+    return dict;
+}
+
+int dict_is_empty(const Dictionary *dict) {
+    if (dict == NULL) return 1;
+    return dict->size == 0;
+}
+
+int main(void) {
+    Dictionary *dict = dict_create(16);
+    if (dict == NULL) return 1;
+    
+    if (dict_is_empty(dict)) {
+        printf("Dictionary is empty\n");
+    } else {
+        printf("Dictionary is not empty\n");
+    }
+
+    Node *node = malloc(sizeof(Node));
+    if (node != NULL) {
+        node->key = strdup("test");
+        node->value = NULL;
+        node->next = dict->buckets[0];
+        dict->buckets[0] = node;
+        dict->size++;
+    }
+
+    if (dict_is_empty(dict)) {
+        printf("Dictionary is empty\n");
+    } else {
+        printf("Dictionary is not empty\n");
+    }
+
+    if (node != NULL) {
+        free(node->key);
+        free(node);
+    }
+    free(dict->buckets);
+    free(dict);
+
+    return 0;
+}

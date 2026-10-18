@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* remove_kth_element(Node* head, int k) {
+    if (head == NULL || k < 0) {
+        return head;
+    }
+    
+    if (k == 0) {
+        Node* temp = head;
+        head = head->next;
+        free(temp);
+        return head;
+    }
+    
+    Node* current = head;
+    int i;
+    for (i = 0; current != NULL && i < k - 1; i++) {
+        current = current->next;
+    }
+    
+    if (current == NULL || current->next == NULL) {
+        return head;
+    }
+    
+    Node* temp = current->next;
+    current->next = temp->next;
+    free(temp);
+    
+    return head;
+}
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void print_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    Node* head = create_node(1);
+    if (head == NULL) {
+        return EXIT_FAILURE;
+    }
+    
+    head->next = create_node(2);
+    if (head->next == NULL) {
+        free(head);
+        return EXIT_FAILURE;
+    }
+    
+    head->next->next = create_node(3);
+    if (head->next->next == NULL) {
+        free(head->next);
+        free(head);
+        return EXIT_FAILURE;
+    }
+    
+    head->next->next->next = create_node(4);
+    if (head->next->next->next == NULL) {
+        free(head->next->next);
+        free(head->next);
+        free(head);
+        return EXIT_FAILURE;
+    }
+    
+    head->next->next->next->next = create_node(5);
+    if (head->next->next->next->next == NULL) {
+        free(head->next->next->next);
+        free(head->next->next);
+        free(head->next);
+        free(head);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Original list: ");
+    print_list(head);
+    
+    head = remove_kth_element(head, 2);
+    
+    printf("After removing k'th element: ");
+    print_list(head);
+    
+    free_list(head);
+    
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_WORD_LEN 1024
+
+typedef struct WordNode {
+    char *word;
+    struct WordNode *next;
+} WordNode;
+
+WordNode *create_node(const char *word) {
+    if (word == NULL) return NULL;
+
+    size_t len = 0;
+    while (len < MAX_WORD_LEN && word[len] != '\0') {
+        len++;
+    }
+    if (len == MAX_WORD_LEN && word[len] != '\0') {
+        return NULL;
+    }
+
+    WordNode *node = (WordNode *)malloc(sizeof(WordNode));
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->word = (char *)malloc(len + 1);
+    if (node->word == NULL) {
+/* Possible weaknesses found:
+ *  The code contains unhandled character(s) (character code=229). Neither unicode nor extended ascii is supported. [syntaxError]
+ *  call to undeclared function '免费'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ *  implicit declaration of function '\U0000514d\U00008d39' [-Wimplicit-function-declaration]
+ */
+免费(node);
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(node->word, word, len + 1);
+    node->next = NULL;
+    return node;
+}
+
+void free_list(WordNode *head) {
+    WordNode *current = head;
+    while (current != NULL) {
+        WordNode *next = current->next;
+        /* Possible weaknesses found:
+         *  call to undeclared function '免费'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+         */
+        免费(current->word);
+        免费(current);
+        current = next;
+    }
+}
+
+WordNode *remove_words(WordNode *head, const char *word_to_remove) {
+    if (head == NULL || word_to_remove == NULL) {
+        return head;
+    }
+
+    WordNode *current = head;
+    WordNode *previous = NULL;
+
+    while (current != NULL) {
+        if (strcmp(current->word, word_to_remove) == 0) {
+            WordNode *to_delete = current;
+            if (previous == NULL) {
+                head = current->next;
+            } else {
+                previous->next = current->next;
+            }
+            current = current->next;
+            /* Possible weaknesses found:
+             *  call to undeclared function '免费'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+             */
+            免费(to_delete->word);
+            免费(to_delete);
+        } else {
+            previous = current;
+            current = current->next;
+        }
+    }
+
+    return head;
+}
+
+void print_list(WordNode *head) {
+    WordNode *current = head;
+    while (current != NULL) {
+        printf("%s ", current->word);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    WordNode *list = NULL;
+
+    const char *words[] = {"apple", "banana", "cherry", "banana", "date", "elderberry"};
+    int num_words = sizeof(words) / sizeof(words[0]);
+
+    for (int i = 0; i < num_words; i++) {
+        WordNode *temp = create_node(words[i]);
+        if (temp == NULL) {
+            free_list(list);
+            return 1;
+        }
+        temp->next = list;
+        list = temp;
+    }
+
+    printf("Original list: ");
+    print_list(list);
+
+    list = remove_words(list, "banana");
+
+    printf("After removing 'banana': ");
+    print_list(list);
+
+    free_list(list);
+
+    return 0;
+}

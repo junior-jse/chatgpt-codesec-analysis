@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c:62:54: style: Condition 'min_tuple_difference(NULL,count,&min_diff)==0' is always false [knownConditionTrueFalse]
+    if (min_tuple_difference(NULL, count, &min_diff) == 0) {
+                                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c:62:29: note: Calling function 'min_tuple_difference' returns -1
+    if (min_tuple_difference(NULL, count, &min_diff) == 0) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c:62:54: note: Condition 'min_tuple_difference(NULL,count,&min_diff)==0' is always false
+    if (min_tuple_difference(NULL, count, &min_diff) == 0) {
+                                                     ^

@@ -1,0 +1,108 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    int *data;
+    size_t length;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+} List;
+
+bool lists_equal(const int *a, size_t len_a, const int *b, size_t len_b) {
+    if (len_a != len_b) {
+        return false;
+    }
+    for (size_t i = 0; i < len_a; i++) {
+        if (a[i] != b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+size_t count_unique_lists(const List *outer_list) {
+    size_t count = 0;
+    Node *current = outer_list->head;
+    while (current != NULL) {
+        bool is_unique = true;
+        Node *runner = outer_list->head;
+        while (runner != current) {
+            if (lists_equal(current->data, current->length, runner->data, runner->length)) {
+                is_unique = false;
+                break;
+            }
+            runner = runner->next;
+        }
+        if (is_unique) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count;
+}
+
+void append_list(List *outer_list, int *data, size_t length) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->length = length;
+    new_node->next = NULL;
+    if (outer_list->head == NULL) {
+        outer_list->head = new_node;
+    } else {
+        Node *current = outer_list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+}
+
+void free_outer_list(List *outer_list) {
+    Node *current = outer_list->head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+    outer_list->head = NULL;
+}
+
+int main(void) {
+    List outer_list = {NULL};
+
+    int *list1 = (int *)malloc(3 * sizeof(int));
+    if (list1 == NULL) return EXIT_FAILURE;
+    list1[0] = 1; list1[1] = 2; list1[2] = 3;
+    append_list(&outer_list, list1, 3);
+
+    int *list2 = (int *)malloc(2 * sizeof(int));
+    if (list2 == NULL) return EXIT_FAILURE;
+    list2[0] = 4; list2[1] = 5;
+    append_list(&outer_list, list2, 2);
+
+    int *list3 = (int *)malloc(3 * sizeof(int));
+    if (list3 == NULL) return EXIT_FAILURE;
+    list3[0] = 1; list3[1] = 2; list3[2] = 3;
+    append_list(&outer_list, list3, 3);
+
+    int *list4 = (int *)malloc(0 * sizeof(int));
+    if (list4 == NULL) return EXIT_FAILURE;
+    append_list(&outer_list, list4, 0);
+
+    size_t unique_count = count_unique_lists(&outer_list);
+    printf("%zu\n", unique_count);
+
+    free_outer_list(&outer_list);
+
+    return EXIT_SUCCESS;
+}
+```

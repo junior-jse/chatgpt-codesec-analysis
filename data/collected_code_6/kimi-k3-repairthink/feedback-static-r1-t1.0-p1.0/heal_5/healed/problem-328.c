@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+int rotate_left(int *arr, size_t n, size_t k) {
+    if (arr == NULL || n == 0) {
+        return -1;
+    }
+
+    k = k % n;
+    if (k == 0) {
+        return 0;
+    }
+
+    if (n > SIZE_MAX / sizeof(int)) {
+        return -1;
+    }
+
+    size_t total_bytes = n * sizeof(int);
+    size_t k_bytes = k * sizeof(int);
+    size_t remaining_bytes = (n - k) * sizeof(int);
+
+    if (k_bytes > total_bytes || remaining_bytes > total_bytes - k_bytes) {
+        return -1;
+    }
+
+    int *temp = malloc(k_bytes);
+    if (temp == NULL) {
+        return -1;
+    }
+
+    if (k_bytes > total_bytes) {
+        free(temp);
+        return -1;
+    }
+
+    memcpy(temp, arr, k_bytes);
+    memmove(arr, arr + k, remaining_bytes);
+
+    if (k_bytes > total_bytes - remaining_bytes) {
+        free(temp);
+        return -1;
+    }
+
+    memcpy(arr + n - k, temp, k_bytes);
+
+    free(temp);
+    return 0;
+}
+
+int main(void) {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7};
+    size_t n = sizeof(arr) / sizeof(arr[0]);
+    size_t k = 3;
+
+    if (rotate_left(arr, n, k) != 0) {
+        fprintf(stderr, "Rotation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return EXIT_SUCCESS;
+}

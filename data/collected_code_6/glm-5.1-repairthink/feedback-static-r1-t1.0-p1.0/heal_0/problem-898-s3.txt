@@ -1,0 +1,49 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int* extract_continuous(const int* list, size_t list_size, size_t start_index, size_t count, size_t* out_size) {
+    if (list == NULL || out_size == NULL) {
+        return NULL;
+    }
+
+    *out_size = 0;
+
+    if (start_index >= list_size || count == 0) {
+        return NULL;
+    }
+
+    size_t available = list_size - start_index;
+    size_t actual_count = (count > available) ? available : count;
+
+    int* result = (int*)malloc(actual_count * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < actual_count; i++) {
+        result[i] = list[start_index + i];
+    }
+
+    *out_size = actual_count;
+    return result;
+}
+
+int main() {
+    int data[] = {10, 20, 30, 40, 50, 60};
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+    size_t out_size;
+
+    int* subset = extract_continuous(data, data_size, 2, 3, &out_size);
+
+    if (subset != NULL) {
+        for (size_t i = 0; i < out_size; i++) {
+            printf("%d ", subset[i]);
+        }
+        printf("\n");
+        free(subset);
+    }
+
+    return 0;
+}
+```

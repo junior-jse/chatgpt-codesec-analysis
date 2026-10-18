@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-421.c:102:13: warning: Value stored to 'remaining' is never read [deadcode.DeadStores]
+  102 |             remaining -= len2;
+      |             ^            ~~~~
+1 warning generated.

@@ -1,0 +1,77 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c: In function 'free_list_of_lists':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:84:39: error: incompatible type for argument 1 of 'free_list'
+   84 |         free_list(list_of_lists->lists[i]);
+      |                   ~~~~~~~~~~~~~~~~~~~~^~~
+      |                                       |
+      |                                       LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:63:28: note: expected 'LinkedList *' but argument is of type 'LinkedList'
+   63 | void free_list(LinkedList* list) {
+      |                ~~~~~~~~~~~~^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:123:26: error: assignment to 'LinkedList *' from incompatible pointer type 'LinkedList **' [-Wincompatible-pointer-types]
+  123 |     list_of_lists->lists = (LinkedList**)malloc(list_of_lists->count * sizeof(LinkedList*));
+      |                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:130:35: error: incompatible types when assigning to type 'LinkedList' from type 'LinkedList *'
+  130 |         list_of_lists->lists[i] = create_list();
+      |                                   ^~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:131:37: error: invalid operands to binary == (have 'LinkedList' and 'void *')
+  131 |         if (list_of_lists->lists[i] == NULL) {
+      |             ~~~~~~~~~~~~~~~~~~~~~~~ ^~
+      |                                 |
+      |                                 LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:133:47: error: incompatible type for argument 1 of 'free_list'
+  133 |                 free_list(list_of_lists->lists[j]);
+      |                           ~~~~~~~~~~~~~~~~~~~~^~~
+      |                                               |
+      |                                               LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:63:28: note: expected 'LinkedList *' but argument is of type 'LinkedList'
+   63 | void free_list(LinkedList* list) {
+      |                ~~~~~~~~~~~~^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:146:47: error: incompatible type for argument 1 of 'insert_at_end'
+  146 |         if (insert_at_end(list_of_lists->lists[0], elements1[i]) != 0) {
+      |                           ~~~~~~~~~~~~~~~~~~~~^~~
+      |                                               |
+      |                                               LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: expected 'LinkedList *' but argument is of type 'LinkedList'
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                   ~~~~~~~~~~~~^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:153:47: error: incompatible type for argument 1 of 'insert_at_end'
+  153 |         if (insert_at_end(list_of_lists->lists[1], elements2[i]) != 0) {
+      |                           ~~~~~~~~~~~~~~~~~~~~^~~
+      |                                               |
+      |                                               LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: expected 'LinkedList *' but argument is of type 'LinkedList'
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                   ~~~~~~~~~~~~^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:160:47: error: incompatible type for argument 1 of 'insert_at_end'
+  160 |         if (insert_at_end(list_of_lists->lists[2], elements3[i]) != 0) {
+      |                           ~~~~~~~~~~~~~~~~~~~~^~~
+      |                                               |
+      |                                               LinkedList
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: expected 'LinkedList *' but argument is of type 'LinkedList'
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                   ~~~~~~~~~~~~^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:166:59: error: passing argument 1 of 'count_sublists_with_element' from incompatible pointer type [-Wincompatible-pointer-types]
+  166 |     int result = count_sublists_with_element(list_of_lists->lists, list_of_lists->count, 3);
+      |                                              ~~~~~~~~~~~~~^~~~~~~
+      |                                                           |
+      |                                                           LinkedList *
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:91:46: note: expected 'LinkedList **' but argument is of type 'LinkedList *'
+   91 | int count_sublists_with_element(LinkedList** lists, int num_lists, int element) {
+      |                                 ~~~~~~~~~~~~~^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:169:55: error: passing argument 1 of 'count_sublists_with_element' from incompatible pointer type [-Wincompatible-pointer-types]
+  169 |     result = count_sublists_with_element(list_of_lists->lists, list_of_lists->count, 100);
+      |                                          ~~~~~~~~~~~~~^~~~~~~
+      |                                                       |
+      |                                                       LinkedList *
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:91:46: note: expected 'LinkedList **' but argument is of type 'LinkedList *'
+   91 | int count_sublists_with_element(LinkedList** lists, int num_lists, int element) {
+      |                                 ~~~~~~~~~~~~~^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:172:55: error: passing argument 1 of 'count_sublists_with_element' from incompatible pointer type [-Wincompatible-pointer-types]
+  172 |     result = count_sublists_with_element(list_of_lists->lists, 0, 3);
+      |                                          ~~~~~~~~~~~~~^~~~~~~
+      |                                                       |
+      |                                                       LinkedList *
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:91:46: note: expected 'LinkedList **' but argument is of type 'LinkedList *'
+   91 | int count_sublists_with_element(LinkedList** lists, int num_lists, int element) {
+      |                                 ~~~~~~~~~~~~~^~~~~

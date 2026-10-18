@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:52:13: warning: Value stored to 'found_any' is never read [deadcode.DeadStores]
+   52 |             found_any = true;
+      |             ^           ~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-298.c:67:17: warning: Value stored to 'found_any' is never read [deadcode.DeadStores]
+   67 |                 found_any = true;
+      |                 ^           ~~~~
+2 warnings generated.

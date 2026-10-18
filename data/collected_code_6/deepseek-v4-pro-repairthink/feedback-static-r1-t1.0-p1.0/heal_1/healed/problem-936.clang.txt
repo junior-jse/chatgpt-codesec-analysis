@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-936.c:58:29: error: read-only variable is not assignable
+   58 |         output->items[i].id = found->id;
+      |         ~~~~~~~~~~~~~~~~~~~ ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-936.c:60:68: error: read-only variable is not assignable
+   60 |         output->items[i].value[sizeof(output->items[i].value) - 1] = '\0';
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
+2 errors generated.

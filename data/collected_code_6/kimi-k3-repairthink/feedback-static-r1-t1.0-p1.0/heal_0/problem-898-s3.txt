@@ -1,0 +1,51 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int *extract_elements(const int *list, size_t list_size, size_t start_index, size_t num_elements, size_t *extracted_size) {
+    int *extracted_list = NULL;
+
+    if (list == NULL || extracted_size == NULL || start_index >= list_size || num_elements == 0) {
+        return NULL;
+    }
+
+    if (start_index + num_elements > list_size) {
+        return NULL;
+    }
+
+    extracted_list = (int *)malloc(num_elements * sizeof(int));
+    if (extracted_list == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < num_elements; i++) {
+        extracted_list[i] = list[start_index + i];
+    }
+
+    *extracted_size = num_elements;
+    return extracted_list;
+}
+
+int main() {
+    int list[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    size_t list_size = sizeof(list) / sizeof(list[0]);
+    size_t start_index = 2;
+    size_t num_elements = 4;
+    size_t extracted_size = 0;
+
+    int *extracted_list = extract_elements(list, list_size, start_index, num_elements, &extracted_size);
+    if (extracted_list == NULL) {
+        fprintf(stderr, "Failed to extract elements.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Extracted elements: ");
+    for (size_t i = 0; i < extracted_size; i++) {
+        printf("%d ", extracted_list[i]);
+    }
+    printf("\n");
+
+    free(extracted_list);
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    int size;
+} IntList;
+
+typedef struct {
+    IntList *lists;
+    int count;
+    int capacity;
+} ListOfLists;
+
+int init_list_of_lists(ListOfLists *lol, int capacity) {
+    if (lol == NULL || capacity <= 0) {
+        return -1;
+    }
+    lol->lists = (IntList *)calloc((size_t)capacity, sizeof(IntList));
+    if (lol->lists == NULL) {
+        return -1;
+    }
+    lol->count = 0;
+    lol->capacity = capacity;
+    return 0;
+}
+
+int add_list(ListOfLists *lol, const int *data, int size) {
+    if (lol == NULL || data == NULL || size <= 0) {
+        return -1;
+    }
+    if (lol->count >= lol->capacity) {
+        return -1;
+    }
+    lol->lists[lol->count].data = (int *)malloc((size_t)size * sizeof(int));
+    if (lol->lists[lol->count].data == NULL) {
+        return -1;
+    }
+    memcpy(lol->lists[lol->count].data, data, (size_t)size * sizeof(int));
+    lol->lists[lol->count].size = size;
+    lol->count++;
+    return 0;
+}
+
+int compare_lists(const IntList *a, const IntList *b) {
+    int i;
+    if (a == NULL || b == NULL) {
+        return 0;
+    }
+    if (a->size != b->size) {
+        return 0;
+    }
+    for (i = 0; i < a->size; i++) {
+        if (a->data[i] != b->data[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int remove_duplicate_lists(ListOfLists *lol) {
+    int i, j, k;
+    if (lol == NULL || lol->lists == NULL) {
+        return -1;
+    }
+    for (i = 0; i < lol->count; i++) {
+        for (j = i + 1; j < lol->count; j++) {
+            if (compare_lists(&lol->lists[i], &lol->lists[j])) {
+                free(lol->lists[j].data);
+                lol->lists[j].data = NULL;
+                for (k = j; k < lol->count - 1; k++) {
+                    lol->lists[k] = lol->lists[k + 1];
+                }
+                lol->count--;
+                j--;
+            }
+        }
+    }
+    return 0;
+}
+
+void free_list_of_lists(ListOfLists *lol) {
+    int i;
+    if (lol == NULL) {
+        return;
+    }
+    if (lol->lists != NULL) {
+        for (i = 0; i < lol->count; i++) {
+            if (lol->lists[i].data != NULL) {
+                free(lol->lists[i].data);
+                lol->lists[i].data = NULL;
+            }
+        }
+        free(lol->lists);
+        lol->lists = NULL;
+    }
+    lol->count = 0;
+    lol->capacity = 0;
+}
+
+void print_list_of_lists(const ListOfLists *lol) {
+    int i, j;
+    if (lol == NULL || lol->lists == NULL) {
+        return;
+    }
+    for (i = 0; i < lol->count; i++) {
+        printf("[");
+        for (j = 0; j < lol->lists[i].size; j++) {
+            printf("%d", lol->lists[i].data[j]);
+            if (j < lol->lists[i].size - 1) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+}
+
+int main(void) {
+    ListOfLists lol;
+    int list1[] = {1, 2, 3};
+    int list2[] = {4, 5, 6};
+    int list3[] = {1, 2, 3};
+    int list4[] = {7, 8, 9};
+    int list5[] = {4, 5, 6};
+    int list6[] = {1, 2, 3};
+
+    if (init_list_of_lists(&lol, 10) != 0) {
+        fprintf(stderr, "Failed to initialize list of lists\n");
+        return EXIT_FAILURE;
+    }
+
+    if (add_list(&lol, list1, 3) != 0 ||
+        add_list(&lol, list2, 3) != 0 ||
+        add_list(&lol, list3, 3) != 0 ||
+        add_list(&lol, list4, 3) != 0 ||
+        add_list(&lol, list5, 3) != 0 ||
+        add_list(&lol, list6, 3) != 0) {
+        fprintf(stderr, "Failed to add list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+
+    printf("Before removing duplicates:\n");
+    print_list_of_lists(&lol);
+
+    if (remove_duplicate_lists(&lol) != 0) {
+        fprintf(stderr, "Failed to remove duplicates\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+
+    printf("\nAfter removing duplicates:\n");
+    print_list_of_lists(&lol);
+
+    free_list_of_lists(&lol);
+    return EXIT_SUCCESS;
+}

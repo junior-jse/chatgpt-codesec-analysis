@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int *get_last_elements(int **sublists, const size_t *sizes, size_t count, size_t *out_count)
+{
+    size_t i;
+    size_t valid_count;
+    int *result;
+
+    if (out_count == NULL) {
+        return NULL;
+    }
+    *out_count = 0;
+
+    if (sublists == NULL || sizes == NULL || count == 0) {
+        return NULL;
+    }
+
+    valid_count = 0;
+    for (i = 0; i < count; i++) {
+        if (sublists[i] != NULL && sizes[i] > 0) {
+            valid_count++;
+        }
+    }
+
+    if (valid_count == 0) {
+        return NULL;
+    }
+
+    result = (int *)malloc(valid_count * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    valid_count = 0;
+    for (i = 0; i < count; i++) {
+        if (sublists[i] != NULL && sizes[i] > 0) {
+            result[valid_count] = sublists[i][sizes[i] - 1];
+            valid_count++;
+        }
+    }
+
+    *out_count = valid_count;
+    return result;
+}
+
+int main(void)
+{
+    int list1[] = {1, 2, 3, 4};
+    int list2[] = {5, 6};
+    int list3[] = {7};
+    int list4[] = {8, 9, 10};
+
+    int *sublists[] = {list1, list2, list3, list4};
+    /* Possible weaknesses found:
+     *  Variable 'sizes' can be declared as const array [constVariable]
+     */
+    size_t sizes[] = {4, 2, 1, 3};
+    size_t count = 4;
+    size_t out_count = 0;
+    /* Possible weaknesses found:
+     *  The scope of the variable 'i' can be reduced. [variableScope]
+     */
+    size_t i;
+
+    int *last_elements = get_last_elements(sublists, sizes, count, &out_count);
+
+    if (last_elements != NULL) {
+        for (i = 0; i < out_count; i++) {
+            printf("%d", last_elements[i]);
+            if (i + 1 < out_count) {
+                printf(" ");
+            }
+        }
+        printf("\n");
+        free(last_elements);
+    }
+
+    return 0;
+}

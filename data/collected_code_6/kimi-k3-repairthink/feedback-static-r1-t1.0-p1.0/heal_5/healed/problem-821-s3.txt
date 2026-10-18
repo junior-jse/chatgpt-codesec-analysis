@@ -1,0 +1,60 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *safe_string_copy(const char *str, size_t dst_size)
+{
+    char *copy;
+    size_t src_len;
+
+    if (str == NULL) {
+        return NULL;
+    }
+
+    src_len = strlen(str) + 1;
+
+    copy = malloc(dst_size);
+    if (copy == NULL) {
+        return NULL;
+    }
+
+    if (src_len >= dst_size) {
+        free(copy);
+        return NULL;
+    }
+
+    memcpy(copy, str, src_len);
+
+    return copy;
+}
+
+int main(void)
+{
+    const char *str = "Hello, world!";
+    size_t dst_size = 64;
+    char *copy;
+
+    copy = safe_string_copy(str, dst_size);
+    if (copy == NULL) {
+        fprintf(stderr, "Error: string copy failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Copied string: %s\n", copy);
+
+    free(copy);
+
+    return EXIT_SUCCESS;
+}
+```
+
+**Key fixes applied:**
+
+1. **`if` in global scope** — The fragment was placed outside any function body. It is now enclosed in the `safe_string_copy()` function definition, with a complete prototype (return type `char *`, typed parameters `const char *str` and `size_t dst_size`).
+
+2. **Implicit declaration of `memcpy`** — Added `#include <string.h>`, which provides the proper prototype for `memcpy` and `strlen`. Also added `stdlib.h` for `malloc`/`free`/`EXIT_*` and `stdio.h` for I/O.
+
+3. **Buffer overflow (CWE-120)** — The `memcpy` is now guarded: `src_len` (including the null terminator) is computed first, memory of `dst_size` is allocated, and the copy only proceeds if `src_len < dst_size`. This guarantees the destination buffer can always hold the source data, so `memcpy` can never overflow it. Additionally, a `NULL` check on `malloc`'s return value and on the input pointer prevent undefined behavior.
+
+4. **`main` function** — Added a `main()` that exercises the function, checks the return value, prints the result, and frees the allocated memory to avoid leaks.

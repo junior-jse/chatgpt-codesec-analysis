@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *items;
+    int count;
+} Tuple;
+
+typedef struct {
+    int hash;
+    int freq;
+} Record;
+
+typedef struct {
+    int freq;
+    int count;
+} FreqInfo;
+
+static int hash_tuple(const Tuple *t) {
+    int h = 0;
+    for (int i = 0; i < t->count; i++) {
+        h = h * 31 + t->items[i];
+    }
+    return h;
+}
+
+static int cmp_freq(const void *a, const void *b) {
+    return ((const FreqInfo *)a)->freq - ((const FreqInfo *)b)->freq;
+}
+
+int check_similar_occurrences(Tuple *tuples, int num_tuples, FreqInfo **result, int *result_size) {
+    if (num_tuples <= 0 || tuples == NULL || result == NULL || result_size == NULL) {
+        return -1;
+    }
+
+    int capacity = num_tuples;
+    Record *records = (Record *)malloc(capacity * sizeof(Record));
+    if (records == NULL) {
+        return -1;
+    }
+
+    int records_size = 0;
+
+    for (int i = 0; i < num_tuples; i++) {
+        if (tuples[i].items == NULL && tuples[i].count > 0) {
+            free(records);
+            return -1;
+        }
+
+        int h = hash_tuple(&tuples[i]);
+        int found = 0;
+        for (int j = 0; j < records_size; j++) {
+            if (records[j].hash == h) {
+                records[j].freq++;
+                found = 1;
+                break;
+            }
+        }
+
+        if (!found) {
+            if (records_size >= capacity) {
+                capacity *= 2;
+                Record *new_records = (Record *)realloc(records, capacity * sizeof(Record));
+                if (new_records == NULL) {
+                    free(records);
+                    return -1;
+                }
+                records = new_records;
+            }
+            records[records_size].hash = h;
+            records[records_size].freq = 1;
+            records_size++;
+        }
+    }
+
+    if (records_size == 0) {
+        free(records);
+        *result = NULL;
+        *result_size = 0;
+        return 0;
+    }
+
+    qsort(records, records_size, sizeof(Record), cmp_freq);
+
+    int freq_capacity = 10;
+    FreqInfo *freqs = (FreqInfo *)malloc(freq_capacity * sizeof(FreqInfo));
+    if (freqs == NULL) {
+        free(records);
+        return -1;
+    }
+    int freqs_size = 0;
+
+    int current_freq = records[0].freq;
+    int current_count = 1;
+
+    for (int i = 1; i < records_size; i++) {
+        if (records[i].freq == current_freq) {
+            current_count++;
+        } else {
+            if (freqs_size >= freq_capacity) {
+                freq_capacity *= 2;
+                FreqInfo *new_freqs = (FreqInfo *)realloc(freqs, freq_capacity * sizeof(FreqInfo));
+                if (new_freqs == NULL) {
+                    free(records);
+                    free(freqs);
+                    return -1;
+                }
+                freqs = new_freqs;
+            }
+            freqs[freqs_size].freq = current_freq;
+            freqs[freqs_size].count = current_count;
+            freqs_size++;
+            current_freq = records[i].freq;
+            current_count = 1;
+        }
+    }
+
+    if (freqs_size >= freq_capacity) {
+        freq_capacity += 1;
+        FreqInfo *new_freqs = (FreqInfo *)realloc(freqs, freq_capacity * sizeof(FreqInfo));
+        if (new_freqs == NULL) {
+            free(records);
+            free(freqs);
+            return -1;
+        }
+        freqs = new_freqs;
+    }
+    freqs[freqs_size].freq = current_freq;
+    freqs[freqs_size].count = current_count;
+    freqs_size++;
+
+    free(records);
+    *result = freqs;
+    *result_size = freqs_size;
+    return 0;
+}
+
+int main(void) {
+    int a1[] = {1, 2};
+    int a2[] = {3, 4};
+    int a3[] = {1, 2};
+    int a4[] = {5, 6};
+    int a5[] = {3, 4};
+    int a6[] = {1, 2};
+
+    Tuple tuples[] = {
+        {a1, 2},
+        {a2, 2},
+        {a3, 2},
+        {a4, 2},
+        {a5, 2},
+        {a6, 2}
+    };
+
+    int num_tuples = sizeof(tuples) / sizeof(tuples[0]);
+    FreqInfo *result = NULL;
+    int result_size = 0;
+
+    if (check_similar_occurrences(tuples, num_tuples, &result, &result_size) == 0) {
+        for (int i = 0; i < result_size; i++) {
+            printf("Records occurring %d times: %d\n", result[i].freq, result[i].count);
+        }
+        free(result);
+    }
+
+    return 0;
+}

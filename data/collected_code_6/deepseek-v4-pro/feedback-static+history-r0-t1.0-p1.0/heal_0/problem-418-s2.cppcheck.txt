@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-418-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-418-s2.c:4:28: style: Parameter 'arr' can be declared as pointer to const [constParameterPointer]
+int* find_max_sublist(int *arr, int n, int *start, int *len) {
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-418-s2.c:56:9: style: Variable 'sizes' can be declared as const array [constVariable]
+    int sizes[] = {10, 5, 5, 5, 1};
+        ^

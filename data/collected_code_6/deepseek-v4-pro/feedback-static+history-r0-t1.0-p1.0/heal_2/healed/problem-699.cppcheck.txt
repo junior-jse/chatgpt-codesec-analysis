@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:74:20: style: Condition 'input_len1>100' is always false [knownConditionTrueFalse]
+    if (input_len1 > 100 || input_len2 > 100) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:69:20: note: Assuming that condition 'input_len1>=sizeof(str1)' is not redundant
+    if (input_len1 >= sizeof(str1) || input_len2 >= sizeof(str2)) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:74:20: note: Condition 'input_len1>100' is always false
+    if (input_len1 > 100 || input_len2 > 100) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:74:40: style: Condition 'input_len2>100' is always false [knownConditionTrueFalse]
+    if (input_len1 > 100 || input_len2 > 100) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:69:50: note: Assuming that condition 'input_len2>=sizeof(str2)' is not redundant
+    if (input_len1 >= sizeof(str1) || input_len2 >= sizeof(str2)) {
+                                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:74:40: note: Condition 'input_len2>100' is always false
+    if (input_len1 > 100 || input_len2 > 100) {
+                                       ^

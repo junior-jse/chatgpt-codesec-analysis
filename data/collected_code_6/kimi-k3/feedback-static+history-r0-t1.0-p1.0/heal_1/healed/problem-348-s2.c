@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+long long count_sequences_helper(const int *values, int num_values, int target_len, int current_len, int current_sum, long long *memo) {
+    if (current_len == target_len) {
+        return 1;
+    }
+    
+    int index = current_len * 1000 + current_sum;
+    if (memo[index] != -1) {
+        return memo[index];
+    }
+    
+    long long count = 0;
+    for (int i = 0; i < num_values; i++) {
+        int new_sum = current_sum + values[i];
+        if (new_sum >= 0) {
+            count += count_sequences_helper(values, num_values, target_len, current_len + 1, new_sum, memo);
+        }
+    }
+    
+    memo[index] = count;
+    return count;
+}
+
+long long count_sequences(const int *values, int num_values, int length) {
+    if (values == NULL || num_values <= 0 || length < 0) {
+        return 0;
+    }
+    
+    if (length == 0) {
+        return 1;
+    }
+    
+    long long *memo = malloc((length + 1) * 1000 * sizeof(long long));
+    if (memo == NULL) {
+        return 0;
+    }
+    
+    for (int i = 0; i < (length + 1) * 1000; i++) {
+        memo[i] = -1;
+    }
+    
+    long long result = count_sequences_helper(values, num_values, length, 0, 0, memo);
+    
+    free(memo);
+    return result;
+}
+
+int main(void) {
+    const int values[] = {1, -1, 2, -2};
+    int num_values = 4;
+    int length = 4;
+    
+    long long result = count_sequences(values, num_values, length);
+    printf("Number of sequences: %lld\n", result);
+    
+    return 0;
+}

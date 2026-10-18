@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int is_vowel(char c) {
+    c = tolower(c);
+    return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
+}
+
+void reverse_vowels(char *str) {
+    int left = 0;
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    int right = strlen(str) - 1;
+    char temp;
+    
+    while (left < right) {
+        while (left < right && !is_vowel(str[left])) {
+            left++;
+        }
+        while (left < right && !is_vowel(str[right])) {
+            right--;
+        }
+        
+        if (left < right) {
+            temp = str[left];
+            str[left] = str[right];
+            str[right] = temp;
+            left++;
+            right--;
+        }
+    }
+}
+
+int main(void) {
+    char str1[] = "hello";
+    char str2[] = "leetcode";
+    char str3[] = "aA";
+    
+    reverse_vowels(str1);
+    reverse_vowels(str2);
+    reverse_vowels(str3);
+    
+    printf("%s\n", str1);
+    printf("%s\n", str2);
+    printf("%s\n", str3);
+    
+    return 0;
+}

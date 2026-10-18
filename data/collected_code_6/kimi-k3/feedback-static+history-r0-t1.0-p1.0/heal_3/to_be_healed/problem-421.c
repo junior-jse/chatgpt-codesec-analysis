@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef struct {
+    char **elements;
+    size_t count;
+} Tuple;
+
+static size_t safe_strlen(const char *str, size_t max_len)
+{
+    size_t len = 0;
+    
+    if (str == NULL) {
+        return 0;
+    }
+    
+    while (len < max_len && str[len] != '\0') {
+        len++;
+    }
+    
+    return len;
+}
+
+static int check_add_overflow(size_t a, size_t b, size_t *result)
+{
+    if (a > SIZE_MAX - b) {
+        return -1;
+    }
+    *result = a + b;
+    return 0;
+}
+
+char *tuple_join(const Tuple *tuple, const char *delimiter)
+{
+    size_t total_length;
+    size_t delimiter_length;
+    size_t i;
+    char *result;
+    char *current;
+    size_t remaining;
+
+    if (tuple == NULL || delimiter == NULL) {
+        return NULL;
+    }
+
+    if (tuple->count == 0 || tuple->elements == NULL) {
+        result = malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    delimiter_length = safe_strlen(delimiter, 1024);
+    if (delimiter_length == 1024 && delimiter[1023] != '\0') {
+        return NULL;
+    }
+    
+    total_length = 1;
+
+    for (i = 0; i < tuple->count; i++) {
+        size_t element_length;
+        
+        if (tuple->elements[i] == NULL) {
+            return NULL;
+        }
+        
+        element_length = safe_strlen(tuple->elements[i], 65536);
+        if (element_length == 65536 && tuple->elements[i][65535] != '\0') {
+            return NULL;
+        }
+        
+        if (check_add_overflow(total_length, element_length, &total_length) != 0) {
+            return NULL;
+        }
+        
+        if (i > 0) {
+            if (check_add_overflow(total_length, delimiter_length, &total_length) != 0) {
+                return NULL;
+            }
+        }
+    }
+
+    result = malloc(total_length);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    current = result;
+    remaining = total_length;
+    
+    for (i = 0; i < tuple->count; i++) {
+        size_t element_length;
+
+        if (i > 0) {
+            /* Possible weaknesses found:
+             *  Assuming that condition 'delimiter_length>=remaining' is not redundant
+             */
+            if (delimiter_length >= remaining) {
+                free(result);
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             *  Condition 'remaining<delimiter_length' is always false [knownConditionTrueFalse]
+             *  Condition 'remaining<delimiter_length' is always false
+             */
+            if (remaining < delimiter_length) {
+                free(result);
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(current, delimiter, delimiter_length);
+            current += delimiter_length;
+            remaining -= delimiter_length;
+        }
+
+        element_length = safe_strlen(tuple->elements[i], 65536);
+        /* Possible weaknesses found:
+         *  Assuming that condition 'element_length>=remaining' is not redundant
+         */
+        if (element_length >= remaining) {
+            free(result);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         *  Condition 'remaining<element_length' is always false
+         *  Condition 'remaining<element_length' is always false [knownConditionTrueFalse]
+         */
+        if (remaining < element_length) {
+            free(result);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(current, tuple->elements[i], element_length);
+        current += element_length;
+        remaining -= element_length;
+    }
+
+    if (remaining < 1) {
+        free(result);
+        return NULL;
+    }
+    *current = '\0';
+    return result;
+}
+
+int main(void)
+{
+    char *data[] = {"apple", "banana", "cherry", "date"};
+    Tuple tuple = {data, 4};
+    char *joined;
+
+    joined = tuple_join(&tuple, ", ");
+    if (joined == NULL) {
+        fprintf(stderr, "Failed to join tuple elements\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("%s\n", joined);
+    free(joined);
+
+    return EXIT_SUCCESS;
+}

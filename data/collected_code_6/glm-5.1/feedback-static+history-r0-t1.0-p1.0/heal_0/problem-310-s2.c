@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char **items;
+    size_t count;
+} Tuple;
+
+Tuple *string_to_tuple(const char *str, const char *delim) {
+    if (str == NULL || delim == NULL) {
+        return NULL;
+    }
+
+    Tuple *tuple = (Tuple *)malloc(sizeof(Tuple));
+    if (tuple == NULL) {
+        return NULL;
+    }
+
+    tuple->items = NULL;
+    tuple->count = 0;
+
+    char *temp = (char *)malloc(strlen(str) + 1);
+    if (temp == NULL) {
+        free(tuple);
+        return NULL;
+    }
+    strcpy(temp, str);
+
+    char *token = strtok(temp, delim);
+    while (token != NULL) {
+        char **new_items = (char **)realloc(tuple->items, (tuple->count + 1) * sizeof(char *));
+        if (new_items == NULL) {
+            for (size_t i = 0; i < tuple->count; i++) {
+                free(tuple->items[i]);
+            }
+            free(tuple->items);
+            free(tuple);
+            free(temp);
+            return NULL;
+        }
+        tuple->items = new_items;
+
+        tuple->items[tuple->count] = (char *)malloc(strlen(token) + 1);
+        if (tuple->items[tuple->count] == NULL) {
+            for (size_t i = 0; i < tuple->count; i++) {
+                free(tuple->items[i]);
+            }
+            free(tuple->items);
+            free(tuple);
+            free(temp);
+            return NULL;
+        }
+        strcpy(tuple->items[tuple->count], token);
+        tuple->count++;
+
+        token = strtok(NULL, delim);
+    }
+
+    free(temp);
+    return tuple;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple != NULL) {
+        for (size_t i = 0; i < tuple->count; i++) {
+            free(tuple->items[i]);
+        }
+        free(tuple->items);
+        free(tuple);
+    }
+}
+
+int main(void) {
+    const char *input = "apple,banana,cherry";
+    const char *delim = ",";
+
+    Tuple *my_tuple = string_to_tuple(input, delim);
+    if (my_tuple == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    printf("(");
+    for (size_t i = 0; i < my_tuple->count; i++) {
+        printf("'%s'", my_tuple->items[i]);
+        if (i < my_tuple->count - 1) {
+            printf(", ");
+        }
+    }
+    printf(")\n");
+
+    free_tuple(my_tuple);
+
+    return EXIT_SUCCESS;
+}

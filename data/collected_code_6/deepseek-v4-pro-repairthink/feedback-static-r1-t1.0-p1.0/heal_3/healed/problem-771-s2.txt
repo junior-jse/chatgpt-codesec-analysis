@@ -1,0 +1,62 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int isBalanced(const char *expression, size_t max_length) {
+    if (expression == NULL) {
+        return 0;
+    }
+
+    char *stack = malloc(max_length + 1);
+    if (stack == NULL) {
+        return 0;
+    }
+
+    int top = -1;
+
+    for (size_t i = 0; i < max_length && expression[i] != '\0'; i++) {
+        char current = expression[i];
+
+        if (current == '(' || current == '[' || current == '{') {
+            stack[++top] = current;
+        } else if (current == ')' || current == ']' || current == '}') {
+            if (top == -1) {
+                free(stack);
+                return 0;
+            }
+
+            char opening = stack[top];
+            if ((opening == '(' && current != ')') ||
+                (opening == '[' && current != ']') ||
+                (opening == '{' && current != '}')) {
+                free(stack);
+                return 0;
+            }
+
+            top--;
+        }
+    }
+
+    int balanced = (top == -1);
+    free(stack);
+    return balanced;
+}
+
+int main() {
+    char expression1[] = "{[()]}";
+    char expression2[] = "{[(])}";
+    char expression3[] = "((()))";
+    char expression4[] = "((())";
+    char expression5[] = "";
+    char expression6[] = "a*(b+c)-[d/{e-f}]";
+
+    printf("\"%s\" is %s\n", expression1, isBalanced(expression1, sizeof(expression1) - 1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression2, isBalanced(expression2, sizeof(expression2) - 1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression3, isBalanced(expression3, sizeof(expression3) - 1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression4, isBalanced(expression4, sizeof(expression4) - 1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression5, isBalanced(expression5, sizeof(expression5) - 1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression6, isBalanced(expression6, sizeof(expression6) - 1) ? "balanced" : "not balanced");
+
+    return 0;
+}
+```

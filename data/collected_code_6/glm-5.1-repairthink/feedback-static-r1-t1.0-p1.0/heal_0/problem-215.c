@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* decode(int* encoded, int encoded_size, int* return_size) {
+    if (encoded == NULL || return_size == NULL || encoded_size < 0) {
+        if (return_size != NULL) {
+            *return_size = 0;
+        }
+        return NULL;
+    }
+
+    size_t total_elements = 0;
+    for (int i = 0; i < encoded_size; i += 2) {
+        if (encoded[i] < 0) {
+            *return_size = 0;
+            return NULL;
+        }
+        total_elements += (size_t)encoded[i];
+    }
+
+    if (total_elements == 0) {
+        *return_size = 0;
+        return malloc(1);
+    }
+
+    int* decoded = malloc(total_elements * sizeof(int));
+    if (decoded == NULL) {
+        *return_size = 0;
+        return NULL;
+    }
+
+    size_t index = 0;
+    for (int i = 0; i < encoded_size; i += 2) {
+        int count = encoded[i];
+        int value = encoded[i + 1];
+        for (int j = 0; j < count; j++) {
+            decoded[index++] = value;
+        }
+    }
+
+    *return_size = (int)total_elements;
+    return decoded;
+}
+
+int main() {
+    int encoded[] = {3, 1, 2, 4, 1, 5, 5, 9};
+    int encoded_size = sizeof(encoded) / sizeof(encoded[0]);
+    int return_size = 0;
+
+    int* decoded = decode(encoded, encoded_size, &return_size);
+
+    if (decoded != NULL && return_size > 0) {
+        for (int i = 0; i < return_size; i++) {
+            printf("%d ", decoded[i]);
+        }
+        printf("\n");
+    }
+
+    free(decoded);
+
+    return 0;
+}

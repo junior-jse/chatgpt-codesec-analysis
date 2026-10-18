@@ -1,0 +1,76 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int* find_common_index_elements(const int* list1, int size1, const int* list2, int size2, const int* list3, int size3, int* result_size) {
+    if (list1 == NULL || list2 == NULL || list3 == NULL || result_size == NULL) {
+        return NULL;
+    }
+    
+    if (size1 <= 0 || size2 <= 0 || size3 <= 0) {
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int min_size = size1;
+    if (size2 < min_size) min_size = size2;
+    if (size3 < min_size) min_size = size3;
+    
+    int* result = (int*)malloc(min_size * sizeof(int));
+    if (result == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int count = 0;
+    for (int i = 0; i < min_size; i++) {
+        if (list1[i] == list2[i] && list2[i] == list3[i]) {
+            result[count] = list1[i];
+            count++;
+        }
+    }
+    
+    if (count == 0) {
+        free(result);
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int* final_result = (int*)realloc(result, count * sizeof(int));
+    if (final_result == NULL) {
+        free(result);
+        *result_size = 0;
+        return NULL;
+    }
+    
+    *result_size = count;
+    return final_result;
+}
+
+int main(void) {
+    int list1[] = {1, 2, 3, 4, 5};
+    int list2[] = {1, 5, 3, 7, 5};
+    int list3[] = {1, 2, 3, 9, 5};
+    
+    int size1 = sizeof(list1) / sizeof(list1[0]);
+    int size2 = sizeof(list2) / sizeof(list2[0]);
+    int size3 = sizeof(list3) / sizeof(list3[0]);
+    
+    int result_size = 0;
+    int* common = find_common_index_elements(list1, size1, list2, size2, list3, size3, &result_size);
+    
+    if (common != NULL && result_size > 0) {
+        printf("Common index elements: ");
+        for (int i = 0; i < result_size; i++) {
+            printf("%d ", common[i]);
+        }
+        printf("\n");
+        free(common);
+    } else {
+        printf("No common index elements found.\n");
+    }
+    
+    return 0;
+}
+```

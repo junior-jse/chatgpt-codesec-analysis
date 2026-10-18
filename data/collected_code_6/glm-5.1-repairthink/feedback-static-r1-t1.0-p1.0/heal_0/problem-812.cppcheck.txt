@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c:58:12: style: Condition 's3==NULL' is always true [knownConditionTrueFalse]
+    if (s3 == NULL) {
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c:57:31: note: Calling function 'abbreviate_road' returns 0
+    char *s3 = abbreviate_road(NULL);
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c:57:31: note: Assignment 's3=abbreviate_road(NULL)', assigned value is 0
+    char *s3 = abbreviate_road(NULL);
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c:58:12: note: Condition 's3==NULL' is always true
+    if (s3 == NULL) {
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-812.c:57:11: style: Variable 's3' can be declared as pointer to const [constVariablePointer]
+    char *s3 = abbreviate_road(NULL);
+          ^

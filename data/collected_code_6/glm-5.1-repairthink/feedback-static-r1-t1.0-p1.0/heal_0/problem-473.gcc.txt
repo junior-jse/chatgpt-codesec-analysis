@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-473.c: In function 'free_tuple_list':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-473.c:52:33: error: 'list' is a pointer; did you mean to use '->'?
+   52 |         for (int i = 0; i < list.size; i++) {
+      |                                 ^
+      |                                 ->

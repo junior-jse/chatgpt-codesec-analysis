@@ -1,0 +1,117 @@
+## Analysis
+
+Beyond the two flagged weaknesses, there is a critical bug that would crash the program at runtime:
+
+1. **`temp` variable scope** — declared at function scope but only used inside the loop. Fix: declare it inside the loop body.
+2. **`strlen` over-read (CWE-126)** — if the string is not `\0`-terminated, `strlen` reads out of bounds. Fix: use `strnlen` with an explicit maximum buffer length, threaded through the API as a `max_len` parameter.
+3. **Undefined behavior in `main`** (the real showstopper) — `strings[]` points to string literals, which reside in read-only memory. `reverse_string` writes to them, causing a segfault. Fix: copy the literals into modifiable stack buffers first.
+
+## Rewritten code
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STRING_LEN 256
+
+void reverse_string(char *str, size_t max_len)
+{
+    size_t left;
+    size_t right;
+
+    if (str == NULL || max_len == 0)
+    {
+        return;
+    }
+
+    left = 0;
+    right = strnlen(str, max_len);
+
+    if (right == 0)
+    {
+        return;
+    }
+
+    right--;
+
+    while (left < right)
+    {
+        char temp;
+
+        temp = str[left];
+        str[left] = str[right];
+        str[right] = temp;
+        left++;
+        right--;
+    }
+}
+
+int reverse_string_list(char **list, size_t count, size_t max_len)
+{
+    size_t i;
+
+    if (list == NULL || max_len == 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        if (list[i] == NULL)
+        {
+            return -1;
+        }
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        reverse_string(list[i], max_len);
+    }
+
+    return 0;
+}
+
+int main(void)
+{
+    char s0[MAX_STRING_LEN] = "hello";
+    char s1[MAX_STRING_LEN] = "world";
+    char s2[MAX_STRING_LEN] = "programming";
+    char s3[MAX_STRING_LEN] = "language";
+    char s4[MAX_STRING_LEN] = "secure";
+    char *strings[] = { s0, s1, s2, s3, s4 };
+    size_t count;
+    size_t i;
+    int result;
+
+    count = sizeof(strings) / sizeof(strings[0]);
+
+    result = reverse_string_list(strings, count, MAX_STRING_LEN);
+
+    if (result != 0)
+    {
+        fprintf(stderr, "Error: failed to reverse string list\n");
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        if (printf("%s\n", strings[i]) < 0)
+        {
+            fprintf(stderr, "Error: failed to print output\n");
+            return EXIT_FAILURE;
+        }
+    }
+
+    return EXIT_SUCCESS;
+}
+```
+
+### Summary of changes
+
+| Issue | Fix |
+|---|---|
+| `temp` scope too wide | Moved declaration inside the `while` loop body |
+| CWE-126 `strlen` over-read | Replaced with `strnlen(str, max_len)`; `max_len` passed down from caller |
+| Writing to string literals (UB/segfault) | Literals copied into writable `char[MAX_STRING_LEN]` buffers |
+| Hardening | Added `max_len == 0` guard in both functions |

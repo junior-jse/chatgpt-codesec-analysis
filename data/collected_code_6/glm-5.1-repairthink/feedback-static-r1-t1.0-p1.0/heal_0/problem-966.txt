@@ -1,0 +1,87 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    int size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    int count;
+} TupleList;
+
+int remove_empty_tuples(TupleList *list) {
+    if (list == NULL || list->tuples == NULL) {
+        return -1;
+    }
+
+    int write_index = 0;
+    for (int read_index = 0; read_index < list->count; read_index++) {
+        if (list->tuples[read_index].size > 0) {
+            if (write_index != read_index) {
+                list->tuples[write_index] = list->tuples[read_index];
+            }
+            write_index++;
+        } else {
+            free(list->tuples[read_index].elements);
+        }
+    }
+
+    int removed_count = list->count - write_index;
+
+    list->count = write_index;
+    if (list->count == 0) {
+        free(list->tuples);
+        list->tuples = NULL;
+    } else {
+        Tuple *resized = realloc(list->tuples, list->count * sizeof(Tuple));
+        if (resized != NULL) {
+            list->tuples = resized;
+        }
+    }
+
+    return removed_count;
+}
+
+int main() {
+    TupleList list;
+    list.count = 4;
+    list.tuples = malloc(list.count * sizeof(Tuple));
+    
+    list.tuples[0].size = 2;
+    list.tuples[0].elements = malloc(2 * sizeof(int));
+    list.tuples[0].elements[0] = 1;
+    list.tuples[0].elements[1] = 2;
+
+    list.tuples[1].size = 0;
+    list.tuples[1].elements = NULL;
+
+    list.tuples[2].size = 1;
+    list.tuples[2].elements = malloc(1 * sizeof(int));
+    list.tuples[2].elements[0] = 3;
+
+    list.tuples[3].size = 0;
+    list.tuples[3].elements = NULL;
+
+    int removed = remove_empty_tuples(&list);
+    
+    printf("Removed: %d\n", removed);
+    printf("Remaining count: %d\n", list.count);
+    
+    for (int i = 0; i < list.count; i++) {
+        printf("Tuple %d: ", i);
+        for (int j = 0; j < list.tuples[i].size; j++) {
+            printf("%d ", list.tuples[i].elements[j]);
+        }
+        printf("\n");
+        free(list.tuples[i].elements);
+    }
+    
+    free(list.tuples);
+
+    return 0;
+}
+```

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-418-s2.c:64:9: warning: Value stored to 'max_len' is never read [deadcode.DeadStores]
+   64 |         max_len = current_len;
+      |         ^         ~~~~~~~~~~~
+1 warning generated.

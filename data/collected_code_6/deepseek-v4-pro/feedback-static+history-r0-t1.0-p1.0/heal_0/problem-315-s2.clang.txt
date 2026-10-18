@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-315-s2.c:23:21: warning: Value stored to 'max_start' is never read [deadcode.DeadStores]
+   23 |                     max_start = i - word_len;
+      |                     ^           ~~~~~~~~~~~~
+1 warning generated.

@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413.c:57:60: style: Condition 'extract_nth_element(NULL,list_size,0,0,&value)==0' is always false [knownConditionTrueFalse]
+    if (extract_nth_element(NULL, list_size, 0, 0, &value) == 0) {
+                                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413.c:57:28: note: Calling function 'extract_nth_element' returns -1
+    if (extract_nth_element(NULL, list_size, 0, 0, &value) == 0) {
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413.c:57:60: note: Condition 'extract_nth_element(NULL,list_size,0,0,&value)==0' is always false
+    if (extract_nth_element(NULL, list_size, 0, 0, &value) == 0) {
+                                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-413.c:21:12: style: Variable 't' can be declared as pointer to const [constVariablePointer]
+    Tuple *t = &list[tuple_index];
+           ^

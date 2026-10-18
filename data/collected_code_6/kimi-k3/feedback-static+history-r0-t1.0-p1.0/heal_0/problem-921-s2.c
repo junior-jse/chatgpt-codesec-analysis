@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t count;
+    size_t capacity;
+} TupleArray;
+
+int init_tuple_array(TupleArray *arr, size_t initial_capacity) {
+    if (arr == NULL || initial_capacity == 0) {
+        return -1;
+    }
+    arr->tuples = malloc(initial_capacity * sizeof(Tuple));
+    if (arr->tuples == NULL) {
+        return -1;
+    }
+    arr->count = 0;
+    arr->capacity = initial_capacity;
+    return 0;
+}
+
+int resize_tuple_array(TupleArray *arr, size_t new_capacity) {
+    if (arr == NULL || new_capacity == 0) {
+        return -1;
+    }
+    Tuple *new_tuples = realloc(arr->tuples, new_capacity * sizeof(Tuple));
+    if (new_tuples == NULL) {
+        return -1;
+    }
+    arr->tuples = new_tuples;
+    arr->capacity = new_capacity;
+    return 0;
+}
+
+int add_tuple(TupleArray *arr, const int *data, size_t n) {
+    if (arr == NULL || data == NULL || n == 0) {
+        return -1;
+    }
+    if (arr->count >= arr->capacity) {
+        size_t new_capacity = arr->capacity * 2;
+        if (resize_tuple_array(arr, new_capacity) != 0) {
+            return -1;
+        }
+    }
+    arr->tuples[arr->count].data = malloc(n * sizeof(int));
+    if (arr->tuples[arr->count].data == NULL) {
+        return -1;
+    }
+    memcpy(arr->tuples[arr->count].data, data, n * sizeof(int));
+    arr->tuples[arr->count].size = n;
+    arr->count++;
+    return 0;
+}
+
+int chunk_tuples(const int *source, size_t source_size, size_t n, TupleArray *result) {
+    if (source == NULL || result == NULL || n == 0) {
+        return -1;
+    }
+    if (source_size % n != 0) {
+        return -1;
+    }
+    size_t num_chunks = source_size / n;
+    if (init_tuple_array(result, num_chunks) != 0) {
+        return -1;
+    }
+    for (size_t i = 0; i < num_chunks; i++) {
+        if (add_tuple(result, source + (i * n), n) != 0) {
+            for (size_t j = 0; j < result->count; j++) {
+                free(result->tuples[j].data);
+            }
+            free(result->tuples);
+            result->tuples = NULL;
+            result->count = 0;
+            result->capacity = 0;
+            return -1;
+        }
+    }
+    return 0;
+}
+
+void free_tuple_array(TupleArray *arr) {
+    if (arr == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < arr->count; i++) {
+        free(arr->tuples[i].data);
+    }
+    free(arr->tuples);
+    arr->tuples = NULL;
+    arr->count = 0;
+    arr->capacity = 0;
+}
+
+void print_tuple_array(const TupleArray *arr) {
+    if (arr == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < arr->count; i++) {
+        printf("Tuple %zu: (", i);
+        for (size_t j = 0; j < arr->tuples[i].size; j++) {
+            printf("%d", arr->tuples[i].data[j]);
+            if (j < arr->tuples[i].size - 1) {
+                printf(", ");
+            }
+        }
+        printf(")\n");
+    }
+}
+
+int main(void) {
+    int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+    size_t n = 3;
+    TupleArray chunks;
+    if (chunk_tuples(data, data_size, n, &chunks) != 0) {
+        fprintf(stderr, "Error: Failed to chunk tuples\n");
+        return EXIT_FAILURE;
+    }
+    print_tuple_array(&chunks);
+    free_tuple_array(&chunks);
+    return EXIT_SUCCESS;
+}

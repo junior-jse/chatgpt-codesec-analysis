@@ -1,0 +1,73 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *string;
+    int *list;
+    size_t list_size;
+} Tuple;
+
+Tuple *create_tuple(const char *str, const int *list, size_t list_size) {
+    if (str == NULL || (list == NULL && list_size > 0)) {
+        return NULL;
+    }
+
+    Tuple *t = (Tuple *)malloc(sizeof(Tuple));
+    if (t == NULL) {
+        return NULL;
+    }
+
+    t->string = (char *)malloc(strlen(str) + 1);
+    if (t->string == NULL) {
+        free(t);
+        return NULL;
+    }
+    strcpy(t->string, str);
+
+    if (list_size > 0) {
+        t->list = (int *)malloc(list_size * sizeof(int));
+        if (t->list == NULL) {
+            free(t->string);
+            free(t);
+            return NULL;
+        }
+        memcpy(t->list, list, list_size * sizeof(int));
+    } else {
+        t->list = NULL;
+    }
+
+    t->list_size = list_size;
+    return t;
+}
+
+void free_tuple(Tuple *t) {
+    if (t != NULL) {
+        free(t->string);
+        free(t->list);
+        free(t);
+    }
+}
+
+int main(void) {
+    const char *str = "example";
+    int arr[] = {1, 2, 3, 4, 5};
+    size_t arr_size = sizeof(arr) / sizeof(arr[0]);
+
+    Tuple *t = create_tuple(str, arr, arr_size);
+    if (t == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    printf("String: %s\nList: [", t->string);
+    for (size_t i = 0; i < t->list_size; ++i) {
+        printf("%d%s", t->list[i], i < t->list_size - 1 ? ", " : "");
+    }
+    printf("]\n");
+
+    free_tuple(t);
+
+    return EXIT_SUCCESS;
+}
+```

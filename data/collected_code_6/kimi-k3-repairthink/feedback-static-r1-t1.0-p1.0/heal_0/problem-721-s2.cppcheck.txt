@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c:160:31: style: Variable 'allocation_failed' is assigned a value that is never used. [unreadVariable]
+            allocation_failed = 1;
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c:178:25: style: Variable 'current_path.length' is assigned a value that is never used. [unreadVariable]
+    current_path.length = 0;
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c:179:22: style: Variable 'current_path.sum' is assigned a value that is never used. [unreadVariable]
+    current_path.sum = 0.0;
+                     ^

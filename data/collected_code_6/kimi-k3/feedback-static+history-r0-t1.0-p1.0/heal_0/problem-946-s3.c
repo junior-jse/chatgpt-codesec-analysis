@@ -1,0 +1,201 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <limits.h>
+
+typedef struct {
+    char *word;
+    size_t count;
+} WordCount;
+
+static void free_word_counts(WordCount *wc, size_t n)
+{
+    size_t i;
+    if (wc == NULL) {
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        free(wc[i].word);
+    }
+    free(wc);
+}
+
+static char *copy_string(const char *s)
+{
+    size_t len;
+    char *p;
+    if (s == NULL) {
+        return NULL;
+    }
+    len = strlen(s);
+    if (len == SIZE_MAX) {
+        return NULL;
+    }
+    p = malloc(len + 1);
+    if (p == NULL) {
+        return NULL;
+    }
+    memcpy(p, s, len + 1);
+    return p;
+}
+
+static int find_word_index(const WordCount *wc, size_t n, const char *word)
+{
+    size_t i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(wc[i].word, word) == 0) {
+            return (int)i;
+        }
+    }
+    return -1;
+}
+
+static int add_word(WordCount **wc_ptr, size_t *n, size_t *cap, const char *word)
+{
+    WordCount *tmp;
+    size_t new_cap;
+    if (wc_ptr == NULL || n == NULL || cap == NULL || word == NULL) {
+        return -1;
+    }
+    if (*n == *cap) {
+        if (*cap > SIZE_MAX / 2) {
+            return -1;
+        }
+        new_cap = (*cap == 0) ? 8 : (*cap * 2);
+        if (new_cap > SIZE_MAX / sizeof(**wc_ptr)) {
+            return -1;
+        }
+        tmp = realloc(*wc_ptr, new_cap * sizeof(**wc_ptr));
+        if (tmp == NULL) {
+            return -1;
+        }
+        *wc_ptr = tmp;
+        *cap = new_cap;
+    }
+    (*wc_ptr)[*n].word = copy_string(word);
+    if ((*wc_ptr)[*n].word == NULL) {
+        return -1;
+    }
+    (*wc_ptr)[*n].count = 1;
+    (*n)++;
+    return 0;
+}
+
+static void lowercase_string(char *s)
+{
+    size_t i;
+    if (s == NULL) {
+        return;
+    }
+    for (i = 0; s[i] != '\0'; i++) {
+        s[i] = (char)tolower((unsigned char)s[i]);
+    }
+}
+
+static int process_text(const char *text, WordCount **wc_out, size_t *n_out)
+{
+    WordCount *wc = NULL;
+    size_t n = 0;
+    size_t cap = 0;
+    char *text_copy = NULL;
+    char *token = NULL;
+    char *saveptr = NULL;
+    const char *delim = " \t\n\r.,;:!?\"'()[]{}<>/-";
+    int idx;
+
+    if (text == NULL || wc_out == NULL || n_out == NULL) {
+        return -1;
+    }
+
+    text_copy = copy_string(text);
+    if (text_copy == NULL) {
+        return -1;
+    }
+
+    token = strtok_r(text_copy, delim, &saveptr);
+    while (token != NULL) {
+        lowercase_string(token);
+        idx = find_word_index(wc, n, token);
+        if (idx >= 0) {
+            wc[idx].count++;
+        } else {
+            if (add_word(&wc, &n, &cap, token) != 0) {
+                free(text_copy);
+                free_word_counts(wc, n);
+                return -1;
+            }
+        }
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+
+    free(text_copy);
+    *wc_out = wc;
+    *n_out = n;
+    return 0;
+}
+
+static size_t find_max_count(const WordCount *wc, size_t n)
+{
+    size_t i;
+    size_t max_count = 0;
+    if (wc == NULL) {
+        return 0;
+    }
+    for (i = 0; i < n; i++) {
+        if (wc[i].count > max_count) {
+            max_count = wc[i].count;
+        }
+    }
+    return max_count;
+}
+
+static int print_most_common(const WordCount *wc, size_t n)
+{
+    size_t max_count;
+    size_t i;
+    int found = 0;
+
+    if (wc == NULL || n == 0) {
+        printf("No words found.\n");
+        return 0;
+    }
+
+    max_count = find_max_count(wc, n);
+    if (max_count == 0) {
+        printf("No words found.\n");
+        return 0;
+    }
+
+    printf("Most common element(s) with count %zu:\n", max_count);
+    for (i = 0; i < n; i++) {
+        if (wc[i].count == max_count) {
+            printf("  \"%s\": %zu\n", wc[i].word, wc[i].count);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("No words found.\n");
+    }
+    return 0;
+}
+
+int main(void)
+{
+    const char *text = "The quick brown fox jumps over the lazy dog. The dog was not amused by the fox.";
+    WordCount *wc = NULL;
+    size_t n = 0;
+    int result;
+
+    result = process_text(text, &wc, &n);
+    if (result != 0) {
+        fprintf(stderr, "Error: failed to process text.\n");
+        return EXIT_FAILURE;
+    }
+
+    print_most_common(wc, n);
+    free_word_counts(wc, n);
+
+    return EXIT_SUCCESS;
+}

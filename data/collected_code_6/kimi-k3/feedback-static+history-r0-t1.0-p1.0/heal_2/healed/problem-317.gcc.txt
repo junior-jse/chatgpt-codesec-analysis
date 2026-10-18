@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-317.c: In function 'rle_append':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-317.c:109:27: error: implicit declaration of function 'memcpy_s'; did you mean 'memcpy'? [-Wimplicit-function-declaration]
+  109 |     if (value_size > 0 && memcpy_s(pair->value, value_size, value, value_size) != 0) {
+      |                           ^~~~~~~~
+      |                           memcpy

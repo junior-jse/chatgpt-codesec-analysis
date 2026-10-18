@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-326-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-326-s2.c:51:21: style: Variable 'str_len' is assigned a value that is never used. [unreadVariable]
+            str_len = buffer_size - 1;
+                    ^

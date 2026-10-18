@@ -1,0 +1,85 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+int rotate_left(int *arr, size_t n, size_t k) {
+    if (arr == NULL || n == 0) {
+        return -1;
+    }
+
+    k = k % n;
+    if (k == 0) {
+        return 0;
+    }
+
+    if (n > SIZE_MAX / sizeof(int)) {
+        return -1;
+    }
+
+    size_t total_bytes = n * sizeof(int);
+    size_t k_bytes = k * sizeof(int);
+    size_t remaining_bytes = (n - k) * sizeof(int);
+
+    if (k_bytes > total_bytes || remaining_bytes > total_bytes) {
+        return -1;
+    }
+
+    int *temp = malloc(k_bytes);
+    if (temp == NULL) {
+        return -1;
+    }
+
+    if (k_bytes <= total_bytes) {
+        memcpy(temp, arr, k_bytes);
+    } else {
+        free(temp);
+        return -1;
+    }
+
+    if (remaining_bytes <= total_bytes) {
+        memmove(arr, arr + k, remaining_bytes);
+    } else {
+        free(temp);
+        return -1;
+    }
+
+    if (k_bytes <= total_bytes - remaining_bytes) {
+        memcpy(arr + n - k, temp, k_bytes);
+    } else {
+        free(temp);
+        return -1;
+    }
+
+    free(temp);
+    return 0;
+}
+
+int main(void) {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7};
+    size_t n = sizeof(arr) / sizeof(arr[0]);
+    size_t k = 3;
+
+    if (rotate_left(arr, n, k) != 0) {
+        fprintf(stderr, "Rotation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return EXIT_SUCCESS;
+}
+```
+
+Key fixes applied:
+
+1. **Overflow guard before size arithmetic** — `n > SIZE_MAX / sizeof(int)` prevents `size_t` wraparound when computing `k * sizeof(int)` and `(n - k) * sizeof(int)`, which could otherwise cause a small allocation followed by an oversized copy (classic CWE-120 scenario).
+2. **Explicit destination-capacity validation before every `memcpy`/`memmove`** — each copy is guarded by a check confirming the byte count fits within the destination buffer (`total_bytes`), satisfying the "make sure destination can always hold the source data" requirement.
+3. **Cleanup on every failure path** — `temp` is freed before returning on any failed check, preventing memory leaks.
+4. Added `#include <stdint.h>` for `SIZE_MAX`.
+
+A note as an alternative: the rotation could also be implemented in-place with three `reverse()` calls (O(1) space), which would eliminate `memcpy`/`memmove` entirely and remove the CWE-120 surface altogether — worth considering if the extra allocation isn't desirable.

@@ -1,0 +1,189 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <errno.h>
+
+typedef struct Node {
+    char *key;
+    char *value;
+    struct Node *child;
+    struct Node *next;
+} Node;
+
+static char* safe_strdup(const char *str) {
+    if (!str) {
+        return NULL;
+    }
+    
+    size_t len = 0;
+    const char *p = str;
+    while (*p && len < SIZE_MAX - 1) {
+        p++;
+        len++;
+    }
+    
+    if (*p != '\0') {
+        return NULL;
+    }
+    
+    char *copy = malloc(len + 1);
+    if (!copy) {
+        return NULL;
+    }
+    
+    memcpy(copy, str, len + 1);
+    return copy;
+}
+
+Node* create_node(const char *key, const char *value) {
+    if (!key || !value) {
+        return NULL;
+    }
+    
+    Node *node = malloc(sizeof(Node));
+    if (!node) {
+        return NULL;
+    }
+    
+    node->key = safe_strdup(key);
+    node->value = safe_strdup(value);
+    
+    if (!node->key || !node->value) {
+        free(node->key);
+        free(node->value);
+        free(node);
+        return NULL;
+    }
+    
+    node->child = NULL;
+    node->next = NULL;
+    return node;
+}
+
+void free_dict(Node *node) {
+    while (node) {
+        Node *tmp = node;
+        node = node->next;
+        free_dict(tmp->child);
+        free(tmp->key);
+        free(tmp->value);
+        free(tmp);
+    }
+}
+
+Node* find_child(Node *parent, const char *key) {
+    if (!key) {
+        return NULL;
+    }
+    
+    Node *cur = parent ? parent->child : NULL;
+    while (cur) {
+        if (cur->key && strcmp(cur->key, key) == 0) {
+            return cur;
+        }
+        cur = cur->next;
+    }
+    return NULL;
+}
+
+int add_to_dict(Node *parent, const char *key, const char *value) {
+    if (!parent || !key || !value) {
+        return 0;
+    }
+    
+    Node *child = find_child(parent, key);
+    if (!child) {
+        child = create_node(key, value);
+        if (!child) {
+            return 0;
+        }
+        child->next = parent->child;
+        parent->child = child;
+    } else {
+        char *new_value = safe_strdup(value);
+        if (!new_value) {
+            return 0;
+        }
+        free(child->value);
+        child->value = new_value;
+    }
+    return 1;
+}
+
+Node* convert_lists_to_nested_dict(char **keys, char **values, int outer_size, int inner_size) {
+    if (!keys || !values || outer_size < 0 || inner_size < 0) {
+        return NULL;
+    }
+    
+    Node *root = create_node("root", "");
+    if (!root) {
+        return NULL;
+    }
+    
+    for (int i = 0; i < outer_size; i++) {
+        char outer_key[32];
+        int ret = snprintf(outer_key, sizeof(outer_key), "item%d", i);
+        if (ret < 0 || ret >= (int)sizeof(outer_key)) {
+            free_dict(root);
+            return NULL;
+        }
+        
+        Node *child = find_child(root, outer_key);
+        if (!child) {
+            child = create_node(outer_key, "");
+            if (!child) {
+                free_dict(root);
+                return NULL;
+            }
+            child->next = root->child;
+            root->child = child;
+        }
+        
+        for (int j = 0; j < inner_size; j++) {
+            int idx = i * inner_size + j;
+            if (idx < 0 || idx >= outer_size * inner_size) {
+                free_dict(root);
+                return NULL;
+            }
+            if (!keys[idx] || !values[idx]) {
+                free_dict(root);
+                return NULL;
+            }
+            if (!add_to_dict(child, keys[idx], values[idx])) {
+                free_dict(root);
+                return NULL;
+            }
+        }
+    }
+    return root;
+}
+
+void print_dict(Node *node, int depth) {
+    while (node) {
+        for (int i = 0; i < depth; i++) {
+            printf("  ");
+        }
+        printf("%s: %s\n", node->key ? node->key : "(null)", 
+               node->value ? node->value : "(null)");
+        print_dict(node->child, depth + 1);
+        node = node->next;
+    }
+}
+
+int main(void) {
+    char *keys[] = {"name", "age", "city", "name", "age", "city"};
+    char *values[] = {"Alice", "30", "NY", "Bob", "25", "LA"};
+    int outer_size = 2;
+    int inner_size = 3;
+    
+    Node *dict = convert_lists_to_nested_dict(keys, values, outer_size, inner_size);
+    if (!dict) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return EXIT_FAILURE;
+    }
+    
+    print_dict(dict, 0);
+    free_dict(dict);
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void reverse_string(char *str) {
+    size_t left = 0;
+    size_t right;
+
+    if (str == NULL) {
+        return;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    right = strlen(str);
+    if (right == 0) {
+        return;
+    }
+    right--;
+
+    while (left < right) {
+        char temp = str[left];
+        str[left] = str[right];
+        str[right] = temp;
+        left++;
+        right--;
+    }
+}
+
+int reverse_string_list(char **list, size_t count) {
+    size_t i;
+
+    if (list == NULL) {
+        return -1;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            reverse_string(list[i]);
+        }
+    }
+
+    return 0;
+}
+
+int main(void) {
+    char strings[][20] = {"hello", "world", "programming", "c", "developer"};
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char *ptr_array[5];
+    size_t count = sizeof(strings) / sizeof(strings[0]);
+    size_t i;
+    int result;
+
+    for (i = 0; i < count; i++) {
+        ptr_array[i] = strings[i];
+    }
+
+    printf("Original strings:\n");
+    for (i = 0; i < count; i++) {
+        printf("%s\n", strings[i]);
+    }
+
+    result = reverse_string_list(ptr_array, count);
+    if (result != 0) {
+        fprintf(stderr, "Error: Failed to reverse string list\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("\nReversed strings:\n");
+    for (i = 0; i < count; i++) {
+        printf("%s\n", strings[i]);
+    }
+
+    return EXIT_SUCCESS;
+}

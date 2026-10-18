@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    char name[50];
+    double value;
+} Tuple;
+
+typedef struct {
+    Tuple *data;
+    size_t size;
+    size_t capacity;
+} TupleList;
+
+int tuple_list_init(TupleList *list, size_t initial_capacity) {
+    if (list == NULL || initial_capacity == 0) {
+        return -1;
+    }
+    list->data = malloc(initial_capacity * sizeof(Tuple));
+    if (list->data == NULL) {
+        return -1;
+    }
+    list->size = 0;
+    list->capacity = initial_capacity;
+    return 0;
+}
+
+void tuple_list_free(TupleList *list) {
+    if (list != NULL && list->data != NULL) {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->capacity = 0;
+    }
+}
+
+int tuple_list_add(TupleList *list, const Tuple *tuple) {
+    if (list == NULL || tuple == NULL) {
+        return -1;
+    }
+    if (list->size >= list->capacity) {
+        size_t new_capacity = list->capacity * 2;
+        Tuple *new_data = realloc(list->data, new_capacity * sizeof(Tuple));
+        if (new_data == NULL) {
+            return -1;
+        }
+        list->data = new_data;
+        list->capacity = new_capacity;
+    }
+    list->data[list->size] = *tuple;
+    list->size++;
+    return 0;
+}
+
+int extract_nth_element(const TupleList *list, size_t n, Tuple *result) {
+    if (list == NULL || result == NULL) {
+        return -1;
+    }
+    if (list->data == NULL || n >= list->size) {
+        return -1;
+    }
+    *result = list->data[n];
+    return 0;
+}
+
+int main(void) {
+    TupleList list;
+    Tuple result;
+    size_t nth = 2;
+
+    if (tuple_list_init(&list, 4) != 0) {
+        fprintf(stderr, "Failed to initialize list\n");
+        return EXIT_FAILURE;
+    }
+
+    Tuple t1 = {1, "First", 10.5};
+    Tuple t2 = {2, "Second", 20.75};
+    Tuple t3 = {3, "Third", 30.25};
+    Tuple t4 = {4, "Fourth", 40.0};
+
+    if (tuple_list_add(&list, &t1) != 0 ||
+        tuple_list_add(&list, &t2) != 0 ||
+        tuple_list_add(&list, &t3) != 0 ||
+        tuple_list_add(&list, &t4) != 0) {
+        fprintf(stderr, "Failed to add elements\n");
+        tuple_list_free(&list);
+        return EXIT_FAILURE;
+    }
+
+    if (extract_nth_element(&list, nth, &result) != 0) {
+        fprintf(stderr, "Failed to extract element at index %zu\n", nth);
+        tuple_list_free(&list);
+        return EXIT_FAILURE;
+    }
+
+    printf("Element at index %zu:\n", nth);
+    printf("  ID: %d\n", result.id);
+    printf("  Name: %s\n", result.name);
+    printf("  Value: %.2f\n", result.value);
+
+    tuple_list_free(&list);
+    return EXIT_SUCCESS;
+}

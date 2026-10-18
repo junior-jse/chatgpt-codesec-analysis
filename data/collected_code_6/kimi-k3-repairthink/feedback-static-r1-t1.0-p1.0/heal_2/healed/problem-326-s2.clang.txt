@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-326-s2.c:67:48: error: use of undeclared identifier 'INT_MAX'
+   67 |                     if (word_counts[j].count < INT_MAX) {
+      |                                                ^~~~~~~
+1 error generated.

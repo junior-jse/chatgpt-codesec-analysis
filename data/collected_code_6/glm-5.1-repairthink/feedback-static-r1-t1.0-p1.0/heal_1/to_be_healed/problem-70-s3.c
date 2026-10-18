@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+bool check_equal_tuple_length(int **tuples, int num_tuples, const int *tuple_lengths) {
+    if (tuples == NULL || tuple_lengths == NULL || num_tuples <= 0) {
+        return false;
+    }
+
+    int first_length = tuple_lengths[0];
+    
+    for (int i = 1; i < num_tuples; i++) {
+        if (tuple_lengths[i] != first_length) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+int main(void) {
+    int t0[] = {1, 2, 3};
+    int t1[] = {4, 5, 6};
+    int t2[] = {7, 8, 9};
+    
+    int *tuples[] = {t0, t1, t2};
+    /* Possible weaknesses found:
+     *  Variable 'lengths' can be declared as const array [constVariable]
+     */
+    int lengths[] = {3, 3, 3};
+    
+    bool result = check_equal_tuple_length(tuples, 3, lengths);
+    printf("%d\n", result);
+
+    return EXIT_SUCCESS;
+}

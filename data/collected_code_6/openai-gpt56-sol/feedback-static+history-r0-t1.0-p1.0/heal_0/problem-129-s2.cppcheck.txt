@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-129-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-129-s2.c:83:47: style: Condition 'calculate_magic_square(order,square)!=0' is always false [knownConditionTrueFalse]
+    if (calculate_magic_square(order, square) != 0) {
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-129-s2.c:83:31: note: Calling function 'calculate_magic_square' returns 0
+    if (calculate_magic_square(order, square) != 0) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-129-s2.c:83:47: note: Condition 'calculate_magic_square(order,square)!=0' is always false
+    if (calculate_magic_square(order, square) != 0) {
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-129-s2.c:49:26: style: Parameter 'argv' can be declared as const array [constParameter]
+int main(int argc, char *argv[])
+                         ^

@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef struct {
+    int sign;
+    unsigned long long mantissa;
+    int exponent;
+} Tuple;
+
+double tuple_to_double(Tuple t) {
+    if (t.mantissa == 0) {
+        return 0.0;
+    }
+    
+    double result = (double)t.mantissa;
+    result = ldexp(result, t.exponent);
+    
+    if (t.sign) {
+        result = -result;
+    }
+    
+    return result;
+}
+
+int main(void) {
+    Tuple tuples[] = {
+        {0, 12345, -3},
+        {1, 12345, -3},
+        {0, 0, 5},
+        {0, 1, 0},
+        {1, 1, 0},
+        {0, 987654321, -9}
+    };
+    
+    size_t count = sizeof(tuples) / sizeof(tuples[0]);
+    
+    for (size_t i = 0; i < count; i++) {
+        double value = tuple_to_double(tuples[i]);
+        printf("%.10f\n", value);
+    }
+    
+    return 0;
+}

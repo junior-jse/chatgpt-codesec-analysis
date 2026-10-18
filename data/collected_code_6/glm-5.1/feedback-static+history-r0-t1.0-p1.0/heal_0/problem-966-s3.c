@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    int size;
+} Tuple;
+
+typedef struct {
+    Tuple *items;
+    int count;
+    int capacity;
+} TupleList;
+
+TupleList create_tuple_list(int capacity) {
+    TupleList list;
+    list.items = (Tuple *)malloc(capacity * sizeof(Tuple));
+    list.count = 0;
+    list.capacity = capacity;
+    return list;
+}
+
+void free_tuple_list(TupleList *list) {
+    if (list->items != NULL) {
+        for (int i = 0; i < list->count; i++) {
+            if (list->items[i].elements != NULL) {
+                free(list->items[i].elements);
+            }
+        }
+        free(list->items);
+        list->items = NULL;
+        list->count = 0;
+        list->capacity = 0;
+    }
+}
+
+int remove_empty_tuples(TupleList *list) {
+    if (list == NULL || list->items == NULL) {
+        return -1;
+    }
+
+    int valid_count = 0;
+    for (int i = 0; i < list->count; i++) {
+        if (list->items[i].size > 0) {
+            list->items[valid_count] = list->items[i];
+            valid_count++;
+        } else {
+            if (list->items[i].elements != NULL) {
+                free(list->items[i].elements);
+                list->items[i].elements = NULL;
+            }
+        }
+    }
+
+    int removed = list->count - valid_count;
+    list->count = valid_count;
+
+    return removed;
+}
+
+int main() {
+    int capacity = 5;
+    TupleList list = create_tuple_list(capacity);
+    if (list.items == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    int a[] = {1, 2};
+    int b[] = {0};
+    int d[] = {5, 6, 7};
+
+    list.items[0].elements = (int *)malloc(2 * sizeof(int));
+    memcpy(list.items[0].elements, a, 2 * sizeof(int));
+    list.items[0].size = 2;
+
+    list.items[1].elements = NULL;
+    list.items[1].size = 0;
+
+    list.items[2].elements = (int *)malloc(sizeof(int));
+    memcpy(list.items[2].elements, b, sizeof(int));
+    list.items[2].size = 1;
+
+    list.items[3].elements = NULL;
+    list.items[3].size = 0;
+
+    list.items[4].elements = (int *)malloc(3 * sizeof(int));
+    memcpy(list.items[4].elements, d, 3 * sizeof(int));
+    list.items[4].size = 3;
+
+    list.count = capacity;
+
+    for (int i = 0; i < list.count; i++) {
+        printf("Tuple %d: size=%d\n", i, list.items[i].size);
+    }
+
+    int removed = remove_empty_tuples(&list);
+    printf("Removed: %d\n", removed);
+
+    for (int i = 0; i < list.count; i++) {
+        printf("Tuple %d: size=%d\n", i, list.items[i].size);
+    }
+
+    free_tuple_list(&list);
+
+    return EXIT_SUCCESS;
+}

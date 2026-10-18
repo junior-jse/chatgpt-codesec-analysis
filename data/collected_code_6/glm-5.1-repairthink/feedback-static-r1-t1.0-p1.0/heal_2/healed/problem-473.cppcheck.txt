@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-473.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-473.c:16:25: style: Parameter 'elements' can be declared as pointer to const [constParameterPointer]
+Tuple create_tuple(int *elements, int size) {
+                        ^

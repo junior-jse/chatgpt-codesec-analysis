@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int *map_power(const int *bases, const int *indices, size_t length) {
+    if (bases == NULL || indices == NULL || length == 0) {
+        return NULL;
+    }
+
+    int *result = malloc(length * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < length; i++) {
+        result[i] = (int)pow((double)bases[i], (double)indices[i]);
+    }
+
+    return result;
+}
+
+int main(void) {
+    int bases[] = {2, 3, 4, 5};
+    int indices[] = {1, 2, 3, 4};
+    size_t length = sizeof(bases) / sizeof(bases[0]);
+
+    int *result = map_power(bases, indices, length);
+    if (result == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < length; i++) {
+        printf("%d ", result[i]);
+    }
+    printf("\n");
+
+    free(result);
+    result = NULL;
+
+    return EXIT_SUCCESS;
+}

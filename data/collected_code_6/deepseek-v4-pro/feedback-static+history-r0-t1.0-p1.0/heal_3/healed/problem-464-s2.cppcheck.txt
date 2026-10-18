@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-464-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-464-s2.c:34:32: warning: Either the condition 'key_len>=256' is redundant or the array 'key[4]' is accessed at index 255, which is out of bounds. [arrayIndexOutOfBoundsCond]
+    while (key_len < 256 && key[key_len] != '\0') {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-464-s2.c:37:17: note: Assuming that condition 'key_len>=256' is not redundant
+    if (key_len >= 256 || key[key_len] != '\0') {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-464-s2.c:34:32: note: Array index out of bounds
+    while (key_len < 256 && key[key_len] != '\0') {
+                               ^

@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char data;
+    struct Node *next;
+} Node;
+
+Node* string_to_list(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+    
+    Node *head = NULL;
+    Node *tail = NULL;
+    
+    for (size_t i = 0; str[i] != '\0'; i++) {
+        Node *new_node = (Node*)malloc(sizeof(Node));
+        if (new_node == NULL) {
+            while (head != NULL) {
+                Node *temp = head;
+                head = head->next;
+                free(temp);
+            }
+            return NULL;
+        }
+        
+        new_node->data = str[i];
+        new_node->next = NULL;
+        
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+    
+    return head;
+}
+
+void free_list(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%c", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     *  Assignment 'str="Hello, World!"', assigned value is "Hello, World!"
+     */
+    const char *str = "Hello, World!";
+    Node *list = string_to_list(str);
+    
+    /* Possible weaknesses found:
+     *  Condition 'strlen(str)>0' is always true [knownConditionTrueFalse]
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     *  Condition 'strlen(str)>0' is always true
+     */
+    if (list == NULL && strlen(str) > 0) {
+        fprintf(stderr, "Failed to convert string to list\n");
+        return EXIT_FAILURE;
+    }
+    
+    print_list(list);
+    free_list(list);
+    
+    return EXIT_SUCCESS;
+}

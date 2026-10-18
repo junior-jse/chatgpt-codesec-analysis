@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* extract_continuous(const int* list, size_t list_size, size_t count) {
+    if (list == NULL || count > list_size) {
+        return NULL;
+    }
+
+    int* result = (int*)malloc(count * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        result[i] = list[i];
+    }
+
+    return result;
+}
+
+int main(void) {
+    int data[] = {10, 20, 30, 40, 50};
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+    size_t count = 3;
+
+    int* extracted = extract_continuous(data, data_size, count);
+    if (extracted == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < count; ++i) {
+        printf("%d ", extracted[i]);
+    }
+    printf("\n");
+
+    free(extracted);
+    extracted = NULL;
+
+    return EXIT_SUCCESS;
+}

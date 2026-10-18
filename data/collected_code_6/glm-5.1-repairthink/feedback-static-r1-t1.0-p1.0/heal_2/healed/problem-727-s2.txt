@@ -1,0 +1,59 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+char *remove_non_alnum(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t max_len = 0;
+    while (str[max_len] != '\0') {
+        max_len++;
+    }
+
+    char *result = malloc(max_len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t dest_idx = 0;
+    for (size_t i = 0; i < max_len; i++) {
+        char c = str[i];
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+            result[dest_idx++] = c;
+        }
+    }
+
+    result[dest_idx] = '\0';
+
+    char *shrunk_result = realloc(result, dest_idx + 1);
+    if (shrunk_result == NULL) {
+        if (dest_idx > 0 || result[0] != '\0') {
+            return result;
+        }
+        free(result);
+        return NULL;
+    }
+
+    return shrunk_result;
+}
+
+int main(int argc, const char * const * const argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
+        return 1;
+    }
+
+    char *filtered = remove_non_alnum(argv[1]);
+    if (filtered == NULL) {
+        fprintf(stderr, "Memory allocation error\n");
+        return 1;
+    }
+
+    printf("%s\n", filtered);
+    free(filtered);
+
+    return 0;
+}
+```

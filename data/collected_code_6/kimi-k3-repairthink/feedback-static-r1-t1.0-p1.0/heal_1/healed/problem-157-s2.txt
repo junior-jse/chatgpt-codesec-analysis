@@ -1,0 +1,148 @@
+# Analysis of Fixes
+
+The flagged weaknesses (CWE-126, over-read via `strlen`) are addressed by:
+
+1. **Bounded length calculation** — replacing `strlen` with `strnlen(input, max_len)`, so the scan never runs past a caller-specified limit even if the buffer lacks a `'\0'` terminator. This requires passing a `max_len` bound into `rle_encode`.
+2. **Eliminating the second `strlen`** — the decode buffer size is now derived from the encoded data itself (sum of run counts), which is more robust than trusting the original string length.
+3. **Defense in depth** — allocation-size overflow check, `INT_MAX` run-count guard, capacity-checked `rle_decode` (previously the output buffer was written with no bounds check), and `memcmp`-based verification instead of relying on null-termination alone.
+
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <limits.h>
+
+#define MAX_INPUT_LENGTH 65536
+
+typedef struct {
+    char value;
+    int count;
+} RLEPair;
+
+RLEPair* rle_encode(const char* input, size_t max_len, size_t* output_size) {
+    if (input == NULL || output_size == NULL) {
+        return NULL;
+    }
+
+    size_t len = strnlen(input, max_len);
+    if (len == 0) {
+        *output_size = 0;
+        return NULL;
+    }
+
+    if (len > SIZE_MAX / sizeof(RLEPair)) {
+        return NULL;
+    }
+
+    RLEPair* encoded = malloc(len * sizeof(RLEPair));
+    if (encoded == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (i == 0 || input[i] != input[i - 1] || encoded[j - 1].count == INT_MAX) {
+            encoded[j].value = input[i];
+            encoded[j].count = 1;
+            j++;
+        } else {
+            encoded[j - 1].count++;
+        }
+    }
+
+    *output_size = j;
+    return encoded;
+}
+
+int rle_decode(const RLEPair* encoded, size_t size, char* output, size_t output_capacity) {
+    if (encoded == NULL || output == NULL || output_capacity == 0) {
+        return -1;
+    }
+
+    size_t pos = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (encoded[i].count < 0 || (size_t)encoded[i].count >= output_capacity - pos) {
+            return -1;
+        }
+        for (int k = 0; k < encoded[i].count; k++) {
+            output[pos++] = encoded[i].value;
+        }
+    }
+    output[pos] = '\0';
+    return 0;
+}
+
+static int rle_decoded_length(const RLEPair* encoded, size_t size, size_t* out_len) {
+    size_t total = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (encoded[i].count < 0 || total > SIZE_MAX - (size_t)encoded[i].count) {
+            return -1;
+        }
+        total += (size_t)encoded[i].count;
+    }
+    *out_len = total;
+    return 0;
+}
+
+int main(void) {
+    const char* input = "AAABBBCCDAA";
+    size_t encoded_size = 0;
+
+    RLEPair* encoded = rle_encode(input, MAX_INPUT_LENGTH, &encoded_size);
+    if (encoded == NULL) {
+        fprintf(stderr, "Encoding failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original: %s\n", input);
+    printf("Encoded: ");
+    for (size_t i = 0; i < encoded_size; i++) {
+        printf("%c%d", encoded[i].value, encoded[i].count);
+    }
+    printf("\n");
+
+    size_t decoded_len = 0;
+    if (rle_decoded_length(encoded, encoded_size, &decoded_len) != 0 || decoded_len == SIZE_MAX) {
+        free(encoded);
+        fprintf(stderr, "Invalid encoded data\n");
+        return EXIT_FAILURE;
+    }
+
+    char* decoded = malloc(decoded_len + 1);
+    if (decoded == NULL) {
+        free(encoded);
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    if (rle_decode(encoded, encoded_size, decoded, decoded_len + 1) != 0) {
+        free(encoded);
+        free(decoded);
+        fprintf(stderr, "Decoding failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Decoded: %s\n", decoded);
+
+    size_t input_len = strnlen(input, MAX_INPUT_LENGTH);
+    if (input_len == decoded_len && memcmp(input, decoded, input_len) == 0) {
+        printf("Verification: Success\n");
+    } else {
+        printf("Verification: Failed\n");
+    }
+
+    free(encoded);
+    free(decoded);
+
+    return EXIT_SUCCESS;
+}
+```
+
+**Key changes summary:**
+- `rle_encode` now takes `max_len` and uses `strnlen` — no unbounded read is possible regardless of termination.
+- `rle_decode` takes an `output_capacity` and returns a status code, preventing buffer overruns on malformed input.
+- The decoded buffer size is computed by summing run counts (with overflow checks), removing the second `strlen` entirely.
+- `_POSIX_C_SOURCE 200809L` guarantees `strnlen` is declared when compiling with strict `-std=c99/c11`.

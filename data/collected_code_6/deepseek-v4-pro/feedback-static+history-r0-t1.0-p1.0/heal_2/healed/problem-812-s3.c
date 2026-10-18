@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *abbreviate_road(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t input_len = strnlen(input, 4096);
+    char *result = malloc(input_len * 2 + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t i = 0, j = 0;
+    while (i < input_len) {
+        if (i + 3 < input_len &&
+            tolower((unsigned char)input[i]) == 'r' &&
+            tolower((unsigned char)input[i + 1]) == 'o' &&
+            tolower((unsigned char)input[i + 2]) == 'a' &&
+            tolower((unsigned char)input[i + 3]) == 'd') {
+            
+            if ((i == 0 || !isalpha((unsigned char)input[i - 1])) &&
+                (i + 4 >= input_len || !isalpha((unsigned char)input[i + 4]))) {
+                if (j + 3 > input_len * 2) {
+                    break;
+                }
+                result[j++] = input[i];
+                result[j++] = 'd';
+                result[j++] = '.';
+                i += 4;
+                continue;
+            }
+        }
+        if (j >= input_len * 2) {
+            break;
+        }
+        result[j++] = input[i++];
+    }
+    result[j] = '\0';
+
+    char *shrunk = realloc(result, j + 1);
+    if (shrunk != NULL) {
+        result = shrunk;
+    }
+
+    return result;
+}
+
+int main(void) {
+    const char *test1 = "123 road street";
+    const char *test2 = "road road road";
+    const char *test3 = "main street road";
+    const char *test4 = "roads and driveways";
+    const char *test5 = "Road";
+    const char *test6 = NULL;
+
+    const char *tests[] = {test1, test2, test3, test4, test5, test6};
+    size_t test_count = sizeof(tests) / sizeof(tests[0]);
+
+    for (size_t i = 0; i < test_count; i++) {
+        char *abbrev = abbreviate_road(tests[i]);
+        if (abbrev != NULL) {
+            printf("%s\n", abbrev);
+            free(abbrev);
+        } else {
+            printf("(null or allocation failed)\n");
+        }
+    }
+
+    return 0;
+}

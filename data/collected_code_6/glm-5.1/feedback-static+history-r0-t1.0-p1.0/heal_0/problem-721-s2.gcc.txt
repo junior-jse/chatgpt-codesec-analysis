@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c: In function 'max_avg_path':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c:66:42: error: expected ';' before numeric constant
+   66 |                 len[i][j] = len[i][j - 1]1;
+      |                                          ^
+      |                                          ;

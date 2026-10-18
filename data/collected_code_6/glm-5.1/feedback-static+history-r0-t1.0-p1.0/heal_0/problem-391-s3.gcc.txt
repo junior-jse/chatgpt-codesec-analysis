@@ -1,0 +1,26 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c: In function 'lists_to_nested_dict':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:43:37: error: passing argument 1 of 'create_node' makes pointer from integer without a cast [-Wint-conversion]
+   43 |         *root = create_node(lists[0][0]);
+      |                             ~~~~~~~~^~~
+      |                                     |
+      |                                     char
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:11:31: note: expected 'const char *' but argument is of type 'char'
+   11 | Dict *create_node(const char *key) {
+      |                   ~~~~~~~~~~~~^~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:50:58: error: passing argument 2 of 'find_or_add_child' makes pointer from integer without a cast [-Wint-conversion]
+   50 |             current = find_or_add_child(current, lists[i][j]);
+      |                                                  ~~~~~~~~^~~
+      |                                                          |
+      |                                                          char
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:25:51: note: expected 'const char *' but argument is of type 'char'
+   25 | Dict *find_or_add_child(Dict *parent, const char *key) {
+      |                                       ~~~~~~~~~~~~^~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:84:46: error: passing argument 2 of 'lists_to_nested_dict' from incompatible pointer type [-Wincompatible-pointer-types]
+   84 |     int result = lists_to_nested_dict(&root, lists, sizes, list_count);
+      |                                              ^~~~~
+      |                                              |
+      |                                              char ***
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:39:46: note: expected 'char **' but argument is of type 'char ***'
+   39 | int lists_to_nested_dict(Dict **root, char **lists, int *sizes, int list_count) {
+      |                                       ~~~~~~~^~~~~

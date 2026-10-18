@@ -1,0 +1,12 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-175-s3.c: In function 'isValidParentheses':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-175-s3.c:7:19: error: implicit declaration of function 'malloc' [-Wimplicit-function-declaration]
+    7 |     char *stack = malloc(len + 1);
+      |                   ^~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-175-s3.c:4:1: note: include '<stdlib.h>' or provide a declaration of 'malloc'
+    3 | #include <string.h>
+  +++ |+#include <stdlib.h>
+    4 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-175-s3.c:18:17: error: implicit declaration of function 'free' [-Wimplicit-function-declaration]
+   18 |                 free(stack);
+      |                 ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-175-s3.c:18:17: note: include '<stdlib.h>' or provide a declaration of 'free'

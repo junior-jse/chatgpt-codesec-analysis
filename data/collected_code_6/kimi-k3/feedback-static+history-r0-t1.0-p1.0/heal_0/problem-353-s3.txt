@@ -1,0 +1,134 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t cols;
+} Row;
+
+typedef struct {
+    Row *rows;
+    size_t row_count;
+} NestedList;
+
+int remove_column(NestedList *list, size_t col_index) {
+    if (list == NULL || list->rows == NULL || list->row_count == 0) {
+        return -1;
+    }
+
+    if (col_index >= list->rows[0].cols) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < list->row_count; i++) {
+        Row *row = &list->rows[i];
+        
+        if (row->cols != list->rows[0].cols) {
+            return -1;
+        }
+
+        if (row->cols == 1) {
+            free(row->data);
+            row->data = NULL;
+            row->cols = 0;
+            continue;
+        }
+
+        size_t new_cols = row->cols - 1;
+        int *new_data = malloc(new_cols * sizeof(int));
+        
+        if (new_data == NULL) {
+            return -1;
+        }
+
+        size_t dest_idx = 0;
+        for (size_t j = 0; j < row->cols; j++) {
+            if (j != col_index) {
+                new_data[dest_idx] = row->data[j];
+                dest_idx++;
+            }
+        }
+
+        free(row->data);
+        row->data = new_data;
+        row->cols = new_cols;
+    }
+
+    return 0;
+}
+
+void free_nested_list(NestedList *list) {
+    if (list == NULL) {
+        return;
+    }
+    
+    if (list->rows != NULL) {
+        for (size_t i = 0; i < list->row_count; i++) {
+            free(list->rows[i].data);
+        }
+        free(list->rows);
+    }
+}
+
+void print_nested_list(const NestedList *list) {
+    if (list == NULL || list->rows == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < list->row_count; i++) {
+        for (size_t j = 0; j < list->rows[i].cols; j++) {
+            printf("%d ", list->rows[i].data[j]);
+        }
+        printf("\n");
+    }
+}
+
+int main(void) {
+    NestedList list = {0};
+    list.row_count = 3;
+    list.rows = malloc(list.row_count * sizeof(Row));
+    
+    if (list.rows == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    int values[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+
+    for (size_t i = 0; i < list.row_count; i++) {
+        list.rows[i].cols = 4;
+        list.rows[i].data = malloc(list.rows[i].cols * sizeof(int));
+        
+        if (list.rows[i].data == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(list.rows[j].data);
+            }
+            free(list.rows);
+            return EXIT_FAILURE;
+        }
+
+        for (size_t j = 0; j < list.rows[i].cols; j++) {
+            list.rows[i].data[j] = values[i][j];
+        }
+    }
+
+    printf("Original:\n");
+    print_nested_list(&list);
+
+    if (remove_column(&list, 1) != 0) {
+        fprintf(stderr, "Error removing column\n");
+        free_nested_list(&list);
+        return EXIT_FAILURE;
+    }
+
+    printf("\nAfter removing column 1:\n");
+    print_nested_list(&list);
+
+    free_nested_list(&list);
+    return EXIT_SUCCESS;
+}
+```

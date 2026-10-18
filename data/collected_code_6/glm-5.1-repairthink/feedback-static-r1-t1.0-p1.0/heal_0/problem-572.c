@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int remove_two_duplicates(int **lists, int *sizes, int num_lists) {
+    if (lists == NULL || sizes == NULL) return -1;
+
+    for (int i = 0; i < num_lists; i++) {
+        if (lists[i] == NULL) continue;
+
+        int current_size = sizes[i];
+        int *current_list = lists[i];
+        int *temp = malloc(current_size * sizeof(int));
+        if (temp == NULL) return -1;
+
+        int new_size = 0;
+        for (int j = 0; j < current_size; j++) {
+            int count = 0;
+            for (int k = 0; k < current_size; k++) {
+                if (current_list[j] == current_list[k]) {
+                    count++;
+                }
+            }
+            if (count <= 2) {
+                temp[new_size++] = current_list[j];
+            }
+        }
+
+        if (new_size < current_size) {
+            int *shrunk = realloc(temp, new_size * sizeof(int));
+            if (shrunk != NULL) {
+                temp = shrunk;
+            }
+            lists[i] = temp;
+            sizes[i] = new_size;
+            free(current_list);
+        } else {
+            free(temp);
+        }
+    }
+    return 0;
+}
+
+int main(void) {
+    int sizes[] = {8, 8, 4};
+    int num_lists = 3;
+
+    int list1[] = {1, 2, 2, 2, 3, 3, 3, 4};
+    int list2[] = {5, 5, 6, 6, 6, 7, 7, 8};
+    int list3[] = {9, 9, 10, 11};
+
+    int *lists[3] = {list1, list2, list3};
+
+    for (int i = 0; i < num_lists; i++) {
+        int *new_list = malloc(sizes[i] * sizeof(int));
+        if (new_list == NULL) return EXIT_FAILURE;
+        for (int j = 0; j < sizes[i]; j++) {
+            new_list[j] = lists[i][j];
+        }
+        lists[i] = new_list;
+    }
+
+    if (remove_two_duplicates(lists, sizes, num_lists) != 0) {
+        for (int i = 0; i < num_lists; i++) {
+            free(lists[i]);
+        }
+        return EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < num_lists; i++) {
+        printf("List %d: ", i);
+        for (int j = 0; j < sizes[i]; j++) {
+            printf("%d ", lists[i][j]);
+        }
+        printf("\n");
+    }
+
+    for (int i = 0; i < num_lists; i++) {
+        free(lists[i]);
+    }
+
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,32 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c: In function 'adjacent_concatenation':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:36:43: error: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+   36 |             size_t len1 = strlen(tuples[i][j]);
+      |                                  ~~~~~~~~~^~~
+      |                                           |
+      |                                           char
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/string.h:58,
+                 from /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:3:
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/_string.h:96:29: note: expected 'const char *' but argument is of type 'char'
+   96 | size_t   strlen(const char *__s);
+      |                 ~~~~~~~~~~~~^~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:37:43: error: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+   37 |             size_t len2 = strlen(tuples[i][j + 1]);
+      |                                  ~~~~~~~~~^~~~~~~
+      |                                           |
+      |                                           char
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/_string.h:96:29: note: expected 'const char *' but argument is of type 'char'
+   96 | size_t   strlen(const char *__s);
+      |                 ~~~~~~~~~~~~^~~
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/_string.h:228:
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:47:51: error: passing argument 2 of '__builtin___strcpy_chk' makes pointer from integer without a cast [-Wint-conversion]
+   47 |             strcpy(result[result_index], tuples[i][j]);
+      |                                          ~~~~~~~~~^~~
+      |                                                   |
+      |                                                   char
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:47:51: note: expected 'const char *' but argument is of type 'char'
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:48:51: error: passing argument 2 of '__builtin___strcat_chk' makes pointer from integer without a cast [-Wint-conversion]
+   48 |             strcat(result[result_index], tuples[i][j + 1]);
+      |                                          ~~~~~~~~~^~~~~~~
+      |                                                   |
+      |                                                   char
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:48:51: note: expected 'const char *' but argument is of type 'char'

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-23-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-23-s2.c:52:9: style: Variable 'a0' can be declared as const array [constVariable]
+    int a0[] = {1, 2, 3, 4, 5};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-23-s2.c:53:9: style: Variable 'a1' can be declared as const array [constVariable]
+    int a1[] = {-1, -2, -3, -4};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-23-s2.c:54:9: style: Variable 'a2' can be declared as const array [constVariable]
+    int a2[] = {10, 20, 30};
+        ^

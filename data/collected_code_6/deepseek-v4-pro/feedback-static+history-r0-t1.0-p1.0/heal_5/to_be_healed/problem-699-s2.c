@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int min_swaps_to_convert(const char *s1, const char *s2) {
+    if (s1 == NULL || s2 == NULL) {
+        return -1;
+    }
+
+    size_t len1 = strnlen(s1, 1025);
+    size_t len2 = strnlen(s2, 1025);
+
+    if (len1 != len2) {
+        return -1;
+    }
+
+    /* Possible weaknesses found:
+     *  Redundant condition: The condition 'len1 == 1025' is redundant since 'len1 > 1024' is sufficient. [redundantCondition]
+     */
+    if (len1 > 1024 || len1 == 1025) {
+        return -1;
+    }
+
+    size_t len = len1;
+    int count_s1 = 0;
+    int count_s2 = 0;
+    int mismatches = 0;
+    int ones_mismatch = 0;
+
+    for (size_t i = 0; i < len; i++) {
+        if (s1[i] == '1') {
+            count_s1++;
+        }
+        if (s2[i] == '1') {
+            count_s2++;
+        }
+        if (s1[i] != s2[i]) {
+            mismatches++;
+            if (s1[i] == '1') {
+                ones_mismatch++;
+            }
+        }
+    }
+
+    if (count_s1 != count_s2) {
+        return -1;
+    }
+
+    return ones_mismatch < (mismatches - ones_mismatch) ? ones_mismatch : (mismatches - ones_mismatch);
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char s1[1025];
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char s2[1025];
+
+    printf("Enter first binary string: ");
+    if (fgets(s1, sizeof(s1), stdin) == NULL) {
+        return 1;
+    }
+
+    size_t s1_len = strnlen(s1, sizeof(s1));
+    if (s1_len == sizeof(s1)) {
+        int c;
+        /* Possible weaknesses found:
+         * Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+         */
+        while ((c = getchar()) != '\n' && c != EOF);
+        return 1;
+    }
+
+    if (s1_len > 0 && s1[s1_len - 1] == '\n') {
+        s1[s1_len - 1] = '\0';
+        s1_len--;
+    } else {
+        return 1;
+    }
+
+    if (s1_len == 0 || s1_len >= 1024) {
+        return 1;
+    }
+
+    for (size_t i = 0; i < s1_len; i++) {
+        if (s1[i] != '0' && s1[i] != '1') {
+            return 1;
+        }
+    }
+
+    printf("Enter second binary string: ");
+    if (fgets(s2, sizeof(s2), stdin) == NULL) {
+        return 1;
+    }
+
+    size_t s2_len = strnlen(s2, sizeof(s2));
+    if (s2_len == sizeof(s2)) {
+        int c;
+        /* Possible weaknesses found:
+         * Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+         */
+        while ((c = getchar()) != '\n' && c != EOF);
+        return 1;
+    }
+
+    if (s2_len > 0 && s2[s2_len - 1] == '\n') {
+        s2[s2_len - 1] = '\0';
+        s2_len--;
+    } else {
+        return 1;
+    }
+
+    if (s2_len == 0 || s2_len >= 1024) {
+        return 1;
+    }
+
+    for (size_t i = 0; i < s2_len; i++) {
+        if (s2[i] != '0' && s2[i] != '1') {
+            return 1;
+        }
+    }
+
+    int result = min_swaps_to_convert(s1, s2);
+
+    if (result == -1) {
+        printf("-1\n");
+    } else {
+        printf("%d\n", result);
+    }
+
+    return 0;
+}

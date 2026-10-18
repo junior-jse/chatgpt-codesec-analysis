@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-73.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-73.c:118:27: style: Condition 'remaining_len>0' is always true [knownConditionTrueFalse]
+        if (remaining_len > 0) {
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-73.c:115:16: note: Assuming that condition 'cursor<end' is not redundant
+    if (cursor < end) {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-73.c:116:32: note: Assignment 'remaining_len=(unsigned long)(end-cursor)', assigned value is greater than 0
+        size_t remaining_len = (size_t)(end - cursor);
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-73.c:118:27: note: Condition 'remaining_len>0' is always true
+        if (remaining_len > 0) {
+                          ^

@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-679-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-679-s3.c:75:10: style: Variable 'value' can be declared as pointer to const [constVariablePointer]
+    int *value = dictionary_get_by_index(dict, target_index);
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-679-s3.c:83:10: style: Variable 'invalid_value' can be declared as pointer to const [constVariablePointer]
+    int *invalid_value = dictionary_get_by_index(dict, invalid_index);
+         ^

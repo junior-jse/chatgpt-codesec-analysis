@@ -1,0 +1,96 @@
+**Summary of fixes applied:**
+
+1. **`strcpy` (CWE-120)** → Replaced with `memcpy()` using the tracked `word_len + 1` byte count. Since `word_len` is guaranteed ≤ `MAX_WORD_LEN - 1`, both the heap allocation and the `words[][]` destination are provably large enough — no unbounded copies remain.
+2. **`strlen` (CWE-126)** → Eliminated entirely. The allocation size now uses the already-tracked `word_len` instead of re-scanning the string, which is both safer and faster.
+3. **Statically-sized arrays (CWE-119/CWE-120)** → Kept explicit bounds checks (`word_len < MAX_WORD_LEN - 1`, `word_count < MAX_WORDS`), switched `word_len`/`i` to `size_t` for type correctness with `memcpy`, and added an explicit cast on the `tolower()` result.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_WORD_LEN 256
+#define MAX_WORDS 1000
+
+char *find_first_repeated_word(const char *str) {
+    char words[MAX_WORDS][MAX_WORD_LEN];
+    int word_count = 0;
+    char current_word[MAX_WORD_LEN];
+    size_t word_len = 0;
+    size_t i;
+    int j;
+
+    if (str == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; str[i] != '\0'; i++) {
+        if (isalpha((unsigned char)str[i])) {
+            if (word_len < MAX_WORD_LEN - 1) {
+                current_word[word_len++] = (char)tolower((unsigned char)str[i]);
+            }
+        } else {
+            if (word_len > 0) {
+                current_word[word_len] = '\0';
+
+                for (j = 0; j < word_count; j++) {
+                    if (strcmp(words[j], current_word) == 0) {
+                        char *result = malloc(word_len + 1);
+                        if (result == NULL) {
+                            return NULL;
+                        }
+                        memcpy(result, current_word, word_len + 1);
+                        return result;
+                    }
+                }
+
+                if (word_count < MAX_WORDS) {
+                    memcpy(words[word_count], current_word, word_len + 1);
+                    word_count++;
+                }
+
+                word_len = 0;
+            }
+        }
+    }
+
+    if (word_len > 0) {
+        current_word[word_len] = '\0';
+
+        for (j = 0; j < word_count; j++) {
+            if (strcmp(words[j], current_word) == 0) {
+                char *result = malloc(word_len + 1);
+                if (result == NULL) {
+                    return NULL;
+                }
+                memcpy(result, current_word, word_len + 1);
+                return result;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+int main(void) {
+    const char *test_string = "The quick brown fox jumps over the lazy dog. The dog was not amused.";
+    char *repeated = find_first_repeated_word(test_string);
+
+    if (repeated != NULL) {
+        printf("First repeated word: %s\n", repeated);
+        free(repeated);
+    } else {
+        printf("No repeated word found.\n");
+    }
+
+    return 0;
+}
+```
+
+**Expected output:**
+```
+First repeated word: the
+```
+
+One additional note as a code-review observation (not flagged by Flawfinder but worth knowing): `words` occupies ~256 KB of stack space (`1000 × 256`). On platforms with small default stacks this could be a problem; if that's a concern in your target environment, consider moving it to static storage or heap-allocating it with proper cleanup on every return path.

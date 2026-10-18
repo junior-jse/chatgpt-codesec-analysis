@@ -1,0 +1,104 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int *data;
+    int size;
+    struct Node *next;
+} Node;
+
+Node* create_node(int *data, int size) {
+    Node *node = (Node*)malloc(sizeof(Node));
+    if (!node) return NULL;
+    node->data = (int*)malloc(size * sizeof(int));
+    if (!node->data) {
+        free(node);
+        return NULL;
+    }
+    for (int i = 0; i < size; i++) {
+        node->data[i] = data[i];
+    }
+    node->size = size;
+    node->next = NULL;
+    return node;
+}
+
+void free_list(Node *head) {
+    while (head) {
+        Node *temp = head;
+        head = head->next;
+        free(temp->data);
+        free(temp);
+    }
+}
+
+Node* remove_tuples(Node *head, int k) {
+    if (!head) return NULL;
+    
+    Node *dummy = (Node*)malloc(sizeof(Node));
+    if (!dummy) return head;
+    dummy->next = head;
+    
+    Node *prev = dummy;
+    Node *curr = head;
+    
+    while (curr) {
+        if (curr->size == k) {
+            prev->next = curr->next;
+            free(curr->data);
+            free(curr);
+            curr = prev->next;
+        } else {
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+    
+    Node *new_head = dummy->next;
+    free(dummy);
+    return new_head;
+}
+
+void print_list(Node *head) {
+    Node *curr = head;
+    while (curr) {
+        printf("(");
+        for (int i = 0; i < curr->size; i++) {
+            if (i > 0) printf(", ");
+            printf("%d", curr->data[i]);
+        }
+        printf(") ");
+        curr = curr->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int tuple1[] = {1, 2, 3};
+    int tuple2[] = {4, 5};
+    int tuple3[] = {6, 7, 8};
+    int tuple4[] = {9};
+    int tuple5[] = {10, 11, 12, 13};
+    int tuple6[] = {14, 15};
+    
+    Node *head = create_node(tuple1, 3);
+    head->next = create_node(tuple2, 2);
+    head->next->next = create_node(tuple3, 3);
+    head->next->next->next = create_node(tuple4, 1);
+    head->next->next->next->next = create_node(tuple5, 4);
+    head->next->next->next->next->next = create_node(tuple6, 2);
+    
+    printf("Original list: ");
+    print_list(head);
+    
+    head = remove_tuples(head, 2);
+    
+    printf("After removing tuples of length 2: ");
+    print_list(head);
+    
+    free_list(head);
+    
+    return 0;
+}
+```

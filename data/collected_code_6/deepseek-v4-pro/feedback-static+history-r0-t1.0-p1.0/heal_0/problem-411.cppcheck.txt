@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-411.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-411.c:41:25: style: Unsigned expression 'group_start' can't be negative so it is unnecessary to test it. [unsignedPositive]
+        if (group_start >= 0 && group_end > group_start) {
+                        ^

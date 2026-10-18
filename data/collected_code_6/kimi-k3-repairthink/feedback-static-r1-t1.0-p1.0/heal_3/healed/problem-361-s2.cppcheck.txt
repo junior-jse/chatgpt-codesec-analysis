@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c:66:24: style: Condition 'copy_bytes>dest_capacity' is always false [knownConditionTrueFalse]
+        if (copy_bytes > dest_capacity) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c:57:30: note: dest_capacity is assigned 'size*sizeof(int)' here.
+        size_t dest_capacity = size * sizeof(int);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c:62:22: note: Assuming condition is false
+        if (new_data == NULL) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c:65:27: note: copy_bytes is assigned 'size*sizeof(int)' here.
+        size_t copy_bytes = size * sizeof(int);
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-361-s2.c:66:24: note: Condition 'copy_bytes>dest_capacity' is always false
+        if (copy_bytes > dest_capacity) {
+                       ^

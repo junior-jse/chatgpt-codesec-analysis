@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+void find_three_closest(const int *arr1, size_t size1,
+                       const int *arr2, size_t size2,
+                       const int *arr3, size_t size3,
+                       int *result1, int *result2, int *result3)
+{
+    size_t i = 0, j = 0, k = 0;
+    long long min_diff = LLONG_MAX;
+    
+    if (arr1 == NULL || arr2 == NULL || arr3 == NULL ||
+        result1 == NULL || result2 == NULL || result3 == NULL ||
+        size1 == 0 || size2 == 0 || size3 == 0) {
+        return;
+    }
+    
+    while (i < size1 && j < size2 && k < size3) {
+        int a = arr1[i];
+        int b = arr2[j];
+        int c = arr3[k];
+        
+        int max_val = a;
+        int min_val = a;
+        
+        if (b > max_val) max_val = b;
+        if (c > max_val) max_val = c;
+        if (b < min_val) min_val = b;
+        if (c < min_val) min_val = c;
+        
+        long long current_diff = (long long)max_val - (long long)min_val;
+        
+        if (current_diff < min_diff) {
+            min_diff = current_diff;
+            *result1 = a;
+            *result2 = b;
+            *result3 = c;
+        }
+        
+        if (current_diff == 0) {
+            return;
+        }
+        
+        if (min_val == a) {
+            i++;
+        } else if (min_val == b) {
+            j++;
+        } else {
+            k++;
+        }
+    }
+}
+
+int main(void)
+{
+    int arr1[] = {1, 4, 10};
+    int arr2[] = {2, 15, 20};
+    int arr3[] = {10, 12};
+    
+    size_t size1 = sizeof(arr1) / sizeof(arr1[0]);
+    size_t size2 = sizeof(arr2) / sizeof(arr2[0]);
+    size_t size3 = sizeof(arr3) / sizeof(arr3[0]);
+    
+    int result1 = 0, result2 = 0, result3 = 0;
+    
+    find_three_closest(arr1, size1, arr2, size2, arr3, size3,
+                      &result1, &result2, &result3);
+    
+    printf("%d %d %d\n", result1, result2, result3);
+    
+    return 0;
+}

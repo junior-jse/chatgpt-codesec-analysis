@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *snake_to_camel(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t len = strnlen(input, 4096);
+    char *result = malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    int ret = regcomp(&regex, "_([a-z])", REG_EXTENDED);
+    if (ret != 0) {
+        free(result);
+        return NULL;
+    }
+
+    size_t result_index = 0;
+    size_t input_index = 0;
+    regmatch_t match;
+
+    while (input_index < len && regexec(&regex, input + input_index, 1, &match, 0) == 0) {
+        size_t match_start = match.rm_so;
+        size_t match_end = match.rm_eo;
+
+        if (match_start > 0) {
+            if (result_index + match_start > len) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(result + result_index, input + input_index, match_start);
+            result_index += match_start;
+        }
+
+        if (match_end - match_start >= 2) {
+            char upper = input[input_index + match_start + 1];
+            if (upper >= 'a' && upper <= 'z') {
+                upper = upper - 'a' + 'A';
+            }
+            if (result_index >= len) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            result[result_index++] = upper;
+        }
+
+        input_index += match_end;
+    }
+
+    if (input_index < len) {
+        size_t remaining = len - input_index;
+        if (result_index + remaining > len) {
+            free(result);
+            regfree(&regex);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(result + result_index, input + input_index, remaining);
+        result_index += remaining;
+    }
+
+    result[result_index] = '\0';
+    regfree(&regex);
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "hello_world",
+        "snake_case_string",
+        "alreadyCamel",
+        "multiple__underscores",
+        "_leading_underscore",
+        "trailing_underscore_",
+        "",
+        "no_underscores_here",
+        "a_b_c_d_e"
+    };
+
+    size_t num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char *converted = snake_to_camel(test_cases[i]);
+        if (converted != NULL) {
+            printf("\"%s\" -> \"%s\"\n", test_cases[i], converted);
+            free(converted);
+        } else {
+            printf("\"%s\" -> NULL\n", test_cases[i]);
+        }
+    }
+
+    return 0;
+}

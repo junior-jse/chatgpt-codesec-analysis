@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static char *reverse_string(const char *str) {
+    if (!str) {
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(str);
+    char *reversed = malloc(len + 1);
+    if (!reversed) {
+        return NULL;
+    }
+    for (size_t i = 0; i < len; i++) {
+        reversed[i] = str[len - 1 - i];
+    }
+    reversed[len] = '\0';
+    return reversed;
+}
+
+int count_reverse_pairs(char **list, int size) {
+    if (!list || size <= 0) {
+        return 0;
+    }
+
+    char **reversed_list = malloc(sizeof(char *) * (size_t)size);
+    if (!reversed_list) {
+        return 0;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (!list[i]) {
+            for (int j = 0; j < i; j++) {
+                free(reversed_list[j]);
+            }
+            free(reversed_list);
+            return 0;
+        }
+        reversed_list[i] = reverse_string(list[i]);
+        if (!reversed_list[i]) {
+            for (int j = 0; j < i; j++) {
+                free(reversed_list[j]);
+            }
+            free(reversed_list);
+            return 0;
+        }
+    }
+
+    int *used = calloc((size_t)size, sizeof(int));
+    if (!used) {
+        for (int i = 0; i < size; i++) {
+            free(reversed_list[i]);
+        }
+        free(reversed_list);
+        return 0;
+    }
+
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (used[i]) {
+            continue;
+        }
+        for (int j = i + 1; j < size; j++) {
+            if (!used[j] && strcmp(list[i], reversed_list[j]) == 0) {
+                count++;
+                used[i] = 1;
+                used[j] = 1;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < size; i++) {
+        free(reversed_list[i]);
+    }
+    free(reversed_list);
+    free(used);
+
+    return count;
+}
+
+int main(void) {
+    const char *words[] = {
+        "abc", "cba", "test", "tset", "hello", "olleh", "world"
+    };
+    int size = (int)(sizeof(words) / sizeof(words[0]));
+
+    char **list = malloc(sizeof(char *) * (size_t)size);
+    if (!list) {
+        return 1;
+    }
+
+    for (int i = 0; i < size; i++) {
+        /* Possible weaknesses found:
+         * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+         */
+        size_t word_len = strlen(words[i]);
+        list[i] = malloc(word_len + 1);
+        if (!list[i]) {
+            for (int j = 0; j < i; j++) {
+                free(list[j]);
+            }
+            free(list);
+            return 1;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(list[i], words[i], word_len + 1);
+    }
+
+    int pairs = count_reverse_pairs(list, size);
+    printf("Number of reverse pairs: %d\n", pairs);
+
+    for (int i = 0; i < size; i++) {
+        free(list[i]);
+    }
+    free(list);
+
+    return 0;
+}

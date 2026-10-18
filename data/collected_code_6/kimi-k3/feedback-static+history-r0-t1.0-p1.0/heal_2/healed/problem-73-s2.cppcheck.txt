@@ -1,0 +1,31 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:64:31: style: Condition 'token_len>0' is always true [knownConditionTrueFalse]
+                if (token_len > 0) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:38:21: note: Assuming that condition 'end>start' is not redundant
+            if (end > start) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:53:29: note: Assignment 'token_len=(unsigned long)(end-start)', assigned value is greater than 0
+                token_len = (size_t)(end - start);
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:55:34: note: Assuming condition is false
+                if (result[size] == NULL) {
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:64:31: note: Condition 'token_len>0' is always true
+                if (token_len > 0) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:105:21: style: Condition 'len>0' is always true [knownConditionTrueFalse]
+            if (len > 0) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:80:17: note: Assuming that condition 'len>0' is not redundant
+        if (len > 0) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:96:30: note: Assuming condition is false
+            if (result[size] == NULL) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:105:21: note: Condition 'len>0' is always true
+            if (len > 0) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-73-s2.c:15:12: style: The scope of the variable 'len' can be reduced. [variableScope]
+    size_t len;
+           ^

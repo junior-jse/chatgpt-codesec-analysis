@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:23:21: style: Condition 'temp%2ULL==0ULL' is always false [knownConditionTrueFalse]
+    if (temp % 2ULL == 0ULL) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:14:24: note: Assuming that condition 'temp%2ULL==0ULL' is not redundant
+    while (temp % 2ULL == 0ULL) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:19:14: note: Assuming condition is false
+    if (temp == 1ULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-20-s3.c:23:21: note: Condition 'temp%2ULL==0ULL' is always false
+    if (temp % 2ULL == 0ULL) {
+                    ^

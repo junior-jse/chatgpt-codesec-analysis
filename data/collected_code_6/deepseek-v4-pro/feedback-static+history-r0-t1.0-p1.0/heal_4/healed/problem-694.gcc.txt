@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c: In function 'add_unique':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c:48:29: error: 'INT_MAX' undeclared (first use in this function)
+   48 |         if (arr->capacity > INT_MAX / 2) {
+      |                             ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c:4:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    3 | #include <string.h>
+  +++ |+#include <limits.h>
+    4 | #include <stdint.h>
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c:48:29: note: each undeclared identifier is reported only once for each function it appears in
+   48 |         if (arr->capacity > INT_MAX / 2) {
+      |                             ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c: In function 'extract_unique_values':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c:97:23: error: 'INT_MAX' undeclared (first use in this function)
+   97 |     if (unique.size > INT_MAX / (int)sizeof(int)) {
+      |                       ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-694.c:97:23: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'

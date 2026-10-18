@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *create_node(int data) {
+    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+struct Node *create_alternate_list(struct Node *head) {
+    if (head == NULL) {
+        return NULL;
+    }
+    struct Node *new_head = NULL;
+    struct Node *new_tail = NULL;
+    struct Node *current = head;
+    int take = 1;
+    while (current != NULL) {
+        if (take) {
+            struct Node *new_node = create_node(current->data);
+            if (new_node == NULL) {
+                while (new_head != NULL) {
+                    struct Node *temp = new_head;
+                    new_head = new_head->next;
+                    free(temp);
+                }
+                return NULL;
+            }
+            if (new_head == NULL) {
+                new_head = new_node;
+                new_tail = new_node;
+            } else {
+                new_tail->next = new_node;
+                new_tail = new_node;
+            }
+        }
+        take = !take;
+        current = current->next;
+    }
+    return new_head;
+}
+
+void print_list(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        struct Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+struct Node *append_node(struct Node *head, int data) {
+    struct Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return head;
+    }
+    if (head == NULL) {
+        return new_node;
+    }
+    struct Node *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+int main(void) {
+    struct Node *original = NULL;
+    struct Node *alternate = NULL;
+    int values[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int count = sizeof(values) / sizeof(values[0]);
+    int i;
+
+    for (i = 0; i < count; i++) {
+        original = append_node(original, values[i]);
+    }
+
+    printf("Original list: ");
+    print_list(original);
+
+    alternate = create_alternate_list(original);
+
+    printf("Alternate list: ");
+    print_list(alternate);
+
+    free_list(original);
+    free_list(alternate);
+
+    return 0;
+}

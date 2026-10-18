@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-353.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-353.c:82:9: style: Variable 'arr1' can be declared as const array [constVariable]
+    int arr1[] = {1, 2, 3, 4};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-353.c:83:9: style: Variable 'arr2' can be declared as const array [constVariable]
+    int arr2[] = {5, 6, 7};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-353.c:84:9: style: Variable 'arr3' can be declared as const array [constVariable]
+    int arr3[] = {8, 9, 10, 11, 12};
+        ^

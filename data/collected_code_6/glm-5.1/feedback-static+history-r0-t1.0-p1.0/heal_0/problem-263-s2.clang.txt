@@ -1,0 +1,13 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-263-s2.c:69:17: error: call to undeclared function 'dict_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   69 |                 dict_free(merged);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-263-s2.c:79:17: error: call to undeclared function 'dict_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   79 |                 dict_free(merged);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-263-s2.c:88:6: error: conflicting types for 'dict_free'
+   88 | void dict_free(Dictionary *dict) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-263-s2.c:69:17: note: previous implicit declaration is here
+   69 |                 dict_free(merged);
+      |                 ^
+3 errors generated.

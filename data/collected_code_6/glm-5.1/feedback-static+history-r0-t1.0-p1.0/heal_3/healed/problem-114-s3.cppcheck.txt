@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:84:19: style: Condition 'count>0' is always true [knownConditionTrueFalse]
+        if (count > 0) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:73:35: note: Assignment 'count=sizeof(tuples)/sizeof(tuples[0])', assigned value is 6
+    size_t count = sizeof(tuples) / sizeof(tuples[0]);
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:84:19: note: Condition 'count>0' is always true
+        if (count > 0) {
+                  ^

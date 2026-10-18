@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-350.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-350.c:15:16: error: Array 'str[1]' accessed at index 2047, which is out of bounds. [arrayIndexOutOfBounds]
+        if (str[len] == '\0') {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-350.c:14:23: note: Assuming that condition 'len<2048' is not redundant
+    for (len = 0; len < MAX_STRING_LENGTH; len++) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-350.c:15:16: note: Array index out of bounds
+        if (str[len] == '\0') {
+               ^

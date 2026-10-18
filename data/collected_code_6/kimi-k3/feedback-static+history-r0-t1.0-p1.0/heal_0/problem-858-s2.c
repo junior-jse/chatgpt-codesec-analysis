@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    void *data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    size_t size;
+} List;
+
+List *list_create(void)
+{
+    List *list = malloc(sizeof(List));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->head = NULL;
+    list->size = 0;
+    return list;
+}
+
+int list_append(List *list, void *data)
+{
+    Node *node;
+    Node *current;
+
+    if (list == NULL) {
+        return -1;
+    }
+
+    node = malloc(sizeof(Node));
+    if (node == NULL) {
+        return -1;
+    }
+    node->data = data;
+    node->next = NULL;
+
+    if (list->head == NULL) {
+        list->head = node;
+    } else {
+        current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = node;
+    }
+    list->size++;
+    return 0;
+}
+
+void list_destroy(List *list)
+{
+    Node *current;
+    Node *next;
+
+    if (list == NULL) {
+        return;
+    }
+
+    current = list->head;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    free(list);
+}
+
+size_t count_sublists(const List *list_of_lists)
+{
+    size_t count = 0;
+    Node *current;
+
+    if (list_of_lists == NULL) {
+        return 0;
+    }
+
+    current = list_of_lists->head;
+    while (current != NULL) {
+        if (current->data != NULL) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count;
+}
+
+size_t count_sublists_squared(const List *list_of_lists)
+{
+    size_t count = count_sublists(list_of_lists);
+    return count * count;
+}
+
+int main(void)
+{
+    List *outer = list_create();
+    List *inner1 = list_create();
+    List *inner2 = list_create();
+    List *inner3 = list_create();
+    size_t result;
+
+    if (outer == NULL || inner1 == NULL || inner2 == NULL || inner3 == NULL) {
+        list_destroy(outer);
+        list_destroy(inner1);
+        list_destroy(inner2);
+        list_destroy(inner3);
+        return EXIT_FAILURE;
+    }
+
+    if (list_append(outer, inner1) != 0 ||
+        list_append(outer, inner2) != 0 ||
+        list_append(outer, inner3) != 0) {
+        list_destroy(outer);
+        list_destroy(inner1);
+        list_destroy(inner2);
+        list_destroy(inner3);
+        return EXIT_FAILURE;
+    }
+
+    result = count_sublists_squared(outer);
+    printf("%zu\n", result);
+
+    list_destroy(outer);
+    list_destroy(inner1);
+    list_destroy(inner2);
+    list_destroy(inner3);
+
+    return EXIT_SUCCESS;
+}

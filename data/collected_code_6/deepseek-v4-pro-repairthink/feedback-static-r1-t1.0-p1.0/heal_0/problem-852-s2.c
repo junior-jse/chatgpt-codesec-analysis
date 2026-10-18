@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int remove_negatives(int *list, int size) {
+    if (list == NULL || size < 0) {
+        return -1;
+    }
+    
+    int write_index = 0;
+    for (int read_index = 0; read_index < size; read_index++) {
+        if (list[read_index] >= 0) {
+            list[write_index] = list[read_index];
+            write_index++;
+        }
+    }
+    
+    return write_index;
+}
+
+void print_list(const int *list, int size) {
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        printf("%d", list[i]);
+        if (i < size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    int numbers[] = {5, -3, 8, -1, 0, 12, -7, 4};
+    int size = sizeof(numbers) / sizeof(numbers[0]);
+    
+    printf("Original list: ");
+    print_list(numbers, size);
+    
+    int new_size = remove_negatives(numbers, size);
+    
+    if (new_size < 0) {
+        fprintf(stderr, "Error: Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("After removing negatives: ");
+    print_list(numbers, new_size);
+    
+    return EXIT_SUCCESS;
+}

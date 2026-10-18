@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *camel_to_snake(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(str);
+    if (len == 0) {
+        return NULL;
+    }
+
+    char *result = malloc(len * 2 + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (isupper((unsigned char)str[i])) {
+            if (i > 0) {
+                result[j++] = '_';
+            }
+            result[j++] = (char)tolower((unsigned char)str[i]);
+        } else {
+            result[j++] = str[i];
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "camelCaseString",
+        "thisIsATest",
+        "helloWorld",
+        "ABC",
+        "simpleTest",
+        NULL
+    };
+
+    for (size_t i = 0; test_cases[i] != NULL; i++) {
+        char *converted = camel_to_snake(test_cases[i]);
+        if (converted != NULL) {
+            printf("Input: %s\nOutput: %s\n\n", test_cases[i], converted);
+            free(converted);
+        } else {
+            fprintf(stderr, "Conversion failed for: %s\n", test_cases[i]);
+        }
+    }
+
+    return EXIT_SUCCESS;
+}

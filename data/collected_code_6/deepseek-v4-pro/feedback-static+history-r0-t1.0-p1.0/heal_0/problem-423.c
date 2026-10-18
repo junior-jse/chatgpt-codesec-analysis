@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int max_gold(int **mine, int rows, int cols) {
+    int **dp;
+    int i, j, right, right_up, right_down, max_val = 0;
+
+    if (rows <= 0 || cols <= 0 || mine == NULL) {
+        return -1;
+    }
+
+    dp = (int **)malloc(rows * sizeof(int *));
+    if (dp == NULL) {
+        return -1;
+    }
+
+    for (i = 0; i < rows; i++) {
+        dp[i] = (int *)malloc(cols * sizeof(int));
+        if (dp[i] == NULL) {
+            for (j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return -1;
+        }
+    }
+
+    for (i = 0; i < rows; i++) {
+        dp[i][0] = mine[i][0];
+    }
+
+    for (j = 1; j < cols; j++) {
+        for (i = 0; i < rows; i++) {
+            right = dp[i][j - 1];
+            right_up = (i > 0) ? dp[i - 1][j - 1] : 0;
+            right_down = (i < rows - 1) ? dp[i + 1][j - 1] : 0;
+
+            if (i > 0 && right_up > right) {
+                right = right_up;
+            }
+            if (i < rows - 1 && right_down > right) {
+                right = right_down;
+            }
+
+            dp[i][j] = mine[i][j] + right;
+        }
+    }
+
+    max_val = dp[0][cols - 1];
+    for (i = 1; i < rows; i++) {
+        if (dp[i][cols - 1] > max_val) {
+            max_val = dp[i][cols - 1];
+        }
+    }
+
+    for (i = 0; i < rows; i++) {
+        free(dp[i]);
+    }
+    free(dp);
+
+    return max_val;
+}
+
+int main(void) {
+    int rows, cols;
+    int **mine;
+    int i, j;
+    int result;
+
+    printf("Enter number of rows and columns: ");
+    if (scanf("%d %d", &rows, &cols) != 2) {
+        fprintf(stderr, "Invalid input\n");
+        return 1;
+    }
+
+    if (rows <= 0 || cols <= 0) {
+        fprintf(stderr, "Invalid dimensions\n");
+        return 1;
+    }
+
+    mine = (int **)malloc(rows * sizeof(int *));
+    if (mine == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+
+    for (i = 0; i < rows; i++) {
+        mine[i] = (int *)malloc(cols * sizeof(int));
+        if (mine[i] == NULL) {
+            for (j = 0; j < i; j++) {
+                free(mine[j]);
+            }
+            free(mine);
+            fprintf(stderr, "Memory allocation failed\n");
+            return 1;
+        }
+    }
+
+    printf("Enter the gold values:\n");
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            if (scanf("%d", &mine[i][j]) != 1) {
+                fprintf(stderr, "Invalid input\n");
+                for (j = 0; j < rows; j++) {
+                    free(mine[j]);
+                }
+                free(mine);
+                return 1;
+            }
+        }
+    }
+
+    result = max_gold(mine, rows, cols);
+
+    if (result == -1) {
+        fprintf(stderr, "Error in computation\n");
+        for (i = 0; i < rows; i++) {
+            free(mine[i]);
+        }
+        free(mine);
+        return 1;
+    }
+
+    printf("Maximum gold that can be collected: %d\n", result);
+
+    for (i = 0; i < rows; i++) {
+        free(mine[i]);
+    }
+    free(mine);
+
+    return 0;
+}

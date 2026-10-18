@@ -1,0 +1,128 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int key;
+    int *values;
+    int value_count;
+} DictEntry;
+
+typedef struct {
+    int *data;
+    int size;
+    int capacity;
+} IntArray;
+
+void init_array(IntArray *arr) {
+    arr->size = 0;
+    arr->capacity = 16;
+    arr->data = (int *)malloc(arr->capacity * sizeof(int));
+    if (!arr->data) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void free_array(IntArray *arr) {
+    free(arr->data);
+    arr->data = NULL;
+    arr->size = 0;
+    arr->capacity = 0;
+}
+
+int contains(const IntArray *arr, int value) {
+    for (int i = 0; i < arr->size; i++) {
+        if (arr->data[i] == value) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void add_unique(IntArray *arr, int value) {
+    if (contains(arr, value)) {
+        return;
+    }
+    if (arr->size >= arr->capacity) {
+        arr->capacity *= 2;
+        int *new_data = (int *)realloc(arr->data, arr->capacity * sizeof(int));
+        if (!new_data) {
+            fprintf(stderr, "Memory reallocation failed\n");
+            free(arr->data);
+            exit(EXIT_FAILURE);
+        }
+        arr->data = new_data;
+    }
+    arr->data[arr->size++] = value;
+}
+
+int *extract_unique_values(const DictEntry *dict, int dict_size, int *out_count) {
+    if (!dict || dict_size <= 0 || !out_count) {
+        *out_count = 0;
+        return NULL;
+    }
+
+    IntArray unique;
+    init_array(&unique);
+
+    for (int i = 0; i < dict_size; i++) {
+        const DictEntry *entry = &dict[i];
+        if (!entry->values || entry->value_count <= 0) {
+            continue;
+        }
+        for (int j = 0; j < entry->value_count; j++) {
+            add_unique(&unique, entry->values[j]);
+        }
+    }
+
+    *out_count = unique.size;
+    if (unique.size == 0) {
+        free_array(&unique);
+        return NULL;
+    }
+
+    int *result = (int *)malloc(unique.size * sizeof(int));
+    if (!result) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free_array(&unique);
+        *out_count = 0;
+        return NULL;
+    }
+
+    memcpy(result, unique.data, unique.size * sizeof(int));
+    free_array(&unique);
+    return result;
+}
+
+int main(void) {
+    int vals1[] = {1, 2, 3, 3, 4};
+    int vals2[] = {3, 4, 5, 6};
+    int vals3[] = {6, 7, 8, 1};
+    int vals4[] = {};
+
+    DictEntry dict[] = {
+        {1, vals1, 5},
+        {2, vals2, 4},
+        {3, vals3, 4},
+        {4, vals4, 0},
+        {5, NULL, 0}
+    };
+
+    int count = 0;
+    int *unique_values = extract_unique_values(dict, 5, &count);
+
+    if (unique_values && count > 0) {
+        for (int i = 0; i < count; i++) {
+            printf("%d ", unique_values[i]);
+        }
+        printf("\n");
+    } else {
+        printf("No unique values found.\n");
+    }
+
+    free(unique_values);
+    return 0;
+}
+```

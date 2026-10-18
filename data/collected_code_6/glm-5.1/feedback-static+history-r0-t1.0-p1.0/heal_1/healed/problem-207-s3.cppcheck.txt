@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-207-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-207-s3.c:10:13: style: Checking if unsigned expression 'len' is less than zero. [unsignedLessThanZero]
+    if (len <= 0) {
+            ^

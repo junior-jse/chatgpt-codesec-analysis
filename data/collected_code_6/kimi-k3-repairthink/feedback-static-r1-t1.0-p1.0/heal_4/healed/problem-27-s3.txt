@@ -1,0 +1,106 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_STRING_LENGTH 1024
+#define MAX_INPUTS 16
+
+void remove_digits(char **list, size_t size, size_t buffer_size) {
+    if (list == NULL || size == 0 || buffer_size < 2) {
+        return;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        if (list[i] == NULL) {
+            continue;
+        }
+
+        size_t write = 0;
+
+        for (size_t read = 0; read < buffer_size - 1 && list[i][read] != '\0'; read++) {
+            unsigned char ch = (unsigned char)list[i][read];
+
+            if (!isdigit(ch)) {
+                if (write >= buffer_size - 1) {
+                    break;
+                }
+                list[i][write] = (char)ch;
+                write++;
+            }
+        }
+
+        list[i][write] = '\0';
+    }
+}
+
+int main(void) {
+    const char *inputs[] = {
+        "hello123world",
+        "abc456def",
+        "no_digits_here",
+        "12345"
+    };
+    const size_t size = sizeof(inputs) / sizeof(inputs[0]);
+
+    if (size == 0 || size > MAX_INPUTS) {
+        return EXIT_FAILURE;
+    }
+
+    char *strings[MAX_INPUTS] = { NULL };
+
+    for (size_t i = 0; i < size; i++) {
+        if (inputs[i] == NULL || strnlen(inputs[i], MAX_STRING_LENGTH) >= MAX_STRING_LENGTH) {
+            for (size_t j = 0; j < i; j++) {
+                free(strings[j]);
+            }
+            return EXIT_FAILURE;
+        }
+
+        strings[i] = malloc(MAX_STRING_LENGTH);
+        if (strings[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(strings[j]);
+            }
+            return EXIT_FAILURE;
+        }
+
+        int written = snprintf(strings[i], MAX_STRING_LENGTH, "%s", inputs[i]);
+        if (written < 0 || (size_t)written >= MAX_STRING_LENGTH) {
+            for (size_t j = 0; j <= i; j++) {
+                free(strings[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+
+    printf("Before:\n");
+    for (size_t i = 0; i < size; i++) {
+        printf("%s\n", strings[i]);
+    }
+
+    remove_digits(strings, size, MAX_STRING_LENGTH);
+
+    printf("\nAfter:\n");
+    for (size_t i = 0; i < size; i++) {
+        printf("%s\n", strings[i]);
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        free(strings[i]);
+    }
+
+    return EXIT_SUCCESS;
+}
+```
+
+Key fixes applied:
+
+1. **Explicit buffer size parameter (CWE-120/CWE-20):** `remove_digits()` now takes `buffer_size` as a parameter instead of assuming the global `MAX_STRING_LENGTH`, making boundary checks explicit and correct for any caller, and validating `buffer_size < 2` to guarantee space for the NUL terminator.
+
+2. **Input length validation (CWE-119/CWE-120):** Before allocating and copying, each input string is validated with `strnlen()` (a bounded length check that itself cannot overrun) to ensure it fits within `MAX_STRING_LENGTH`, rejecting overlong or `NULL` inputs up front.
+
+3. **Snprintf failure handling:** Instead of silently continuing with a truncated/emptied string, a failed or truncating `snprintf()` now frees all previously allocated buffers and exits with failure, preventing partially initialized data from being processed.
+
+4. **Compile-time size guard retained:** The `size > MAX_INPUTS` check ensures the statically-sized `strings[]` array can never be indexed out of bounds.

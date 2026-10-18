@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <stdint.h>
+
+static size_t safe_strnlen(const char *s, size_t max_len)
+{
+    size_t len = 0;
+    if (s == NULL) return 0;
+    while (len < max_len && s[len] != '\0') len++;
+    return len;
+}
+
+char *join_tuple(const char **tuple, size_t count, const char *delimiter)
+{
+    size_t total_length = 1;
+    size_t delimiter_length;
+    size_t i;
+    char *result;
+    char *current;
+    const size_t MAX_ELEMENT_LEN = 4096;
+    const size_t MAX_DELIMITER_LEN = 256;
+
+    if (tuple == NULL || delimiter == NULL)
+    {
+        return NULL;
+    }
+
+    delimiter_length = safe_strnlen(delimiter, MAX_DELIMITER_LEN);
+    if (delimiter_length == MAX_DELIMITER_LEN && delimiter[delimiter_length] != '\0')
+    {
+        return NULL;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        size_t element_length;
+        
+        if (tuple[i] == NULL)
+        {
+            return NULL;
+        }
+        
+        element_length = safe_strnlen(tuple[i], MAX_ELEMENT_LEN);
+        if (element_length == MAX_ELEMENT_LEN && tuple[i][element_length] != '\0')
+        {
+            return NULL;
+        }
+        
+        if (total_length > SIZE_MAX - element_length)
+        {
+            return NULL;
+        }
+        total_length += element_length;
+        
+        if (i < count - 1)
+        {
+            if (total_length > SIZE_MAX - delimiter_length)
+            {
+                return NULL;
+            }
+            total_length += delimiter_length;
+        }
+    }
+
+    result = (char *)malloc(total_length);
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    current = result;
+    for (i = 0; i < count; i++)
+    {
+        size_t element_length = safe_strnlen(tuple[i], MAX_ELEMENT_LEN);
+        size_t remaining = total_length - (size_t)(current - result);
+        
+        if (element_length > remaining)
+        {
+            free(result);
+            return NULL;
+        }
+        
+        if (element_length > 0)
+        {
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(current, tuple[i], element_length);
+            current += element_length;
+        }
+
+        if (i < count - 1)
+        {
+            remaining = total_length - (size_t)(current - result);
+            
+            if (delimiter_length > remaining)
+            {
+                free(result);
+                return NULL;
+            }
+            
+            if (delimiter_length > 0)
+            {
+                /* Possible weaknesses found:
+                 * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                 */
+                memcpy(current, delimiter, delimiter_length);
+                current += delimiter_length;
+            }
+        }
+    }
+    *current = '\0';
+
+    return result;
+}
+
+int main(void)
+{
+    const char *tuple[] = {"apple", "banana", "cherry", "date"};
+    size_t count = sizeof(tuple) / sizeof(tuple[0]);
+    const char *delimiter = ", ";
+    char *joined;
+
+    joined = join_tuple(tuple, count, delimiter);
+    if (joined == NULL)
+    {
+        fprintf(stderr, "Error: failed to join tuple elements\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("%s\n", joined);
+
+    free(joined);
+    joined = NULL;
+
+    return EXIT_SUCCESS;
+}

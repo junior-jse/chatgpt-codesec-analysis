@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    size_t length;
+} List;
+
+List *create_list() {
+    List *list = (List *)malloc(sizeof(List));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->head = NULL;
+    list->length = 0;
+    return list;
+}
+
+void append_list(List *list, int data) {
+    if (list == NULL) {
+        return;
+    }
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    if (list->head == NULL) {
+        list->head = new_node;
+    } else {
+        Node *current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+    list->length++;
+}
+
+void free_list(List *list) {
+    if (list == NULL) {
+        return;
+    }
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+    free(list);
+}
+
+List *find_max_length_list(List **lists, size_t count) {
+    if (lists == NULL || count == 0) {
+        return NULL;
+    }
+    List *max_list = NULL;
+    size_t max_length = 0;
+    for (size_t i = 0; i < count; i++) {
+        if (lists[i] != NULL) {
+            if (lists[i]->length > max_length) {
+                max_length = lists[i]->length;
+                max_list = lists[i];
+            }
+        }
+    }
+    return max_list;
+}
+
+int main() {
+    List *list1 = create_list();
+    List *list2 = create_list();
+    List *list3 = create_list();
+
+    if (list1 == NULL || list2 == NULL || list3 == NULL) {
+        free_list(list1);
+        free_list(list2);
+        free_list(list3);
+        return 1;
+    }
+
+    append_list(list1, 1);
+    append_list(list1, 2);
+    append_list(list1, 3);
+
+    append_list(list2, 4);
+    append_list(list2, 5);
+
+    append_list(list3, 6);
+
+    List *lists[] = {list1, list2, list3};
+    size_t list_count = sizeof(lists) / sizeof(lists[0]);
+
+    /* Possible weaknesses found:
+     *  Variable 'max_list' can be declared as pointer to const [constVariablePointer]
+     */
+    List *max_list = find_max_length_list(lists, list_count);
+
+    if (max_list != NULL) {
+        printf("%zu\n", max_list->length);
+    } else {
+        printf("0\n");
+    }
+
+    free_list(list1);
+    free_list(list2);
+    free_list(list3);
+
+    return 0;
+}

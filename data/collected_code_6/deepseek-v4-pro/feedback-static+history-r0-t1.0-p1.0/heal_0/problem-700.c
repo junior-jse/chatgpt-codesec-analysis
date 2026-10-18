@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int value) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = value;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int append_node(Node **head, int value) {
+    Node *new_node = create_node(value);
+    if (new_node == NULL) {
+        return -1;
+    }
+    if (*head == NULL) {
+        *head = new_node;
+        return 0;
+    }
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return 0;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int count_in_range(Node *head, int lower, int upper) {
+    if (head == NULL || lower > upper) {
+        return 0;
+    }
+    int count = 0;
+    Node *current = head;
+    while (current != NULL) {
+        if (current->data >= lower && current->data <= upper) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count;
+}
+
+int main(void) {
+    Node *list = NULL;
+    int values[] = {12, 5, 8, 20, 15, 3, 7, 18};
+    int size = sizeof(values) / sizeof(values[0]);
+
+    for (int i = 0; i < size; i++) {
+        if (append_node(&list, values[i]) != 0) {
+            free_list(list);
+            return 1;
+        }
+    }
+
+    int result = count_in_range(list, 5, 15);
+    printf("Count in range [5, 15]: %d\n", result);
+
+    result = count_in_range(list, 20, 3);
+    printf("Count in range [20, 3]: %d\n", result);
+
+    Node *empty_list = NULL;
+    result = count_in_range(empty_list, 1, 10);
+    printf("Count in empty list: %d\n", result);
+
+    free_list(list);
+    return 0;
+}

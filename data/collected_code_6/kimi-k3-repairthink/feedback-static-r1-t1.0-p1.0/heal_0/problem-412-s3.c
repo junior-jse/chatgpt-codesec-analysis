@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* remove_odd_numbers(const int* arr, size_t size, size_t* new_size) {
+    if (arr == NULL || new_size == NULL) {
+        return NULL;
+    }
+
+    size_t count = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (arr[i] % 2 == 0) {
+            count++;
+        }
+    }
+
+    int* result = NULL;
+    if (count > 0) {
+        result = (int*)malloc(count * sizeof(int));
+        if (result == NULL) {
+            return NULL;
+        }
+
+        size_t index = 0;
+        for (size_t i = 0; i < size; i++) {
+            if (arr[i] % 2 == 0) {
+                result[index++] = arr[i];
+            }
+        }
+    }
+
+    *new_size = count;
+    return result;
+}
+
+int main(void) {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    size_t size = sizeof(arr) / sizeof(arr[0]);
+    size_t new_size = 0;
+
+    int* even_numbers = remove_odd_numbers(arr, size, &new_size);
+
+    if (even_numbers != NULL || new_size == 0) {
+        for (size_t i = 0; i < new_size; i++) {
+            printf("%d ", even_numbers[i]);
+        }
+        printf("\n");
+        free(even_numbers);
+    } else {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}

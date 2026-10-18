@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t count;
+} TupleList;
+
+int compare_tuples(const void *a, const void *b) {
+    const Tuple *t1 = (const Tuple *)a;
+    const Tuple *t2 = (const Tuple *)b;
+    
+    if (t1->size != t2->size) {
+        return (t1->size < t2->size) ? -1 : 1;
+    }
+    
+    for (size_t i = 0; i < t1->size; i++) {
+        if (t1->elements[i] != t2->elements[i]) {
+            return (t1->elements[i] < t2->elements[i]) ? -1 : 1;
+        }
+    }
+    return 0;
+}
+
+int count_similar_tuples(TupleList *list) {
+    if (list == NULL || list->tuples == NULL || list->count == 0) {
+        return 0;
+    }
+    
+    Tuple *sorted = malloc(list->count * sizeof(Tuple));
+    if (sorted == NULL) {
+        return -1;
+    }
+    
+    memcpy(sorted, list->tuples, list->count * sizeof(Tuple));
+    qsort(sorted, list->count, sizeof(Tuple), compare_tuples);
+    
+    int result = 0;
+    size_t i = 0;
+    
+    while (i < list->count) {
+        size_t j = i + 1;
+        while (j < list->count && compare_tuples(&sorted[i], &sorted[j]) == 0) {
+            j++;
+        }
+        
+        size_t occurrence = j - i;
+        if (occurrence > 1) {
+            result += (int)occurrence;
+        }
+        
+        i = j;
+    }
+    
+    free(sorted);
+    return result;
+}
+
+int main(void) {
+    int arr1[] = {1, 2, 3};
+    int arr2[] = {4, 5};
+    int arr3[] = {1, 2, 3};
+    int arr4[] = {6, 7, 8};
+    int arr5[] = {4, 5};
+    int arr6[] = {1, 2, 3};
+    int arr7[] = {9, 10};
+    
+    Tuple tuples[] = {
+        {arr1, 3},
+        {arr2, 2},
+        {arr3, 3},
+        {arr4, 3},
+        {arr5, 2},
+        {arr6, 3},
+        {arr7, 2}
+    };
+    
+    TupleList list = {tuples, 7};
+    
+    int result = count_similar_tuples(&list);
+    
+    if (result >= 0) {
+        printf("Number of records with similar occurrences: %d\n", result);
+    } else {
+        printf("Error occurred during processing\n");
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-969-s3.c:56:13: error: call to undeclared function 'memcpy_s'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   56 |         if (memcpy_s(list->tuples[list->size].elements, size * sizeof(int),
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-969-s3.c:56:13: note: did you mean 'memcpy'?
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_string.h:78:3: note: 'memcpy' declared here
+   78 |                 memcpy(void *_LIBC_SIZE(__n) __dst, const void *_LIBC_SIZE(__n) __src,
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-969-s3.c:144:21: error: call to undeclared function 'memcpy_s'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  144 |                 if (memcpy_s(joined + offset, (total_size - offset) * sizeof(int),
+      |                     ^
+2 errors generated.

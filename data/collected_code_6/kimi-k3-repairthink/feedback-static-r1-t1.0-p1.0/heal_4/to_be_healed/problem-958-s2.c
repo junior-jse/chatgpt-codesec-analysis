@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define ROMAN_NUMERAL_MAX_LEN 15
+#define ROMAN_BUFFER_SIZE (ROMAN_NUMERAL_MAX_LEN + 1)
+
+_Static_assert(ROMAN_BUFFER_SIZE > ROMAN_NUMERAL_MAX_LEN,
+               "Buffer must hold the longest numeral plus null terminator");
+
+void int_to_roman(int num, char *result, size_t size)
+{
+    if (result == NULL || size == 0) {
+        return;
+    }
+
+    result[0] = '\0';
+
+    if (num <= 0 || num > 3999 || size < ROMAN_BUFFER_SIZE) {
+        return;
+    }
+
+    static const char *const roman_numerals[] = {
+        "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
+    };
+    static const int values[] = {
+        1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1
+    };
+
+    size_t offset = 0;
+    const size_t count = sizeof(values) / sizeof(values[0]);
+
+    for (size_t i = 0; i < count; i++) {
+        while (num >= values[i]) {
+            /* Possible weaknesses found:
+             * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+             */
+            size_t len = strlen(roman_numerals[i]);
+            if (len + 1 > size - offset) {
+                result[0] = '\0';
+                return;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(result + offset, roman_numerals[i], len + 1);
+            offset += len;
+            num -= values[i];
+        }
+    }
+}
+
+int main(void)
+{
+    int number;
+    char *roman = malloc(ROMAN_BUFFER_SIZE);
+
+    if (roman == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter an integer (1-3999): ");
+
+    if (scanf("%d", &number) != 1) {
+        fprintf(stderr, "Invalid input.\n");
+        free(roman);
+        return EXIT_FAILURE;
+    }
+
+    int_to_roman(number, roman, ROMAN_BUFFER_SIZE);
+
+    if (roman[0] == '\0') {
+        fprintf(stderr, "Number out of range or conversion failed.\n");
+        free(roman);
+        return EXIT_FAILURE;
+    }
+
+    printf("Roman numeral: %s\n", roman);
+    free(roman);
+    return EXIT_SUCCESS;
+}

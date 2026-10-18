@@ -1,0 +1,60 @@
+```c
+#include <stdio.h>
+#include <limits.h>
+#include <string.h>
+
+int count_most_common_char(const char *str, char *result) {
+    if (str == NULL || result == NULL) {
+        return -1;
+    }
+
+    unsigned int freq[UCHAR_MAX + 1] = {0};
+    const unsigned char *u = (const unsigned char *)str;
+
+    while (*u != '\0') {
+        freq[*u]++;
+        u++;
+    }
+
+    if (u == (const unsigned char *)str) {
+        return 0;
+    }
+
+    unsigned int max_count = 0;
+    int max_char = 0;
+    int found = 0;
+
+    for (int i = 0; i <= UCHAR_MAX; i++) {
+        if (freq[i] > max_count) {
+            max_count = freq[i];
+            max_char = i;
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        return 0;
+    }
+
+    *result = (char)max_char;
+    return (int)max_count;
+}
+
+int main(void) {
+    const char *text = "hello world";
+    char most_common;
+    int count;
+
+    count = count_most_common_char(text, &most_common);
+
+    if (count > 0) {
+        printf("Most common character: '%c' (%d occurrences)\n", most_common, count);
+    } else if (count == 0) {
+        printf("String is empty or no characters found.\n");
+    } else {
+        printf("Invalid input.\n");
+    }
+
+    return 0;
+}
+```

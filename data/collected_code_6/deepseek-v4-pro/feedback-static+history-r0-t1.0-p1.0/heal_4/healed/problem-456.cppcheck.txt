@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:56:24: style: Condition 'alloc_size<len' is always false [knownConditionTrueFalse]
+        if (alloc_size < len) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:55:27: note: alloc_size is assigned 'len+1' here.
+        size_t alloc_size = len + 1;
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:56:24: note: Condition 'alloc_size<len' is always false
+        if (alloc_size < len) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:71:24: style: Condition 'alloc_size<=len' is always false [knownConditionTrueFalse]
+        if (alloc_size <= len) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:55:27: note: alloc_size is assigned 'len+1' here.
+        size_t alloc_size = len + 1;
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:64:21: note: Assuming condition is false
+        if (list[i] == NULL) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-456.c:71:24: note: Condition 'alloc_size<=len' is always false
+        if (alloc_size <= len) {
+                       ^

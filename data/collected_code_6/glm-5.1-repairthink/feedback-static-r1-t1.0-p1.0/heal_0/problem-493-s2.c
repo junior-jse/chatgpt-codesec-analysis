@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+typedef struct {
+    double x;
+    double y;
+} Point;
+
+typedef struct {
+    Point vertices[6];
+} Hexagon;
+
+Hexagon** calculate_hexagon_grid(int cols, int rows, double size, double offset_x, double offset_y) {
+    if (cols <= 0 || rows <= 0 || size <= 0.0) {
+        return NULL;
+    }
+
+    Hexagon** grid = (Hexagon**)malloc(rows * sizeof(Hexagon*));
+    if (grid == NULL) {
+        return NULL;
+    }
+
+    for (int r = 0; r < rows; r++) {
+        grid[r] = (Hexagon*)malloc(cols * sizeof(Hexagon));
+        if (grid[r] == NULL) {
+            for (int i = 0; i < r; i++) {
+                free(grid[i]);
+            }
+            free(grid);
+            return NULL;
+        }
+    }
+
+    double horiz_spacing = size * 2.0;
+    double vert_spacing = size * sqrt(3.0);
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            double cx = offset_x + c * horiz_spacing;
+            if (r % 2 != 0) {
+                cx += horiz_spacing / 2.0;
+            }
+            double cy = offset_y + r * vert_spacing;
+
+            for (int i = 0; i < 6; i++) {
+                double angle = M_PI / 3.0 * i;
+                grid[r][c].vertices[i].x = cx + size * cos(angle);
+                grid[r][c].vertices[i].y = cy + size * sin(angle);
+            }
+        }
+    }
+
+    return grid;
+}
+
+void free_hexagon_grid(Hexagon** grid, int rows) {
+    if (grid == NULL) {
+        return;
+    }
+    for (int r = 0; r < rows; r++) {
+        free(grid[r]);
+    }
+    free(grid);
+}
+
+int main() {
+    int cols = 3;
+    int rows = 3;
+    double size = 1.0;
+    double offset_x = 0.0;
+    double offset_y = 0.0;
+
+    Hexagon** grid = calculate_hexagon_grid(cols, rows, size, offset_x, offset_y);
+    if (grid == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            printf("Hexagon [%d][%d]:\n", r, c);
+            for (int v = 0; v < 6; v++) {
+                printf("  (%.4f, %.4f)\n", grid[r][c].vertices[v].x, grid[r][c].vertices[v].y);
+            }
+        }
+    }
+
+    free_hexagon_grid(grid, rows);
+
+    return EXIT_SUCCESS;
+}

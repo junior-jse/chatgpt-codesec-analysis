@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int remove_negatives(int *array, size_t size) {
+    if (array == NULL) {
+        return 0;
+    }
+
+    size_t valid_count = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (array[i] >= 0) {
+            array[valid_count] = array[i];
+            valid_count++;
+        }
+    }
+
+    return (int)valid_count;
+}
+
+int main(void) {
+    int data[] = {5, -2, 8, -1, 0, -7, 3};
+    size_t original_size = sizeof(data) / sizeof(data[0]);
+
+    int new_size = remove_negatives(data, original_size);
+
+    for (int i = 0; i < new_size; i++) {
+        printf("%d ", data[i]);
+    }
+    printf("\n");
+
+    return 0;
+}

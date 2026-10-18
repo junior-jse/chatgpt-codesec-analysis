@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:84:9: style: The scope of the variable 'i' can be reduced. [variableScope]
+    int i;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:121:9: style: Variable 'list1' can be declared as const array [constVariable]
+    int list1[] = {1, 2, 3};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:122:9: style: Variable 'list2' can be declared as const array [constVariable]
+    int list2[] = {4, 5, 6};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:123:9: style: Variable 'list3' can be declared as const array [constVariable]
+    int list3[] = {1, 2, 3};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:124:9: style: Variable 'list4' can be declared as const array [constVariable]
+    int list4[] = {7, 8, 9};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:125:9: style: Variable 'list5' can be declared as const array [constVariable]
+    int list5[] = {4, 5, 6};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-712-s3.c:126:9: style: Variable 'list6' can be declared as const array [constVariable]
+    int list6[] = {1, 2, 3};
+        ^

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-958-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-958-s3.c:24:22: style: Variable 'max_index' is assigned a value that is never used. [unreadVariable]
+    size_t max_index = result_size - 1;
+                     ^

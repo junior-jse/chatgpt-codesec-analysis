@@ -1,0 +1,28 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:45:15: style: Condition 'y_len>=(int)sizeof(year_str)' is always false [knownConditionTrueFalse]
+    if (y_len >= (int)sizeof(year_str)) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:36:15: note: Assuming that condition 'y_len!=4' is not redundant
+    if (y_len != 4 || m_len < 1 || m_len > 2 || d_len < 1 || d_len > 2) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:45:15: note: Condition 'y_len>=(int)sizeof(year_str)' is always false
+    if (y_len >= (int)sizeof(year_str)) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:52:15: style: Condition 'm_len>=(int)sizeof(month_str)' is always false [knownConditionTrueFalse]
+    if (m_len >= (int)sizeof(month_str)) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:36:42: note: Assuming that condition 'm_len>2' is not redundant
+    if (y_len != 4 || m_len < 1 || m_len > 2 || d_len < 1 || d_len > 2) {
+                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:52:15: note: Condition 'm_len>=(int)sizeof(month_str)' is always false
+    if (m_len >= (int)sizeof(month_str)) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:59:15: style: Condition 'd_len>=(int)sizeof(day_str)' is always false [knownConditionTrueFalse]
+    if (d_len >= (int)sizeof(day_str)) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:36:68: note: Assuming that condition 'd_len>2' is not redundant
+    if (y_len != 4 || m_len < 1 || m_len > 2 || d_len < 1 || d_len > 2) {
+                                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-906.c:59:15: note: Condition 'd_len>=(int)sizeof(day_str)' is always false
+    if (d_len >= (int)sizeof(day_str)) {
+              ^

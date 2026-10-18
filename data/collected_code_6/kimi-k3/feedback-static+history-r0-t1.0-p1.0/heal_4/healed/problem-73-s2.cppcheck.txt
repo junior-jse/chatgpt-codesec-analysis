@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:63:52: warning: Comparison is wrong. Result of 'str+start' can't be 0 unless there is pointer overflow, and pointer overflow is undefined behaviour. [pointerAdditionResultNotNull]
+                if (token_len > 0 && (str + start) != NULL && result[size] != NULL) {
+                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:63:31: style: Condition 'token_len>0' is always true [knownConditionTrueFalse]
+                if (token_len > 0 && (str + start) != NULL && result[size] != NULL) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:37:21: note: Assuming that condition 'end>start' is not redundant
+            if (end > start) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:52:33: note: Assignment 'token_len=end-start', assigned value is greater than 0
+                token_len = end - start;
+                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:54:34: note: Assuming condition is false
+                if (result[size] == NULL) {
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:63:31: note: Condition 'token_len>0' is always true
+                if (token_len > 0 && (str + start) != NULL && result[size] != NULL) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-73-s2.c:111:31: style: Condition 'cursor!=NULL' is always true [knownConditionTrueFalse]
+        if (len > 0 && cursor != NULL && result[size] != NULL) {
+                              ^

@@ -1,0 +1,47 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int remove_negatives(int *arr, int size)
+{
+    int i, j = 0;
+    
+    if (arr == NULL || size <= 0) {
+        return 0;
+    }
+    
+    for (i = 0; i < size; i++) {
+        if (arr[i] >= 0) {
+            arr[j] = arr[i];
+            j++;
+        }
+    }
+    
+    return j;
+}
+
+int main(void)
+{
+    int arr[] = {5, -3, 8, -1, 0, -7, 12, -4, 9};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int new_size;
+    int i;
+    
+    printf("Original array: ");
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    
+    new_size = remove_negatives(arr, size);
+    
+    printf("Array after removing negatives: ");
+    for (i = 0; i < new_size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    printf("New size: %d\n", new_size);
+    
+    return 0;
+}
+```

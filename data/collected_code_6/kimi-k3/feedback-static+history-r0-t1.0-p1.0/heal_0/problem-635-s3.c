@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_HEAP_SIZE 100
+
+typedef struct {
+    int data[MAX_HEAP_SIZE];
+    int size;
+} MinHeap;
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapifyUp(MinHeap *heap, int index) {
+    while (index > 0) {
+        int parent = (index - 1) / 2;
+        if (heap->data[parent] > heap->data[index]) {
+            swap(&heap->data[parent], &heap->data[index]);
+            index = parent;
+        } else {
+            break;
+        }
+    }
+}
+
+void heapifyDown(MinHeap *heap, int index) {
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < heap->size && heap->data[left] < heap->data[smallest]) {
+        smallest = left;
+    }
+    if (right < heap->size && heap->data[right] < heap->data[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest != index) {
+        swap(&heap->data[index], &heap->data[smallest]);
+        heapifyDown(heap, smallest);
+    }
+}
+
+int push(MinHeap *heap, int value) {
+    if (heap->size >= MAX_HEAP_SIZE) {
+        return -1;
+    }
+    heap->data[heap->size] = value;
+    heapifyUp(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+int pop(MinHeap *heap, int *result) {
+    if (heap->size <= 0) {
+        return -1;
+    }
+    *result = heap->data[0];
+    heap->size--;
+    heap->data[0] = heap->data[heap->size];
+    heapifyDown(heap, 0);
+    return 0;
+}
+
+int main(void) {
+    MinHeap heap;
+    heap.size = 0;
+
+    int values[] = {5, 3, 8, 1, 9, 2, 7};
+    int numValues = sizeof(values) / sizeof(values[0]);
+
+    for (int i = 0; i < numValues; i++) {
+        if (push(&heap, values[i]) != 0) {
+            fprintf(stderr, "Heap is full\n");
+            return EXIT_FAILURE;
+        }
+    }
+
+    int value;
+    while (pop(&heap, &value) == 0) {
+        printf("%d ", value);
+    }
+    printf("\n");
+
+    return EXIT_SUCCESS;
+}

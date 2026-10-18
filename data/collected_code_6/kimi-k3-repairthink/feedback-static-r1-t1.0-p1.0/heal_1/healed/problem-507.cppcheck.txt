@@ -1,0 +1,28 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:70:15: style: Condition 'count<=0' is always false [knownConditionTrueFalse]
+    if (count <= 0 || count > MAX_WORDS) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:63:17: note: Assignment 'count=10', assigned value is 10
+    int count = 10;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:70:15: note: Condition 'count<=0' is always false
+    if (count <= 0 || count > MAX_WORDS) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:75:22: style: Condition 'remove_count<=0' is always false [knownConditionTrueFalse]
+    if (remove_count <= 0 || remove_count > (int)(sizeof(to_remove) / sizeof(to_remove[0]))) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:68:24: note: Assignment 'remove_count=3', assigned value is 3
+    int remove_count = 3;
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:75:22: note: Condition 'remove_count<=0' is always false
+    if (remove_count <= 0 || remove_count > (int)(sizeof(to_remove) / sizeof(to_remove[0]))) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:75:43: style: Condition 'remove_count>(int)(sizeof(to_remove)/sizeof(to_remove[0]))' is always false [knownConditionTrueFalse]
+    if (remove_count <= 0 || remove_count > (int)(sizeof(to_remove) / sizeof(to_remove[0]))) {
+                                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:68:24: note: Assignment 'remove_count=3', assigned value is 3
+    int remove_count = 3;
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-507.c:75:43: note: Condition 'remove_count>(int)(sizeof(to_remove)/sizeof(to_remove[0]))' is always false
+    if (remove_count <= 0 || remove_count > (int)(sizeof(to_remove) / sizeof(to_remove[0]))) {
+                                          ^

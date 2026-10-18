@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <limits.h>
+
+int getRightmostSetBitPosition(unsigned int num) {
+    if (num == 0) {
+        return -1;
+    }
+    
+    int position = 1;
+    while ((num & 1) == 0) {
+        num >>= 1;
+        position++;
+    }
+    
+    return position;
+}
+
+int main() {
+    unsigned int testCases[] = {0, 1, 2, 4, 8, 10, 12, 18, 20};
+    size_t numTests = sizeof(testCases) / sizeof(testCases[0]);
+    
+    for (size_t i = 0; i < numTests; i++) {
+        int result = getRightmostSetBitPosition(testCases[i]);
+        if (result == -1) {
+            printf("Number %u has no set bits\n", testCases[i]);
+        } else {
+            printf("Rightmost set bit of %u is at position %d\n", testCases[i], result);
+        }
+    }
+    
+    return 0;
+}

@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* create_node(int data) {
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append_node(Node **head, int data) {
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+int list_contains(Node *head, int value) {
+    Node *current = head;
+    while (current != NULL) {
+        if (current->data == value) {
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+Node* subtract_lists(Node *list1, Node *list2) {
+    Node *result = NULL;
+    Node *current = list1;
+    
+    while (current != NULL) {
+        if (!list_contains(list2, current->data)) {
+            append_node(&result, current->data);
+        }
+        current = current->next;
+    }
+    
+    return result;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node *list1 = NULL;
+    Node *list2 = NULL;
+    Node *result = NULL;
+    
+    append_node(&list1, 1);
+    append_node(&list1, 2);
+    append_node(&list1, 3);
+    append_node(&list1, 4);
+    append_node(&list1, 5);
+    
+    append_node(&list2, 2);
+    append_node(&list2, 4);
+    
+    printf("List 1: ");
+    print_list(list1);
+    
+    printf("List 2: ");
+    print_list(list2);
+    
+    result = subtract_lists(list1, list2);
+    
+    printf("Result: ");
+    print_list(result);
+    
+    free_list(list1);
+    free_list(list2);
+    free_list(result);
+    
+    return 0;
+}

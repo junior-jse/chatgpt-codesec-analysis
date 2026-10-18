@@ -1,0 +1,2 @@
+problem-921-s3.c:129:0:medium:Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+problem-921-s3.c:170:0:medium:Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)

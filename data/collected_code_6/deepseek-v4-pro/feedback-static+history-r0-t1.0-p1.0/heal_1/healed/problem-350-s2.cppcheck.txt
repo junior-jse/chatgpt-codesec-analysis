@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c:85:21: style: Condition 'null_result==NULL' is always true [knownConditionTrueFalse]
+    if (null_result == NULL) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c:84:54: note: Calling function 'minimize_by_removing_one_char' returns 0
+    char* null_result = minimize_by_removing_one_char(NULL, 0);
+                                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c:84:54: note: Assignment 'null_result=minimize_by_removing_one_char(NULL,0)', assigned value is 0
+    char* null_result = minimize_by_removing_one_char(NULL, 0);
+                                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c:85:21: note: Condition 'null_result==NULL' is always true
+    if (null_result == NULL) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-350-s2.c:69:12: style: Variable 'test_lengths' can be declared as const array [constVariable]
+    size_t test_lengths[] = {7, 4, 6, 9, 0, 4};
+           ^

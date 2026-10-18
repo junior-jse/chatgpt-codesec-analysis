@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void appendNode(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (newNode == NULL) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+Node* addLists(Node* list1, Node* list2) {
+    Node* result = NULL;
+    Node* tail = NULL;
+    int carry = 0;
+
+    while (list1 != NULL || list2 != NULL || carry != 0) {
+        int sum = carry;
+        if (list1 != NULL) {
+            sum += list1->data;
+            list1 = list1->next;
+        }
+        if (list2 != NULL) {
+            sum += list2->data;
+            list2 = list2->next;
+        }
+        carry = sum / 10;
+        int digit = sum % 10;
+
+        Node* newNode = createNode(digit);
+        if (newNode == NULL) {
+            while (result != NULL) {
+                Node* temp = result;
+                result = result->next;
+                free(temp);
+            }
+            return NULL;
+        }
+
+        if (result == NULL) {
+            result = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+    return result;
+}
+
+void printList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void freeList(Node* head) {
+    while (head != NULL) {
+        Node* temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    Node* list1 = NULL;
+    Node* list2 = NULL;
+
+    appendNode(&list1, 2);
+    appendNode(&list1, 4);
+    appendNode(&list1, 3);
+
+    appendNode(&list2, 5);
+    appendNode(&list2, 6);
+    appendNode(&list2, 4);
+
+    printf("List 1: ");
+    printList(list1);
+    printf("List 2: ");
+    printList(list2);
+
+    Node* sum = addLists(list1, list2);
+    if (sum == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        freeList(list1);
+        freeList(list2);
+        return EXIT_FAILURE;
+    }
+
+    printf("Sum: ");
+    printList(sum);
+
+    freeList(list1);
+    freeList(list2);
+    freeList(sum);
+
+    return EXIT_SUCCESS;
+}

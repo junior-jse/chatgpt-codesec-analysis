@@ -1,0 +1,10 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-237.c:42:36: error: use of undeclared identifier 'INT_MAX'
+   42 |         if (new_capacity > (size_t)INT_MAX || new_capacity < (size_t)arr->capacity) {
+      |                                    ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-237.c:76:36: error: use of undeclared identifier 'INT_MAX'
+   76 |         if (new_capacity > (size_t)INT_MAX || new_capacity < (size_t)map->capacity) {
+      |                                    ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-237.c:175:52: error: use of undeclared identifier 'INT_MAX'
+  175 |                         if (new_capacity > (size_t)INT_MAX || new_capacity < (size_t)result->capacity) {
+      |                                                    ^~~~~~~
+3 errors generated.

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:7:11: style: struct member 'DictionaryEntry::key' is never used. [unusedStructMember]
+    char *key;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:8:11: style: struct member 'DictionaryEntry::value' is never used. [unusedStructMember]
+    char *value;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:12:22: style: struct member 'Dictionary::entries' is never used. [unusedStructMember]
+    DictionaryEntry *entries;
+                     ^

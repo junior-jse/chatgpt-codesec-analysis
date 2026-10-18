@@ -1,0 +1,5 @@
+Undefined symbols for architecture x86_64:
+  "_main", referenced from:
+      <initial-undefines>
+ld: symbol(s) not found for architecture x86_64
+collect2: error: ld returned 1 exit status

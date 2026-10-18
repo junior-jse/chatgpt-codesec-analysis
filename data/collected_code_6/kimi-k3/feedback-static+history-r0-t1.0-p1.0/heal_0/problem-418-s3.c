@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *start;
+    int length;
+} SublistResult;
+
+static Node *create_node(int data)
+{
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+static void free_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+static SublistResult find_max_length_sublist(Node *head)
+{
+    SublistResult result = {NULL, 0};
+    
+    if (head == NULL) {
+        return result;
+    }
+    
+    Node *current = head;
+    Node *max_start = head;
+    Node *current_start = head;
+    int max_len = 1;
+    int current_len = 1;
+    
+    while (current->next != NULL) {
+        if (current->next->data >= current->data) {
+            current_len++;
+        } else {
+            if (current_len > max_len) {
+                max_len = current_len;
+                max_start = current_start;
+            }
+            current_start = current->next;
+            current_len = 1;
+        }
+        current = current->next;
+    }
+    
+    if (current_len > max_len) {
+        max_len = current_len;
+        max_start = current_start;
+    }
+    
+    result.start = max_start;
+    result.length = max_len;
+    return result;
+}
+
+int main(void)
+{
+    Node *head = NULL;
+    Node *tail = NULL;
+    int values[] = {5, 4, 3, 8, 9, 1, 2, 7, 6, 10, 11, 12, 0};
+    size_t num_values = sizeof(values) / sizeof(values[0]);
+    size_t i;
+    
+    for (i = 0; i < num_values; i++) {
+        Node *new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+        
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+    
+    SublistResult result = find_max_length_sublist(head);
+    
+    if (result.start != NULL && result.length > 0) {
+        printf("Maximum sublist length: %d\n", result.length);
+        printf("Sublist values: ");
+        Node *print_node = result.start;
+        int count = 0;
+        while (print_node != NULL && count < result.length) {
+            printf("%d ", print_node->data);
+            print_node = print_node->next;
+            count++;
+        }
+        printf("\n");
+    } else {
+        printf("List is empty.\n");
+    }
+    
+    free_list(head);
+    return EXIT_SUCCESS;
+}

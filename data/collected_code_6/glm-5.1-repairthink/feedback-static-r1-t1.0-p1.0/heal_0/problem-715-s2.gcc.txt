@@ -1,0 +1,15 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c: In function 'str_to_int_tuple':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c:36:38: error: 'INT_MAX' undeclared (first use in this function)
+   36 |         if (errno == ERANGE || val > INT_MAX || val < INT_MIN) {
+      |                                      ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c:5:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    4 | #include <errno.h>
+  +++ |+#include <limits.h>
+    5 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c:36:38: note: each undeclared identifier is reported only once for each function it appears in
+   36 |         if (errno == ERANGE || val > INT_MAX || val < INT_MIN) {
+      |                                      ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c:36:55: error: 'INT_MIN' undeclared (first use in this function)
+   36 |         if (errno == ERANGE || val > INT_MAX || val < INT_MIN) {
+      |                                                       ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-715-s2.c:36:55: note: 'INT_MIN' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'

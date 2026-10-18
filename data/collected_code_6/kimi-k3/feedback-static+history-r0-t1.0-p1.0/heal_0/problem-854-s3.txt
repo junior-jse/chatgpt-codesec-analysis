@@ -1,0 +1,179 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} Heap;
+
+static void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static void heapify_down(Heap *heap, size_t index) {
+    size_t smallest = index;
+    size_t left = 2 * index + 1;
+    size_t right = 2 * index + 2;
+
+    if (left < heap->size && heap->data[left] < heap->data[smallest]) {
+        smallest = left;
+    }
+    if (right < heap->size && heap->data[right] < heap->data[smallest]) {
+        smallest = right;
+    }
+    if (smallest != index) {
+        swap(&heap->data[index], &heap->data[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+static void heapify_up(Heap *heap, size_t index) {
+    if (index == 0) {
+        return;
+    }
+    size_t parent = (index - 1) / 2;
+    if (heap->data[parent] > heap->data[index]) {
+        swap(&heap->data[parent], &heap->data[index]);
+        heapify_up(heap, parent);
+    }
+}
+
+int heap_init(Heap *heap, size_t capacity) {
+    if (heap == NULL || capacity == 0) {
+        return -1;
+    }
+    heap->data = malloc(capacity * sizeof(int));
+    if (heap->data == NULL) {
+        return -1;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return 0;
+}
+
+void heap_free(Heap *heap) {
+    if (heap != NULL) {
+        free(heap->data);
+        heap->data = NULL;
+        heap->size = 0;
+        heap->capacity = 0;
+    }
+}
+
+int heap_insert(Heap *heap, int value) {
+    if (heap == NULL || heap->size >= heap->capacity) {
+        return -1;
+    }
+    heap->data[heap->size] = value;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+int heap_extract_min(Heap *heap, int *result) {
+    if (heap == NULL || heap->size == 0 || result == NULL) {
+        return -1;
+    }
+    *result = heap->data[0];
+    heap->size--;
+    heap->data[0] = heap->data[heap->size];
+    if (heap->size > 0) {
+        heapify_down(heap, 0);
+    }
+    return 0;
+}
+
+int heap_build_from_array(Heap *heap, const int *array, size_t length) {
+    if (heap == NULL || array == NULL || length == 0) {
+        return -1;
+    }
+    if (length > heap->capacity) {
+        return -1;
+    }
+    memcpy(heap->data, array, length * sizeof(int));
+    heap->size = length;
+    for (size_t i = length / 2; i > 0; i--) {
+        heapify_down(heap, i - 1);
+    }
+    return 0;
+}
+
+int heap_peek(const Heap *heap, int *result) {
+    if (heap == NULL || heap->size == 0 || result == NULL) {
+        return -1;
+    }
+    *result = heap->data[0];
+    return 0;
+}
+
+void heap_print(const Heap *heap) {
+    if (heap == NULL || heap->size == 0) {
+        printf("Heap is empty\n");
+        return;
+    }
+    printf("Heap: ");
+    for (size_t i = 0; i < heap->size; i++) {
+        printf("%d ", heap->data[i]);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Heap heap;
+    int array[] = {9, 4, 7, 1, 8, 3, 6, 2, 5};
+    size_t length = sizeof(array) / sizeof(array[0]);
+    int result;
+
+    if (heap_init(&heap, length) != 0) {
+        fprintf(stderr, "Failed to initialize heap\n");
+        return EXIT_FAILURE;
+    }
+
+    if (heap_build_from_array(&heap, array, length) != 0) {
+        fprintf(stderr, "Failed to build heap from array\n");
+        heap_free(&heap);
+        return EXIT_FAILURE;
+    }
+
+    heap_print(&heap);
+
+    if (heap_peek(&heap, &result) == 0) {
+        printf("Min element: %d\n", result);
+    }
+
+    printf("Extracting elements in order: ");
+    while (heap_extract_min(&heap, &result) == 0) {
+        printf("%d ", result);
+    }
+    printf("\n");
+
+    heap_free(&heap);
+
+    if (heap_init(&heap, 10) != 0) {
+        fprintf(stderr, "Failed to initialize heap\n");
+        return EXIT_FAILURE;
+    }
+
+    int values[] = {15, 10, 20, 8, 12};
+    size_t num_values = sizeof(values) / sizeof(values[0]);
+
+    for (size_t i = 0; i < num_values; i++) {
+        if (heap_insert(&heap, values[i]) != 0) {
+            fprintf(stderr, "Failed to insert value %d\n", values[i]);
+            heap_free(&heap);
+            return EXIT_FAILURE;
+        }
+    }
+
+    heap_print(&heap);
+
+    heap_free(&heap);
+
+    return EXIT_SUCCESS;
+}
+```

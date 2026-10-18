@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Possible weaknesses found:
+ *  Parameter 'arr' can be declared as pointer to const [constParameterPointer]
+ */
+int max_sublist_length(int *arr, int size, int target) {
+    if (arr == NULL || size <= 0) {
+        return 0;
+    }
+    
+    int max_len = 0;
+    int left = 0;
+    int right = 0;
+    int sum = 0;
+    
+    while (right < size) {
+        sum += arr[right];
+        
+        while (sum > target && left <= right) {
+            sum -= arr[left];
+            left++;
+        }
+        
+        if (sum == target) {
+            int current_len = right - left + 1;
+            if (current_len > max_len) {
+                max_len = current_len;
+            }
+        }
+        
+        right++;
+    }
+    
+    return max_len;
+}
+
+int main(void) {
+    int test1[] = {1, 2, 3, 4, 5};
+    int size1 = sizeof(test1) / sizeof(test1[0]);
+    printf("%d\n", max_sublist_length(test1, size1, 9));
+    
+    int test2[] = {1, -1, 5, -2, 3};
+    int size2 = sizeof(test2) / sizeof(test2[0]);
+    printf("%d\n", max_sublist_length(test2, size2, 3));
+    
+    int test3[] = {2, 2, 2, 2, 2};
+    int size3 = sizeof(test3) / sizeof(test3[0]);
+    printf("%d\n", max_sublist_length(test3, size3, 6));
+    
+    int test4[] = {5};
+    int size4 = sizeof(test4) / sizeof(test4[0]);
+    printf("%d\n", max_sublist_length(test4, size4, 5));
+    
+    printf("%d\n", max_sublist_length(NULL, 5, 3));
+    printf("%d\n", max_sublist_length(test1, 0, 3));
+    
+    return 0;
+}

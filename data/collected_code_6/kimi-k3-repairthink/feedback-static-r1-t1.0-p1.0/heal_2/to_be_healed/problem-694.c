@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_VALUE_LEN 1024
+
+typedef struct {
+    char *key;
+    char *value;
+} DictEntry;
+
+typedef struct {
+    DictEntry *entries;
+    size_t count;
+} Dictionary;
+
+char **get_unique_values(const Dictionary *dict, size_t *unique_count) {
+    if (dict == NULL || unique_count == NULL || dict->entries == NULL || dict->count == 0) {
+        if (unique_count != NULL) {
+            *unique_count = 0;
+        }
+        return NULL;
+    }
+
+    if (dict->count > SIZE_MAX / sizeof(char *)) {
+        *unique_count = 0;
+        return NULL;
+    }
+
+    char **unique_values = malloc(dict->count * sizeof(char *));
+    if (unique_values == NULL) {
+        *unique_count = 0;
+        return NULL;
+    }
+
+    size_t count = 0;
+    for (size_t i = 0; i < dict->count; i++) {
+        if (dict->entries[i].value == NULL) {
+            continue;
+        }
+
+        size_t value_len = strnlen(dict->entries[i].value, MAX_VALUE_LEN);
+        if (value_len >= MAX_VALUE_LEN) {
+            continue;
+        }
+
+        int is_unique = 1;
+        for (size_t j = 0; j < count; j++) {
+            if (strncmp(unique_values[j], dict->entries[i].value, value_len + 1) == 0) {
+                is_unique = 0;
+                break;
+            }
+        }
+
+        if (is_unique) {
+            unique_values[count] = malloc(value_len + 1);
+            if (unique_values[count] == NULL) {
+                for (size_t k = 0; k < count; k++) {
+                    free(unique_values[k]);
+                }
+                free(unique_values);
+                *unique_count = 0;
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(unique_values[count], dict->entries[i].value, value_len + 1);
+            count++;
+        }
+    }
+
+    *unique_count = count;
+    return unique_values;
+}
+
+void free_unique_values(char **values, size_t count) {
+    if (values == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < count; i++) {
+        free(values[i]);
+    }
+    free(values);
+}
+
+int main(void) {
+    DictEntry entries[] = {
+        {"a", "apple"},
+        {"b", "banana"},
+        {"c", "apple"},
+        {"d", "cherry"},
+        {"e", "banana"}
+    };
+
+    Dictionary dict = {entries, sizeof(entries) / sizeof(entries[0])};
+
+    printf("Dictionary entries:\n");
+    for (size_t i = 0; i < dict.count; i++) {
+        printf("%s -> %s\n", dict.entries[i].key, dict.entries[i].value);
+    }
+
+    size_t unique_count = 0;
+    char **unique_values = get_unique_values(&dict, &unique_count);
+
+    if (unique_values == NULL) {
+        fprintf(stderr, "Failed to extract unique values\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Unique values:\n");
+    for (size_t i = 0; i < unique_count; i++) {
+        printf("%s\n", unique_values[i]);
+    }
+
+    free_unique_values(unique_values, unique_count);
+
+    return EXIT_SUCCESS;
+}

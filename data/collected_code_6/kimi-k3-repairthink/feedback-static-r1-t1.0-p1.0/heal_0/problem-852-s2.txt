@@ -1,0 +1,114 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define INITIAL_CAPACITY 10
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} IntList;
+
+int list_init(IntList *list, size_t capacity) {
+    if (list == NULL) {
+        return -1;
+    }
+    if (capacity == 0) {
+        capacity = INITIAL_CAPACITY;
+    }
+    list->data = malloc(capacity * sizeof(int));
+    if (list->data == NULL) {
+        return -1;
+    }
+    list->size = 0;
+    list->capacity = capacity;
+    return 0;
+}
+
+void list_destroy(IntList *list) {
+    if (list != NULL) {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->capacity = 0;
+    }
+}
+
+int list_push(IntList *list, int value) {
+    if (list == NULL) {
+        return -1;
+    }
+    if (list->size >= list->capacity) {
+        size_t new_capacity = list->capacity * 2;
+        if (new_capacity < list->capacity) {
+            return -1;
+        }
+        int *new_data = realloc(list->data, new_capacity * sizeof(int));
+        if (new_data == NULL) {
+            return -1;
+        }
+        list->data = new_data;
+        list->capacity = new_capacity;
+    }
+    list->data[list->size] = value;
+    list->size++;
+    return 0;
+}
+
+void remove_negatives(IntList *list) {
+    if (list == NULL || list->data == NULL) {
+        return;
+    }
+    size_t write_idx = 0;
+    for (size_t read_idx = 0; read_idx < list->size; read_idx++) {
+        if (list->data[read_idx] >= 0) {
+            list->data[write_idx] = list->data[read_idx];
+            write_idx++;
+        }
+    }
+    list->size = write_idx;
+}
+
+void list_print(const IntList *list) {
+    if (list == NULL || list->data == NULL) {
+        printf("(empty)\n");
+        return;
+    }
+    for (size_t i = 0; i < list->size; i++) {
+        printf("%d ", list->data[i]);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    IntList numbers;
+    if (list_init(&numbers, 0) != 0) {
+        fprintf(stderr, "Failed to initialize list\n");
+        return EXIT_FAILURE;
+    }
+
+    int values[] = {5, -3, 8, -1, 0, -7, 12, 4, -9, 6};
+    size_t count = sizeof(values) / sizeof(values[0]);
+
+    for (size_t i = 0; i < count; i++) {
+        if (list_push(&numbers, values[i]) != 0) {
+            fprintf(stderr, "Failed to add element\n");
+            list_destroy(&numbers);
+            return EXIT_FAILURE;
+        }
+    }
+
+    printf("Original list: ");
+    list_print(&numbers);
+
+    remove_negatives(&numbers);
+
+    printf("After removing negatives: ");
+    list_print(&numbers);
+
+    list_destroy(&numbers);
+    return EXIT_SUCCESS;
+}
+```

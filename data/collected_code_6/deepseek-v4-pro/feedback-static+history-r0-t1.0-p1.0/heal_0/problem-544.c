@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Tuple {
+    int first;
+    int second;
+} Tuple;
+
+char *flatten_tuple_list(Tuple *tuples, int count) {
+    int buffer_size = 1;
+    int offset = 0;
+    char *result;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        buffer_size += snprintf(NULL, 0, "(%d,%d)", tuples[i].first, tuples[i].second);
+        if (buffer_size < 0) {
+            return NULL;
+        }
+    }
+
+    result = (char *)malloc(buffer_size);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < count; i++) {
+        int written = snprintf(result + offset, buffer_size - offset, "(%d,%d)", tuples[i].first, tuples[i].second);
+        if (written < 0 || written >= buffer_size - offset) {
+            free(result);
+            return NULL;
+        }
+        offset += written;
+    }
+
+    result[offset] = '\0';
+    return result;
+}
+
+int main(void) {
+    Tuple tuples[] = {
+        {1, 2},
+        {3, 4},
+        {5, 6}
+    };
+    char *flattened;
+
+    flattened = flatten_tuple_list(tuples, 3);
+    if (flattened != NULL) {
+        printf("%s\n", flattened);
+        free(flattened);
+    }
+
+    return 0;
+}

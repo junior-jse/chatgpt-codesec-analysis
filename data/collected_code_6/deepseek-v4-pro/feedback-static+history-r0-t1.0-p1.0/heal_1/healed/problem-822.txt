@@ -1,0 +1,93 @@
+```c
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
+
+static bool has_uppercase(const char *password, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (isupper((unsigned char)password[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool has_lowercase(const char *password, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (islower((unsigned char)password[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool has_digit(const char *password, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (isdigit((unsigned char)password[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool has_special(const char *password, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (!isalnum((unsigned char)password[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool is_password_valid(const char *password) {
+    size_t len;
+    
+    if (password == NULL) {
+        return false;
+    }
+    
+    len = strnlen(password, 33);
+    
+    if (len < 8 || len > 32) {
+        return false;
+    }
+    
+    if (!has_uppercase(password, len)) {
+        return false;
+    }
+    
+    if (!has_lowercase(password, len)) {
+        return false;
+    }
+    
+    if (!has_digit(password, len)) {
+        return false;
+    }
+    
+    if (!has_special(password, len)) {
+        return false;
+    }
+    
+    return true;
+}
+
+int main(void) {
+    const char *test_passwords[] = {
+        "Password1!",
+        "weak",
+        "NoDigits!",
+        "nouppercase1!",
+        "NOLOWERCASE1!",
+        "NoSpecial1",
+        NULL
+    };
+    
+    for (int i = 0; test_passwords[i] != NULL; i++) {
+        printf("'%s': %s\n", test_passwords[i],
+               is_password_valid(test_passwords[i]) ? "valid" : "invalid");
+    }
+    
+    return 0;
+}
+```

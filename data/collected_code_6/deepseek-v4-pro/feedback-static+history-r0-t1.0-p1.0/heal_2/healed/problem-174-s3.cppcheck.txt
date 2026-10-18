@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-174-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-174-s3.c:59:31: style: Condition 'value_len+1>0' is always true [knownConditionTrueFalse]
+            if (value_len + 1 > 0) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-174-s3.c:81:21: style: Condition 'key_len+1>0' is always true [knownConditionTrueFalse]
+    if (key_len + 1 > 0) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-174-s3.c:85:23: style: Condition 'value_len+1>0' is always true [knownConditionTrueFalse]
+    if (value_len + 1 > 0) {
+                      ^

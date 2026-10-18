@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char **tuple_to_list(const char *tuple[], int tuple_size, const char *str, int *list_size) {
+    if (tuple == NULL || str == NULL || list_size == NULL || tuple_size < 0) {
+        if (list_size != NULL) {
+            *list_size = 0;
+        }
+        return NULL;
+    }
+
+    if (tuple_size == 0) {
+        *list_size = 0;
+        return NULL;
+    }
+
+    char **list = (char **)malloc((size_t)tuple_size * 2 * sizeof(char *));
+    if (list == NULL) {
+        *list_size = 0;
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t str_len = strnlen(str, (size_t)tuple_size * 2 + strlen(str));
+    int index = 0;
+
+    for (int i = 0; i < tuple_size; i++) {
+        /* Possible weaknesses found:
+         * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+         */
+        size_t elem_len = (tuple[i] != NULL) ? strnlen(tuple[i], (size_t)tuple_size * 2 + strlen(tuple[i] ? tuple[i] : "")) : 0;
+
+        list[index] = (char *)malloc(elem_len + 1);
+        if (list[index] == NULL) {
+            for (int j = 0; j < index; j++) {
+                free(list[j]);
+            }
+            free(list);
+            *list_size = 0;
+            return NULL;
+        }
+        if (tuple[i] != NULL && elem_len > 0) {
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(list[index], tuple[i], elem_len);
+        }
+        list[index][elem_len] = '\0';
+        index++;
+
+        list[index] = (char *)malloc(str_len + 1);
+        if (list[index] == NULL) {
+            for (int j = 0; j < index; j++) {
+                free(list[j]);
+            }
+            free(list);
+            *list_size = 0;
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(list[index], str, str_len);
+        list[index][str_len] = '\0';
+        index++;
+    }
+
+    *list_size = index;
+    return list;
+}
+
+int main(void) {
+    const char *tuple[] = {"a", "b", "c"};
+    int tuple_size = sizeof(tuple) / sizeof(tuple[0]);
+    int list_size = 0;
+    
+    char **list = tuple_to_list(tuple, tuple_size, "-", &list_size);
+    if (list == NULL) {
+        return 1;
+    }
+
+    for (int i = 0; i < list_size; i++) {
+        printf("%s\n", list[i]);
+        free(list[i]);
+    }
+    free(list);
+
+    return 0;
+}

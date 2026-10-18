@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int getMaxGold(int n, int m, int **mine) {
+    int **dp = (int **)malloc(n * sizeof(int *));
+    if (dp == NULL) {
+        return -1;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        dp[i] = (int *)malloc(m * sizeof(int));
+        if (dp[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return -1;
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        dp[i][m - 1] = mine[i][m - 1];
+    }
+    
+    for (int col = m - 2; col >= 0; col--) {
+        for (int row = 0; row < n; row++) {
+            int right = dp[row][col + 1];
+            int right_up = (row > 0) ? dp[row - 1][col + 1] : 0;
+            int right_down = (row < n - 1) ? dp[row + 1][col + 1] : 0;
+            
+            dp[row][col] = mine[row][col] + max(right, max(right_up, right_down));
+        }
+    }
+    
+    int result = dp[0][0];
+    for (int i = 1; i < n; i++) {
+        if (dp[i][0] > result) {
+            result = dp[i][0];
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        free(dp[i]);
+    }
+    free(dp);
+    
+    return result;
+}
+
+int main() {
+    int n, m;
+    
+    if (scanf("%d %d", &n, &m) != 2) {
+        return 1;
+    }
+    
+    if (n <= 0 || m <= 0) {
+        return 1;
+    }
+    
+    int **mine = (int **)malloc(n * sizeof(int *));
+    if (mine == NULL) {
+        return 1;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        mine[i] = (int *)malloc(m * sizeof(int));
+        if (mine[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(mine[j]);
+            }
+            free(mine);
+            return 1;
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (scanf("%d", &mine[i][j]) != 1) {
+                for (int k = 0; k < n; k++) {
+                    free(mine[k]);
+                }
+                free(mine);
+                return 1;
+            }
+        }
+    }
+    
+    int result = getMaxGold(n, m, mine);
+    
+    if (result >= 0) {
+        printf("%d\n", result);
+    }
+    
+    for (int i = 0; i < n; i++) {
+        free(mine[i]);
+    }
+    free(mine);
+    
+    return 0;
+}

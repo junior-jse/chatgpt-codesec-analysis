@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char value;
+    int count;
+} RLEPair;
+
+RLEPair* rle_encode(const char* input, size_t* output_size) {
+    if (input == NULL || output_size == NULL) {
+        return NULL;
+    }
+    
+    size_t len = strlen(input);
+    if (len == 0) {
+        *output_size = 0;
+        return NULL;
+    }
+    
+    RLEPair* encoded = malloc(len * sizeof(RLEPair));
+    if (encoded == NULL) {
+        return NULL;
+    }
+    
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (i == 0 || input[i] != input[i-1]) {
+            encoded[j].value = input[i];
+            encoded[j].count = 1;
+            j++;
+        } else {
+            encoded[j-1].count++;
+        }
+    }
+    
+    *output_size = j;
+    return encoded;
+}
+
+void rle_decode(const RLEPair* encoded, size_t size, char* output) {
+    if (encoded == NULL || output == NULL) {
+        return;
+    }
+    
+    size_t pos = 0;
+    for (size_t i = 0; i < size; i++) {
+        for (int j = 0; j < encoded[i].count; j++) {
+            output[pos++] = encoded[i].value;
+        }
+    }
+    output[pos] = '\0';
+}
+
+int main(void) {
+    const char* input = "AAABBBCCDAA";
+    size_t encoded_size = 0;
+    
+    RLEPair* encoded = rle_encode(input, &encoded_size);
+    if (encoded == NULL) {
+        fprintf(stderr, "Encoding failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Original: %s\n", input);
+    printf("Encoded: ");
+    for (size_t i = 0; i < encoded_size; i++) {
+        printf("%c%d", encoded[i].value, encoded[i].count);
+    }
+    printf("\n");
+    
+    size_t decoded_size = strlen(input) + 1;
+    char* decoded = malloc(decoded_size);
+    if (decoded == NULL) {
+        free(encoded);
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    rle_decode(encoded, encoded_size, decoded);
+    printf("Decoded: %s\n", decoded);
+    
+    if (strcmp(input, decoded) == 0) {
+        printf("Verification: Success\n");
+    } else {
+        printf("Verification: Failed\n");
+    }
+    
+    free(encoded);
+    free(decoded);
+    
+    return EXIT_SUCCESS;
+}

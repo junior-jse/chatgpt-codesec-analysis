@@ -1,0 +1,107 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    int key;
+    int *values;
+    int count;
+} Group;
+
+Group *group_by_second(Tuple *tuples, int size, int *group_count) {
+    if (tuples == NULL || size <= 0) {
+        *group_count = 0;
+        return NULL;
+    }
+
+    int *keys = (int *)malloc(size * sizeof(int));
+    int unique_count = 0;
+
+    for (int i = 0; i < size; i++) {
+        int found = 0;
+        for (int j = 0; j < unique_count; j++) {
+            if (keys[j] == tuples[i].second) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            keys[unique_count++] = tuples[i].second;
+        }
+    }
+
+    Group *groups = (Group *)malloc(unique_count * sizeof(Group));
+    if (groups == NULL) {
+        free(keys);
+        *group_count = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < unique_count; i++) {
+        groups[i].key = keys[i];
+        groups[i].count = 0;
+        for (int j = 0; j < size; j++) {
+            if (tuples[j].second == keys[i]) {
+                groups[i].count++;
+            }
+        }
+        groups[i].values = (int *)malloc(groups[i].count * sizeof(int));
+        if (groups[i].values == NULL) {
+            for (int k = 0; k < i; k++) {
+                free(groups[k].values);
+            }
+            free(groups);
+            free(keys);
+            *group_count = 0;
+            return NULL;
+        }
+        int idx = 0;
+        for (int j = 0; j < size; j++) {
+            if (tuples[j].second == keys[i]) {
+                groups[i].values[idx++] = tuples[j].first;
+            }
+        }
+    }
+
+    free(keys);
+    *group_count = unique_count;
+    return groups;
+}
+
+void free_groups(Group *groups, int count) {
+    if (groups == NULL) return;
+    for (int i = 0; i < count; i++) {
+        free(groups[i].values);
+    }
+    free(groups);
+}
+
+int main(void) {
+    Tuple tuples[] = {{1, 2}, {3, 1}, {4, 2}, {5, 3}, {6, 1}, {7, 2}};
+    int size = sizeof(tuples) / sizeof(tuples[0]);
+    int group_count = 0;
+
+    Group *groups = group_by_second(tuples, size, &group_count);
+    if (groups == NULL || group_count == 0) {
+        printf("No valid groups\n");
+        return 1;
+    }
+
+    for (int i = 0; i < group_count; i++) {
+        printf("Key %d: ", groups[i].key);
+        for (int j = 0; j < groups[i].count; j++) {
+            printf("%d ", groups[i].values[j]);
+        }
+        printf("\n");
+    }
+
+    free_groups(groups, group_count);
+    return 0;
+}
+```

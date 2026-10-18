@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} DictItem;
+
+typedef struct {
+    DictItem *items;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+void initDictionary(Dictionary *dict, size_t capacity) {
+    dict->items = (DictItem *)malloc(capacity * sizeof(DictItem));
+    if (dict->items == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    dict->size = 0;
+    dict->capacity = capacity;
+}
+
+void addItem(Dictionary *dict, const char *key, const char *value) {
+    if (dict->size >= dict->capacity) {
+        fprintf(stderr, "Dictionary is full\n");
+        return;
+    }
+    dict->items[dict->size].key = strdup(key);
+    dict->items[dict->size].value = strdup(value);
+    if (dict->items[dict->size].key == NULL || dict->items[dict->size].value == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    dict->size++;
+}
+
+void dropEmptyItems(Dictionary *dict) {
+    size_t newSize = 0;
+    for (size_t i = 0; i < dict->size; i++) {
+        if (dict->items[i].value != NULL && strlen(dict->items[i].value) > 0) {
+            dict->items[newSize] = dict->items[i];
+            newSize++;
+        } else {
+            free(dict->items[i].key);
+            free(dict->items[i].value);
+        }
+    }
+    dict->size = newSize;
+}
+
+void printDictionary(const Dictionary *dict) {
+    for (size_t i = 0; i < dict->size; i++) {
+        printf("%s: %s\n", dict->items[i].key, dict->items[i].value);
+    }
+}
+
+void freeDictionary(Dictionary *dict) {
+    for (size_t i = 0; i < dict->size; i++) {
+        free(dict->items[i].key);
+        free(dict->items[i].value);
+    }
+    free(dict->items);
+}
+
+int main() {
+    Dictionary dict;
+    initDictionary(&dict, 10);
+
+    addItem(&dict, "key1", "value1");
+    addItem(&dict, "key2", "");
+    addItem(&dict, "key3", "value3");
+    addItem(&dict, "key4", "");
+    addItem(&dict, "key5", "value5");
+
+    printf("Before dropping empty items:\n");
+    printDictionary(&dict);
+
+    dropEmptyItems(&dict);
+
+    printf("\nAfter dropping empty items:\n");
+    printDictionary(&dict);
+
+    freeDictionary(&dict);
+    return 0;
+}

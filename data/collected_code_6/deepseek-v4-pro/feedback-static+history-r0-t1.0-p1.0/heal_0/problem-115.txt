@@ -1,0 +1,103 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    int *keys;
+    int *values;
+    int size;
+    int capacity;
+} Dictionary;
+
+typedef struct {
+    Dictionary *dicts;
+    int size;
+} DictList;
+
+Dictionary *create_dict() {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->keys = NULL;
+    dict->values = NULL;
+    dict->size = 0;
+    dict->capacity = 0;
+    return dict;
+}
+
+void free_dict(Dictionary *dict) {
+    if (dict != NULL) {
+        free(dict->keys);
+        free(dict->values);
+        free(dict);
+    }
+}
+
+DictList *create_dict_list(int size) {
+    DictList *list = (DictList *)malloc(sizeof(DictList));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->dicts = (Dictionary *)calloc(size, sizeof(Dictionary));
+    if (list->dicts == NULL) {
+        free(list);
+        return NULL;
+    }
+    list->size = size;
+    return list;
+}
+
+void free_dict_list(DictList *list) {
+    if (list != NULL) {
+        for (int i = 0; i < list->size; i++) {
+            free(list->dicts[i].keys);
+            free(list->dicts[i].values);
+        }
+        free(list->dicts);
+        free(list);
+    }
+}
+
+bool all_dicts_empty(DictList *list) {
+    if (list == NULL) {
+        return true;
+    }
+    
+    for (int i = 0; i < list->size; i++) {
+        if (list->dicts[i].size > 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    DictList *list = create_dict_list(3);
+    if (list == NULL) {
+        return 1;
+    }
+    
+    list->dicts[0].size = 0;
+    list->dicts[1].size = 0;
+    list->dicts[2].size = 0;
+    
+    printf("All dicts empty: %s\n", all_dicts_empty(list) ? "true" : "false");
+    
+    list->dicts[1].size = 5;
+    list->dicts[1].keys = (int *)malloc(5 * sizeof(int));
+    list->dicts[1].values = (int *)malloc(5 * sizeof(int));
+    if (list->dicts[1].keys == NULL || list->dicts[1].values == NULL) {
+        free_dict_list(list);
+        return 1;
+    }
+    list->dicts[1].capacity = 5;
+    
+    printf("All dicts empty: %s\n", all_dicts_empty(list) ? "true" : "false");
+    
+    free_dict_list(list);
+    
+    return 0;
+}
+```

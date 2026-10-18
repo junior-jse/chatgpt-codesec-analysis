@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:41:26: style: Condition 'sorted[left]>0' is always true [knownConditionTrueFalse]
+        if (sorted[left] > 0 && sorted[right] > 0 && sorted[left] <= k / sorted[right] && sorted[left] * sorted[right] < k) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:36:26: note: Assuming that condition 'sorted[left]==0' is not redundant
+        if (sorted[left] == 0 || sorted[right] == 0) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:41:26: note: Condition 'sorted[left]>0' is always true
+        if (sorted[left] > 0 && sorted[right] > 0 && sorted[left] <= k / sorted[right] && sorted[left] * sorted[right] < k) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:41:47: style: Condition 'sorted[right]>0' is always true [knownConditionTrueFalse]
+        if (sorted[left] > 0 && sorted[right] > 0 && sorted[left] <= k / sorted[right] && sorted[left] * sorted[right] < k) {
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:36:48: note: Assuming that condition 'sorted[right]==0' is not redundant
+        if (sorted[left] == 0 || sorted[right] == 0) {
+                                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s3.c:41:47: note: Condition 'sorted[right]>0' is always true
+        if (sorted[left] > 0 && sorted[right] > 0 && sorted[left] <= k / sorted[right] && sorted[left] * sorted[right] < k) {
+                                              ^

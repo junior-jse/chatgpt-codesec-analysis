@@ -1,0 +1,61 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <math.h>
+
+void findThreeClosestElements(const int arr1[], int n1, const int arr2[], int n2, const int arr3[], int n3) {
+    if (arr1 == NULL || arr2 == NULL || arr3 == NULL || n1 <= 0 || n2 <= 0 || n3 <= 0) {
+        fprintf(stderr, "Invalid input parameters\n");
+        return;
+    }
+    
+    int i = 0, j = 0, k = 0;
+    int min_diff = INT_MAX;
+    int res1 = 0, res2 = 0, res3 = 0;
+    
+    while (i < n1 && j < n2 && k < n3) {
+        int current_max = arr1[i];
+        if (arr2[j] > current_max) current_max = arr2[j];
+        if (arr3[k] > current_max) current_max = arr3[k];
+        
+        int current_min = arr1[i];
+        if (arr2[j] < current_min) current_min = arr2[j];
+        if (arr3[k] < current_min) current_min = arr3[k];
+        
+        int current_diff = current_max - current_min;
+        
+        if (current_diff < min_diff) {
+            min_diff = current_diff;
+            res1 = arr1[i];
+            res2 = arr2[j];
+            res3 = arr3[k];
+        }
+        
+        if (arr1[i] == current_min) {
+            i++;
+        } else if (arr2[j] == current_min) {
+            j++;
+        } else {
+            k++;
+        }
+    }
+    
+    printf("Closest elements: %d, %d, %d\n", res1, res2, res3);
+    printf("Minimum difference: %d\n", min_diff);
+}
+
+int main(void) {
+    int arr1[] = {1, 4, 10};
+    int arr2[] = {2, 15, 20};
+    int arr3[] = {10, 12};
+    
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+    
+    findThreeClosestElements(arr1, n1, arr2, n2, arr3, n3);
+    
+    return 0;
+}
+```

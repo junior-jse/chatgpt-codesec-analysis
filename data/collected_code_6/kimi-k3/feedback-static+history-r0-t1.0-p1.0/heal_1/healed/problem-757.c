@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static size_t safe_strlen(const char *s, size_t max_len)
+{
+    size_t len;
+
+    if (s == NULL) {
+        return 0;
+    }
+
+    for (len = 0; len < max_len; len++) {
+        if (s[len] == '\0') {
+            return len;
+        }
+    }
+
+    return max_len;
+}
+
+static int is_reverse_pair(const char *s1, const char *s2)
+{
+    size_t len1;
+    size_t len2;
+    size_t i;
+
+    if (s1 == NULL || s2 == NULL) {
+        return 0;
+    }
+
+    len1 = safe_strlen(s1, SIZE_MAX);
+    len2 = safe_strlen(s2, SIZE_MAX);
+
+    if (len1 != len2) {
+        return 0;
+    }
+
+    for (i = 0; i < len1; i++) {
+        if (s1[i] != s2[len1 - 1 - i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+size_t count_reverse_pairs(const char *list[], size_t count)
+{
+    size_t i;
+    size_t j;
+    size_t pairs;
+
+    if (list == NULL || count == 0) {
+        return 0;
+    }
+
+    pairs = 0;
+
+    for (i = 0; i < count; i++) {
+        if (list[i] == NULL) {
+            continue;
+        }
+        for (j = i + 1; j < count; j++) {
+            if (list[j] == NULL) {
+                continue;
+            }
+            if (is_reverse_pair(list[i], list[j])) {
+                pairs++;
+            }
+        }
+    }
+
+    return pairs;
+}
+
+int main(void)
+{
+    const char *list[] = {
+        "abc",
+        "cba",
+        "hello",
+        "olleh",
+        "xyz",
+        "abc",
+        "cba",
+        NULL
+    };
+    size_t count;
+    size_t result;
+
+    count = sizeof(list) / sizeof(list[0]) - 1;
+    result = count_reverse_pairs(list, count);
+
+    printf("Number of reverse string pairs: %zu\n", result);
+
+    return 0;
+}

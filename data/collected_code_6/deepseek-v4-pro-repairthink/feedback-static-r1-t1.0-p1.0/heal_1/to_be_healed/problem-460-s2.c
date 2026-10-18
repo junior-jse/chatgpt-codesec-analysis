@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    /* Possible weaknesses found:
+     *  struct member 'Node::next' is never used. [unusedStructMember]
+     */
+    struct Node* next;
+} Node;
+
+typedef struct Sublist {
+    Node* head;
+} Sublist;
+
+int* get_first_elements(Sublist* sublists, int count, int* out_count) {
+    if (sublists == NULL || out_count == NULL) {
+        return NULL;
+    }
+    
+    int* result = (int*)malloc(count * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+    
+    int valid_count = 0;
+    for (int i = 0; i < count; i++) {
+        if (sublists[i].head != NULL) {
+            result[valid_count++] = sublists[i].head->data;
+        }
+    }
+    
+    *out_count = valid_count;
+    if (valid_count == 0) {
+        free(result);
+        return NULL;
+    }
+    
+    return result;
+}
+
+int main(void) {
+    Node n1 = {1, NULL};
+    /* Possible weaknesses found:
+     *  Variable 'n2' is assigned a value that is never used. [unreadVariable]
+     */
+    Node n2 = {2, NULL};
+    Node n3 = {3, NULL};
+    /* Possible weaknesses found:
+     *  Variable 'n4' is assigned a value that is never used. [unreadVariable]
+     */
+    Node n4 = {4, NULL};
+    /* Possible weaknesses found:
+     *  Variable 'n5' is assigned a value that is never used. [unreadVariable]
+     */
+    Node n5 = {5, NULL};
+    
+    Sublist sublists[3];
+    sublists[0].head = &n1;
+    sublists[1].head = NULL;
+    sublists[2].head = &n3;
+    
+    int count = 0;
+    int* first_elements = get_first_elements(sublists, 3, &count);
+    
+    if (first_elements != NULL) {
+        for (int i = 0; i < count; i++) {
+            printf("%d ", first_elements[i]);
+        }
+        printf("\n");
+        free(first_elements);
+    }
+    
+    return 0;
+}

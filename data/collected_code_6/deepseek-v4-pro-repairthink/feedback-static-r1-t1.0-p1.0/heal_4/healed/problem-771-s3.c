@@ -1,0 +1,180 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#define INITIAL_STACK_CAPACITY 64
+#define MAX_STACK_CAPACITY 1048576
+#define MAX_INPUT_LENGTH 1048576
+
+typedef struct {
+    char *items;
+    int top;
+    int capacity;
+} Stack;
+
+int initStack(Stack *s, int capacity) {
+    if (capacity <= 0 || capacity > MAX_STACK_CAPACITY) {
+        return 0;
+    }
+    s->items = malloc((size_t)capacity * sizeof(char));
+    if (!s->items) {
+        return 0;
+    }
+    s->capacity = capacity;
+    s->top = -1;
+    return 1;
+}
+
+void freeStack(Stack *s) {
+    free(s->items);
+    s->items = NULL;
+}
+
+int isEmpty(const Stack *s) {
+    return s->top == -1;
+}
+
+int isFull(const Stack *s) {
+    return s->top == s->capacity - 1;
+}
+
+int push(Stack *s, char c) {
+    if (s->top + 1 >= s->capacity) {
+        if (s->capacity >= MAX_STACK_CAPACITY) {
+            return 0;
+        }
+        int new_cap = s->capacity * 2;
+        if (new_cap > MAX_STACK_CAPACITY) {
+            new_cap = MAX_STACK_CAPACITY;
+        }
+        char *new_items = realloc(s->items, (size_t)new_cap * sizeof(char));
+        if (!new_items) {
+            return 0;
+        }
+        s->items = new_items;
+        s->capacity = new_cap;
+    }
+    s->items[++(s->top)] = c;
+    return 1;
+}
+
+int pop(Stack *s, char *c) {
+    if (isEmpty(s)) {
+        return 0;
+    }
+    *c = s->items[(s->top)--];
+    return 1;
+}
+
+int peek(Stack *s, char *c) {
+    if (isEmpty(s)) {
+        return 0;
+    }
+    *c = s->items[s->top];
+    return 1;
+}
+
+int isMatchingPair(char opening, char closing) {
+    return (opening == '(' && closing == ')') ||
+           (opening == '{' && closing == '}') ||
+           (opening == '[' && closing == ']');
+}
+
+int isBalanced(const char *expression) {
+    Stack stack;
+    int result = 1;
+
+    if (expression == NULL) {
+        return 0;
+    }
+
+    if (!initStack(&stack, INITIAL_STACK_CAPACITY)) {
+        return 0;
+    }
+
+    for (size_t i = 0; expression[i] != '\0'; i++) {
+        char c = expression[i];
+
+        if (c == '(' || c == '{' || c == '[') {
+            if (!push(&stack, c)) {
+                result = 0;
+                break;
+            }
+        } else if (c == ')' || c == '}' || c == ']') {
+            char topChar;
+            if (!pop(&stack, &topChar)) {
+                result = 0;
+                break;
+            }
+            if (!isMatchingPair(topChar, c)) {
+                result = 0;
+                break;
+            }
+        }
+    }
+
+    if (result && !isEmpty(&stack)) {
+        result = 0;
+    }
+
+    freeStack(&stack);
+    return result;
+}
+
+char* readLine(void) {
+    size_t capacity = 128;
+    size_t length = 0;
+    char *buffer = malloc(capacity);
+    int ch;
+
+    if (!buffer) {
+        return NULL;
+    }
+
+    while ((ch = getchar()) != EOF && ch != '\n') {
+        if (length + 1 >= capacity) {
+            if (capacity >= MAX_INPUT_LENGTH) {
+                free(buffer);
+                return NULL;
+            }
+            size_t new_cap = capacity * 2;
+            if (new_cap > MAX_INPUT_LENGTH) {
+                new_cap = MAX_INPUT_LENGTH;
+            }
+            char *tmp = realloc(buffer, new_cap);
+            if (!tmp) {
+                free(buffer);
+                return NULL;
+            }
+            buffer = tmp;
+            capacity = new_cap;
+        }
+        buffer[length++] = (char)ch;
+    }
+
+    if (ch == EOF && length == 0) {
+        free(buffer);
+        return NULL;
+    }
+
+    buffer[length] = '\0';
+    return buffer;
+}
+
+int main(void) {
+    printf("Enter an expression: ");
+    char *input = readLine();
+
+    if (input == NULL) {
+        return 1;
+    }
+
+    if (isBalanced(input)) {
+        printf("Balanced\n");
+    } else {
+        printf("Not Balanced\n");
+    }
+
+    free(input);
+    return 0;
+}

@@ -1,0 +1,64 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+int list_sum(const Node* head) {
+    if (head == NULL) {
+        return 0;
+    }
+    return head->data + list_sum(head->next);
+}
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    Node* next;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Node* head = NULL;
+    Node* tail = NULL;
+    int values[] = {1, 2, 3, 4, 5};
+    size_t count = sizeof(values) / sizeof(values[0]);
+    size_t i;
+
+    for (i = 0; i < count; i++) {
+        Node* new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+
+    printf("Sum: %d\n", list_sum(head));
+
+    free_list(head);
+    return EXIT_SUCCESS;
+}
+```

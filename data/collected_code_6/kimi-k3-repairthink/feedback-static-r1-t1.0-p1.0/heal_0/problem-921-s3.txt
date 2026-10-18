@@ -1,0 +1,87 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t count;
+} ChunkedTuples;
+
+ChunkedTuples chunk_tuples(const int *array, size_t array_size, size_t n) {
+    ChunkedTuples result = {NULL, 0};
+    if (array == NULL || n == 0 || array_size == 0) {
+        return result;
+    }
+
+    size_t chunk_count = (array_size + n - 1) / n;
+    result.tuples = (Tuple *)malloc(chunk_count * sizeof(Tuple));
+    if (result.tuples == NULL) {
+        return result;
+    }
+    result.count = chunk_count;
+
+    for (size_t i = 0; i < chunk_count; i++) {
+        size_t start = i * n;
+        size_t end = (start + n < array_size) ? start + n : array_size;
+        size_t chunk_size = end - start;
+
+        result.tuples[i].data = (int *)malloc(chunk_size * sizeof(int));
+        if (result.tuples[i].data == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(result.tuples[j].data);
+            }
+            free(result.tuples);
+            result.tuples = NULL;
+            result.count = 0;
+            return result;
+        }
+        result.tuples[i].size = chunk_size;
+
+        for (size_t j = 0; j < chunk_size; j++) {
+            result.tuples[i].data[j] = array[start + j];
+        }
+    }
+
+    return result;
+}
+
+void free_chunked_tuples(ChunkedTuples *chunked) {
+    if (chunked == NULL || chunked->tuples == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < chunked->count; i++) {
+        free(chunked->tuples[i].data);
+    }
+    free(chunked->tuples);
+    chunked->tuples = NULL;
+    chunked->count = 0;
+}
+
+int main(void) {
+    int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    size_t array_size = sizeof(array) / sizeof(array[0]);
+    size_t n = 3;
+
+    ChunkedTuples chunked = chunk_tuples(array, array_size, n);
+    if (chunked.tuples == NULL) {
+        fprintf(stderr, "Failed to chunk tuples\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < chunked.count; i++) {
+        printf("Chunk %zu: ", i + 1);
+        for (size_t j = 0; j < chunked.tuples[i].size; j++) {
+            printf("%d ", chunked.tuples[i].data[j]);
+        }
+        printf("\n");
+    }
+
+    free_chunked_tuples(&chunked);
+    return EXIT_SUCCESS;
+}
+```

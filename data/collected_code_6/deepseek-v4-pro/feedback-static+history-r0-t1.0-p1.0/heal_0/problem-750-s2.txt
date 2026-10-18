@@ -1,0 +1,126 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct Node {
+    Tuple tuple;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    Node* head;
+    Node* tail;
+    size_t size;
+} List;
+
+void list_init(List* list) {
+    if (list == NULL) {
+        return;
+    }
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+int list_append(List* list, Tuple tuple) {
+    Node* new_node = NULL;
+    
+    if (list == NULL) {
+        return 0;
+    }
+    
+    new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return 0;
+    }
+    
+    new_node->tuple = tuple;
+    new_node->next = NULL;
+    
+    if (list->tail == NULL) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        list->tail->next = new_node;
+        list->tail = new_node;
+    }
+    
+    list->size++;
+    return 1;
+}
+
+void list_clear(List* list) {
+    Node* current = NULL;
+    Node* next = NULL;
+    
+    if (list == NULL) {
+        return;
+    }
+    
+    current = list->head;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+void list_print(const List* list) {
+    const Node* current = NULL;
+    
+    if (list == NULL) {
+        return;
+    }
+    
+    current = list->head;
+    while (current != NULL) {
+        printf("(%d, %d) ", current->tuple.first, current->tuple.second);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    List my_list;
+    Tuple t1 = {1, 2};
+    Tuple t2 = {3, 4};
+    Tuple t3 = {5, 6};
+    
+    list_init(&my_list);
+    
+    if (!list_append(&my_list, t1)) {
+        fprintf(stderr, "Failed to append tuple\n");
+        list_clear(&my_list);
+        return EXIT_FAILURE;
+    }
+    
+    if (!list_append(&my_list, t2)) {
+        fprintf(stderr, "Failed to append tuple\n");
+        list_clear(&my_list);
+        return EXIT_FAILURE;
+    }
+    
+    if (!list_append(&my_list, t3)) {
+        fprintf(stderr, "Failed to append tuple\n");
+        list_clear(&my_list);
+        return EXIT_FAILURE;
+    }
+    
+    printf("List contents: ");
+    list_print(&my_list);
+    printf("List size: %zu\n", my_list.size);
+    
+    list_clear(&my_list);
+    
+    return EXIT_SUCCESS;
+}
+```

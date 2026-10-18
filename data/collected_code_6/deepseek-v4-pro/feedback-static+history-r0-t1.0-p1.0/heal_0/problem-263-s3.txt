@@ -1,0 +1,323 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct dict_entry {
+    char *key;
+    char *value;
+    struct dict_entry *next;
+} dict_entry;
+
+typedef struct {
+    dict_entry **buckets;
+    size_t size;
+    size_t capacity;
+} dict;
+
+static unsigned long hash_function(const char *str) {
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+
+    return hash;
+}
+
+dict *dict_create(size_t capacity) {
+    dict *d;
+
+    if (capacity == 0) {
+        capacity = 16;
+    }
+
+    d = malloc(sizeof(*d));
+    if (!d) {
+        return NULL;
+    }
+
+    d->buckets = calloc(capacity, sizeof(dict_entry *));
+    if (!d->buckets) {
+        free(d);
+        return NULL;
+    }
+
+    d->size = 0;
+    d->capacity = capacity;
+
+    return d;
+}
+
+static int dict_resize(dict *d, size_t new_capacity) {
+    dict_entry **new_buckets;
+    size_t i;
+
+    if (new_capacity == 0) {
+        return -1;
+    }
+
+    new_buckets = calloc(new_capacity, sizeof(dict_entry *));
+    if (!new_buckets) {
+        return -1;
+    }
+
+    for (i = 0; i < d->capacity; i++) {
+        dict_entry *entry = d->buckets[i];
+        while (entry) {
+            dict_entry *next = entry->next;
+            unsigned long hash = hash_function(entry->key);
+            size_t index = hash % new_capacity;
+
+            entry->next = new_buckets[index];
+            new_buckets[index] = entry;
+
+            entry = next;
+        }
+    }
+
+    free(d->buckets);
+    d->buckets = new_buckets;
+    d->capacity = new_capacity;
+
+    return 0;
+}
+
+static void dict_entry_free(dict_entry *entry) {
+    if (!entry) {
+        return;
+    }
+
+    free(entry->key);
+    free(entry->value);
+    free(entry);
+}
+
+void dict_destroy(dict *d) {
+    size_t i;
+
+    if (!d) {
+        return;
+    }
+
+    for (i = 0; i < d->capacity; i++) {
+        dict_entry *entry = d->buckets[i];
+        while (entry) {
+            dict_entry *next = entry->next;
+            dict_entry_free(entry);
+            entry = next;
+        }
+    }
+
+    free(d->buckets);
+    free(d);
+}
+
+int dict_put(dict *d, const char *key, const char *value) {
+    unsigned long hash;
+    size_t index;
+    dict_entry *entry;
+    char *key_copy;
+    char *value_copy;
+
+    if (!d || !key || !value) {
+        return -1;
+    }
+
+    if ((d->size * 10) >= (d->capacity * 7)) {
+        if (dict_resize(d, d->capacity * 2) != 0) {
+            return -1;
+        }
+    }
+
+    hash = hash_function(key);
+    index = hash % d->capacity;
+
+    for (entry = d->buckets[index]; entry; entry = entry->next) {
+        if (strcmp(entry->key, key) == 0) {
+            value_copy = strdup(value);
+            if (!value_copy) {
+                return -1;
+            }
+            free(entry->value);
+            entry->value = value_copy;
+            return 0;
+        }
+    }
+
+    key_copy = strdup(key);
+    if (!key_copy) {
+        return -1;
+    }
+
+    value_copy = strdup(value);
+    if (!value_copy) {
+        free(key_copy);
+        return -1;
+    }
+
+    entry = malloc(sizeof(*entry));
+    if (!entry) {
+        free(key_copy);
+        free(value_copy);
+        return -1;
+    }
+
+    entry->key = key_copy;
+    entry->value = value_copy;
+    entry->next = d->buckets[index];
+    d->buckets[index] = entry;
+    d->size++;
+
+    return 0;
+}
+
+const char *dict_get(const dict *d, const char *key) {
+    unsigned long hash;
+    size_t index;
+    dict_entry *entry;
+
+    if (!d || !key) {
+        return NULL;
+    }
+
+    hash = hash_function(key);
+    index = hash % d->capacity;
+
+    for (entry = d->buckets[index]; entry; entry = entry->next) {
+        if (strcmp(entry->key, key) == 0) {
+            return entry->value;
+        }
+    }
+
+    return NULL;
+}
+
+dict *dict_merge(const dict *a, const dict *b) {
+    dict *result;
+    size_t i;
+
+    if (!a && !b) {
+        return NULL;
+    }
+
+    if (!a) {
+        a = dict_create(16);
+        if (!a) {
+            return NULL;
+        }
+    }
+    if (!b) {
+        b = dict_create(16);
+        if (!b) {
+            if (a != NULL && a->size == 0) {
+                dict_destroy((dict *)a);
+            }
+            return NULL;
+        }
+    }
+
+    result = dict_create(a->capacity + b->capacity);
+    if (!result) {
+        if (a && a->size == 0) {
+            dict_destroy((dict *)a);
+        }
+        if (b && b->size == 0) {
+            dict_destroy((dict *)b);
+        }
+        return NULL;
+    }
+
+    for (i = 0; i < a->capacity; i++) {
+        dict_entry *entry = a->buckets[i];
+        while (entry) {
+            if (dict_put(result, entry->key, entry->value) != 0) {
+                dict_destroy(result);
+                return NULL;
+            }
+            entry = entry->next;
+        }
+    }
+
+    for (i = 0; i < b->capacity; i++) {
+        dict_entry *entry = b->buckets[i];
+        while (entry) {
+            if (dict_put(result, entry->key, entry->value) != 0) {
+                dict_destroy(result);
+                return NULL;
+            }
+            entry = entry->next;
+        }
+    }
+
+    return result;
+}
+
+int main(void) {
+    dict *d1;
+    dict *d2;
+    dict *merged;
+    const char *val;
+
+    d1 = dict_create(8);
+    if (!d1) {
+        return 1;
+    }
+
+    d2 = dict_create(8);
+    if (!d2) {
+        dict_destroy(d1);
+        return 1;
+    }
+
+    if (dict_put(d1, "name", "Alice") != 0) {
+        dict_destroy(d1);
+        dict_destroy(d2);
+        return 1;
+    }
+    if (dict_put(d1, "age", "30") != 0) {
+        dict_destroy(d1);
+        dict_destroy(d2);
+        return 1;
+    }
+    if (dict_put(d2, "city", "New York") != 0) {
+        dict_destroy(d1);
+        dict_destroy(d2);
+        return 1;
+    }
+    if (dict_put(d2, "age", "31") != 0) {
+        dict_destroy(d1);
+        dict_destroy(d2);
+        return 1;
+    }
+
+    merged = dict_merge(d1, d2);
+    if (!merged) {
+        dict_destroy(d1);
+        dict_destroy(d2);
+        return 1;
+    }
+
+    val = dict_get(merged, "name");
+    if (val) {
+        printf("name: %s\n", val);
+    }
+
+    val = dict_get(merged, "age");
+    if (val) {
+        printf("age: %s\n", val);
+    }
+
+    val = dict_get(merged, "city");
+    if (val) {
+        printf("city: %s\n", val);
+    }
+
+    dict_destroy(merged);
+    dict_destroy(d1);
+    dict_destroy(d2);
+
+    return 0;
+}
+```

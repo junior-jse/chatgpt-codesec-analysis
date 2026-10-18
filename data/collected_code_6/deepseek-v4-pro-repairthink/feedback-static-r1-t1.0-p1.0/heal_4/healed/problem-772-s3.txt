@@ -1,0 +1,102 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char* remove_words_with_length(const char* str, int k) {
+    if (str == NULL || k <= 0) {
+        return NULL;
+    }
+
+    size_t result_len = 0;
+    size_t i = 0;
+    int in_word = 0;
+    size_t word_length = 0;
+
+    while (1) {
+        unsigned char c = (unsigned char)str[i];
+
+        if (isalnum(c)) {
+            if (!in_word) {
+                in_word = 1;
+                word_length = 1;
+            } else {
+                word_length++;
+            }
+        } else {
+            if (in_word) {
+                if (word_length != (size_t)k) {
+                    if (result_len > 0) {
+                        result_len++;
+                    }
+                    result_len += word_length;
+                }
+                in_word = 0;
+            }
+            if (c == '\0') {
+                break;
+            }
+        }
+        i++;
+    }
+
+    char* result = (char*)malloc(result_len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    i = 0;
+    in_word = 0;
+    size_t word_start = 0;
+    word_length = 0;
+
+    while (1) {
+        unsigned char c = (unsigned char)str[i];
+
+        if (isalnum(c)) {
+            if (!in_word) {
+                word_start = i;
+                in_word = 1;
+                word_length = 1;
+            } else {
+                word_length++;
+            }
+        } else {
+            if (in_word) {
+                if (word_length != (size_t)k) {
+                    if (j > 0) {
+                        result[j++] = ' ';
+                    }
+                    for (size_t m = 0; m < word_length; m++) {
+                        result[j++] = str[word_start + m];
+                    }
+                }
+                in_word = 0;
+            }
+            if (c == '\0') {
+                break;
+            }
+        }
+        i++;
+    }
+
+    result[j] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char* input = "hello world this is a test string";
+    int k = 2;
+
+    char* result = remove_words_with_length(input, k);
+    if (result != NULL) {
+        printf("Original: %s\n", input);
+        printf("After removing words of length %d: %s\n", k, result);
+        free(result);
+    }
+
+    return 0;
+}
+```

@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+int checkHeight(struct Node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+
+    int leftHeight = checkHeight(root->left);
+    if (leftHeight == -1) {
+        return -1;
+    }
+
+    int rightHeight = checkHeight(root->right);
+    if (rightHeight == -1) {
+        return -1;
+    }
+
+    if (abs(leftHeight - rightHeight) > 1) {
+        return -1;
+    }
+
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+}
+
+int isBalanced(struct Node* root) {
+    return checkHeight(root) != -1;
+}
+
+void freeTree(struct Node* root) {
+    if (root == NULL) {
+        return;
+    }
+    freeTree(root->left);
+    freeTree(root->right);
+    free(root);
+}
+
+int main(void) {
+    struct Node* root = createNode(1);
+    if (root == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    root->left = createNode(2);
+    if (root->left == NULL) {
+        freeTree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->right = createNode(3);
+    if (root->right == NULL) {
+        freeTree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->left->left = createNode(4);
+    if (root->left->left == NULL) {
+        freeTree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->left->right = createNode(5);
+    if (root->left->right == NULL) {
+        freeTree(root);
+        return EXIT_FAILURE;
+    }
+
+    if (isBalanced(root)) {
+        printf("The tree is balanced.\n");
+    } else {
+        printf("The tree is not balanced.\n");
+    }
+
+    freeTree(root);
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s2.c:49:22: style: Variable 'copy_len' is assigned a value that is never used. [unreadVariable]
+            copy_len = str_len;
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s2.c:53:22: style: Variable 'copy_len' is assigned a value that is never used. [unreadVariable]
+            copy_len = buffer_size - 1;
+                     ^

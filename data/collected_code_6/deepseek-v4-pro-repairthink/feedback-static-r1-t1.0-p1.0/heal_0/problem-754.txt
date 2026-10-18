@@ -1,0 +1,64 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int find_common_elements(const int *list1, int size1,
+                         const int *list2, int size2,
+                         const int *list3, int size3,
+                         int *common_indices, int max_common) {
+    if (list1 == NULL || list2 == NULL || list3 == NULL || common_indices == NULL) {
+        return -1;
+    }
+    if (size1 <= 0 || size2 <= 0 || size3 <= 0 || max_common <= 0) {
+        return 0;
+    }
+
+    int min_size = size1 < size2 ? size1 : size2;
+    if (size3 < min_size) {
+        min_size = size3;
+    }
+
+    if (min_size > max_common) {
+        min_size = max_common;
+    }
+
+    int count = 0;
+    for (int i = 0; i < min_size; i++) {
+        if (list1[i] == list2[i] && list2[i] == list3[i]) {
+            common_indices[count] = i;
+            count++;
+        }
+    }
+
+    return count;
+}
+
+int main(void) {
+    int list1[] = {1, 2, 3, 4, 5};
+    int list2[] = {1, 4, 3, 7, 5};
+    int list3[] = {1, 2, 3, 8, 5};
+
+    int size1 = sizeof(list1) / sizeof(list1[0]);
+    int size2 = sizeof(list2) / sizeof(list2[0]);
+    int size3 = sizeof(list3) / sizeof(list3[0]);
+
+    int common_indices[5];
+    int num_common = find_common_elements(list1, size1,
+                                          list2, size2,
+                                          list3, size3,
+                                          common_indices, 5);
+
+    if (num_common < 0) {
+        printf("Error: invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Common indices: ");
+    for (int i = 0; i < num_common; i++) {
+        printf("%d ", common_indices[i]);
+    }
+    printf("\n");
+
+    return EXIT_SUCCESS;
+}
+```

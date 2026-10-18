@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <limits.h>
+
+bool isIsomorphic(const char *s, const char *t) {
+    if (s == NULL || t == NULL) {
+        return false;
+    }
+    
+    size_t len_s = strlen(s);
+    size_t len_t = strlen(t);
+    
+    if (len_s != len_t) {
+        return false;
+    }
+    
+    int map_s_to_t[UCHAR_MAX + 1];
+    int map_t_to_s[UCHAR_MAX + 1];
+    
+    for (int i = 0; i <= UCHAR_MAX; i++) {
+        map_s_to_t[i] = -1;
+        map_t_to_s[i] = -1;
+    }
+    
+    for (size_t i = 0; i < len_s; i++) {
+        unsigned char char_s = (unsigned char)s[i];
+        unsigned char char_t = (unsigned char)t[i];
+        
+        if (map_s_to_t[char_s] == -1 && map_t_to_s[char_t] == -1) {
+            map_s_to_t[char_s] = char_t;
+            map_t_to_s[char_t] = char_s;
+        } else if (map_s_to_t[char_s] != char_t || map_t_to_s[char_t] != char_s) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+int main(void) {
+    const char *test1_s = "egg";
+    const char *test1_t = "add";
+    printf("\"%s\" and \"%s\": %s\n", test1_s, test1_t, 
+           isIsomorphic(test1_s, test1_t) ? "true" : "false");
+    
+    const char *test2_s = "foo";
+    const char *test2_t = "bar";
+    printf("\"%s\" and \"%s\": %s\n", test2_s, test2_t, 
+           isIsomorphic(test2_s, test2_t) ? "true" : "false");
+    
+    const char *test3_s = "paper";
+    const char *test3_t = "title";
+    printf("\"%s\" and \"%s\": %s\n", test3_s, test3_t, 
+           isIsomorphic(test3_s, test3_t) ? "true" : "false");
+    
+    const char *test4_s = "ab";
+    const char *test4_t = "aa";
+    printf("\"%s\" and \"%s\": %s\n", test4_s, test4_t, 
+           isIsomorphic(test4_s, test4_t) ? "true" : "false");
+    
+    return 0;
+}

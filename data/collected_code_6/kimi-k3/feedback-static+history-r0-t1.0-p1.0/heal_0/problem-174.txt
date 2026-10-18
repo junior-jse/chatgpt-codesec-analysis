@@ -1,0 +1,154 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} Pair;
+
+typedef struct {
+    char *key;
+    char **values;
+    size_t count;
+    size_t capacity;
+} Group;
+
+typedef struct {
+    Group *groups;
+    size_t count;
+    size_t capacity;
+} Dict;
+
+static void dict_init(Dict *dict) {
+    dict->groups = NULL;
+    dict->count = 0;
+    dict->capacity = 0;
+}
+
+static char *duplicate_string(const char *str) {
+    size_t len = strlen(str) + 1;
+    char *copy = malloc(len);
+    if (copy != NULL) {
+        memcpy(copy, str, len);
+    }
+    return copy;
+}
+
+static Group *find_or_create_group(Dict *dict, const char *key) {
+    size_t i;
+    for (i = 0; i < dict->count; i++) {
+        if (strcmp(dict->groups[i].key, key) == 0) {
+            return &dict->groups[i];
+        }
+    }
+
+    if (dict->count >= dict->capacity) {
+        size_t new_capacity = dict->capacity == 0 ? 4 : dict->capacity * 2;
+        Group *new_groups = realloc(dict->groups, new_capacity * sizeof(Group));
+        if (new_groups == NULL) {
+            return NULL;
+        }
+        dict->groups = new_groups;
+        dict->capacity = new_capacity;
+    }
+
+    Group *group = &dict->groups[dict->count];
+    group->key = duplicate_string(key);
+    if (group->key == NULL) {
+        return NULL;
+    }
+    group->values = NULL;
+    group->count = 0;
+    group->capacity = 0;
+    dict->count++;
+    return group;
+}
+
+static int add_value_to_group(Group *group, const char *value) {
+    if (group->count >= group->capacity) {
+        size_t new_capacity = group->capacity == 0 ? 4 : group->capacity * 2;
+        char **new_values = realloc(group->values, new_capacity * sizeof(char *));
+        if (new_values == NULL) {
+            return 0;
+        }
+        group->values = new_values;
+        group->capacity = new_capacity;
+    }
+
+    group->values[group->count] = duplicate_string(value);
+    if (group->values[group->count] == NULL) {
+        return 0;
+    }
+    group->count++;
+    return 1;
+}
+
+static int dict_add(Dict *dict, const char *key, const char *value) {
+    Group *group = find_or_create_group(dict, key);
+    if (group == NULL) {
+        return 0;
+    }
+    return add_value_to_group(group, value);
+}
+
+static void dict_free(Dict *dict) {
+    size_t i, j;
+    for (i = 0; i < dict->count; i++) {
+        free(dict->groups[i].key);
+        for (j = 0; j < dict->groups[i].count; j++) {
+            free(dict->groups[i].values[j]);
+        }
+        free(dict->groups[i].values);
+    }
+    free(dict->groups);
+    dict->groups = NULL;
+    dict->count = 0;
+    dict->capacity = 0;
+}
+
+static void dict_print(const Dict *dict) {
+    size_t i, j;
+    for (i = 0; i < dict->count; i++) {
+        printf("%s: [", dict->groups[i].key);
+        for (j = 0; j < dict->groups[i].count; j++) {
+            printf("%s", dict->groups[i].values[j]);
+            if (j < dict->groups[i].count - 1) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+}
+
+int main(void) {
+    Pair pairs[] = {
+        {"fruit", "apple"},
+        {"fruit", "banana"},
+        {"vegetable", "carrot"},
+        {"fruit", "cherry"},
+        {"vegetable", "broccoli"},
+        {"color", "red"},
+        {"color", "blue"}
+    };
+    size_t num_pairs = sizeof(pairs) / sizeof(pairs[0]);
+    size_t i;
+    Dict dict;
+
+    dict_init(&dict);
+
+    for (i = 0; i < num_pairs; i++) {
+        if (!dict_add(&dict, pairs[i].key, pairs[i].value)) {
+            fprintf(stderr, "Error: failed to add pair\n");
+            dict_free(&dict);
+            return EXIT_FAILURE;
+        }
+    }
+
+    dict_print(&dict);
+    dict_free(&dict);
+
+    return EXIT_SUCCESS;
+}
+```

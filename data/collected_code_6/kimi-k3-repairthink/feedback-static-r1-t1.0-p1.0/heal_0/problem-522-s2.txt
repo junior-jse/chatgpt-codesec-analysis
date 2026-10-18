@@ -1,0 +1,79 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int longest_bitonic_subsequence(const int arr[], int n) {
+    if (arr == NULL || n <= 0) {
+        return 0;
+    }
+
+    int *lis = (int *)malloc((size_t)n * sizeof(int));
+    int *lds = (int *)malloc((size_t)n * sizeof(int));
+
+    if (lis == NULL || lds == NULL) {
+        free(lis);
+        free(lds);
+        return 0;
+    }
+
+    for (int i = 0; i < n; i++) {
+        lis[i] = 1;
+        lds[i] = 1;
+    }
+
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+                lis[i] = lis[j] + 1;
+            }
+        }
+    }
+
+    for (int i = n - 2; i >= 0; i--) {
+        for (int j = n - 1; j > i; j--) {
+            if (arr[i] > arr[j] && lds[i] < lds[j] + 1) {
+                lds[i] = lds[j] + 1;
+            }
+        }
+    }
+
+    int max_length = 0;
+    for (int i = 0; i < n; i++) {
+        int current = lis[i] + lds[i] - 1;
+        if (current > max_length) {
+            max_length = current;
+        }
+    }
+
+    free(lis);
+    free(lds);
+
+    return max_length;
+}
+
+int main(void) {
+    int n;
+
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        return 1;
+    }
+
+    int *arr = (int *)malloc((size_t)n * sizeof(int));
+    if (arr == NULL) {
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            free(arr);
+            return 1;
+        }
+    }
+
+    int result = longest_bitonic_subsequence(arr, n);
+    printf("%d\n", result);
+
+    free(arr);
+    return 0;
+}
+```

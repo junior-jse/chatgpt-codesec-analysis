@@ -1,0 +1,124 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef struct Node {
+    int value;
+    int count;
+    struct Node *next;
+} Node;
+
+Node *create_node(int value, int count) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    node->value = value;
+    node->count = count;
+    node->next = NULL;
+    return node;
+}
+
+void append_node(Node **head, int value, int count) {
+    Node *node = create_node(value, count);
+    if (*head == NULL) {
+        *head = node;
+        return;
+    }
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = node;
+}
+
+Node *modified_run_length_encode(const int *input, int size) {
+    if (input == NULL || size <= 0) {
+        return NULL;
+    }
+
+    Node *head = NULL;
+    int i = 0;
+
+    while (i < size) {
+        int current_value = input[i];
+        int count = 1;
+
+        while (i + count < size && input[i + count] == current_value) {
+            count++;
+        }
+
+        if (count > 1) {
+            append_node(&head, current_value, count);
+        } else {
+            int single_start = i;
+            int single_count = 0;
+
+            while (i < size) {
+                if (i + 1 < size && input[i] == input[i + 1]) {
+                    break;
+                }
+                single_count++;
+                i++;
+            }
+
+            append_node(&head, -1, single_count);
+            for (int j = 0; j < single_count; j++) {
+                append_node(&head, input[single_start + j], 1);
+            }
+            continue;
+        }
+
+        i += count;
+    }
+
+    return head;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        if (current->value == -1) {
+            printf("[%d singles]", current->count);
+        } else if (current->count == 1) {
+            printf("[%d]", current->value);
+        } else {
+            printf("[%d x%d]", current->value, current->count);
+        }
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int input1[] = {1, 1, 2, 3, 3, 3, 4, 5, 6, 6};
+    int size1 = sizeof(input1) / sizeof(input1[0]);
+    Node *encoded1 = modified_run_length_encode(input1, size1);
+    print_list(encoded1);
+    free_list(encoded1);
+
+    int input2[] = {1, 2, 3, 4, 5};
+    int size2 = sizeof(input2) / sizeof(input2[0]);
+    Node *encoded2 = modified_run_length_encode(input2, size2);
+    print_list(encoded2);
+    free_list(encoded2);
+
+    int input3[] = {1, 1, 1, 1, 1};
+    int size3 = sizeof(input3) / sizeof(input3[0]);
+    Node *encoded3 = modified_run_length_encode(input3, size3);
+    print_list(encoded3);
+    free_list(encoded3);
+
+    return 0;
+}

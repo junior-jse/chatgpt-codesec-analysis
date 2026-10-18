@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char** adjacent_concatenation(char** tuples, int tuple_count, int tuple_size) {
+    if (tuples == NULL || tuple_count <= 0 || tuple_size <= 1) {
+        return NULL;
+    }
+
+    char** result = (char**)malloc((tuple_count * (tuple_size - 1)) * sizeof(char*));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    int result_index = 0;
+    for (int i = 0; i < tuple_count; i++) {
+        if (tuples[i] == NULL) {
+            for (int j = 0; j < tuple_size; j++) {
+                if (j % 2 == 0) {
+                    free(result[j / 2]);
+                }
+            }
+            free(result);
+            return NULL;
+        }
+
+        for (int j = 0; j < tuple_size - 1; j++) {
+            if (tuples[i][j] == '\0' || tuples[i][j + 1] == '\0') {
+                for (int k = 0; k < result_index; k++) {
+                    free(result[k]);
+                }
+                free(result);
+                return NULL;
+            }
+
+            /* Possible weaknesses found:
+             *  passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+             *  incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+             * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+             */
+            size_t len1 = strlen(tuples[i][j]);
+            /* Possible weaknesses found:
+             *  passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+             *  incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+             * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+             */
+            size_t len2 = strlen(tuples[i][j + 1]);
+            result[result_index] = (char*)malloc((len1 + len2 + 1) * sizeof(char));
+            if (result[result_index] == NULL) {
+                for (int k = 0; k < result_index; k++) {
+                    free(result[k]);
+                }
+                free(result);
+                return NULL;
+            }
+
+            /* Possible weaknesses found:
+             *  expected 'const char *' but argument is of type 'char'
+             *  incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+             * Flawfinder strcpy: Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120). Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy easily misused). (risk 4, buffer)
+             *  passing argument 2 of '__builtin___strcpy_chk' makes pointer from integer without a cast [-Wint-conversion]
+             */
+            strcpy(result[result_index], tuples[i][j]);
+            /* Possible weaknesses found:
+             *  expected 'const char *' but argument is of type 'char'
+             *  incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+             * Flawfinder strcat: Does not check for buffer overflows when concatenating to destination [MS-banned] (CWE-120). Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused). (risk 4, buffer)
+             *  passing argument 2 of '__builtin___strcat_chk' makes pointer from integer without a cast [-Wint-conversion]
+             */
+            strcat(result[result_index], tuples[i][j + 1]);
+            result_index++;
+        }
+    }
+
+    return result;
+}
+
+int main(void) {
+    char* tuples[][3] = {
+        {"ab", "cd", "ef"},
+        {"gh", "ij", "kl"},
+        {"mn", "op", "qr"}
+    };
+
+    int tuple_count = 3;
+    int tuple_size = 3;
+
+    char** flattened = (char**)malloc(tuple_count * tuple_size * sizeof(char*));
+    if (flattened == NULL) {
+        return 1;
+    }
+
+    for (int i = 0; i < tuple_count; i++) {
+        for (int j = 0; j < tuple_size; j++) {
+            flattened[i * tuple_size + j] = tuples[i][j];
+        }
+    }
+
+    char** result = adjacent_concatenation(flattened, tuple_count, tuple_size);
+    if (result == NULL) {
+        free(flattened);
+        return 1;
+    }
+
+    int result_count = tuple_count * (tuple_size - 1);
+    for (int i = 0; i < result_count; i++) {
+        printf("%s\n", result[i]);
+        free(result[i]);
+    }
+
+    free(result);
+    free(flattened);
+
+    return 0;
+}

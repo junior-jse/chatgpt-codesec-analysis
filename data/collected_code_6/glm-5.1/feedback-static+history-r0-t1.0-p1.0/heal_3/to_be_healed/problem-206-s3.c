@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *first;
+    char *second;
+} Tuple;
+
+char** concatenate_adjacent(Tuple *tuples, size_t count, size_t *result_count) {
+    if (count < 2 || tuples == NULL) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    size_t new_count = count - 1;
+    char **result = (char **)malloc(new_count * sizeof(char *));
+    if (result == NULL) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    for (size_t i = 0; i < new_count; i++) {
+        if (tuples[i].second == NULL || tuples[i + 1].first == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(result[j]);
+            }
+            free(result);
+            *result_count = 0;
+            return NULL;
+        }
+
+        size_t len1 = strnlen(tuples[i].second, SIZE_MAX);
+        size_t len2 = strnlen(tuples[i + 1].first, SIZE_MAX);
+
+        if (len1 > SIZE_MAX - len2 || len1 + len2 > SIZE_MAX - 1) {
+            for (size_t j = 0; j < i; j++) {
+                free(result[j]);
+            }
+            free(result);
+            *result_count = 0;
+            return NULL;
+        }
+
+        size_t total_len = len1 + len2;
+        result[i] = (char *)malloc(total_len + 1);
+        if (result[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(result[j]);
+            }
+            free(result);
+            *result_count = 0;
+            return NULL;
+        }
+
+        /* Possible weaknesses found:
+         *  implicit declaration of function 'memcpy_s'; did you mean 'memcpy'? [-Wimplicit-function-declaration]
+         *  call to undeclared function 'memcpy_s'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+         *  did you mean 'memcpy'?
+         */
+        memcpy_s(result[i], total_len + 1, tuples[i].second, len1);
+        memcpy_s(result[i] + len1, total_len + 1 - len1, tuples[i + 1].first, len2);
+        result[i][total_len] = '\0';
+    }
+
+    *result_count = new_count;
+    return result;
+}
+
+int main() {
+    Tuple tuples[] = {
+        {"a", "b"},
+        {"c", "d"},
+        {"e", "f"}
+    };
+    size_t count = sizeof(tuples) / sizeof(tuples[0]);
+    size_t result_count = 0;
+
+    char **result = concatenate_adjacent(tuples, count, &result_count);
+
+    if (result != NULL) {
+        for (size_t i = 0; i < result_count; i++) {
+            /* Possible weaknesses found:
+             *  'memcpy' declared here
+             */
+            printf("%s\n", result[i]);
+            free(result[i]);
+        }
+        free(result);
+    }
+
+    return 0;
+}

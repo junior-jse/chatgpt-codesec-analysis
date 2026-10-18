@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-640-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-640-s2.c:60:19: style: Condition 'null_test==NULL' is always false [knownConditionTrueFalse]
+    if (null_test == NULL) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-640-s2.c:58:47: note: Calling function 'remove_parenthesis' returns 1
+    const char *null_test = remove_parenthesis(NULL);
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-640-s2.c:58:47: note: Assignment 'null_test=remove_parenthesis(NULL)', assigned value is 1
+    const char *null_test = remove_parenthesis(NULL);
+                                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-640-s2.c:60:19: note: Condition 'null_test==NULL' is always false
+    if (null_test == NULL) {
+                  ^

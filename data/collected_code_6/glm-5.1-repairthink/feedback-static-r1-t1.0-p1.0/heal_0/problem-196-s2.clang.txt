@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-196-s2.c:45:23: warning: Result of 'realloc' is converted to a pointer of type 'int', which is incompatible with sizeof operand type 'Tuple' [unix.MallocSizeof]
+   45 |     int *temp = (int*)realloc(new_list->tuples, new_list->count * sizeof(Tuple));
+      |     ~~~~~             ^~~~~~~                                     ~~~~~~~~~~~~~
+1 warning generated.

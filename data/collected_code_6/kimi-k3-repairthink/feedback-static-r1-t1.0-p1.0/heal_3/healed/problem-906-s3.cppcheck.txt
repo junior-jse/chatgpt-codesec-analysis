@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-906-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-906-s3.c:48:13: style: Condition 'len==0' is always false [knownConditionTrueFalse]
+    if (len == 0 || len >= dest_size) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-906-s3.c:42:40: note: Assuming that condition 'match.rm_eo<=match.rm_so' is not redundant
+    if (match.rm_so < 0 || match.rm_eo <= match.rm_so) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-906-s3.c:46:11: note: Assignment 'len=(unsigned long)(match.rm_eo-match.rm_so)', assigned value is greater than 0
+    len = (size_t)(match.rm_eo - match.rm_so);
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-906-s3.c:48:13: note: Condition 'len==0' is always false
+    if (len == 0 || len >= dest_size) {
+            ^

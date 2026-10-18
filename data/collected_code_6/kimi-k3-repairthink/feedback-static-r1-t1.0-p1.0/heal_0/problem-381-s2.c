@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} InnerList;
+
+typedef struct {
+    InnerList *lists;
+    size_t count;
+} ListOfLists;
+
+static int compare_by_index(const void *a, const void *b, void *context)
+{
+    size_t index = *(size_t *)context;
+    const InnerList *list_a = (const InnerList *)a;
+    const InnerList *list_b = (const InnerList *)b;
+    int has_a = (list_a->data != NULL && index < list_a->size);
+    int has_b = (list_b->data != NULL && index < list_b->size);
+
+    if (!has_a && !has_b) {
+        return 0;
+    }
+    if (!has_a) {
+        return 1;
+    }
+    if (!has_b) {
+        return -1;
+    }
+    if (list_a->data[index] < list_b->data[index]) {
+        return -1;
+    }
+    if (list_a->data[index] > list_b->data[index]) {
+        return 1;
+    }
+    return 0;
+}
+
+int sort_list_of_lists(ListOfLists *list, size_t index)
+{
+    if (list == NULL || (list->lists == NULL && list->count > 0)) {
+        return -1;
+    }
+    if (list->count < 2) {
+        return 0;
+    }
+#if defined(__GLIBC__)
+    qsort_r(list->lists, list->count, sizeof(InnerList), compare_by_index, &index);
+#else
+    (void)index;
+    return -2;
+#endif
+    return 0;
+}
+
+static void free_list_of_lists(ListOfLists *list)
+{
+    size_t i;
+
+    if (list == NULL) {
+        return;
+    }
+    for (i = 0; i < list->count; ++i) {
+        free(list->lists[i].data);
+        list->lists[i].data = NULL;
+        list->lists[i].size = 0;
+    }
+    free(list->lists);
+    list->lists = NULL;
+    list->count = 0;
+}
+
+int main(void)
+{
+    ListOfLists list = {0};
+    size_t sort_index = 1;
+    size_t i;
+    size_t j;
+    int rc;
+
+    list.count = 4;
+    list.lists = calloc(list.count, sizeof(*list.lists));
+    if (list.lists == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    list.lists[0].size = 3;
+    list.lists[1].size = 2;
+    list.lists[2].size = 3;
+    list.lists[3].size = 1;
+
+    for (i = 0; i < list.count; ++i) {
+        list.lists[i].data = malloc(list.lists[i].size * sizeof(*list.lists[i].data));
+        if (list.lists[i].data == NULL) {
+            free_list_of_lists(&list);
+            return EXIT_FAILURE;
+        }
+    }
+
+    list.lists[0].data[0] = 1;
+    list.lists[0].data[1] = 20;
+    list.lists[0].data[2] = 300;
+
+    list.lists[1].data[0] = 2;
+    list.lists[1].data[1] = 10;
+
+    list.lists[2].data[0] = 3;
+    list.lists[2].data[1] = 15;
+    list.lists[2].data[2] = 250;
+
+    list.lists[3].data[0] = 4;
+
+    rc = sort_list_of_lists(&list, sort_index);
+    if (rc != 0) {
+        free_list_of_lists(&list);
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < list.count; ++i) {
+        for (j = 0; j < list.lists[i].size; ++j) {
+            printf("%d ", list.lists[i].data[j]);
+        }
+        printf("\n");
+    }
+
+    free_list_of_lists(&list);
+    return EXIT_SUCCESS;
+}

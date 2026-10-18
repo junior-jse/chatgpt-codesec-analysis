@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c:74:14: style: Condition 'str4==NULL' is always true [knownConditionTrueFalse]
+    if (str4 == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c:73:45: note: Calling function 'remove_lowercase_substrings' returns 0
+    char* str4 = remove_lowercase_substrings(NULL);
+                                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c:73:45: note: Assignment 'str4=remove_lowercase_substrings(NULL)', assigned value is 0
+    char* str4 = remove_lowercase_substrings(NULL);
+                                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c:74:14: note: Condition 'str4==NULL' is always true
+    if (str4 == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-495-s3.c:73:11: style: Variable 'str4' can be declared as pointer to const [constVariablePointer]
+    char* str4 = remove_lowercase_substrings(NULL);
+          ^

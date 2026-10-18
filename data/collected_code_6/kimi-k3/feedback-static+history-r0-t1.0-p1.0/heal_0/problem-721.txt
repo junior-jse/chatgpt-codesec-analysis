@@ -1,0 +1,131 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <float.h>
+#include <limits.h>
+
+#define MAX_N 100
+
+typedef struct {
+    int row;
+    int col;
+} Point;
+
+typedef struct {
+    Point points[MAX_N * MAX_N];
+    int length;
+    double sum;
+    int count;
+} Path;
+
+double findMaxAveragePath(int matrix[MAX_N][MAX_N], int n, Path* maxPath) {
+    if (n <= 0 || n > MAX_N || maxPath == NULL) {
+        return -DBL_MAX;
+    }
+    
+    maxPath->length = 0;
+    maxPath->sum = 0.0;
+    maxPath->count = 0;
+    double maxAvg = -DBL_MAX;
+    
+    for (int startRow = 0; startRow < n; startRow++) {
+        for (int startCol = 0; startCol < n; startCol++) {
+            for (int endRow = 0; endRow < n; endRow++) {
+                for (int endCol = 0; endCol < n; endCol++) {
+                    if (startRow == endRow && startCol == endCol) {
+                        continue;
+                    }
+                    
+                    Path currentPath;
+                    currentPath.length = 0;
+                    currentPath.sum = 0.0;
+                    currentPath.count = 0;
+                    
+                    int row = startRow;
+                    int col = startCol;
+                    int visited[MAX_N][MAX_N] = {0};
+                    
+                    while (row != endRow || col != endCol) {
+                        if (currentPath.length >= MAX_N * MAX_N - 1) {
+                            break;
+                        }
+                        
+                        currentPath.points[currentPath.length].row = row;
+                        currentPath.points[currentPath.length].col = col;
+                        currentPath.length++;
+                        currentPath.sum += matrix[row][col];
+                        currentPath.count++;
+                        visited[row][col] = 1;
+                        
+                        if (row < endRow && !visited[row + 1][col]) {
+                            row++;
+                        } else if (col < endCol && !visited[row][col + 1]) {
+                            col++;
+                        } else if (row > endRow && !visited[row - 1][col]) {
+                            row--;
+                        } else if (col > endCol && !visited[row][col - 1]) {
+                            col--;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (row == endRow && col == endCol && currentPath.length < MAX_N * MAX_N) {
+                        currentPath.points[currentPath.length].row = row;
+                        currentPath.points[currentPath.length].col = col;
+                        currentPath.length++;
+                        currentPath.sum += matrix[row][col];
+                        currentPath.count++;
+                        
+                        if (currentPath.count > 0) {
+                            double avg = currentPath.sum / currentPath.count;
+                            if (avg > maxAvg) {
+                                maxAvg = avg;
+                                *maxPath = currentPath;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return maxAvg;
+}
+
+int main(void) {
+    int n;
+    int matrix[MAX_N][MAX_N];
+    Path maxPath;
+    
+    if (scanf("%d", &n) != 1 || n <= 0 || n > MAX_N) {
+        fprintf(stderr, "Invalid input for matrix size\n");
+        return EXIT_FAILURE;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (scanf("%d", &matrix[i][j]) != 1) {
+                fprintf(stderr, "Invalid input for matrix element\n");
+                return EXIT_FAILURE;
+            }
+        }
+    }
+    
+    double result = findMaxAveragePath(matrix, n, &maxPath);
+    
+    if (result == -DBL_MAX) {
+        fprintf(stderr, "No valid path found\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Maximum average: %.2f\n", result);
+    printf("Path: ");
+    for (int i = 0; i < maxPath.length; i++) {
+        printf("(%d,%d) ", maxPath.points[i].row, maxPath.points[i].col);
+    }
+    printf("\n");
+    
+    return EXIT_SUCCESS;
+}
+```

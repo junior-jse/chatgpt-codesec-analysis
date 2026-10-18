@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append(Node **head, int data) {
+    Node *new_node = create_node(data);
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+Node *rotate_left(Node *head, int k) {
+    if (head == NULL || head->next == NULL || k <= 0) {
+        return head;
+    }
+
+    Node *current = head;
+    int length = 1;
+    while (current->next != NULL) {
+        current = current->next;
+        length++;
+    }
+
+    k = k % length;
+    if (k == 0) {
+        return head;
+    }
+
+    current->next = head;
+
+    current = head;
+    for (int i = 1; i < k; i++) {
+        current = current->next;
+    }
+
+    Node *new_head = current->next;
+    current->next = NULL;
+
+    return new_head;
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    Node *list = NULL;
+    int values[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int n = sizeof(values) / sizeof(values[0]);
+
+    for (int i = 0; i < n; i++) {
+        append(&list, values[i]);
+    }
+
+    printf("Original list: ");
+    print_list(list);
+
+    int rotations = 3;
+    list = rotate_left(list, rotations);
+
+    printf("After rotating left by %d: ", rotations);
+    print_list(list);
+
+    free_list(list);
+    return 0;
+}

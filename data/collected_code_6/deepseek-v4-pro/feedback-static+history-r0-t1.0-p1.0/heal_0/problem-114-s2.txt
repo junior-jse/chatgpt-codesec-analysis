@@ -1,0 +1,118 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Tuple {
+    int *data;
+    size_t size;
+    int frequency;
+} Tuple;
+
+typedef struct TupleList {
+    Tuple *tuples;
+    size_t count;
+} TupleList;
+
+int tuple_equals(const Tuple *a, const Tuple *b) {
+    if (a->size != b->size) return 0;
+    for (size_t i = 0; i < a->size; i++) {
+        if (a->data[i] != b->data[i]) return 0;
+    }
+    return 1;
+}
+
+Tuple tuple_copy(const Tuple *src) {
+    Tuple dst;
+    dst.size = src->size;
+    dst.data = (int *)malloc(src->size * sizeof(int));
+    if (dst.data == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    memcpy(dst.data, src->data, src->size * sizeof(int));
+    dst.frequency = 0;
+    return dst;
+}
+
+void tuple_free(Tuple *t) {
+    free(t->data);
+    t->data = NULL;
+    t->size = 0;
+    t->frequency = 0;
+}
+
+void assign_frequencies(TupleList *list) {
+    if (list == NULL || list->tuples == NULL || list->count == 0) {
+        return;
+    }
+
+    for (size_t i = 0; i < list->count; i++) {
+        list->tuples[i].frequency = 0;
+    }
+
+    for (size_t i = 0; i < list->count; i++) {
+        if (list->tuples[i].frequency == 0) {
+            int count = 0;
+            for (size_t j = 0; j < list->count; j++) {
+                if (tuple_equals(&list->tuples[i], &list->tuples[j])) {
+                    count++;
+                }
+            }
+            for (size_t j = 0; j < list->count; j++) {
+                if (tuple_equals(&list->tuples[i], &list->tuples[j])) {
+                    list->tuples[j].frequency = count;
+                }
+            }
+        }
+    }
+}
+
+int main(void) {
+    TupleList list;
+    list.count = 5;
+    list.tuples = (Tuple *)malloc(list.count * sizeof(Tuple));
+    if (list.tuples == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    int data0[] = {1, 2, 3};
+    int data1[] = {4, 5};
+    int data2[] = {1, 2, 3};
+    int data3[] = {6};
+    int data4[] = {4, 5};
+
+    list.tuples[0].data = data0;
+    list.tuples[0].size = 3;
+    list.tuples[0].frequency = 0;
+
+    list.tuples[1].data = data1;
+    list.tuples[1].size = 2;
+    list.tuples[1].frequency = 0;
+
+    list.tuples[2].data = data2;
+    list.tuples[2].size = 3;
+    list.tuples[2].frequency = 0;
+
+    list.tuples[3].data = data3;
+    list.tuples[3].size = 1;
+    list.tuples[3].frequency = 0;
+
+    list.tuples[4].data = data4;
+    list.tuples[4].size = 2;
+    list.tuples[4].frequency = 0;
+
+    assign_frequencies(&list);
+
+    for (size_t i = 0; i < list.count; i++) {
+        printf("Tuple %zu: (", i);
+        for (size_t j = 0; j < list.tuples[i].size; j++) {
+            printf("%d", list.tuples[i].data[j]);
+            if (j + 1 < list.tuples[i].size) printf(", ");
+        }
+        printf(") frequency = %d\n", list.tuples[i].frequency);
+    }
+
+    free(list.tuples);
+    return EXIT_SUCCESS;
+}
+```

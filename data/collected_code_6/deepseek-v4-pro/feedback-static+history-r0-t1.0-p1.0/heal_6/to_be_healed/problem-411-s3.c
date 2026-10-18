@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *snake_to_camel(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(input);
+    size_t max_result_len = len + 1;
+    char *result = malloc(max_result_len);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t result_index = 0;
+    int capitalize_next = 0;
+
+    for (size_t i = 0; i < len; i++) {
+        char current = input[i];
+
+        if (current == '_') {
+            capitalize_next = 1;
+            continue;
+        }
+
+        if (capitalize_next) {
+            if (result_index >= max_result_len - 1) {
+                size_t new_size = max_result_len * 2;
+                char *temp = realloc(result, new_size);
+                if (temp == NULL) {
+                    free(result);
+                    return NULL;
+                }
+                result = temp;
+                max_result_len = new_size;
+            }
+            result[result_index++] = (char)toupper((unsigned char)current);
+            capitalize_next = 0;
+        } else {
+            if (result_index >= max_result_len - 1) {
+                size_t new_size = max_result_len * 2;
+                char *temp = realloc(result, new_size);
+                if (temp == NULL) {
+                    free(result);
+                    return NULL;
+                }
+                result = temp;
+                max_result_len = new_size;
+            }
+            result[result_index++] = current;
+        }
+    }
+
+    result[result_index] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "hello_world",
+        "snake_case_string",
+        "alreadyCamel",
+        "multiple__underscores",
+        "_leading_underscore",
+        "trailing_underscore_",
+        "",
+        "no_underscores_here",
+        "a_b_c_d_e"
+    };
+
+    size_t num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char *converted = snake_to_camel(test_cases[i]);
+        if (converted != NULL) {
+            printf("\"%s\" -> \"%s\"\n", test_cases[i], converted);
+            free(converted);
+        } else {
+            printf("\"%s\" -> NULL\n", test_cases[i]);
+        }
+    }
+
+    return 0;
+}

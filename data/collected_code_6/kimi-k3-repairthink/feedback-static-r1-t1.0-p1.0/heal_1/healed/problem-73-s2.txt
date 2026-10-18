@@ -1,0 +1,151 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char **split_string(const char *str, const char *pattern, int *count) {
+    regex_t regex;
+    regmatch_t match;
+    char **result = NULL;
+    char **temp = NULL;
+    const char *cursor = str;
+    int capacity = 10;
+    int size = 0;
+    size_t start = 0;
+    size_t str_len;
+
+    if (str == NULL || pattern == NULL || count == NULL) {
+        return NULL;
+    }
+
+    *count = 0;
+    str_len = strlen(str);
+
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return NULL;
+    }
+
+    result = malloc(capacity * sizeof(char *));
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    while (*cursor != '\0') {
+        if (regexec(&regex, cursor, 1, &match, 0) == 0) {
+            size_t end = start + (size_t)match.rm_so;
+
+            if (end > start) {
+                if (size >= capacity) {
+                    capacity *= 2;
+                    temp = realloc(result, capacity * sizeof(char *));
+                    if (temp == NULL) {
+                        for (int i = 0; i < size; i++) {
+                            free(result[i]);
+                        }
+                        free(result);
+                        regfree(&regex);
+                        return NULL;
+                    }
+                    result = temp;
+                }
+
+                result[size] = malloc(end - start + 1);
+                if (result[size] == NULL) {
+                    for (int i = 0; i < size; i++) {
+                        free(result[i]);
+                    }
+                    free(result);
+                    regfree(&regex);
+                    return NULL;
+                }
+
+                memcpy(result[size], str + start, end - start);
+                result[size][end - start] = '\0';
+                size++;
+            }
+
+            if (match.rm_eo == 0) {
+                start++;
+                cursor = str + start;
+                continue;
+            }
+
+            start = start + (size_t)match.rm_eo;
+            cursor = str + start;
+        } else {
+            break;
+        }
+    }
+
+    if (start < str_len) {
+        size_t remaining = str_len - start;
+
+        if (size >= capacity) {
+            capacity++;
+            temp = realloc(result, capacity * sizeof(char *));
+            if (temp == NULL) {
+                for (int i = 0; i < size; i++) {
+                    free(result[i]);
+                }
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            result = temp;
+        }
+
+        result[size] = malloc(remaining + 1);
+        if (result[size] == NULL) {
+            for (int i = 0; i < size; i++) {
+                free(result[i]);
+            }
+            free(result);
+            regfree(&regex);
+            return NULL;
+        }
+
+        memcpy(result[size], str + start, remaining);
+        result[size][remaining] = '\0';
+        size++;
+    }
+
+    regfree(&regex);
+    *count = size;
+    return result;
+}
+
+void free_split_result(char **result, int count) {
+    if (result != NULL) {
+        for (int i = 0; i < count; i++) {
+            free(result[i]);
+        }
+        free(result);
+    }
+}
+
+int main(void) {
+    const char *input = "apple,banana;orange:grape|mango";
+    const char *pattern = "[,;:|]";
+    int count = 0;
+    char **tokens = split_string(input, pattern, &count);
+
+    if (tokens != NULL) {
+        for (int i = 0; i < count; i++) {
+            printf("%s\n", tokens[i]);
+        }
+        free_split_result(tokens, count);
+    }
+
+    return 0;
+}
+```
+
+Summary of fixes applied:
+
+- **unreadVariable (`end`)**: `end` is now declared and initialized at its point of use inside the loop (`size_t end = start + (size_t)match.rm_so;`), eliminating the dead initialization.
+- **strncpy (CWE-120)**: Replaced with `memcpy` using the exact known token length, followed by explicit null termination — `memcpy` is the correct tool when the copy length is precisely known.
+- **strcpy (CWE-120)**: Replaced with `memcpy` using the precomputed remaining length, followed by explicit null termination, so the copy is always bounded by the validated buffer size.
+- **strlen (CWE-126)**: `strlen` is now called exactly once on the input; the final-token logic uses the precomputed `str_len` and the `start` index (`start < str_len`, `str_len - start`) instead of repeatedly scanning the cursor.
+- **Robustness**: Added a guard against zero-length regex matches (`match.rm_eo == 0`) to prevent a potential infinite loop, and switched `start`/length arithmetic to `size_t` for type consistency.

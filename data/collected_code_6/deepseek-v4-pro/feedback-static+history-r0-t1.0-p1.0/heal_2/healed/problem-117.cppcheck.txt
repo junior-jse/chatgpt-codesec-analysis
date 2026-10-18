@@ -1,0 +1,28 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:170:17: style: Condition 'len>=32' is always false [knownConditionTrueFalse]
+        if (len >= 32) len = 31;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:169:28: note: Assignment 'len=strlen("3.14159")', assigned value is 7
+        size_t len = strlen("3.14159");
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:170:17: note: Condition 'len>=32' is always false
+        if (len >= 32) len = 31;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:197:17: style: Condition 'len>=32' is always false [knownConditionTrueFalse]
+        if (len >= 32) len = 31;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:196:28: note: Assignment 'len=strlen("not_a_number")', assigned value is 12
+        size_t len = strlen("not_a_number");
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:197:17: note: Condition 'len>=32' is always false
+        if (len >= 32) len = 31;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:208:17: style: Condition 'len>=32' is always false [knownConditionTrueFalse]
+        if (len >= 32) len = 31;
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:207:28: note: Assignment 'len=strlen("123.456")', assigned value is 7
+        size_t len = strlen("123.456");
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-117.c:208:17: note: Condition 'len>=32' is always false
+        if (len >= 32) len = 31;
+                ^

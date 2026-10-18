@@ -1,0 +1,73 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int find_nth_digit(long long numerator, long long denominator, int n, int *result) {
+    long long remainder;
+    int i;
+
+    if (result == NULL) {
+        return -1;
+    }
+    if (denominator == 0 || n < 1) {
+        return -1;
+    }
+    if (numerator < 0 || denominator < 0) {
+        return -1;
+    }
+    if (numerator >= denominator) {
+        return -1;
+    }
+
+    remainder = numerator;
+
+    for (i = 0; i < n; i++) {
+        if (remainder > LLONG_MAX / 10) {
+            return -1;
+        }
+        remainder *= 10;
+        *result = (int)(remainder / denominator);
+        remainder = remainder % denominator;
+    }
+
+    return 0;
+}
+
+int main(void) {
+    long long numerator;
+    long long denominator;
+    int n;
+    int digit;
+    int status;
+
+    printf("Enter numerator: ");
+    if (scanf("%lld", &numerator) != 1) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter denominator: ");
+    if (scanf("%lld", &denominator) != 1) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter position n: ");
+    if (scanf("%d", &n) != 1) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    status = find_nth_digit(numerator, denominator, n, &digit);
+
+    if (status != 0) {
+        fprintf(stderr, "Error: invalid parameters or overflow occurred\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("The %dth digit of %lld/%lld is: %d\n", n, numerator, denominator, digit);
+
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,131 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char* key;
+    char* value;
+} KeyValuePair;
+
+typedef struct {
+    KeyValuePair* pairs;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+Dictionary* create_dictionary(size_t capacity) {
+    Dictionary* dict = (Dictionary*)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->pairs = (KeyValuePair*)malloc(capacity * sizeof(KeyValuePair));
+    if (dict->pairs == NULL) {
+        free(dict);
+        return NULL;
+    }
+    dict->size = 0;
+    dict->capacity = capacity;
+    return dict;
+}
+
+void free_dictionary(Dictionary* dict) {
+    if (dict == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        free(dict->pairs[i].key);
+        free(dict->pairs[i].value);
+    }
+    free(dict->pairs);
+    free(dict);
+}
+
+int add_pair(Dictionary* dict, const char* key, const char* value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+    if (dict->size >= dict->capacity) {
+        return -1;
+    }
+    dict->pairs[dict->size].key = (char*)malloc(strlen(key) + 1);
+    if (dict->pairs[dict->size].key == NULL) {
+        return -1;
+    }
+    strcpy(dict->pairs[dict->size].key, key);
+    dict->pairs[dict->size].value = (char*)malloc(strlen(value) + 1);
+    if (dict->pairs[dict->size].value == NULL) {
+        free(dict->pairs[dict->size].key);
+        return -1;
+    }
+    strcpy(dict->pairs[dict->size].value, value);
+    dict->size++;
+    return 0;
+}
+
+Dictionary* tuple_to_dict(char* tuple[], size_t tuple_size) {
+    if (tuple == NULL || tuple_size == 0) {
+        return NULL;
+    }
+    size_t pair_count = tuple_size / 2;
+    Dictionary* dict = create_dictionary(pair_count);
+    if (dict == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < pair_count; i++) {
+        if (add_pair(dict, tuple[i * 2], tuple[i * 2 + 1]) != 0) {
+            free_dictionary(dict);
+            return NULL;
+        }
+    }
+    return dict;
+}
+
+const char* get_value(Dictionary* dict, const char* key) {
+    if (dict == NULL || key == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        if (strcmp(dict->pairs[i].key, key) == 0) {
+            return dict->pairs[i].value;
+        }
+    }
+    return NULL;
+}
+
+void print_dictionary(Dictionary* dict) {
+    if (dict == NULL) {
+        return;
+    }
+    printf("{");
+    for (size_t i = 0; i < dict->size; i++) {
+        printf("'%s': '%s'", dict->pairs[i].key, dict->pairs[i].value);
+        if (i < dict->size - 1) {
+            printf(", ");
+        }
+    }
+    printf("}\n");
+}
+
+int main(void) {
+    char* tuple[] = {"name", "John", "age", "30", "city", "New York"};
+    size_t tuple_size = sizeof(tuple) / sizeof(tuple[0]);
+
+    Dictionary* dict = tuple_to_dict(tuple, tuple_size);
+    if (dict == NULL) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Dictionary: ");
+    print_dictionary(dict);
+
+    const char* value = get_value(dict, "age");
+    if (value != NULL) {
+        printf("Value for key 'age': %s\n", value);
+    }
+
+    free_dictionary(dict);
+    return EXIT_SUCCESS;
+}
+```

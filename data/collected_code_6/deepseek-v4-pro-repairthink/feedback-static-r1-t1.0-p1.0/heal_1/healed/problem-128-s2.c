@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+const char **shortlist_long_words(const char *words[], int word_count, size_t n, int *out_count) {
+    const char **result = NULL;
+    int count = 0;
+
+    if (words == NULL || out_count == NULL || word_count < 0) {
+        if (out_count != NULL) {
+            *out_count = 0;
+        }
+        return NULL;
+    }
+
+    result = malloc((size_t)word_count * sizeof(const char *));
+    if (result == NULL) {
+        *out_count = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < word_count; i++) {
+        if (words[i] != NULL && strnlen(words[i], n + 1) > n) {
+            result[count] = words[i];
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        free(result);
+        *out_count = 0;
+        return NULL;
+    }
+
+    const char **shrunk = realloc(result, (size_t)count * sizeof(const char *));
+    if (shrunk != NULL) {
+        result = shrunk;
+    }
+
+    *out_count = count;
+    return result;
+}
+
+int main(void) {
+    const char *words[] = {"apple", "banana", "kiwi", "strawberry", "plum", "watermelon"};
+    int word_count = (int)(sizeof(words) / sizeof(words[0]));
+    size_t n = 5;
+    int shortlisted_count = 0;
+
+    const char **shortlisted = shortlist_long_words(words, word_count, n, &shortlisted_count);
+
+    if (shortlisted == NULL || shortlisted_count == 0) {
+        printf("No words longer than %zu characters found.\n", n);
+        return 0;
+    }
+
+    printf("Words longer than %zu characters:\n", n);
+    for (int i = 0; i < shortlisted_count; i++) {
+        printf("%s\n", shortlisted[i]);
+    }
+
+    free(shortlisted);
+    return 0;
+}

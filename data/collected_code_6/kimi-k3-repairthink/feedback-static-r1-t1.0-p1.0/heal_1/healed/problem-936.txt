@@ -1,0 +1,151 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define TUPLE_NAME_SIZE 50
+
+typedef struct {
+    int id;
+    char name[TUPLE_NAME_SIZE];
+    int value;
+} Tuple;
+
+static int tuple_set_name(Tuple *tuple, const char *name)
+{
+    int written;
+
+    if (tuple == NULL || name == NULL) {
+        return -1;
+    }
+
+    written = snprintf(tuple->name, sizeof(tuple->name), "%s", name);
+    if (written < 0 || (size_t)written >= sizeof(tuple->name)) {
+        tuple->name[0] = '\0';
+        return -1;
+    }
+
+    return 0;
+}
+
+static int tuple_init(Tuple *tuple, int id, const char *name, int value)
+{
+    if (tuple == NULL) {
+        return -1;
+    }
+
+    tuple->id = id;
+    tuple->value = value;
+
+    if (tuple_set_name(tuple, name) != 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+int rearrange_tuples(Tuple *tuples, size_t tuple_count, const size_t *order, size_t order_count)
+{
+    Tuple *temp;
+    size_t i;
+    size_t bytes;
+
+    if (tuples == NULL || order == NULL) {
+        return -1;
+    }
+
+    if (tuple_count == 0 || order_count == 0) {
+        return -1;
+    }
+
+    if (order_count > tuple_count) {
+        return -1;
+    }
+
+    if (tuple_count > SIZE_MAX / sizeof(Tuple)) {
+        return -1;
+    }
+
+    bytes = tuple_count * sizeof(Tuple);
+
+    temp = (Tuple *)malloc(bytes);
+    if (temp == NULL) {
+        return -1;
+    }
+
+    for (i = 0; i < order_count; i++) {
+        if (order[i] >= tuple_count) {
+            free(temp);
+            temp = NULL;
+            return -1;
+        }
+    }
+
+    memcpy(temp, tuples, bytes);
+
+    for (i = 0; i < order_count; i++) {
+        tuples[i] = temp[order[i]];
+    }
+
+    free(temp);
+    temp = NULL;
+
+    return 0;
+}
+
+void print_tuples(const Tuple *tuples, size_t count)
+{
+    size_t i;
+
+    if (tuples == NULL) {
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        printf("Tuple %zu: id=%d, name=%.*s, value=%d\n",
+               i, tuples[i].id, TUPLE_NAME_SIZE - 1, tuples[i].name, tuples[i].value);
+    }
+}
+
+int main(void)
+{
+    Tuple tuples[5];
+    size_t order[] = {2, 0, 4, 1, 3};
+    size_t tuple_count = sizeof(tuples) / sizeof(tuples[0]);
+    size_t order_count = sizeof(order) / sizeof(order[0]);
+    int result;
+
+    if (tuple_init(&tuples[0], 1, "Alpha", 100) != 0 ||
+        tuple_init(&tuples[1], 2, "Beta", 200) != 0 ||
+        tuple_init(&tuples[2], 3, "Gamma", 300) != 0 ||
+        tuple_init(&tuples[3], 4, "Delta", 400) != 0 ||
+        tuple_init(&tuples[4], 5, "Epsilon", 500) != 0) {
+        fprintf(stderr, "Error: Failed to initialize tuples\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original tuples:\n");
+    print_tuples(tuples, tuple_count);
+
+    result = rearrange_tuples(tuples, tuple_count, order, order_count);
+
+    if (result != 0) {
+        fprintf(stderr, "Error: Failed to rearrange tuples\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("\nRearranged tuples:\n");
+    print_tuples(tuples, tuple_count);
+
+    return EXIT_SUCCESS;
+}
+```
+
+**Summary of fixes applied:**
+
+1. **`char name[50]` (CWE-119/CWE-120):** All writes to the fixed-size buffer now go through `tuple_set_name()`, which uses `snprintf` with the destination size, guaranteeing bounded writes and null-termination. Truncation or encoding errors are detected via the `snprintf` return value. Additionally, `print_tuples` uses a precision-limited `%.*s` as defense-in-depth against non-terminated strings.
+
+2. **`memcpy` (CWE-120):** The copy size is computed once in `bytes` after an explicit integer-overflow check (`tuple_count > SIZE_MAX / sizeof(Tuple)`), and the destination buffer is allocated with exactly that size, so destination capacity provably matches the copy length.
+
+3. **Bonus robustness:** Order indices are fully validated *before* any element is moved, preventing partial modification of the array when an invalid index is encountered mid-loop.

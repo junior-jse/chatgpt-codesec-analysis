@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c: In function 'add_word':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:41:28: error: 'SIZE_MAX' undeclared (first use in this function)
+   41 |         if (new_capacity > SIZE_MAX / sizeof **words) {
+      |                            ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:7:1: note: 'SIZE_MAX' is defined in header '<stdint.h>'; this is probably fixable by adding '#include <stdint.h>'
+    6 | #include <ctype.h>
+  +++ |+#include <stdint.h>
+    7 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:41:28: note: each undeclared identifier is reported only once for each function it appears in
+   41 |         if (new_capacity > SIZE_MAX / sizeof **words) {
+      |                            ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c: In function 'find_most_common_words':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:93:36: error: 'SIZE_MAX' undeclared (first use in this function)
+   93 |                 if (buf_capacity > SIZE_MAX / 2) {
+      |                                    ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:93:36: note: 'SIZE_MAX' is defined in header '<stdint.h>'; this is probably fixable by adding '#include <stdint.h>'

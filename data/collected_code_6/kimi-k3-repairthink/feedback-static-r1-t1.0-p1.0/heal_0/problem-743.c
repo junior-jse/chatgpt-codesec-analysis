@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void reverse(int *arr, int start, int end) {
+    while (start < end) {
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+void rotate_right(int *arr, int n, int k) {
+    if (arr == NULL || n <= 0 || k < 0) {
+        return;
+    }
+    k = k % n;
+    reverse(arr, 0, n - 1);
+    reverse(arr, 0, k - 1);
+    reverse(arr, k, n - 1);
+}
+
+int main(void) {
+    int n, k, i;
+    int *arr = NULL;
+
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        return EXIT_FAILURE;
+    }
+
+    arr = (int *)malloc((size_t)n * sizeof(int));
+    if (arr == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < n; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            free(arr);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (scanf("%d", &k) != 1 || k < 0) {
+        free(arr);
+        return EXIT_FAILURE;
+    }
+
+    rotate_right(arr, n, k);
+
+    for (i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    free(arr);
+    return EXIT_SUCCESS;
+}

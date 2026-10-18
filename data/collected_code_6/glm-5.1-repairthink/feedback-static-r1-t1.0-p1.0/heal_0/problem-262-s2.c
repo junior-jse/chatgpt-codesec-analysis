@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* create_node(int data) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+void split_list(Node *source, int k, Node **front, Node **back) {
+    *front = source;
+    *back = NULL;
+    
+    if (source == NULL) {
+        return;
+    }
+
+    if (k <= 0) {
+        *front = NULL;
+        *back = source;
+        return;
+    }
+
+    Node *current = source;
+    int count = 1;
+    
+    while (current->next != NULL && count < k) {
+        current = current->next;
+        count++;
+    }
+
+    *back = current->next;
+    current->next = NULL;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main() {
+    Node *head = create_node(1);
+    head->next = create_node(2);
+    head->next->next = create_node(3);
+    head->next->next->next = create_node(4);
+    head->next->next->next->next = create_node(5);
+
+    Node *part1 = NULL;
+    Node *part2 = NULL;
+
+    split_list(head, 2, &part1, &part2);
+
+    Node *curr = part1;
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->next;
+    }
+    printf("\n");
+
+    curr = part2;
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->next;
+    }
+    printf("\n");
+
+    free_list(part1);
+    free_list(part2);
+
+    return 0;
+}

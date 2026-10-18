@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-969.c:101:28: warning: Value stored to 'len1' during its initialization is never read [deadcode.DeadStores]
+  101 |                     size_t len1 = strlen(input->tuples[i].first);
+      |                            ^~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.

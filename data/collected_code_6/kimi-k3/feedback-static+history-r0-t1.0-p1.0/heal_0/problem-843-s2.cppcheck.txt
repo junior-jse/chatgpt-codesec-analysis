@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:99:45: style: Parameter 'primes' can be declared as pointer to const [constParameterPointer]
+long long nth_super_ugly_number(int n, int *primes, int k) {
+                                            ^

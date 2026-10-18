@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-542-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-542-s3.c:101:28: style: The if condition is the same as the previous if condition [duplicateCondition]
+        if (result_len + 1 > buffer_size) {
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-542-s3.c:98:28: note: First condition
+        if (result_len + 1 > buffer_size) {
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-542-s3.c:101:28: note: Second condition
+        if (result_len + 1 > buffer_size) {
+                           ^

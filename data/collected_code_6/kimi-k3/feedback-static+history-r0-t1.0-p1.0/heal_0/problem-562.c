@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int findMaxSublistLength(const int *arr, size_t size, int *maxLength)
+{
+    if (arr == NULL || maxLength == NULL || size == 0)
+    {
+        return -1;
+    }
+
+    int maxLen = 1;
+    int currentLen = 1;
+
+    for (size_t i = 1; i < size; i++)
+    {
+        if (arr[i] >= arr[i - 1])
+        {
+            currentLen++;
+            if (currentLen > maxLen)
+            {
+                maxLen = currentLen;
+            }
+        }
+        else
+        {
+            currentLen = 1;
+        }
+    }
+
+    *maxLength = maxLen;
+    return 0;
+}
+
+int main(void)
+{
+    int arr[] = {1, 2, 3, 2, 4, 5, 6, 1, 2};
+    size_t size = sizeof(arr) / sizeof(arr[0]);
+    int maxLength = 0;
+
+    if (findMaxSublistLength(arr, size, &maxLength) != 0)
+    {
+        fprintf(stderr, "Error: Invalid input parameters\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Maximum length of sublist: %d\n", maxLength);
+
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-237-s2.c:102:10: error: use of undeclared identifier 'counts'
+  102 |     free(counts);
+      |          ^~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-237-s2.c:103:10: error: use of undeclared identifier 'group_counts'
+  103 |     free(group_counts);
+      |          ^~~~~~~~~~~~
+2 errors generated.

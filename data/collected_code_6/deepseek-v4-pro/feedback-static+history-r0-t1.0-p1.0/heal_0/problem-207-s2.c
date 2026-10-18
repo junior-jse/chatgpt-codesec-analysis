@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int longest_repeating_subsequence(const char *str) {
+    int n = strlen(str);
+    int dp[200][200] = {0};
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (str[i - 1] == str[j - 1] && i != j) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = (dp[i - 1][j] > dp[i][j - 1]) ? dp[i - 1][j] : dp[i][j - 1];
+            }
+        }
+    }
+
+    return dp[n][n];
+}
+
+int main(void) {
+    const char *test1 = "AABEBCDD";
+    const char *test2 = "axxxy";
+    const char *test3 = "aab";
+    const char *test4 = "abc";
+    const char *test5 = "";
+
+    printf("Longest repeating subsequence of %s: %d\n", test1, longest_repeating_subsequence(test1));
+    printf("Longest repeating subsequence of %s: %d\n", test2, longest_repeating_subsequence(test2));
+    printf("Longest repeating subsequence of %s: %d\n", test3, longest_repeating_subsequence(test3));
+    printf("Longest repeating subsequence of %s: %d\n", test4, longest_repeating_subsequence(test4));
+    printf("Longest repeating subsequence of %s: %d\n", test5, longest_repeating_subsequence(test5));
+
+    return 0;
+}

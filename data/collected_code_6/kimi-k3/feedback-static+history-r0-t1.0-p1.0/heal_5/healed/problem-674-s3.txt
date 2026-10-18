@@ -1,0 +1,232 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define INITIAL_CAPACITY 10
+#define MAX_INPUT_SIZE 1000
+
+typedef struct {
+    char **words;
+    size_t count;
+    size_t capacity;
+} WordCollection;
+
+WordCollection* create_collection(size_t initial_capacity) {
+    if (initial_capacity == 0) {
+        return NULL;
+    }
+    
+    WordCollection *collection = malloc(sizeof(WordCollection));
+    if (collection == NULL) {
+        return NULL;
+    }
+    
+    collection->words = calloc(initial_capacity, sizeof(char*));
+    if (collection->words == NULL) {
+        free(collection);
+        return NULL;
+    }
+    
+    collection->count = 0;
+    collection->capacity = initial_capacity;
+    return collection;
+}
+
+void free_collection(WordCollection *collection) {
+    if (collection == NULL) {
+        return;
+    }
+    
+    if (collection->words != NULL) {
+        for (size_t i = 0; i < collection->count; i++) {
+            free(collection->words[i]);
+        }
+        free(collection->words);
+    }
+    free(collection);
+}
+
+int word_exists(const WordCollection *collection, const char *word) {
+    if (collection == NULL || word == NULL) {
+        return 0;
+    }
+    
+    for (size_t i = 0; i < collection->count; i++) {
+        if (strcmp(collection->words[i], word) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int add_word(WordCollection *collection, const char *word) {
+    if (collection == NULL || word == NULL) {
+        return -1;
+    }
+    
+    if (word_exists(collection, word)) {
+        return 0;
+    }
+    
+    if (collection->count >= collection->capacity) {
+        if (collection->capacity > SIZE_MAX / 2) {
+            return -1;
+        }
+        size_t new_capacity = collection->capacity * 2;
+        
+        if (new_capacity > SIZE_MAX / sizeof(char*)) {
+            return -1;
+        }
+        
+        char **new_words = realloc(collection->words, new_capacity * sizeof(char*));
+        if (new_words == NULL) {
+            return -1;
+        }
+        collection->words = new_words;
+        collection->capacity = new_capacity;
+    }
+    
+    size_t word_len = strnlen(word, MAX_INPUT_SIZE);
+    if (word_len == MAX_INPUT_SIZE) {
+        return -1;
+    }
+    
+    collection->words[collection->count] = malloc(word_len + 1);
+    if (collection->words[collection->count] == NULL) {
+        return -1;
+    }
+    
+    snprintf(collection->words[collection->count], word_len + 1, "%s", word);
+    collection->count++;
+    return 1;
+}
+
+char* remove_duplicate_words(const char *input, size_t max_len) {
+    if (input == NULL || max_len == 0) {
+        return NULL;
+    }
+    
+    size_t input_len = strnlen(input, max_len);
+    if (input_len == max_len) {
+        return NULL;
+    }
+    
+    WordCollection *collection = create_collection(INITIAL_CAPACITY);
+    if (collection == NULL) {
+        return NULL;
+    }
+    
+    char *input_copy = malloc(input_len + 1);
+    if (input_copy == NULL) {
+        free_collection(collection);
+        return NULL;
+    }
+    
+    snprintf(input_copy, input_len + 1, "%s", input);
+    
+    char *saveptr = NULL;
+    char *token = strtok_r(input_copy, " \t\n\r", &saveptr);
+    while (token != NULL) {
+        if (add_word(collection, token) < 0) {
+            free(input_copy);
+            free_collection(collection);
+            return NULL;
+        }
+        token = strtok_r(NULL, " \t\n\r", &saveptr);
+    }
+    
+    size_t total_len = 0;
+    for (size_t i = 0; i < collection->count; i++) {
+        size_t word_len = strnlen(collection->words[i], MAX_INPUT_SIZE);
+        if (word_len == MAX_INPUT_SIZE || 
+            total_len > SIZE_MAX - word_len - 2) {
+            free(input_copy);
+            free_collection(collection);
+            return NULL;
+        }
+        total_len += word_len + 1;
+    }
+    
+    if (total_len == 0) {
+        total_len = 1;
+    }
+    
+    char *result = malloc(total_len + 1);
+    if (result == NULL) {
+        free(input_copy);
+        free_collection(collection);
+        return NULL;
+    }
+    
+    size_t offset = 0;
+    for (size_t i = 0; i < collection->count; i++) {
+        size_t word_len = strnlen(collection->words[i], MAX_INPUT_SIZE);
+        if (word_len == MAX_INPUT_SIZE) {
+            free(result);
+            free(input_copy);
+            free_collection(collection);
+            return NULL;
+        }
+        
+        if (offset + word_len >= total_len) {
+            free(result);
+            free(input_copy);
+            free_collection(collection);
+            return NULL;
+        }
+        
+        if (offset + word_len + 1 <= total_len) {
+            snprintf(result + offset, total_len + 1 - offset, "%s", collection->words[i]);
+        }
+        offset += word_len;
+        
+        if (i < collection->count - 1) {
+            if (offset >= total_len) {
+                free(result);
+                free(input_copy);
+                free_collection(collection);
+                return NULL;
+            }
+            result[offset++] = ' ';
+        }
+    }
+    result[offset] = '\0';
+    
+    free(input_copy);
+    free_collection(collection);
+    return result;
+}
+
+int main(void) {
+    char *input = NULL;
+    size_t input_size = 0;
+    ssize_t input_len;
+    
+    printf("Enter a string: ");
+    input_len = getline(&input, &input_size, stdin);
+    if (input_len < 0) {
+        fprintf(stderr, "Error reading input\n");
+        free(input);
+        return EXIT_FAILURE;
+    }
+    
+    if (input_len > 0 && input[input_len - 1] == '\n') {
+        input[input_len - 1] = '\0';
+    }
+    
+    char *result = remove_duplicate_words(input, MAX_INPUT_SIZE);
+    free(input);
+    
+    if (result == NULL) {
+        fprintf(stderr, "Error processing string\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Result: %s\n", result);
+    
+    free(result);
+    return EXIT_SUCCESS;
+}
+```

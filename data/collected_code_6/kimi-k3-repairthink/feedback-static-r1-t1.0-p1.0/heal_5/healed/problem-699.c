@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX_LEN 100
+
+int min_swaps(const char *s1, const char *s2, size_t max_len) {
+    if (s1 == NULL || s2 == NULL || max_len == 0) {
+        return -1;
+    }
+
+    size_t len1 = strnlen(s1, max_len);
+    size_t len2 = strnlen(s2, max_len);
+
+    if (len1 >= max_len || len2 >= max_len) {
+        return -1;
+    }
+
+    if (len1 != len2) {
+        return -1;
+    }
+
+    size_t diff = 0;
+    for (size_t i = 0; i < len1; i++) {
+        if (s1[i] != s2[i]) {
+            diff++;
+        }
+    }
+
+    if (diff % 2 != 0) {
+        return -1;
+    }
+
+    return (int)(diff / 2);
+}
+
+static int read_line(char *buf, size_t size) {
+    if (buf == NULL || size < 2) {
+        return -1;
+    }
+
+    size_t i = 0;
+    int ch = 0;
+    int too_long = 0;
+
+    while ((ch = fgetc(stdin)) != EOF && ch != '\n') {
+        if (i + 1 < size) {
+            buf[i] = (char)ch;
+            i++;
+        } else {
+            too_long = 1;
+        }
+    }
+
+    buf[i] = '\0';
+
+    if (too_long) {
+        return -1;
+    }
+
+    if (ch == EOF && i == 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+int main(void) {
+    size_t buf_size = (size_t)MAX_LEN + 2;
+
+    char *s1 = calloc(buf_size, sizeof(*s1));
+    char *s2 = calloc(buf_size, sizeof(*s2));
+
+    if (s1 == NULL || s2 == NULL) {
+        free(s1);
+        free(s2);
+        return 1;
+    }
+
+    if (read_line(s1, buf_size) != 0) {
+        free(s1);
+        free(s2);
+        return 1;
+    }
+
+    if (read_line(s2, buf_size) != 0) {
+        free(s1);
+        free(s2);
+        return 1;
+    }
+
+    int result = min_swaps(s1, s2, buf_size);
+
+    if (result == -1) {
+        printf("Conversion not possible\n");
+    } else {
+        printf("Minimum swaps required: %d\n", result);
+    }
+
+    free(s1);
+    free(s2);
+    return 0;
+}

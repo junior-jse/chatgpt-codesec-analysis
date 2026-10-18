@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+char *most_frequent_word(char **strings, int count) {
+    if (strings == NULL || count <= 0) {
+        return NULL;
+    }
+
+    char **words = NULL;
+    int *freqs = NULL;
+    int unique_count = 0;
+    int capacity = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (strings[i] == NULL) {
+            continue;
+        }
+
+        size_t current_len = strnlen(strings[i], 4096);
+        char *current_copy = malloc(current_len + 1);
+        if (current_copy == NULL) {
+            for (int k = 0; k < unique_count; k++) {
+                free(words[k]);
+            }
+            free(words);
+            free(freqs);
+            return NULL;
+        }
+        if (current_len > 0) {
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(current_copy, strings[i], current_len);
+        }
+        current_copy[current_len] = '\0';
+
+        char *saveptr;
+        char *token = strtok_r(current_copy, " \t\n", &saveptr);
+        while (token != NULL) {
+            int found = 0;
+            for (int j = 0; j < unique_count; j++) {
+                if (strcmp(words[j], token) == 0) {
+                    freqs[j]++;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                if (unique_count == capacity) {
+                    capacity = capacity == 0 ? 16 : capacity * 2;
+                    char **new_words = realloc(words, capacity * sizeof(char *));
+                    int *new_freqs = realloc(freqs, capacity * sizeof(int));
+                    if (new_words == NULL || new_freqs == NULL) {
+                        free(new_words);
+                        free(new_freqs);
+                        for (int k = 0; k < unique_count; k++) {
+                            free(words[k]);
+                        }
+                        free(words);
+                        free(freqs);
+                        free(current_copy);
+                        return NULL;
+                    }
+                    words = new_words;
+                    freqs = new_freqs;
+                }
+
+                size_t token_len = strnlen(token, 4096);
+                words[unique_count] = malloc(token_len + 1);
+                if (words[unique_count] == NULL) {
+                    for (int k = 0; k < unique_count; k++) {
+                        free(words[k]);
+                    }
+                    free(words);
+                    free(freqs);
+                    free(current_copy);
+                    return NULL;
+                }
+                if (token_len > 0) {
+                    /* Possible weaknesses found:
+                     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                     */
+                    memcpy(words[unique_count], token, token_len);
+                }
+                words[unique_count][token_len] = '\0';
+                freqs[unique_count] = 1;
+                unique_count++;
+            }
+            token = strtok_r(NULL, " \t\n", &saveptr);
+        }
+        free(current_copy);
+    }
+
+    if (unique_count == 0) {
+        free(words);
+        free(freqs);
+        return NULL;
+    }
+
+    int max_index = 0;
+    for (int i = 1; i < unique_count; i++) {
+        if (freqs[i] > freqs[max_index]) {
+            max_index = i;
+        }
+    }
+
+    size_t result_len = strnlen(words[max_index], 4096);
+    char *result = malloc(result_len + 1);
+    if (result == NULL) {
+        for (int k = 0; k < unique_count; k++) {
+            free(words[k]);
+        }
+        free(words);
+        free(freqs);
+        return NULL;
+    }
+    if (result_len > 0) {
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(result, words[max_index], result_len);
+    }
+    result[result_len] = '\0';
+
+    for (int k = 0; k < unique_count; k++) {
+        free(words[k]);
+    }
+    free(words);
+    free(freqs);
+
+    return result;
+}
+
+int main(void) {
+    char str1[] = "hello world hello";
+    char str2[] = "world of programming";
+    char str3[] = "hello from C";
+    char *strings[] = {str1, str2, str3};
+
+    char *result = most_frequent_word(strings, 3);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    return 0;
+}

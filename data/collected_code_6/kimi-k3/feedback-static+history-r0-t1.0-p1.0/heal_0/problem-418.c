@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    int length;
+} SublistResult;
+
+static Node *create_node(int data)
+{
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+static void free_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+static int insert_node(Node **head, int data)
+{
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return -1;
+    }
+    
+    if (*head == NULL) {
+        *head = new_node;
+        return 0;
+    }
+    
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return 0;
+}
+
+static SublistResult find_max_length_sublist(Node **sublists, int count)
+{
+    SublistResult result = {NULL, 0};
+    
+    if (sublists == NULL || count <= 0) {
+        return result;
+    }
+    
+    for (int i = 0; i < count; i++) {
+        int current_length = 0;
+        Node *current = sublists[i];
+        
+        while (current != NULL) {
+            current_length++;
+            current = current->next;
+        }
+        
+        if (current_length > result.length) {
+            result.head = sublists[i];
+            result.length = current_length;
+        }
+    }
+    
+    return result;
+}
+
+static void print_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    Node *sublists[4] = {NULL, NULL, NULL, NULL};
+    int i;
+    
+    for (i = 0; i < 3; i++) {
+        if (insert_node(&sublists[0], i + 1) != 0) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < 4; j++) {
+                free_list(sublists[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+    
+    for (i = 0; i < 5; i++) {
+        if (insert_node(&sublists[1], (i + 1) * 10) != 0) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < 4; j++) {
+                free_list(sublists[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+    
+    for (i = 0; i < 2; i++) {
+        if (insert_node(&sublists[2], (i + 1) * 100) != 0) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < 4; j++) {
+                free_list(sublists[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+    
+    for (i = 0; i < 7; i++) {
+        if (insert_node(&sublists[3], (i + 1) * 1000) != 0) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < 4; j++) {
+                free_list(sublists[j]);
+            }
+            return EXIT_FAILURE;
+        }
+    }
+    
+    SublistResult result = find_max_length_sublist(sublists, 4);
+    
+    if (result.head != NULL) {
+        printf("Sublist with maximum length (%d):\n", result.length);
+        print_list(result.head);
+    } else {
+        printf("No sublists found or all sublists are empty\n");
+    }
+    
+    for (i = 0; i < 4; i++) {
+        free_list(sublists[i]);
+    }
+    
+    return EXIT_SUCCESS;
+}

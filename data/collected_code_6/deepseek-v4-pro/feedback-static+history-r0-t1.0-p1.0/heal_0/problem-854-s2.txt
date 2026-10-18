@@ -1,0 +1,174 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} Heap;
+
+static void heap_swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static void heap_sift_up(Heap *heap, size_t index) {
+    while (index > 0) {
+        size_t parent = (index - 1) / 2;
+        if (heap->data[parent] <= heap->data[index]) {
+            break;
+        }
+        heap_swap(&heap->data[parent], &heap->data[index]);
+        index = parent;
+    }
+}
+
+static void heap_sift_down(Heap *heap, size_t index) {
+    while (1) {
+        size_t left = 2 * index + 1;
+        size_t right = 2 * index + 2;
+        size_t smallest = index;
+
+        if (left < heap->size && heap->data[left] < heap->data[smallest]) {
+            smallest = left;
+        }
+        if (right < heap->size && heap->data[right] < heap->data[smallest]) {
+            smallest = right;
+        }
+        if (smallest == index) {
+            break;
+        }
+        heap_swap(&heap->data[index], &heap->data[smallest]);
+        index = smallest;
+    }
+}
+
+static void heap_heapify(Heap *heap) {
+    if (heap->size <= 1) {
+        return;
+    }
+    size_t start = heap->size / 2;
+    while (start > 0) {
+        start--;
+        heap_sift_down(heap, start);
+    }
+}
+
+Heap *heap_create(size_t capacity) {
+    Heap *heap = malloc(sizeof(Heap));
+    if (heap == NULL) {
+        return NULL;
+    }
+    heap->data = malloc(capacity * sizeof(int));
+    if (heap->data == NULL) {
+        free(heap);
+        return NULL;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return heap;
+}
+
+void heap_destroy(Heap *heap) {
+    if (heap == NULL) {
+        return;
+    }
+    free(heap->data);
+    free(heap);
+}
+
+int heap_push(Heap *heap, int value) {
+    if (heap == NULL) {
+        return -1;
+    }
+    if (heap->size >= heap->capacity) {
+        size_t new_capacity = heap->capacity * 2;
+        int *new_data = realloc(heap->data, new_capacity * sizeof(int));
+        if (new_data == NULL) {
+            return -1;
+        }
+        heap->data = new_data;
+        heap->capacity = new_capacity;
+    }
+    heap->data[heap->size] = value;
+    heap_sift_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+int heap_pop(Heap *heap, int *out_value) {
+    if (heap == NULL || heap->size == 0) {
+        return -1;
+    }
+    *out_value = heap->data[0];
+    heap->size--;
+    if (heap->size > 0) {
+        heap->data[0] = heap->data[heap->size];
+        heap_sift_down(heap, 0);
+    }
+    return 0;
+}
+
+size_t heap_size(const Heap *heap) {
+    if (heap == NULL) {
+        return 0;
+    }
+    return heap->size;
+}
+
+int heap_is_empty(const Heap *heap) {
+    return heap_size(heap) == 0;
+}
+
+void heap_from_list(Heap *heap, const int *list, size_t count) {
+    if (heap == NULL || list == NULL || count == 0) {
+        return;
+    }
+    if (count > heap->capacity) {
+        int *new_data = realloc(heap->data, count * sizeof(int));
+        if (new_data == NULL) {
+            return;
+        }
+        heap->data = new_data;
+        heap->capacity = count;
+    }
+    memcpy(heap->data, list, count * sizeof(int));
+    heap->size = count;
+    heap_heapify(heap);
+}
+
+int heap_peek(const Heap *heap, int *out_value) {
+    if (heap == NULL || heap->size == 0) {
+        return -1;
+    }
+    *out_value = heap->data[0];
+    return 0;
+}
+
+int main(void) {
+    int values[] = {42, 17, 3, 88, 19, 5, 76, 34, 51, 10};
+    size_t count = sizeof(values) / sizeof(values[0]);
+
+    Heap *heap = heap_create(count);
+    if (heap == NULL) {
+        fprintf(stderr, "Failed to allocate heap\n");
+        return 1;
+    }
+
+    heap_from_list(heap, values, count);
+
+    while (!heap_is_empty(heap)) {
+        int value;
+        if (heap_pop(heap, &value) == 0) {
+            printf("%d ", value);
+        }
+    }
+    printf("\n");
+
+    heap_destroy(heap);
+    return 0;
+}
+```

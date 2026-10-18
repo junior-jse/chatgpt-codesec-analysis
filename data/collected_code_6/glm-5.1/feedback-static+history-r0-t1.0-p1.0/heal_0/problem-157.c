@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char character;
+    int count;
+} RLE;
+
+RLE* run_length_decode(const RLE* encoded, size_t length, size_t* out_length) {
+    if (encoded == NULL || out_length == NULL) {
+        return NULL;
+    }
+
+    size_t total_chars = 0;
+    for (size_t i = 0; i < length; i++) {
+        if (encoded[i].count < 0) {
+            return NULL;
+        }
+        if (total_chars > SIZE_MAX - (size_t)encoded[i].count) {
+            return NULL;
+        }
+        total_chars += (size_t)encoded[i].count;
+    }
+
+    RLE* decoded = (RLE*)malloc(total_chars * sizeof(RLE));
+    if (decoded == NULL) {
+        return NULL;
+    }
+
+    size_t index = 0;
+    for (size_t i = 0; i < length; i++) {
+        for (int j = 0; j < encoded[i].count; j++) {
+            decoded[index].character = encoded[i].character;
+            decoded[index].count = 1;
+            index++;
+        }
+    }
+
+    *out_length = total_chars;
+    return decoded;
+}
+
+int main() {
+    RLE encoded[] = {
+        {'A', 3},
+        {'B', 2},
+        {'C', 1}
+    };
+    size_t encoded_length = sizeof(encoded) / sizeof(encoded[0]);
+    size_t decoded_length = 0;
+
+    RLE* decoded = run_length_decode(encoded, encoded_length, &decoded_length);
+    if (decoded == NULL) {
+        fprintf(stderr, "Decoding failed\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < decoded_length; i++) {
+        printf("%c%d ", decoded[i].character, decoded[i].count);
+    }
+    printf("\n");
+
+    free(decoded);
+
+    return EXIT_SUCCESS;
+}

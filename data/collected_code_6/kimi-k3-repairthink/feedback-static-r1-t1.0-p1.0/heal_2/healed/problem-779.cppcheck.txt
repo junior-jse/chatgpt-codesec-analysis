@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-779.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-779.c:111:23: style: The comparison 'copy_size > dest_size' is always false because 'copy_size' and 'dest_size' represent the same value. [knownConditionTrueFalse]
+        if (copy_size > dest_size) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-779.c:104:34: note: 'dest_size' is assigned value 'copy_size' here.
+        const size_t dest_size = copy_size;
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-779.c:111:23: note: The comparison 'copy_size > dest_size' is always false because 'copy_size' and 'dest_size' represent the same value.
+        if (copy_size > dest_size) {
+                      ^

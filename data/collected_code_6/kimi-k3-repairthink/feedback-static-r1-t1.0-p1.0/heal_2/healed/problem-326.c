@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_WORD_LEN 1024
+
+static size_t safe_strnlen(const char *s, size_t max_len) {
+    size_t len = 0;
+
+    if (s == NULL) {
+        return 0;
+    }
+
+    while (len < max_len && s[len] != '\0') {
+        len++;
+    }
+
+    return len;
+}
+
+static int safe_memcpy(char *dest, size_t dest_size, const char *src, size_t count) {
+    if (dest == NULL || src == NULL) {
+        return -1;
+    }
+
+    if (count > dest_size) {
+        return -1;
+    }
+
+    memcpy(dest, src, count);
+    return 0;
+}
+
+char *get_most_frequent_word(char *words[], int count) {
+    if (words == NULL || count <= 0) {
+        return NULL;
+    }
+
+    int max_count = 0;
+    char *most_frequent = NULL;
+
+    for (int i = 0; i < count; i++) {
+        if (words[i] == NULL) {
+            continue;
+        }
+
+        int current_count = 0;
+        for (int j = 0; j < count; j++) {
+            if (words[j] != NULL && strncmp(words[i], words[j], MAX_WORD_LEN) == 0) {
+                current_count++;
+            }
+        }
+
+        if (current_count > max_count) {
+            max_count = current_count;
+            most_frequent = words[i];
+        }
+    }
+
+    if (most_frequent == NULL) {
+        return NULL;
+    }
+
+    size_t len = safe_strnlen(most_frequent, MAX_WORD_LEN);
+    size_t dest_size = len + 1;
+
+    char *result = malloc(dest_size);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    if (safe_memcpy(result, dest_size, most_frequent, len) != 0) {
+        free(result);
+        return NULL;
+    }
+    result[len] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    char *words[] = {
+        "apple",
+        "banana",
+        "apple",
+        "orange",
+        "banana",
+        "apple",
+        "grape"
+    };
+    int count = (int)(sizeof(words) / sizeof(words[0]));
+
+    char *result = get_most_frequent_word(words, count);
+
+    if (result != NULL) {
+        printf("Most frequent word: %s\n", result);
+        free(result);
+    } else {
+        printf("No words found or error occurred.\n");
+    }
+
+    return 0;
+}

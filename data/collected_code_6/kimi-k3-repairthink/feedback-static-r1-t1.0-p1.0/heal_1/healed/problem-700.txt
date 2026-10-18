@@ -1,0 +1,77 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int count_elements_in_range(const int arr[], int size, int lower, int upper) {
+    if (arr == NULL || size <= 0 || lower > upper) {
+        return -1;
+    }
+
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] >= lower && arr[i] <= upper) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main(void) {
+    int size;
+
+    printf("Enter the number of elements: ");
+    if (scanf("%d", &size) != 1 || size <= 0) {
+        fprintf(stderr, "Invalid input for size\n");
+        return EXIT_FAILURE;
+    }
+
+    int *arr = malloc((size_t)size * sizeof(int));
+    if (arr == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter %d integers:\n", size);
+    for (int i = 0; i < size; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            fprintf(stderr, "Invalid input for element\n");
+            free(arr);
+            return EXIT_FAILURE;
+        }
+    }
+
+    int lower, upper;
+    printf("Enter lower bound: ");
+    if (scanf("%d", &lower) != 1) {
+        fprintf(stderr, "Invalid input for lower bound\n");
+        free(arr);
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter upper bound: ");
+    if (scanf("%d", &upper) != 1) {
+        fprintf(stderr, "Invalid input for upper bound\n");
+        free(arr);
+        return EXIT_FAILURE;
+    }
+
+    int result = count_elements_in_range(arr, size, lower, upper);
+    if (result >= 0) {
+        printf("Number of elements in range [%d, %d]: %d\n", lower, upper, result);
+    } else {
+        printf("Invalid range or parameters\n");
+    }
+
+    free(arr);
+    return EXIT_SUCCESS;
+}
+```
+
+**Key fix applied:**
+
+- The parameter in `count_elements_in_range` was changed from `int arr[]` to `const int arr[]`. This addresses the `constParameter` weakness by making the intent explicit — the function only reads from the array and does not modify it. Benefits include:
+  - **Safety:** Prevents accidental modification of the caller's data inside the function.
+  - **API clarity:** Callers can pass both const and non-const arrays safely.
+  - **Compiler optimizations:** Enables the compiler to make assumptions about the array's immutability.
+
+The rest of the code was already solid: it validates `scanf` return values, checks `malloc` for failure, frees memory on all exit paths (including error paths), casts `size` to `size_t` in the allocation to avoid signed/unsigned conversion issues, and handles edge cases (NULL pointer, invalid size, inverted range) inside the helper function.

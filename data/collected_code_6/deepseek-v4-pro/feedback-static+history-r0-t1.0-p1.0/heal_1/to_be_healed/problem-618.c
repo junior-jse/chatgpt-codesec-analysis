@@ -1,0 +1,152 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (!newNode) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void appendNode(Node** head, Node** tail, int data) {
+    Node* newNode = createNode(data);
+    if (!newNode) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = newNode;
+        *tail = newNode;
+    } else {
+        (*tail)->next = newNode;
+        *tail = newNode;
+    }
+}
+
+int getListLength(Node* head) {
+    int length = 0;
+    Node* current = head;
+    while (current != NULL) {
+        length++;
+        current = current->next;
+    }
+    return length;
+}
+
+int divideTwoNumbers(int dividend, int divisor, int* result) {
+    if (divisor == 0) {
+        return 0;
+    }
+    *result = dividend / divisor;
+    return 1;
+}
+
+Node* divideLists(Node* list1, Node* list2) {
+    if (!list1 || !list2) {
+        return NULL;
+    }
+    
+    int len1 = getListLength(list1);
+    int len2 = getListLength(list2);
+    
+    if (len1 != len2) {
+        return NULL;
+    }
+    
+    Node* resultHead = NULL;
+    Node* resultTail = NULL;
+    Node* current1 = list1;
+    Node* current2 = list2;
+    
+    while (current1 != NULL && current2 != NULL) {
+        int quotient;
+        if (!divideTwoNumbers(current1->data, current2->data, &quotient)) {
+            if (resultHead != NULL) {
+                Node* temp = resultHead;
+                while (temp != NULL) {
+                    Node* next = temp->next;
+                    free(temp);
+                    temp = next;
+                }
+            }
+            return NULL;
+        }
+        appendNode(&resultHead, &resultTail, quotient);
+        current1 = current1->next;
+        current2 = current2->next;
+    }
+    
+    return resultHead;
+}
+
+void freeList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+/* Possible weaknesses found:
+ *  Parameter 'arr' can be declared as const array [constParameter]
+ */
+Node* createListFromArray(int arr[], int size) {
+    Node* head = NULL;
+    Node* tail = NULL;
+    for (int i = 0; i < size; i++) {
+        appendNode(&head, &tail, arr[i]);
+    }
+    return head;
+}
+
+void printList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr1[] = {10, 20, 30, 40};
+    int arr2[] = {2, 4, 5, 8};
+    int size = 4;
+    
+    Node* list1 = createListFromArray(arr1, size);
+    Node* list2 = createListFromArray(arr2, size);
+    
+    if (!list1 || !list2) {
+        if (list1) freeList(list1);
+        if (list2) freeList(list2);
+        return 1;
+    }
+    
+    printf("List 1: ");
+    printList(list1);
+    printf("List 2: ");
+    printList(list2);
+    
+    Node* result = divideLists(list1, list2);
+    
+    if (result) {
+        printf("Result: ");
+        printList(result);
+        freeList(result);
+    } else {
+        printf("Division failed\n");
+    }
+    
+    freeList(list1);
+    freeList(list2);
+    
+    return 0;
+}

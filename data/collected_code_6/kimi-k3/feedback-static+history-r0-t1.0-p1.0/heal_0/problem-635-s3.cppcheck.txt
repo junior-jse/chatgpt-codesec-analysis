@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-635-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-635-s3.c:21:44: warning: Either the condition 'index>0' is redundant or the array 'heap->data[100]' is accessed at index 100, which is out of bounds. [arrayIndexOutOfBoundsCond]
+        if (heap->data[parent] > heap->data[index]) {
+                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-635-s3.c:19:18: note: Assuming that condition 'index>0' is not redundant
+    while (index > 0) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-635-s3.c:21:44: note: Array index out of bounds
+        if (heap->data[parent] > heap->data[index]) {
+                                           ^

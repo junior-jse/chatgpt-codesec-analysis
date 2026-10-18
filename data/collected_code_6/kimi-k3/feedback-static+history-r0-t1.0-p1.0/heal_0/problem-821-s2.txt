@@ -1,0 +1,224 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} DictEntry;
+
+typedef struct {
+    DictEntry *entries;
+    size_t size;
+    size_t capacity;
+} Dict;
+
+Dict* dict_create(size_t capacity) {
+    Dict *dict = malloc(sizeof(Dict));
+    if (dict == NULL) {
+        return NULL;
+    }
+    
+    dict->entries = malloc(capacity * sizeof(DictEntry));
+    if (dict->entries == NULL) {
+        free(dict);
+        return NULL;
+    }
+    
+    dict->size = 0;
+    dict->capacity = capacity;
+    return dict;
+}
+
+int dict_add(Dict *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+    
+    if (dict->size >= dict->capacity) {
+        size_t new_capacity = dict->capacity * 2;
+        DictEntry *new_entries = realloc(dict->entries, new_capacity * sizeof(DictEntry));
+        if (new_entries == NULL) {
+            return -1;
+        }
+        dict->entries = new_entries;
+        dict->capacity = new_capacity;
+    }
+    
+    dict->entries[dict->size].key = malloc(strlen(key) + 1);
+    if (dict->entries[dict->size].key == NULL) {
+        return -1;
+    }
+    
+    dict->entries[dict->size].value = malloc(strlen(value) + 1);
+    if (dict->entries[dict->size].value == NULL) {
+        free(dict->entries[dict->size].key);
+        return -1;
+    }
+    
+    strcpy(dict->entries[dict->size].key, key);
+    strcpy(dict->entries[dict->size].value, value);
+    dict->size++;
+    
+    return 0;
+}
+
+char* dict_get(Dict *dict, const char *key) {
+    if (dict == NULL || key == NULL) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < dict->size; i++) {
+        if (strcmp(dict->entries[i].key, key) == 0) {
+            return dict->entries[i].value;
+        }
+    }
+    
+    return NULL;
+}
+
+Dict* dict_merge(Dict *dict1, Dict *dict2) {
+    if (dict1 == NULL || dict2 == NULL) {
+        return NULL;
+    }
+    
+    Dict *merged = dict_create(dict1->size + dict2->size);
+    if (merged == NULL) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < dict1->size; i++) {
+        if (dict_add(merged, dict1->entries[i].key, dict1->entries[i].value) != 0) {
+            for (size_t j = 0; j < merged->size; j++) {
+                free(merged->entries[j].key);
+                free(merged->entries[j].value);
+            }
+            free(merged->entries);
+            free(merged);
+            return NULL;
+        }
+    }
+    
+    for (size_t i = 0; i < dict2->size; i++) {
+        char *existing = dict_get(merged, dict2->entries[i].key);
+        if (existing != NULL) {
+            free(existing);
+            existing = malloc(strlen(dict2->entries[i].value) + 1);
+            if (existing == NULL) {
+                for (size_t j = 0; j < merged->size; j++) {
+                    free(merged->entries[j].key);
+                    free(merged->entries[j].value);
+                }
+                free(merged->entries);
+                free(merged);
+                return NULL;
+            }
+            strcpy(existing, dict2->entries[i].value);
+            for (size_t j = 0; j < merged->size; j++) {
+                if (strcmp(merged->entries[j].key, dict2->entries[i].key) == 0) {
+                    merged->entries[j].value = existing;
+                    break;
+                }
+            }
+        } else {
+            if (dict_add(merged, dict2->entries[i].key, dict2->entries[i].value) != 0) {
+                for (size_t j = 0; j < merged->size; j++) {
+                    free(merged->entries[j].key);
+                    free(merged->entries[j].value);
+                }
+                free(merged->entries);
+                free(merged);
+                return NULL;
+            }
+        }
+    }
+    
+    return merged;
+}
+
+void dict_free(Dict *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < dict->size; i++) {
+        free(dict->entries[i].key);
+        free(dict->entries[i].value);
+    }
+    free(dict->entries);
+    free(dict);
+}
+
+void dict_print(Dict *dict) {
+    if (dict == NULL) {
+        printf("NULL dictionary\n");
+        return;
+    }
+    
+    printf("{");
+    for (size_t i = 0; i < dict->size; i++) {
+        printf("'%s': '%s'", dict->entries[i].key, dict->entries[i].value);
+        if (i < dict->size - 1) {
+            printf(", ");
+        }
+    }
+    printf("}\n");
+}
+
+int main(void) {
+    Dict *dict1 = dict_create(4);
+    if (dict1 == NULL) {
+        fprintf(stderr, "Failed to create dict1\n");
+        return EXIT_FAILURE;
+    }
+    
+    Dict *dict2 = dict_create(4);
+    if (dict2 == NULL) {
+        fprintf(stderr, "Failed to create dict2\n");
+        dict_free(dict1);
+        return EXIT_FAILURE;
+    }
+    
+    if (dict_add(dict1, "a", "1") != 0 ||
+        dict_add(dict1, "b", "2") != 0 ||
+        dict_add(dict1, "c", "3") != 0) {
+        fprintf(stderr, "Failed to add entries to dict1\n");
+        dict_free(dict1);
+        dict_free(dict2);
+        return EXIT_FAILURE;
+    }
+    
+    if (dict_add(dict2, "b", "4") != 0 ||
+        dict_add(dict2, "d", "5") != 0 ||
+        dict_add(dict2, "e", "6") != 0) {
+        fprintf(stderr, "Failed to add entries to dict2\n");
+        dict_free(dict1);
+        dict_free(dict2);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Dict1: ");
+    dict_print(dict1);
+    
+    printf("Dict2: ");
+    dict_print(dict2);
+    
+    Dict *merged = dict_merge(dict1, dict2);
+    if (merged == NULL) {
+        fprintf(stderr, "Failed to merge dictionaries\n");
+        dict_free(dict1);
+        dict_free(dict2);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Merged: ");
+    dict_print(merged);
+    
+    dict_free(dict1);
+    dict_free(dict2);
+    dict_free(merged);
+    
+    return EXIT_SUCCESS;
+}
+```

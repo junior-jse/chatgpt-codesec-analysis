@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+#define MAX_STRING_LENGTH 2048
+
+char* minimize_string(const char* str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t len = 0;
+    for (len = 0; len < MAX_STRING_LENGTH; len++) {
+        if (str[len] == '\0') {
+            break;
+        }
+    }
+    if (len == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    int count[UCHAR_MAX + 1] = {0};
+    size_t i;
+    for (i = 0; i < len; i++) {
+        count[(unsigned char)str[i]]++;
+    }
+
+    int max_freq = 0;
+    char max_char = '\0';
+    for (i = 0; i <= UCHAR_MAX; i++) {
+        if (count[i] > max_freq) {
+            max_freq = count[i];
+            max_char = (char)i;
+        }
+    }
+
+    if (len == 0) {
+        char* empty = (char*)malloc(1);
+        if (empty == NULL) {
+            return NULL;
+        }
+        empty[0] = '\0';
+        return empty;
+    }
+
+    size_t result_len = len - max_freq;
+    char* result = (char*)malloc(result_len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (i = 0; i < len; i++) {
+        if (str[i] != max_char) {
+            result[j++] = str[i];
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char* test1 = "aabbbcc";
+    const char* test2 = "hello world";
+    const char* test3 = "abc";
+    const char* test4 = "";
+    const char* test5 = "aaaa";
+    char* result;
+
+    result = minimize_string(test1);
+    if (result != NULL) {
+        printf("%s -> %s\n", test1, result);
+        free(result);
+    }
+
+    result = minimize_string(test2);
+    if (result != NULL) {
+        printf("%s -> %s\n", test2, result);
+        free(result);
+    }
+
+    result = minimize_string(test3);
+    if (result != NULL) {
+        printf("%s -> %s\n", test3, result);
+        free(result);
+    }
+
+    result = minimize_string(test4);
+    if (result != NULL) {
+        printf("%s -> %s\n", test4, result);
+        free(result);
+    }
+
+    result = minimize_string(test5);
+    if (result != NULL) {
+        printf("%s -> %s\n", test5, result);
+        free(result);
+    }
+
+    return 0;
+}

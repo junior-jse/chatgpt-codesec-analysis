@@ -1,0 +1,45 @@
+```c
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+char most_common_char(const char *str) {
+    if (str == NULL || *str == '\0') {
+        return '\0';
+    }
+    
+    int count[UCHAR_MAX + 1] = {0};
+    const unsigned char *p = (const unsigned char *)str;
+    
+    while (*p != '\0') {
+        count[*p]++;
+        p++;
+    }
+    
+    char max_char = str[0];
+    int max_count = 0;
+    
+    for (int i = 0; i <= UCHAR_MAX; i++) {
+        if (count[i] > max_count) {
+            max_count = count[i];
+            max_char = (char)i;
+        }
+    }
+    
+    return max_char;
+}
+
+int main(void) {
+    const char *test1 = "hello world";
+    const char *test2 = "aabbbcccc";
+    const char *test3 = "";
+    const char *test4 = NULL;
+    
+    printf("Most common in '%s': %c\n", test1, most_common_char(test1));
+    printf("Most common in '%s': %c\n", test2, most_common_char(test2));
+    printf("Most common in '%s': %c\n", test3, most_common_char(test3));
+    printf("Most common in NULL: %c\n", most_common_char(test4));
+    
+    return 0;
+}
+```

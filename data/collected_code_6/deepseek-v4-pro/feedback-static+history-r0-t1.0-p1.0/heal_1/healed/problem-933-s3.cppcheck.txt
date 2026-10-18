@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-933-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-933-s3.c:17:9: style: Assignment of function parameter has no effect outside the function. [uselessAssignmentArg]
+        dest_capacity = new_capacity;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-933-s3.c:17:23: style: Variable 'dest_capacity' is assigned a value that is never used. [unreadVariable]
+        dest_capacity = new_capacity;
+                      ^

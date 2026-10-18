@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-969.c:54:34: error: use of undeclared identifier 'INT_MAX'
+   54 |                 if (total_size > INT_MAX - tuples[j].size) {
+      |                                  ^~~~~~~
+1 error generated.

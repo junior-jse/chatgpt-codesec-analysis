@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-699-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-699-s2.c:17:21: style: Redundant condition: The condition 'len1 == 1025' is redundant since 'len1 > 1024' is sufficient. [redundantCondition]
+    if (len1 > 1024 || len1 == 1025) {
+                    ^

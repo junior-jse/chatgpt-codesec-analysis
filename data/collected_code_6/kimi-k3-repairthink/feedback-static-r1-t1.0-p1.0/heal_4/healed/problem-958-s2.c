@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define ROMAN_NUMERAL_MAX_LEN 15
+#define ROMAN_BUFFER_SIZE (ROMAN_NUMERAL_MAX_LEN + 1)
+
+_Static_assert(ROMAN_BUFFER_SIZE > ROMAN_NUMERAL_MAX_LEN,
+               "Buffer must hold the longest numeral plus null terminator");
+
+typedef struct {
+    const char *numeral;
+    size_t length;
+    int value;
+} roman_entry;
+
+void int_to_roman(int num, char *result, size_t size)
+{
+    if (result == NULL || size == 0) {
+        return;
+    }
+
+    result[0] = '\0';
+
+    if (num <= 0 || num > 3999 || size < ROMAN_BUFFER_SIZE) {
+        return;
+    }
+
+    static const roman_entry table[] = {
+        { "M",  1, 1000 },
+        { "CM", 2, 900  },
+        { "D",  1, 500  },
+        { "CD", 2, 400  },
+        { "C",  1, 100  },
+        { "XC", 2, 90   },
+        { "L",  1, 50   },
+        { "XL", 2, 40   },
+        { "X",  1, 10   },
+        { "IX", 2, 9    },
+        { "V",  1, 5    },
+        { "IV", 2, 4    },
+        { "I",  1, 1    }
+    };
+
+    size_t offset = 0;
+    const size_t count = sizeof(table) / sizeof(table[0]);
+
+    for (size_t i = 0; i < count; i++) {
+        while (num >= table[i].value) {
+            const size_t len = table[i].length;
+            if (offset >= size || len > size - offset - 1) {
+                result[0] = '\0';
+                return;
+            }
+            for (size_t j = 0; j < len; j++) {
+                result[offset + j] = table[i].numeral[j];
+            }
+            offset += len;
+            result[offset] = '\0';
+            num -= table[i].value;
+        }
+    }
+}
+
+int main(void)
+{
+    int number;
+    char *roman = malloc(ROMAN_BUFFER_SIZE);
+
+    if (roman == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter an integer (1-3999): ");
+
+    if (scanf("%d", &number) != 1) {
+        fprintf(stderr, "Invalid input.\n");
+        free(roman);
+        return EXIT_FAILURE;
+    }
+
+    int_to_roman(number, roman, ROMAN_BUFFER_SIZE);
+
+    if (roman[0] == '\0') {
+        fprintf(stderr, "Number out of range or conversion failed.\n");
+        free(roman);
+        return EXIT_FAILURE;
+    }
+
+    printf("Roman numeral: %s\n", roman);
+    free(roman);
+    return EXIT_SUCCESS;
+}

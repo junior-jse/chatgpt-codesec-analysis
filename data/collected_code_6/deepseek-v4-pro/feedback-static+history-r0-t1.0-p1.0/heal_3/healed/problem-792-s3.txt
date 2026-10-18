@@ -1,0 +1,109 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+} List;
+
+List* create_list(void) {
+    List *list = (List*)malloc(sizeof(List));
+    if (list != NULL) {
+        list->head = NULL;
+    }
+    return list;
+}
+
+Node* create_node(int data) {
+    Node *node = (Node*)malloc(sizeof(Node));
+    if (node != NULL) {
+        node->data = data;
+        node->next = NULL;
+    }
+    return node;
+}
+
+int insert_node(List *list, int data) {
+    if (list == NULL) {
+        return 0;
+    }
+    
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return 0;
+    }
+    
+    if (list->head == NULL) {
+        list->head = new_node;
+    } else {
+        Node *current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+    
+    return 1;
+}
+
+void free_list(List *list) {
+    if (list == NULL) {
+        return;
+    }
+    
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+    
+    free(list);
+}
+
+int count_lists(List **lists, int num_lists) {
+    int count = 0;
+    for (int i = 0; i < num_lists; i++) {
+        if (lists[i] != NULL) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main(void) {
+    List **lists = (List**)malloc(3 * sizeof(List*));
+    if (lists == NULL) {
+        return 1;
+    }
+    
+    lists[0] = create_list();
+    lists[1] = create_list();
+    lists[2] = create_list();
+    
+    insert_node(lists[0], 10);
+    insert_node(lists[0], 20);
+    insert_node(lists[1], 30);
+    
+    printf("Number of lists: %d\n", count_lists(lists, 3));
+    
+    free_list(lists[1]);
+    lists[1] = NULL;
+    
+    printf("Number of lists after removing one: %d\n", count_lists(lists, 3));
+    
+    for (int i = 0; i < 3; i++) {
+        if (lists[i] != NULL) {
+            free_list(lists[i]);
+        }
+    }
+    free(lists);
+    
+    return 0;
+}
+```

@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *camel_to_snake(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t len = strlen(input);
+    size_t max_output = len * 2 + 1;
+    char *result = (char *)malloc(max_output);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t i = 0, j = 0;
+    while (input[i] != '\0') {
+        if (isupper((unsigned char)input[i])) {
+            if (i > 0 && input[i-1] != '_' && j > 0 && result[j-1] != '_') {
+                result[j++] = '_';
+            }
+            result[j++] = (char)tolower((unsigned char)input[i]);
+        } else {
+            result[j++] = input[i];
+        }
+        i++;
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "camelCase",
+        "PascalCase",
+        "camel",
+        "",
+        "already_snake",
+        "HTTPResponse",
+        NULL
+    };
+
+    for (int i = 0; test_cases[i] != NULL; i++) {
+        char *converted = camel_to_snake(test_cases[i]);
+        if (converted != NULL) {
+            printf("'%s' -> '%s'\n", test_cases[i], converted);
+            free(converted);
+        } else {
+            printf("'%s' -> (null)\n", test_cases[i]);
+        }
+    }
+
+    return 0;
+}

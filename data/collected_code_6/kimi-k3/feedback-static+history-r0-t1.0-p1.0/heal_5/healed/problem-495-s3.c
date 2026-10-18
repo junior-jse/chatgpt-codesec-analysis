@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+#include <stddef.h>
+
+char *remove_lowercase_substrings(const char *input, size_t input_len)
+{
+    regex_t regex;
+    regmatch_t match;
+    const char *cursor;
+    char *result;
+    size_t result_len;
+    size_t copy_len;
+    size_t remaining;
+    size_t available;
+    int ret;
+
+    if (input == NULL) {
+        return NULL;
+    }
+
+    ret = regcomp(&regex, "[a-z]+", REG_EXTENDED);
+    if (ret != 0) {
+        return NULL;
+    }
+
+    result = (char *)malloc(input_len + 1);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    cursor = input;
+    result_len = 0;
+    remaining = input_len;
+
+    while (remaining > 0 && *cursor != '\0') {
+        ret = regexec(&regex, cursor, 1, &match, 0);
+        if (ret == REG_NOMATCH) {
+            copy_len = strnlen(cursor, remaining);
+            available = input_len - result_len;
+            if (copy_len > 0) {
+                if (copy_len > available) {
+                    free(result);
+                    regfree(&regex);
+                    return NULL;
+                }
+                memcpy(result + result_len, cursor, copy_len);
+                result_len += copy_len;
+            }
+            break;
+        } else if (ret != 0) {
+            free(result);
+            regfree(&regex);
+            return NULL;
+        }
+
+        if (match.rm_so < 0 || match.rm_eo < 0 || (size_t)match.rm_eo > remaining) {
+            free(result);
+            regfree(&regex);
+            return NULL;
+        }
+
+        copy_len = (size_t)match.rm_so;
+        available = input_len - result_len;
+        if (copy_len > 0) {
+            if (copy_len > available) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            memcpy(result + result_len, cursor, copy_len);
+            result_len += copy_len;
+        }
+        cursor += match.rm_eo;
+        remaining -= (size_t)match.rm_eo;
+    }
+
+    result[result_len] = '\0';
+    regfree(&regex);
+    return result;
+}
+
+int main(void)
+{
+    const char *test_string = "HelloWorldTESTString123abcXYZ";
+    size_t test_len;
+    char *processed;
+
+    test_len = strnlen(test_string, 1024);
+    if (test_len == 1024) {
+        fprintf(stderr, "Error: string too long or not null-terminated\n");
+        return EXIT_FAILURE;
+    }
+
+    processed = remove_lowercase_substrings(test_string, test_len);
+    if (processed == NULL) {
+        fprintf(stderr, "Error processing string\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original: %s\n", test_string);
+    printf("Processed: %s\n", processed);
+
+    free(processed);
+    return EXIT_SUCCESS;
+}

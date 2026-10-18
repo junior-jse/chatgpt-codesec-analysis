@@ -1,0 +1,151 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} Heap;
+
+static void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static void heapify_down(Heap *heap, size_t index) {
+    size_t smallest = index;
+    size_t left = 2 * index + 1;
+    size_t right = 2 * index + 2;
+
+    if (left < heap->size && heap->data[left] < heap->data[smallest]) {
+        smallest = left;
+    }
+
+    if (right < heap->size && heap->data[right] < heap->data[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest != index) {
+        swap(&heap->data[index], &heap->data[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+static void heapify_up(Heap *heap, size_t index) {
+    if (index == 0) {
+        return;
+    }
+
+    size_t parent = (index - 1) / 2;
+
+    if (heap->data[index] < heap->data[parent]) {
+        swap(&heap->data[index], &heap->data[parent]);
+        heapify_up(heap, parent);
+    }
+}
+
+int heap_init(Heap *heap, size_t capacity) {
+    if (heap == NULL || capacity == 0) {
+        return -1;
+    }
+
+    heap->data = malloc(capacity * sizeof(int));
+    if (heap->data == NULL) {
+        return -1;
+    }
+
+    heap->size = 0;
+    heap->capacity = capacity;
+    return 0;
+}
+
+void heap_destroy(Heap *heap) {
+    if (heap != NULL && heap->data != NULL) {
+        free(heap->data);
+        heap->data = NULL;
+        heap->size = 0;
+        heap->capacity = 0;
+    }
+}
+
+int heap_insert(Heap *heap, int value) {
+    if (heap == NULL || heap->size >= heap->capacity) {
+        return -1;
+    }
+
+    heap->data[heap->size] = value;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+int heap_extract_min(Heap *heap, int *result) {
+    if (heap == NULL || heap->size == 0 || result == NULL) {
+        return -1;
+    }
+
+    *result = heap->data[0];
+    heap->size--;
+
+    if (heap->size > 0) {
+        heap->data[0] = heap->data[heap->size];
+        heapify_down(heap, 0);
+    }
+
+    return 0;
+}
+
+int heap_build_from_array(Heap *heap, const int *array, size_t count) {
+    if (heap == NULL || array == NULL || count == 0) {
+        return -1;
+    }
+
+    if (count > heap->capacity) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < count; i++) {
+        heap->data[i] = array[i];
+    }
+    heap->size = count;
+
+    for (size_t i = (count / 2); i > 0; i--) {
+        heapify_down(heap, i - 1);
+    }
+
+    return 0;
+}
+
+int main(void) {
+    Heap heap;
+    int array[] = {9, 4, 7, 1, 8, 3, 6, 2, 5};
+    size_t count = sizeof(array) / sizeof(array[0]);
+
+    if (heap_init(&heap, count) != 0) {
+        fprintf(stderr, "Failed to initialize heap\n");
+        return EXIT_FAILURE;
+    }
+
+    if (heap_build_from_array(&heap, array, count) != 0) {
+        fprintf(stderr, "Failed to build heap\n");
+        heap_destroy(&heap);
+        return EXIT_FAILURE;
+    }
+
+    printf("Heap contents: ");
+    for (size_t i = 0; i < heap.size; i++) {
+        printf("%d ", heap.data[i]);
+    }
+    printf("\n");
+
+    printf("Extracting elements in order: ");
+    int value;
+    while (heap_extract_min(&heap, &value) == 0) {
+        printf("%d ", value);
+    }
+    printf("\n");
+
+    heap_destroy(&heap);
+    return EXIT_SUCCESS;
+}

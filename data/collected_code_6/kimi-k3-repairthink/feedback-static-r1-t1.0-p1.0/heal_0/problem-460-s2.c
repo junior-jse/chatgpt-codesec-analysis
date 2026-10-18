@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Sublist;
+
+int *get_first_elements(Sublist *sublists, size_t num_sublists, size_t *result_size) {
+    if (sublists == NULL || result_size == NULL) {
+        return NULL;
+    }
+    
+    *result_size = 0;
+    
+    if (num_sublists == 0) {
+        return NULL;
+    }
+    
+    int *first_elements = malloc(num_sublists * sizeof(int));
+    if (first_elements == NULL) {
+        return NULL;
+    }
+    
+    size_t count = 0;
+    for (size_t i = 0; i < num_sublists; i++) {
+        if (sublists[i].data != NULL && sublists[i].size > 0) {
+            first_elements[count] = sublists[i].data[0];
+            count++;
+        }
+    }
+    
+    if (count == 0) {
+        free(first_elements);
+        return NULL;
+    }
+    
+    if (count < num_sublists) {
+        int *resized = realloc(first_elements, count * sizeof(int));
+        if (resized != NULL) {
+            first_elements = resized;
+        }
+    }
+    
+    *result_size = count;
+    return first_elements;
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3};
+    int data2[] = {4, 5};
+    int data3[] = {6, 7, 8, 9};
+    
+    Sublist sublists[] = {
+        {data1, 3},
+        {data2, 2},
+        {data3, 4}
+    };
+    
+    size_t num_sublists = sizeof(sublists) / sizeof(sublists[0]);
+    size_t result_size = 0;
+    
+    int *first_elements = get_first_elements(sublists, num_sublists, &result_size);
+    
+    if (first_elements == NULL) {
+        fprintf(stderr, "Error: Failed to get first elements\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("First elements: ");
+    for (size_t i = 0; i < result_size; i++) {
+        printf("%d ", first_elements[i]);
+    }
+    printf("\n");
+    
+    free(first_elements);
+    
+    return EXIT_SUCCESS;
+}

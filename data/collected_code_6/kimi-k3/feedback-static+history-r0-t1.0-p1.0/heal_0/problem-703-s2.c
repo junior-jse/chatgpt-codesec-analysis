@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    int value;
+} KeyValuePair;
+
+typedef struct {
+    KeyValuePair *pairs;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+int dict_init(Dictionary *dict, size_t initial_capacity) {
+    if (dict == NULL || initial_capacity == 0) {
+        return 0;
+    }
+    dict->pairs = malloc(initial_capacity * sizeof(KeyValuePair));
+    if (dict->pairs == NULL) {
+        return 0;
+    }
+    dict->size = 0;
+    dict->capacity = initial_capacity;
+    return 1;
+}
+
+void dict_free(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    if (dict->pairs != NULL) {
+        for (size_t i = 0; i < dict->size; i++) {
+            free(dict->pairs[i].key);
+        }
+        free(dict->pairs);
+        dict->pairs = NULL;
+    }
+    dict->size = 0;
+    dict->capacity = 0;
+}
+
+int dict_add(Dictionary *dict, const char *key, int value) {
+    if (dict == NULL || key == NULL || dict->size >= dict->capacity) {
+        return 0;
+    }
+    size_t key_len = strlen(key) + 1;
+    char *key_copy = malloc(key_len);
+    if (key_copy == NULL) {
+        return 0;
+    }
+    strcpy(key_copy, key);
+    dict->pairs[dict->size].key = key_copy;
+    dict->pairs[dict->size].value = value;
+    dict->size++;
+    return 1;
+}
+
+int dict_contains_key(const Dictionary *dict, const char *key) {
+    if (dict == NULL || key == NULL || dict->pairs == NULL) {
+        return 0;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        if (dict->pairs[i].key != NULL && strcmp(dict->pairs[i].key, key) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int main(void) {
+    Dictionary dict;
+    if (!dict_init(&dict, 10)) {
+        fprintf(stderr, "Failed to initialize dictionary\n");
+        return EXIT_FAILURE;
+    }
+
+    if (!dict_add(&dict, "apple", 1)) {
+        fprintf(stderr, "Failed to add key\n");
+        dict_free(&dict);
+        return EXIT_FAILURE;
+    }
+    if (!dict_add(&dict, "banana", 2)) {
+        fprintf(stderr, "Failed to add key\n");
+        dict_free(&dict);
+        return EXIT_FAILURE;
+    }
+    if (!dict_add(&dict, "cherry", 3)) {
+        fprintf(stderr, "Failed to add key\n");
+        dict_free(&dict);
+        return EXIT_FAILURE;
+    }
+
+    const char *test_keys[] = {"apple", "grape", "cherry", NULL};
+    for (size_t i = 0; test_keys[i] != NULL; i++) {
+        if (dict_contains_key(&dict, test_keys[i])) {
+            printf("Key '%s' is present\n", test_keys[i]);
+        } else {
+            printf("Key '%s' is not present\n", test_keys[i]);
+        }
+    }
+
+    dict_free(&dict);
+    return EXIT_SUCCESS;
+}

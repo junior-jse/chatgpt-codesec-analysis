@@ -1,0 +1,180 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    int size;
+} Tuple;
+
+typedef struct {
+    Tuple *data;
+    int size;
+    int capacity;
+} TupleList;
+
+Tuple create_tuple(int *elements, int size) {
+    Tuple t;
+    t.size = size;
+    t.elements = NULL;
+    if (size > 0) {
+        t.elements = (int *)malloc(size * sizeof(int));
+        if (t.elements) {
+            memcpy(t.elements, elements, size * sizeof(int));
+        } else {
+            t.size = 0;
+        }
+    }
+    return t;
+}
+
+void free_tuple(Tuple *t) {
+    if (t) {
+        free(t->elements);
+        t->elements = NULL;
+        t->size = 0;
+    }
+}
+
+TupleList create_tuple_list(int capacity) {
+    TupleList list;
+    list.size = 0;
+    list.capacity = capacity > 0 ? capacity : 1;
+    list.data = (Tuple *)malloc(list.capacity * sizeof(Tuple));
+    if (!list.data) {
+        list.capacity = 0;
+    }
+    return list;
+}
+
+void free_tuple_list(TupleList *list) {
+    if (list) {
+        for (int i = 0; i < list.size; i++) {
+            free_tuple(&list->data[i]);
+        }
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->capacity = 0;
+    }
+}
+
+int append_tuple(TupleList *list, Tuple t) {
+    if (!list || !list->data) {
+        return -1;
+    }
+    if (list->size == list->capacity) {
+        int new_capacity = list->capacity * 2;
+        Tuple *new_data = (Tuple *)realloc(list->data, new_capacity * sizeof(Tuple));
+        if (!new_data) {
+            return -1;
+        }
+        list->data = new_data;
+        list->capacity = new_capacity;
+    }
+    list->data[list->size++] = t;
+    return 0;
+}
+
+int compare_ints(const void *a, const void *b) {
+    int ia = *(const int *)a;
+    int ib = *(const int *)b;
+    return (ia > ib) - (ia < ib);
+}
+
+int tuples_equal_unordered(Tuple t1, Tuple t2) {
+    if (t1.size != t2.size || !t1.elements || !t2.elements) {
+        return 0;
+    }
+    int *s1 = (int *)malloc(t1.size * sizeof(int));
+    int *s2 = (int *)malloc(t2.size * sizeof(int));
+    if (!s1 || !s2) {
+        free(s1);
+        free(s2);
+        return 0;
+    }
+    memcpy(s1, t1.elements, t1.size * sizeof(int));
+    memcpy(s2, t2.elements, t2.size * sizeof(int));
+    qsort(s1, t1.size, sizeof(int), compare_ints);
+    qsort(s2, t2.size, sizeof(int), compare_ints);
+    int result = memcmp(s1, s2, t1.size * sizeof(int)) == 0;
+    free(s1);
+    free(s2);
+    return result;
+}
+
+TupleList find_tuple_intersection(TupleList list1, TupleList list2) {
+    TupleList intersection = create_tuple_list(list1.size > 0 ? list1.size : 1);
+    if (!intersection.data) {
+        return intersection;
+    }
+    for (int i = 0; i < list1.size; i++) {
+        for (int j = 0; j < list2.size; j++) {
+            if (tuples_equal_unordered(list1.data[i], list2.data[j])) {
+                int found = 0;
+                for (int k = 0; k < intersection.size; k++) {
+                    if (tuples_equal_unordered(intersection.data[k], list1.data[i])) {
+                        found = 1;
+                        break;
+                    }
+                }
+                if (!found) {
+                    Tuple new_tuple = create_tuple(list1.data[i].elements, list1.data[i].size);
+                    if (new_tuple.elements || new_tuple.size == 0) {
+                        append_tuple(&intersection, new_tuple);
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return intersection;
+}
+
+void print_tuple(Tuple t) {
+    printf("(");
+    for (int i = 0; i < t.size; i++) {
+        printf("%d", t.elements[i]);
+        if (i < t.size - 1) {
+            printf(", ");
+        }
+    }
+    printf(")");
+}
+
+int main() {
+    TupleList list1 = create_tuple_list(4);
+    TupleList list2 = create_tuple_list(4);
+
+    int e1[] = {1, 2, 3};
+    int e2[] = {3, 2, 1};
+    int e3[] = {4, 5};
+    int e4[] = {6};
+
+    append_tuple(&list1, create_tuple(e1, 3));
+    append_tuple(&list1, create_tuple(e3, 2));
+    append_tuple(&list1, create_tuple(e4, 1));
+
+    append_tuple(&list2, create_tuple(e2, 3));
+    append_tuple(&list2, create_tuple(e4, 1));
+    append_tuple(&list2, create_tuple(e3, 2));
+
+    TupleList intersection = find_tuple_intersection(list1, list2);
+
+    printf("Intersection: ");
+    for (int i = 0; i < intersection.size; i++) {
+        print_tuple(intersection.data[i]);
+        if (i < intersection.size - 1) {
+            printf(" ");
+        }
+    }
+    printf("\n");
+
+    free_tuple_list(&list1);
+    free_tuple_list(&list2);
+    free_tuple_list(&intersection);
+
+    return 0;
+}
+```

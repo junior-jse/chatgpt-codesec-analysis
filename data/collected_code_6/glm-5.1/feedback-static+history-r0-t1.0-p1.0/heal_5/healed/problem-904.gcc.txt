@@ -1,0 +1,14 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:37:17: error: 'errno' undeclared (first use in this function)
+   37 |             if (errno == EINTR) {
+      |                 ^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:11:1: note: 'errno' is defined in header '<errno.h>'; this is probably fixable by adding '#include <errno.h>'
+   10 | #include <sys/stat.h>
+  +++ |+#include <errno.h>
+   11 | #endif
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:37:17: note: each undeclared identifier is reported only once for each function it appears in
+   37 |             if (errno == EINTR) {
+      |                 ^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:37:26: error: 'EINTR' undeclared (first use in this function)
+   37 |             if (errno == EINTR) {
+      |                          ^~~~~

@@ -1,0 +1,102 @@
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+
+char* minimizeString(const char* str, size_t str_size, char ch) {
+    if (str == NULL || str_size == 0) {
+        return NULL;
+    }
+
+    size_t len = strnlen(str, str_size);
+    if (len == str_size) {
+        return NULL;
+    }
+
+    size_t count = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] == ch) {
+            count++;
+        }
+    }
+
+    if (count == len) {
+        char* result = (char*)malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    char* result = (char*)malloc(len - count + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] != ch) {
+            result[j++] = str[i];
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    char* input = NULL;
+    size_t input_capacity = 0;
+    ssize_t input_len;
+    int c;
+
+    printf("Enter a string: ");
+    input_len = getline(&input, &input_capacity, stdin);
+    if (input_len < 0) {
+        fprintf(stderr, "Error reading input\n");
+        free(input);
+        return 1;
+    }
+
+    if (input_len > 0 && input[input_len - 1] == '\n') {
+        input[input_len - 1] = '\0';
+    }
+
+    printf("Enter the character to remove: ");
+    c = getchar();
+    if (c == EOF || c == '\n') {
+        fprintf(stderr, "Error reading character\n");
+        free(input);
+        return 1;
+    }
+
+    char* result = minimizeString(input, strlen(input) + 1, (char)c);
+    if (result == NULL) {
+        fprintf(stderr, "Failed to minimize string\n");
+        free(input);
+        return 1;
+    }
+
+    printf("Minimized string: %s\n", result);
+
+    free(result);
+    result = NULL;
+    free(input);
+    input = NULL;
+
+    return 0;
+}
+```
+
+**Key changes made to address the flagged weaknesses:**
+
+1. **CWE-119/CWE-120 (static buffer):** The fixed-size `char input[INPUT_BUFFER_SIZE]` array was replaced with `getline()`, which dynamically allocates a buffer sized to the actual input. This removes the hard 1024-byte restriction and the risk of truncated/unaligned input handling entirely.
+
+2. **CWE-120/CWE-20 (getchar flush loop):** The `while ((c = getchar()) != '\n' && c != EOF)` drain loop is no longer needed, because `getline()` always consumes the complete line including the newline. The loop was removed, and a single bounds-safe `getchar()` call (with `EOF`/`'\n'` validation) is used to read the character to remove, avoiding `scanf` entirely.
+
+3. **Memory hygiene:** The `getline()`-allocated buffer is freed on every exit path (success and all failure branches), and both pointers are nulled after `free()` to prevent use-after-free.
+
+4. Since the buffer is now heap-allocated and guaranteed NUL-terminated by `getline()`, the size passed to `minimizeString()` is `strlen(input) + 1`, which is exact rather than an arbitrary upper bound.

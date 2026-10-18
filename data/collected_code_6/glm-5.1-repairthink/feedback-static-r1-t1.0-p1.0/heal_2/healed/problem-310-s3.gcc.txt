@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-310-s3.c: In function 'string_to_tuple':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-310-s3.c:32:49: error: 'INT_MAX' undeclared (first use in this function)
+   32 |     if (first_len > SIZE_MAX - 1 || first_len > INT_MAX) {
+      |                                                 ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-310-s3.c:4:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    3 | #include <string.h>
+  +++ |+#include <limits.h>
+    4 | #include <stdint.h>
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-310-s3.c:32:49: note: each undeclared identifier is reported only once for each function it appears in
+   32 |     if (first_len > SIZE_MAX - 1 || first_len > INT_MAX) {
+      |                                                 ^~~~~~~

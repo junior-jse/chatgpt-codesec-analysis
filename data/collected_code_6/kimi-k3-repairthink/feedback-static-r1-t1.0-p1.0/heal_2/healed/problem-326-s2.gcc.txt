@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-326-s2.c: In function 'get_most_frequent_word':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-326-s2.c:67:48: error: 'INT_MAX' undeclared (first use in this function)
+   67 |                     if (word_counts[j].count < INT_MAX) {
+      |                                                ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-326-s2.c:6:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    5 | #include <string.h>
+  +++ |+#include <limits.h>
+    6 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-326-s2.c:67:48: note: each undeclared identifier is reported only once for each function it appears in
+   67 |                     if (word_counts[j].count < INT_MAX) {
+      |                                                ^~~~~~~

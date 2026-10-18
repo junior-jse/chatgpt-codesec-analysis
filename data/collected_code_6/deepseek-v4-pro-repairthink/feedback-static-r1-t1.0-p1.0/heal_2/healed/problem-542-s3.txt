@@ -1,0 +1,33 @@
+```c
+#include <stdio.h>
+
+void replace_chars(char *str, size_t size) {
+    if (size == 0) return;
+    size_t len = 0;
+    while (len < size && str[len] != '\0') len++;
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] == ' ' || str[i] == ',' || str[i] == '.')
+            str[i] = ':';
+    }
+}
+
+int main(void) {
+    char str1[] = "Hello, world. This is a test";
+    char str2[] = "No,special.chars here";
+    char str3[] = "   spaces   ";
+
+    printf("Original: %s\n", str1);
+    replace_chars(str1, sizeof(str1));
+    printf("Modified: %s\n\n", str1);
+
+    printf("Original: %s\n", str2);
+    replace_chars(str2, sizeof(str2));
+    printf("Modified: %s\n\n", str2);
+
+    printf("Original: %s\n", str3);
+    replace_chars(str3, sizeof(str3));
+    printf("Modified: %s\n", str3);
+
+    return 0;
+}
+```

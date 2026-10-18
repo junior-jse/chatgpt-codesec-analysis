@@ -1,0 +1,70 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *insert_spaces(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t input_len = 0;
+    while (input[input_len] != '\0') {
+        input_len++;
+    }
+
+    size_t spaces = 0;
+    for (size_t i = 0; i + 1 < input_len; i++) {
+        if (islower((unsigned char)input[i]) && isupper((unsigned char)input[i + 1])) {
+            spaces++;
+        }
+    }
+
+    size_t output_len = input_len + spaces;
+    char *output = malloc(output_len + 1);
+    if (output == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < input_len; i++) {
+        output[j++] = input[i];
+        if (i + 1 < input_len &&
+            islower((unsigned char)input[i]) &&
+            isupper((unsigned char)input[i + 1])) {
+            output[j++] = ' ';
+        }
+    }
+    output[j] = '\0';
+
+    return output;
+}
+
+int main(void) {
+    const char *test_strings[] = {
+        "HelloWorld",
+        "ThisIsATestString",
+        "noSpacesHere",
+        "Already Spaced String",
+        "MixtureOfUPPERAndlower",
+        "",
+        "A",
+        "aB",
+        "AB",
+        NULL
+    };
+
+    for (int i = 0; test_strings[i] != NULL; i++) {
+        char *result = insert_spaces(test_strings[i]);
+        if (result != NULL) {
+            printf("'%s' -> '%s'\n", test_strings[i], result);
+            free(result);
+        } else {
+            printf("'%s' -> error\n", test_strings[i]);
+        }
+    }
+
+    return 0;
+}
+```

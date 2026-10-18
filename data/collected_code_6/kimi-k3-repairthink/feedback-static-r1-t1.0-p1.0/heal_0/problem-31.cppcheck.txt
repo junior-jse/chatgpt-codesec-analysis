@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c:92:39: style: Parameter 'list_sizes' can be declared as pointer to const [constParameterPointer]
+int* top_k_frequent(int** lists, int* list_sizes, int num_lists, int k, int* return_size) {
+                                      ^

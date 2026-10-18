@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-721-s2.c:160:13: warning: Value stored to 'allocation_failed' is never read [deadcode.DeadStores]
+  160 |             allocation_failed = 1;
+      |             ^                   ~
+1 warning generated.

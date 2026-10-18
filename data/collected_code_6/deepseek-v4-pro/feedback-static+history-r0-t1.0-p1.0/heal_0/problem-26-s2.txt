@@ -1,0 +1,60 @@
+```c
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *elements;
+    int size;
+} Tuple;
+
+bool has_all_k_elements(Tuple *tuples, int tuple_count, int k) {
+    bool *found = (bool *)calloc(k, sizeof(bool));
+    if (found == NULL) {
+        return false;
+    }
+    
+    for (int i = 0; i < tuple_count; i++) {
+        for (int j = 0; j < tuples[i].size; j++) {
+            if (tuples[i].elements[j] >= 0 && tuples[i].elements[j] < k) {
+                found[tuples[i].elements[j]] = true;
+            }
+        }
+    }
+    
+    bool all_found = true;
+    for (int i = 0; i < k; i++) {
+        if (!found[i]) {
+            all_found = false;
+            break;
+        }
+    }
+    
+    free(found);
+    return all_found;
+}
+
+int main(void) {
+    int elements1[] = {0, 1, 2};
+    int elements2[] = {2, 3};
+    int elements3[] = {4};
+    
+    Tuple tuples[3];
+    tuples[0].elements = elements1;
+    tuples[0].size = 3;
+    tuples[1].elements = elements2;
+    tuples[1].size = 2;
+    tuples[2].elements = elements3;
+    tuples[2].size = 1;
+    
+    int k = 5;
+    
+    if (has_all_k_elements(tuples, 3, k)) {
+        printf("All %d elements found\n", k);
+    } else {
+        printf("Not all %d elements found\n", k);
+    }
+    
+    return 0;
+}
+```

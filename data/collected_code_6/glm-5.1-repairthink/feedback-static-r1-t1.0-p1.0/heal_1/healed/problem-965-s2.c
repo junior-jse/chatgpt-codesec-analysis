@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *camel_to_snake(const char *camel_str) {
+    if (camel_str == NULL) {
+        return NULL;
+    }
+
+    size_t capacity = 32;
+    size_t j = 0;
+    char *snake_str = malloc(capacity);
+    if (snake_str == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; camel_str[i] != '\0'; i++) {
+        if (j + 3 > capacity) {
+            capacity *= 2;
+            char *temp = realloc(snake_str, capacity);
+            if (temp == NULL) {
+                free(snake_str);
+                return NULL;
+            }
+            snake_str = temp;
+        }
+
+        if (isupper((unsigned char)camel_str[i])) {
+            if (i > 0) {
+                snake_str[j++] = '_';
+            }
+            snake_str[j++] = tolower((unsigned char)camel_str[i]);
+        } else {
+            snake_str[j++] = camel_str[i];
+        }
+    }
+    
+    snake_str[j] = '\0';
+
+    char *final_snake_str = realloc(snake_str, j + 1);
+    if (final_snake_str == NULL) {
+        free(snake_str);
+        return NULL;
+    }
+
+    return final_snake_str;
+}
+
+int main(void) {
+    const char *inputs[] = {
+        "camelCase",
+        "convertCamelToSnake",
+        "already_snake",
+        "Single",
+        "a",
+        "",
+        NULL
+    };
+
+    for (size_t i = 0; inputs[i] != NULL; i++) {
+        char *result = camel_to_snake(inputs[i]);
+        if (result != NULL) {
+            printf("Input: '%s' -> Output: '%s'\n", inputs[i], result);
+            free(result);
+        } else {
+            printf("Input: '%s' -> Output: Memory allocation failed\n", inputs[i]);
+        }
+    }
+
+    return 0;
+}

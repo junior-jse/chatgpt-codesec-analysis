@@ -1,0 +1,234 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int value;
+    size_t source_index;
+    size_t element_index;
+} HeapNode;
+
+typedef struct {
+    HeapNode *nodes;
+    size_t size;
+    size_t capacity;
+} MinHeap;
+
+typedef struct {
+    const int **arrays;
+    const size_t *lengths;
+    size_t num_sources;
+    MinHeap heap;
+} SortedIterator;
+
+static void heap_swap(HeapNode *a, HeapNode *b)
+{
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static int heap_compare(const HeapNode *a, const HeapNode *b)
+{
+    if (a->value < b->value) {
+        return -1;
+    }
+    if (a->value > b->value) {
+        return 1;
+    }
+    if (a->source_index < b->source_index) {
+        return -1;
+    }
+    if (a->source_index > b->source_index) {
+        return 1;
+    }
+    return 0;
+}
+
+static void heapify_down(MinHeap *heap, size_t index)
+{
+    size_t smallest = index;
+    size_t left = 2 * index + 1;
+    size_t right = 2 * index + 2;
+
+    if (left < heap->size && heap_compare(&heap->nodes[left], &heap->nodes[smallest]) < 0) {
+        smallest = left;
+    }
+    if (right < heap->size && heap_compare(&heap->nodes[right], &heap->nodes[smallest]) < 0) {
+        smallest = right;
+    }
+    if (smallest != index) {
+        heap_swap(&heap->nodes[index], &heap->nodes[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+static void heapify_up(MinHeap *heap, size_t index)
+{
+    size_t parent;
+    
+    while (index > 0) {
+        parent = (index - 1) / 2;
+        if (heap_compare(&heap->nodes[index], &heap->nodes[parent]) < 0) {
+            heap_swap(&heap->nodes[index], &heap->nodes[parent]);
+            index = parent;
+        } else {
+            break;
+        }
+    }
+}
+
+static int heap_push(MinHeap *heap, HeapNode node)
+{
+    HeapNode *new_nodes;
+    size_t new_capacity;
+
+    if (heap->size >= heap->capacity) {
+        new_capacity = (heap->capacity == 0) ? 8 : heap->capacity * 2;
+        new_nodes = realloc(heap->nodes, new_capacity * sizeof(HeapNode));
+        if (new_nodes == NULL) {
+            return -1;
+        }
+        heap->nodes = new_nodes;
+        heap->capacity = new_capacity;
+    }
+    heap->nodes[heap->size] = node;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+static int heap_pop(MinHeap *heap, HeapNode *result)
+{
+    if (heap->size == 0) {
+        return -1;
+    }
+    *result = heap->nodes[0];
+    heap->size--;
+    if (heap->size > 0) {
+        heap->nodes[0] = heap->nodes[heap->size];
+        heapify_down(heap, 0);
+    }
+    return 0;
+}
+
+static int heap_init(MinHeap *heap)
+{
+    heap->nodes = NULL;
+    heap->size = 0;
+    heap->capacity = 0;
+    return 0;
+}
+
+static void heap_destroy(MinHeap *heap)
+{
+    free(heap->nodes);
+    heap->nodes = NULL;
+    heap->size = 0;
+    heap->capacity = 0;
+}
+
+int sorted_iterator_init(SortedIterator *iter, const int **arrays, 
+                         const size_t *lengths, size_t num_sources)
+{
+    size_t i;
+
+    if (iter == NULL || (num_sources > 0 && (arrays == NULL || lengths == NULL))) {
+        return -1;
+    }
+
+    iter->arrays = arrays;
+    iter->lengths = lengths;
+    iter->num_sources = num_sources;
+
+    if (heap_init(&iter->heap) != 0) {
+        return -1;
+    }
+
+    for (i = 0; i < num_sources; i++) {
+        if (arrays[i] != NULL && lengths[i] > 0) {
+            HeapNode node;
+            node.value = arrays[i][0];
+            node.source_index = i;
+            node.element_index = 0;
+            if (heap_push(&iter->heap, node) != 0) {
+                heap_destroy(&iter->heap);
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+int sorted_iterator_next(SortedIterator *iter, int *value)
+{
+    HeapNode node;
+    HeapNode new_node;
+
+    if (iter == NULL || value == NULL) {
+        return -1;
+    }
+
+    if (heap_pop(&iter->heap, &node) != 0) {
+        return 0;
+    }
+
+    *value = node.value;
+
+    if (node.element_index + 1 < iter->lengths[node.source_index]) {
+        new_node.value = iter->arrays[node.source_index][node.element_index + 1];
+        new_node.source_index = node.source_index;
+        new_node.element_index = node.element_index + 1;
+        if (heap_push(&iter->heap, new_node) != 0) {
+            return -1;
+        }
+    }
+    return 1;
+}
+
+void sorted_iterator_destroy(SortedIterator *iter)
+{
+    if (iter != NULL) {
+        heap_destroy(&iter->heap);
+        iter->arrays = NULL;
+        iter->lengths = NULL;
+        iter->num_sources = 0;
+    }
+}
+
+int main(void)
+{
+    const int arr1[] = {1, 4, 7, 10};
+    const int arr2[] = {2, 5, 8, 11};
+    const int arr3[] = {3, 6, 9, 12};
+    const int arr4[] = {0, 13, 14};
+    
+    const int *arrays[] = {arr1, arr2, arr3, arr4};
+    const size_t lengths[] = {4, 4, 4, 3};
+    const size_t num_sources = 4;
+    
+    SortedIterator iter;
+    int value;
+    int result;
+    int status = 0;
+
+    if (sorted_iterator_init(&iter, arrays, lengths, num_sources) != 0) {
+        fprintf(stderr, "Failed to initialize iterator\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Merged sorted output: ");
+    while ((result = sorted_iterator_next(&iter, &value)) == 1) {
+        printf("%d ", value);
+    }
+    printf("\n");
+
+    if (result < 0) {
+        fprintf(stderr, "Error during iteration\n");
+        status = 1;
+    }
+
+    sorted_iterator_destroy(&iter);
+
+    return status;
+}

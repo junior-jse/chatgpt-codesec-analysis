@@ -1,0 +1,85 @@
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+void removeLeadingZeros(char *ipAddress, size_t ipAddressSize) {
+    char *token;
+    char *saveptr;
+    char *result;
+    size_t resultSize;
+    size_t resultLen = 0;
+
+    if (ipAddress == NULL || ipAddressSize == 0) {
+        return;
+    }
+
+    ipAddress[ipAddressSize - 1] = '\0';
+
+    resultSize = strlen(ipAddress) + 1;
+    result = (char *)malloc(resultSize);
+    if (result == NULL) {
+        return;
+    }
+    result[0] = '\0';
+
+    token = strtok_r(ipAddress, ".", &saveptr);
+    while (token != NULL) {
+        char *temp = token;
+        size_t tokenLen;
+
+        while (*temp == '0') {
+            temp++;
+        }
+        if (*temp == '\0') {
+            temp--;
+        }
+
+        tokenLen = strlen(temp);
+        if (resultLen + tokenLen + 2 > resultSize) {
+            break;
+        }
+
+        memcpy(result + resultLen, temp, tokenLen);
+        resultLen += tokenLen;
+        result[resultLen] = '.';
+        resultLen++;
+        result[resultLen] = '\0';
+
+        token = strtok_r(NULL, ".", &saveptr);
+    }
+
+    if (resultLen > 0) {
+        result[resultLen - 1] = '\0';
+    }
+
+    snprintf(ipAddress, ipAddressSize, "%s", result);
+    free(result);
+}
+
+int main(void) {
+    char ipAddress[100];
+
+    printf("Enter an IP address: ");
+    if (fgets(ipAddress, sizeof(ipAddress), stdin) == NULL) {
+        fprintf(stderr, "Error reading input.\n");
+        return 1;
+    }
+    ipAddress[strcspn(ipAddress, "\n")] = '\0';
+
+    removeLeadingZeros(ipAddress, sizeof(ipAddress));
+
+    printf("IP address without leading zeros: %s\n", ipAddress);
+
+    return 0;
+}
+```
+
+Key fixes applied:
+
+- **variableScope**: `temp` is now declared inside the `while` loop where it's used.
+- **strlen over-read (CWE-126)**: the buffer is explicitly null-terminated (`ipAddress[ipAddressSize - 1] = '\0'`) before any `strlen` call, and `fgets` return value is checked.
+- **strcat overflow (CWE-120)**: replaced with `memcpy` plus manual length tracking (`resultLen`), with a bounds check before every append.
+- **strcpy overflow (CWE-120)**: replaced with `snprintf` using the caller-supplied destination size (`ipAddressSize`), so the copy back can never overflow the caller's buffer.
+- **Statically-sized array (CWE-119/120)**: the buffer size is propagated via `sizeof(ipAddress)` into the function, so all operations are bounded.
+- **Additional bug fixed**: the original `result[strlen(result) - 1] = '\0'` would underflow (write out of bounds) on empty input; it's now guarded by `if (resultLen > 0)`.

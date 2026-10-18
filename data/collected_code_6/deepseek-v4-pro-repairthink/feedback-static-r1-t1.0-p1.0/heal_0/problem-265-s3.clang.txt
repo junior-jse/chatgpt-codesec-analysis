@@ -1,0 +1,8 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-265-s3.c:144:11: error: expected ';' after expression
+  144 |     printf"]");
+      |           ^
+      |           ;
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-265-s3.c:144:14: error: extraneous ')' before ';'
+  144 |     printf"]");
+      |              ^
+2 errors generated.

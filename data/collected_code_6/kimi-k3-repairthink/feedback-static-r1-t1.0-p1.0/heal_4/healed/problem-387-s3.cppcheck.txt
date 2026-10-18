@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-387-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-387-s3.c:89:18: style: Condition 'capacity==0' is always false [knownConditionTrueFalse]
+    if (capacity == 0 || capacity > MAX_INPUT_CAPACITY) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-387-s3.c:87:16: note: Assignment 'capacity=64', assigned value is 64
+    capacity = INITIAL_INPUT_CAPACITY;
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-387-s3.c:89:18: note: Condition 'capacity==0' is always false
+    if (capacity == 0 || capacity > MAX_INPUT_CAPACITY) {
+                 ^

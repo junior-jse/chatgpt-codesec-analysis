@@ -1,0 +1,169 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    int size;
+} LinkedList;
+
+LinkedList *createList(void) {
+    LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->head = NULL;
+    list->size = 0;
+    return list;
+}
+
+void destroyList(LinkedList *list) {
+    if (list == NULL) {
+        return;
+    }
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+    free(list);
+}
+
+int insertAtEnd(LinkedList *list, int value) {
+    if (list == NULL) {
+        return 0;
+    }
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return 0;
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+    
+    if (list->head == NULL) {
+        list->head = newNode;
+    } else {
+        Node *current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+    list->size++;
+    return 1;
+}
+
+void removeDuplicates(LinkedList *list) {
+    if (list == NULL || list->head == NULL) {
+        return;
+    }
+    
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *runner = current;
+        while (runner->next != NULL) {
+            if (runner->next->data == current->data) {
+                Node *duplicate = runner->next;
+                runner->next = runner->next->next;
+                free(duplicate);
+                list->size--;
+            } else {
+                runner = runner->next;
+            }
+        }
+        current = current->next;
+    }
+}
+
+void printList(LinkedList *list) {
+    if (list == NULL) {
+        return;
+    }
+    Node *current = list->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int numLists;
+    printf("Enter number of lists: ");
+    if (scanf("%d", &numLists) != 1 || numLists <= 0) {
+        fprintf(stderr, "Invalid number of lists\n");
+        return 1;
+    }
+    
+    LinkedList **lists = (LinkedList **)malloc(numLists * sizeof(LinkedList *));
+    if (lists == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+    
+    for (int i = 0; i < numLists; i++) {
+        lists[i] = createList();
+        if (lists[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                destroyList(lists[j]);
+            }
+            free(lists);
+            return 1;
+        }
+        
+        int numElements;
+        printf("Enter number of elements for list %d: ", i + 1);
+        if (scanf("%d", &numElements) != 1 || numElements < 0) {
+            fprintf(stderr, "Invalid number of elements\n");
+            for (int j = 0; j <= i; j++) {
+                destroyList(lists[j]);
+            }
+            free(lists);
+            return 1;
+        }
+        
+        printf("Enter %d elements: ", numElements);
+        for (int j = 0; j < numElements; j++) {
+            int value;
+            if (scanf("%d", &value) != 1) {
+                fprintf(stderr, "Invalid input\n");
+                for (int k = 0; k <= i; k++) {
+                    destroyList(lists[k]);
+                }
+                free(lists);
+                return 1;
+            }
+            if (!insertAtEnd(lists[i], value)) {
+                fprintf(stderr, "Memory allocation failed\n");
+                for (int k = 0; k <= i; k++) {
+                    destroyList(lists[k]);
+                }
+                free(lists);
+                return 1;
+            }
+        }
+    }
+    
+    for (int i = 0; i < numLists; i++) {
+        printf("List %d before removing duplicates: ", i + 1);
+        printList(lists[i]);
+        removeDuplicates(lists[i]);
+        printf("List %d after removing duplicates: ", i + 1);
+        printList(lists[i]);
+    }
+    
+    for (int i = 0; i < numLists; i++) {
+        destroyList(lists[i]);
+    }
+    free(lists);
+    
+    return 0;
+}
+```

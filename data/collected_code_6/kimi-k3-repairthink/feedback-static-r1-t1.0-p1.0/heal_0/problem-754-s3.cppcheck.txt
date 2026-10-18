@@ -1,0 +1,28 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:43:15: style: Condition 'size2<minSize' is always false [knownConditionTrueFalse]
+    if (size2 < minSize) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:39:30: note: Assignment 'size2=sizeof(arr2)/sizeof(arr2[0])', assigned value is 5
+    int size2 = sizeof(arr2) / sizeof(arr2[0]);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:43:15: note: Condition 'size2<minSize' is always false
+    if (size2 < minSize) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:46:15: style: Condition 'size3<minSize' is always false [knownConditionTrueFalse]
+    if (size3 < minSize) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:40:30: note: Assignment 'size3=sizeof(arr3)/sizeof(arr3[0])', assigned value is 5
+    int size3 = sizeof(arr3) / sizeof(arr3[0]);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:46:15: note: Condition 'size3<minSize' is always false
+    if (size3 < minSize) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:29: style: Parameter 'arr1' can be declared as pointer to const [constParameterPointer]
+int findCommonElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result, int maxResultSize) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:51: style: Parameter 'arr2' can be declared as pointer to const [constParameterPointer]
+int findCommonElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result, int maxResultSize) {
+                                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:73: style: Parameter 'arr3' can be declared as pointer to const [constParameterPointer]
+int findCommonElements(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result, int maxResultSize) {
+                                                                        ^

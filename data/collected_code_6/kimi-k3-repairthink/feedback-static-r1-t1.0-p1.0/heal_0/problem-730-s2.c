@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int remove_consecutive_duplicates(int *arr, size_t size) {
+    if (arr == NULL || size == 0) {
+        return 0;
+    }
+
+    size_t write_index = 1;
+    for (size_t read_index = 1; read_index < size; read_index++) {
+        if (arr[read_index] != arr[write_index - 1]) {
+            arr[write_index] = arr[read_index];
+            write_index++;
+        }
+    }
+
+    return (int)write_index;
+}
+
+int main(void) {
+    int arr[] = {1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 5};
+    size_t size = sizeof(arr) / sizeof(arr[0]);
+
+    int new_size = remove_consecutive_duplicates(arr, size);
+
+    if (new_size < 0) {
+        fprintf(stderr, "Error: Failed to remove consecutive duplicates\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Modified array: ");
+    for (int i = 0; i < new_size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return EXIT_SUCCESS;
+}

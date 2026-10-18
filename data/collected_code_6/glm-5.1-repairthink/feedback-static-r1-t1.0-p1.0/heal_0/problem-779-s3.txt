@@ -1,0 +1,73 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct List {
+    int *data;
+    size_t size;
+} List;
+
+bool lists_equal(const List *a, const List *b) {
+    if (a == NULL || b == NULL) {
+        return false;
+    }
+    if (a->size != b->size) {
+        return false;
+    }
+    for (size_t i = 0; i < a->size; i++) {
+        if (a->data[i] != b->data[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+size_t count_unique_lists(List *lists, size_t count) {
+    if (lists == NULL || count == 0) {
+        return 0;
+    }
+
+    bool *is_duplicate = calloc(count, sizeof(bool));
+    if (is_duplicate == NULL) {
+        return 0;
+    }
+
+    size_t unique_count = 0;
+
+    for (size_t i = 0; i < count; i++) {
+        if (!is_duplicate[i]) {
+            unique_count++;
+            for (size_t j = i + 1; j < count; j++) {
+                if (!is_duplicate[j] && lists_equal(&lists[i], &lists[j])) {
+                    is_duplicate[j] = true;
+                }
+            }
+        }
+    }
+
+    free(is_duplicate);
+    return unique_count;
+}
+
+int main(void) {
+    int a1[] = {1, 2, 3};
+    int a2[] = {4, 5};
+    int a3[] = {1, 2, 3};
+    int a4[] = {1, 2, 4};
+    int a5[] = {4, 5};
+
+    List lists[] = {
+        {a1, 3},
+        {a2, 2},
+        {a3, 3},
+        {a4, 3},
+        {a5, 2}
+    };
+
+    size_t unique_count = count_unique_lists(lists, sizeof(lists) / sizeof(lists[0]));
+    printf("%zu\n", unique_count);
+
+    return 0;
+}
+```

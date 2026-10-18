@@ -1,0 +1,43 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int findLargestDivisibleSubset(int arr[], int n) {
+    if (n == 0) {
+        return 0;
+    }
+    qsort(arr, n, sizeof(int), compare);
+    int *dp = (int *)malloc(n * sizeof(int));
+    if (dp == NULL) {
+        return 0;
+    }
+    for (int i = 0; i < n; i++) {
+        dp[i] = 1;
+    }
+    int maxSize = 1;
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (arr[i] % arr[j] == 0 && dp[j] + 1 > dp[i]) {
+                dp[i] = dp[j] + 1;
+            }
+        }
+        if (dp[i] > maxSize) {
+            maxSize = dp[i];
+        }
+    }
+    free(dp);
+    return maxSize;
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 6, 8, 12, 24};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int result = findLargestDivisibleSubset(arr, n);
+    printf("%d\n", result);
+    return 0;
+}
+```

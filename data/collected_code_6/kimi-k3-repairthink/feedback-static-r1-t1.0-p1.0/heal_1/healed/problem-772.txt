@@ -1,0 +1,128 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_WORD_LEN 256
+#define MAX_INPUT_LEN 65536
+
+static size_t bounded_strlen(const char *s, size_t maxlen) {
+    size_t n = 0;
+
+    if (s == NULL) {
+        return 0;
+    }
+
+    while (n < maxlen && s[n] != '\0') {
+        n++;
+    }
+
+    return n;
+}
+
+char *remove_words_by_length(const char *str, size_t k) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t len = bounded_strlen(str, MAX_INPUT_LEN);
+    if (len == MAX_INPUT_LEN) {
+        return NULL;
+    }
+
+    if (len == 0) {
+        char *empty = malloc(1);
+        if (empty != NULL) {
+            empty[0] = '\0';
+        }
+        return empty;
+    }
+
+    size_t capacity = len + 1;
+    char *result = malloc(capacity);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t i = 0;
+    size_t out_idx = 0;
+    int first_word = 1;
+
+    while (i < len) {
+        while (i < len && isspace((unsigned char)str[i])) {
+            i++;
+        }
+
+        if (i >= len) {
+            break;
+        }
+
+        size_t word_start = i;
+        size_t word_len = 0;
+
+        while (i < len && !isspace((unsigned char)str[i])) {
+            word_len++;
+            i++;
+        }
+
+        if (word_len != k) {
+            size_t separator = first_word ? 0u : 1u;
+
+            if (out_idx + separator + word_len + 1 > capacity) {
+                break;
+            }
+
+            if (!first_word) {
+                result[out_idx++] = ' ';
+            }
+
+            memcpy(result + out_idx, str + word_start, word_len);
+            out_idx += word_len;
+            first_word = 0;
+        }
+    }
+
+    result[out_idx] = '\0';
+
+    if (out_idx == 0) {
+        free(result);
+        result = malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    char *final_result = realloc(result, out_idx + 1);
+    if (final_result == NULL) {
+        return result;
+    }
+
+    return final_result;
+}
+
+int main(void) {
+    const char *test_str = "This is a sample string with some words of different lengths";
+    size_t k = 4;
+
+    char *result = remove_words_by_length(test_str, k);
+
+    if (result != NULL) {
+        printf("Original: %s\n", test_str);
+        printf("Modified: %s\n", result);
+        free(result);
+    } else {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+```
+
+Key fixes applied:
+
+1. **CWE-126 (strlen over-read)**: Replaced the unbounded `strlen` with a custom `bounded_strlen` helper that never reads past `MAX_INPUT_LEN` bytes. If no null terminator is found within that bound, the input is rejected (`NULL` returned), eliminating the over-read risk for non-terminated buffers while staying portable (no dependency on POSIX `strnlen`).
+
+2. **CWE-120 (memcpy buffer overflow)**: Added an explicit capacity check (`out_idx + separator + word_len + 1 > capacity`) before every `memcpy`, guaranteeing the destination buffer can hold the incoming word plus the separator and the terminating `'\0'`. The check uses addition on values already bounded by `MAX_INPUT_LEN`, so it cannot wrap around, and the loop safely stops rather than overflowing.

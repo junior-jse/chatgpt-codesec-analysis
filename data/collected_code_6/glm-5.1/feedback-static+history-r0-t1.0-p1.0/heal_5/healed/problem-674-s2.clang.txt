@@ -1,0 +1,13 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-674-s2.c:81:35: error: use of undeclared identifier 'seen'
+   81 |         if (!collection_contains(&seen, token)) {
+      |                                   ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-674-s2.c:82:32: error: use of undeclared identifier 'seen'
+   82 |             collection_append(&seen, token);
+      |                                ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-674-s2.c:93:38: error: use of undeclared identifier 'seen'
+   93 |                     collection_free(&seen);
+      |                                      ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-674-s2.c:114:22: error: use of undeclared identifier 'seen'
+  114 |     collection_free(&seen);
+      |                      ^~~~
+4 errors generated.

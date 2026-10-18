@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+unsigned int rightmost_set_bit_position(unsigned int n) {
+    if (n == 0) {
+        return 0;
+    }
+    unsigned int position = 1;
+    while ((n & 1) == 0) {
+        n >>= 1;
+        position++;
+    }
+    return position;
+}
+
+int main(void) {
+    unsigned int test_values[] = {0, 1, 2, 3, 4, 8, 12, 16, 18, 32};
+    size_t num_tests = sizeof(test_values) / sizeof(test_values[0]);
+    
+    for (size_t i = 0; i < num_tests; i++) {
+        unsigned int result = rightmost_set_bit_position(test_values[i]);
+        printf("Number: %u, Rightmost set bit position: %u\n", test_values[i], result);
+    }
+    
+    return 0;
+}

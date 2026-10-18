@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-215-s3.c: In function 'decode_rle':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-215-s3.c:16:26: error: 'INT_MAX' undeclared (first use in this function)
+   16 |         if (total_size > INT_MAX - encoded[i]) {
+      |                          ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-215-s3.c:3:1: note: 'INT_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    2 | #include <stdlib.h>
+  +++ |+#include <limits.h>
+    3 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-215-s3.c:16:26: note: each undeclared identifier is reported only once for each function it appears in
+   16 |         if (total_size > INT_MAX - encoded[i]) {
+      |                          ^~~~~~~

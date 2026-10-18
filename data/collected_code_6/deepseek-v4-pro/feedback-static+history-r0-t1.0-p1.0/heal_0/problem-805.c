@@ -1,0 +1,176 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+    int size;
+} List;
+
+Node *create_node(int data) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+List *create_list() {
+    List *list = (List *)malloc(sizeof(List));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->head = NULL;
+    list->size = 0;
+    return list;
+}
+
+int append_to_list(List *list, int data) {
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return -1;
+    }
+    
+    if (list->head == NULL) {
+        list->head = new_node;
+    } else {
+        Node *current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+    list->size++;
+    return 0;
+}
+
+void free_list(List *list) {
+    if (list == NULL) {
+        return;
+    }
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+    free(list);
+}
+
+void free_list_array(List **lists, int count) {
+    if (lists == NULL) {
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        free_list(lists[i]);
+    }
+    free(lists);
+}
+
+int sum_list(List *list) {
+    if (list == NULL || list->head == NULL) {
+        return 0;
+    }
+    
+    int sum = 0;
+    Node *current = list->head;
+    while (current != NULL) {
+        sum += current->data;
+        current = current->next;
+    }
+    return sum;
+}
+
+List *find_list_with_highest_sum(List **lists, int count) {
+    if (lists == NULL || count <= 0) {
+        return NULL;
+    }
+    
+    List *highest_sum_list = lists[0];
+    int highest_sum = sum_list(lists[0]);
+    
+    for (int i = 1; i < count; i++) {
+        int current_sum = sum_list(lists[i]);
+        if (current_sum > highest_sum) {
+            highest_sum = current_sum;
+            highest_sum_list = lists[i];
+        }
+    }
+    
+    return highest_sum_list;
+}
+
+void print_list(List *list) {
+    if (list == NULL || list->head == NULL) {
+        printf("Empty list\n");
+        return;
+    }
+    
+    Node *current = list->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    int num_lists = 4;
+    List **lists = (List **)malloc(num_lists * sizeof(List *));
+    if (lists == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+    
+    for (int i = 0; i < num_lists; i++) {
+        lists[i] = create_list();
+        if (lists[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free_list(lists[j]);
+            }
+            free(lists);
+            return 1;
+        }
+    }
+    
+    append_to_list(lists[0], 1);
+    append_to_list(lists[0], 2);
+    append_to_list(lists[0], 3);
+    
+    append_to_list(lists[1], 10);
+    append_to_list(lists[1], 20);
+    append_to_list(lists[1], 30);
+    append_to_list(lists[1], 40);
+    
+    append_to_list(lists[2], 5);
+    append_to_list(lists[2], 5);
+    append_to_list(lists[2], 5);
+    
+    append_to_list(lists[3], 7);
+    append_to_list(lists[3], 8);
+    
+    printf("All lists:\n");
+    for (int i = 0; i < num_lists; i++) {
+        printf("List %d (sum: %d): ", i, sum_list(lists[i]));
+        print_list(lists[i]);
+    }
+    
+    List *highest = find_list_with_highest_sum(lists, num_lists);
+    if (highest != NULL) {
+        printf("\nList with highest sum (sum: %d): ", sum_list(highest));
+        print_list(highest);
+    } else {
+        printf("\nNo lists found\n");
+    }
+    
+    free_list_array(lists, num_lists);
+    
+    return 0;
+}

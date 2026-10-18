@@ -1,0 +1,246 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define KEY 0
+#define VALUE 1
+#define LEFT 0
+#define RIGHT 1
+
+typedef struct Node {
+    int type;
+    union {
+        char *key;
+        struct Pair *pair;
+    } data;
+    struct Node *next;
+} Node;
+
+typedef struct Pair {
+    Node *children[2];
+} Pair;
+
+Node *create_key_node(const char *key) {
+    Node *n = malloc(sizeof(Node));
+    if (!n) exit(EXIT_FAILURE);
+    n->type = KEY;
+    n->data.key = malloc(strlen(key) + 1);
+    if (!n->data.key) exit(EXIT_FAILURE);
+    strcpy(n->data.key, key);
+    n->next = NULL;
+    return n;
+}
+
+Node *create_value_node(Pair *pair) {
+    Node *n = malloc(sizeof(Node));
+    if (!n) exit(EXIT_FAILURE);
+    n->type = VALUE;
+    n->data.pair = pair;
+    n->next = NULL;
+    return n;
+}
+
+Pair *create_pair(Node *left, Node *right) {
+    Pair *p = malloc(sizeof(Pair));
+    if (!p) exit(EXIT_FAILURE);
+    p->children[LEFT] = left;
+    p->children[RIGHT] = right;
+    return p;
+}
+
+void append_node(Node **head, Node *node) {
+    if (!*head) {
+        *head = node;
+        return;
+    }
+    Node *curr = *head;
+    while (curr->next) {
+        curr = curr->next;
+    }
+    curr->next = node;
+}
+
+Pair *lists_to_nested_dict(Node *lists[], int num_lists) {
+    if (!lists || num_lists == 0) return NULL;
+
+    Pair *inner_dict = NULL;
+
+    for (int i = num_lists - 1; i >= 0; --i) {
+        Node *keys = lists[i][LEFT].next;
+        Node *vals = lists[i][RIGHT].next;
+
+        Node *dict_keys_head = NULL;
+        Node *dict_vals_head = NULL;
+
+        while (keys && vals) {
+            Node *kn = create_key_node(keys->data.key);
+
+            if (inner_dict) {
+                Node *vn = create_value_node(inner_dict);
+                append_node(&dict_vals_head, vn);
+            } else {
+                Node *vn = create_key_node(vals->data.key);
+                append_node(&dict_vals_head, vn);
+            }
+
+            append_node(&dict_keys_head, kn);
+
+            keys = keys->next;
+            vals = vals->next;
+        }
+
+        inner_dict = create_pair(dict_keys_head, dict_vals_head);
+    }
+
+    return inner_dict;
+}
+
+void print_dict(Pair *dict, int depth) {
+    if (!dict) return;
+
+    for (int i = 0; i < depth; ++i) printf("  ");
+
+    printf("{\n");
+
+    Node *k = dict->children[LEFT];
+    Node *v = dict->children[RIGHT];
+
+    while (k && v) {
+        for (int i = 0; i <= depth; ++i) printf("  ");
+
+        if (k->type == KEY) {
+            printf("\"%s\": ", k->data.key);
+        }
+
+        if (v->type == KEY) {
+            printf("\"%s\"", v->data.key);
+        } else if (v->type == VALUE) {
+            printf("\n");
+            print_dict(v->data.pair, depth + 1);
+        }
+
+        if (k->next && v->next) {
+            printf(",\n");
+        } else {
+            printf("\n");
+        }
+
+        k = k->next;
+        v = v->next;
+    }
+
+    for (int i = 0; i < depth; ++i) printf("  ");
+    printf("}\n");
+}
+
+void free_list(Node *head) {
+    while (head) {
+        Node *next = head->next;
+        if (head->type == KEY) {
+            free(head->data.key);
+        }
+        free(head);
+        head = next;
+    }
+}
+
+void free_dict(Pair *dict) {
+    if (!dict) return;
+    Node *k = dict->children[LEFT];
+    Node *v = dict->children[RIGHT];
+
+    while (k && v) {
+        Node *k_next = k->next;
+        Node *v_next = v->next;
+
+        if (v->type == VALUE) {
+            free_dict(v->data.pair);
+        }
+
+        if (k->type == KEY) {
+            free(k->data.key);
+        }
+
+        free(k);
+        if (v->type == KEY) {
+            free(v->data.key);
+        }
+        free(v);
+
+        k = k_next;
+        v = v_next;
+    }
+
+    free(dict);
+}
+
+int main() {
+    Node list1_keys;
+    list1_keys.next = NULL;
+    append_node(&list1_keys.next, create_key_node("A"));
+    append_node(&list1_keys.next, create_key_node("B"));
+
+    Node list1_vals;
+    list1_vals.next = NULL;
+    append_node(&list1_vals.next, create_key_node("C"));
+    append_node(&list1_vals.next, create_key_node("D"));
+
+    Node list2_keys;
+    list2_keys.next = NULL;
+    append_node(&list2_keys.next, create_key_node("C"));
+    append_node(&list2_keys.next, create_key_node("D"));
+
+    Node list2_vals;
+    list2_vals.next = NULL;
+    append_node(&list2_vals.next, create_key_node("E"));
+    append_node(&list2_vals.next, create_key_node("F"));
+
+    Node list_arr[2];
+    list_arr[0].data.pair = create_pair(list1_keys.next, list1_vals.next);
+    list_arr[1].data.pair = create_pair(list2_keys.next, list2_vals.next);
+
+    Node wrapper_lists[2];
+    wrapper_lists[LEFT].next = create_key_node("keys");
+    wrapper_lists[LEFT].next->next = create_key_node("vals");
+    wrapper_lists[RIGHT].next = NULL;
+
+    Pair *dict_pairs[2];
+    dict_pairs[0] = list_arr[0].data.pair;
+    dict_pairs[1] = list_arr[1].data.pair;
+
+    Node map_keys[2];
+    map_keys[0].next = create_key_node("L1_keys");
+    map_keys[1].next = create_key_node("L2_keys");
+
+    Node map_vals[2];
+    map_vals[0].next = create_value_node(dict_pairs[0]);
+    map_vals[1].next = create_value_node(dict_pairs[1]);
+
+    Node dict_list[2];
+    dict_list[0].next = map_keys[0].next;
+    dict_list[1].next = map_vals[0].next;
+
+    Node *key_heads[2] = {map_keys[0].next, map_keys[1].next};
+    Node *val_heads[2] = {map_vals[0].next, map_vals[1].next};
+
+    Node list1[2];
+    list1[LEFT].next = key_heads[0];
+    list1[RIGHT].next = val_heads[0];
+
+    Node list2[2];
+    list2[LEFT].next = key_heads[1];
+    list2[RIGHT].next = val_heads[1];
+
+    Node *input_lists[2] = {list1, list2};
+
+    Pair *result = lists_to_nested_dict(input_lists, 2);
+
+    print_dict(result, 0);
+
+    free_dict(result);
+
+    free_list(list1_keys.next);
+    free_list(list1_vals.next);
+
+    return 0;
+}

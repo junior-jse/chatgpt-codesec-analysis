@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:85:29: style: Condition 'item_length>remaining_space' is always false [knownConditionTrueFalse]
+            if (item_length > remaining_space) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:79:25: note: Assuming that condition 'item_length>=remaining_space' is not redundant
+        if (item_length >= remaining_space) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:85:29: note: Condition 'item_length>remaining_space' is always false
+            if (item_length > remaining_space) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:100:34: style: Condition 'separator_length>remaining_space' is always false [knownConditionTrueFalse]
+            if (separator_length > remaining_space) {
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:94:30: note: Assuming that condition 'separator_length>=remaining_space' is not redundant
+        if (separator_length >= remaining_space) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-513-s3.c:100:34: note: Condition 'separator_length>remaining_space' is always false
+            if (separator_length > remaining_space) {
+                                 ^

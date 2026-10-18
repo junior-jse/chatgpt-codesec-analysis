@@ -1,0 +1,119 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int a;
+    int b;
+} Tuple;
+
+int are_tuples_equal(Tuple t1, Tuple t2) {
+    return t1.a == t2.a && t1.b == t2.b;
+}
+
+void remove_matching_tuples(Tuple **array1, int *size1, Tuple **array2, int *size2) {
+    Tuple *new1 = (Tuple *)malloc(*size1 * sizeof(Tuple));
+    Tuple *new2 = (Tuple *)malloc(*size2 * sizeof(Tuple));
+
+    if (!new1 || !new2) {
+        free(new1);
+        free(new2);
+        return;
+    }
+
+    int new_idx1 = 0;
+    int new_idx2 = 0;
+
+    int *skip1 = (int *)calloc(*size1, sizeof(int));
+    int *skip2 = (int *)calloc(*size2, sizeof(int));
+
+    if (!skip1 || !skip2) {
+        free(new1);
+        free(new2);
+        free(skip1);
+        free(skip2);
+        return;
+    }
+
+    for (int i = 0; i < *size1; i++) {
+        for (int j = 0; j < *size2; j++) {
+            if (!skip1[i] && !skip2[j] && are_tuples_equal((*array1)[i], (*array2)[j])) {
+                skip1[i] = 1;
+                skip2[j] = 1;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < *size1; i++) {
+        if (!skip1[i]) {
+            new1[new_idx1++] = (*array1)[i];
+        }
+    }
+
+    for (int j = 0; j < *size2; j++) {
+        if (!skip2[j]) {
+            new2[new_idx2++] = (*array2)[j];
+        }
+    }
+
+    free(*array1);
+    free(*array2);
+    free(skip1);
+    free(skip2);
+
+    *array1 = (Tuple *)realloc(new1, new_idx1 > 0 ? new_idx1 * sizeof(Tuple) : 0);
+    *array2 = (Tuple *)realloc(new2, new_idx2 > 0 ? new_idx2 * sizeof(Tuple) : 0);
+
+    *size1 = new_idx1;
+    *size2 = new_idx2;
+}
+
+int main() {
+    int size1 = 4;
+    int size2 = 3;
+    Tuple *arr1 = (Tuple *)malloc(size1 * sizeof(Tuple));
+    Tuple *arr2 = (Tuple *)malloc(size2 * sizeof(Tuple));
+
+    if (!arr1 || !arr2) {
+        free(arr1);
+        free(arr2);
+        return 1;
+    }
+
+    arr1[0].a = 1; arr1[0].b = 2;
+    arr1[1].a = 3; arr1[1].b = 4;
+    arr1[2].a = 5; arr1[2].b = 6;
+    arr1[3].a = 7; arr1[3].b = 8;
+
+    arr2[0].a = 3; arr2[0].b = 4;
+    arr2[1].a = 9; arr2[1].b = 10;
+    arr2[2].a = 1; arr2[2].b = 2;
+
+    for (int i = 0; i < size1; i++) {
+        printf("(%d, %d) ", arr1[i].a, arr1[i].b);
+    }
+    printf("\n");
+
+    for (int i = 0; i < size2; i++) {
+        printf("(%d, %d) ", arr2[i].a, arr2[i].b);
+    }
+    printf("\n");
+
+    remove_matching_tuples(&arr1, &size1, &arr2, &size2);
+
+    for (int i = 0; i < size1; i++) {
+        printf("(%d, %d) ", arr1[i].a, arr1[i].b);
+    }
+    printf("\n");
+
+    for (int i = 0; i < size2; i++) {
+        printf("(%d, %d) ", arr2[i].a, arr2[i].b);
+    }
+    printf("\n");
+
+    free(arr1);
+    free(arr2);
+
+    return 0;
+}

@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int max_sublist_length(const int *arr, int size, int *start_index) {
+    if (arr == NULL || size <= 0 || start_index == NULL) {
+        return 0;
+    }
+
+    int max_length = 1;
+    int current_length = 1;
+    int current_start = 0;
+    *start_index = 0;
+
+    for (int i = 1; i < size; i++) {
+        if (arr[i] >= arr[i - 1]) {
+            current_length++;
+        } else {
+            if (current_length > max_length) {
+                max_length = current_length;
+                *start_index = current_start;
+            }
+            current_length = 1;
+            current_start = i;
+        }
+    }
+
+    if (current_length > max_length) {
+        max_length = current_length;
+        *start_index = current_start;
+    }
+
+    return max_length;
+}
+
+int main(void) {
+    int arr[] = {1, 2, 2, 3, 1, 2, 3, 4, 5, 1, 2};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int start = 0;
+    int length = max_sublist_length(arr, size, &start);
+
+    printf("Maximum sublist length: %d\n", length);
+    printf("Starting index: %d\n", start);
+
+    return 0;
+}

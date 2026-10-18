@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315-s3.c:45:81: style: Condition 'word_start+word_len<=max_input_len' is always true [knownConditionTrueFalse]
+            if (word_start + word_len <= max_input_len && word_start + word_len <= max_input_len) {
+                                                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315-s3.c:45:39: note: Assuming that condition 'word_start+word_len<=max_input_len' is not redundant
+            if (word_start + word_len <= max_input_len && word_start + word_len <= max_input_len) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315-s3.c:45:81: note: Condition 'word_start+word_len<=max_input_len' is always true
+            if (word_start + word_len <= max_input_len && word_start + word_len <= max_input_len) {
+                                                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-315-s3.c:45:56: style: Same expression on both sides of '&&'. [duplicateExpression]
+            if (word_start + word_len <= max_input_len && word_start + word_len <= max_input_len) {
+                                                       ^

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-260-s3.c:26:26: error: use of undeclared identifier 'INT_MAX'
+   26 |     if (val < 0 || val > INT_MAX) {
+      |                          ^~~~~~~
+1 error generated.

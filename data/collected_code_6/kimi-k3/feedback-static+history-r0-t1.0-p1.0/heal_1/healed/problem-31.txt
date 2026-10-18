@@ -1,0 +1,204 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int value;
+    int frequency;
+} HeapNode;
+
+typedef struct {
+    HeapNode* nodes;
+    int size;
+    int capacity;
+} MinHeap;
+
+MinHeap* create_heap(int capacity) {
+    MinHeap* heap = (MinHeap*)malloc(sizeof(MinHeap));
+    if (heap == NULL) {
+        return NULL;
+    }
+    heap->nodes = (HeapNode*)malloc(capacity * sizeof(HeapNode));
+    if (heap->nodes == NULL) {
+        free(heap);
+        return NULL;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return heap;
+}
+
+void destroy_heap(MinHeap* heap) {
+    if (heap != NULL) {
+        free(heap->nodes);
+        free(heap);
+    }
+}
+
+void swap_nodes(HeapNode* a, HeapNode* b) {
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapify_up(MinHeap* heap, int index) {
+    int parent = (index - 1) / 2;
+    while (index > 0 && heap->nodes[parent].frequency > heap->nodes[index].frequency) {
+        swap_nodes(&heap->nodes[parent], &heap->nodes[index]);
+        index = parent;
+        parent = (index - 1) / 2;
+    }
+}
+
+void heapify_down(MinHeap* heap, int index) {
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < heap->size && heap->nodes[left].frequency < heap->nodes[smallest].frequency) {
+        smallest = left;
+    }
+    if (right < heap->size && heap->nodes[right].frequency < heap->nodes[smallest].frequency) {
+        smallest = right;
+    }
+    if (smallest != index) {
+        swap_nodes(&heap->nodes[index], &heap->nodes[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+int heap_insert(MinHeap* heap, int value, int frequency) {
+    if (heap->size >= heap->capacity) {
+        return 0;
+    }
+    heap->nodes[heap->size].value = value;
+    heap->nodes[heap->size].frequency = frequency;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 1;
+}
+
+void heap_replace_min(MinHeap* heap, int value, int frequency) {
+    if (heap->size > 0) {
+        heap->nodes[0].value = value;
+        heap->nodes[0].frequency = frequency;
+        heapify_down(heap, 0);
+    }
+}
+
+int compare_nodes(const void* a, const void* b) {
+    return ((HeapNode*)b)->frequency - ((HeapNode*)a)->frequency;
+}
+
+int* top_k_frequent(int** lists, const int* list_sizes, int num_lists, int k, int* return_size) {
+    if (lists == NULL || list_sizes == NULL || num_lists <= 0 || k <= 0 || return_size == NULL) {
+        if (return_size != NULL) {
+            *return_size = 0;
+        }
+        return NULL;
+    }
+
+    MinHeap* heap = create_heap(k);
+    if (heap == NULL) {
+        *return_size = 0;
+        return NULL;
+    }
+
+    int* indices = (int*)calloc(num_lists, sizeof(int));
+    if (indices == NULL) {
+        destroy_heap(heap);
+        *return_size = 0;
+        return NULL;
+    }
+
+    int total_processed = 0;
+    int max_elements = 0;
+    for (int i = 0; i < num_lists; i++) {
+        max_elements += list_sizes[i];
+    }
+
+    while (total_processed < max_elements) {
+        int min_val = 0;
+        int found = 0;
+        
+        for (int i = 0; i < num_lists; i++) {
+            if (indices[i] < list_sizes[i]) {
+                if (!found || lists[i][indices[i]] < min_val) {
+                    min_val = lists[i][indices[i]];
+                    found = 1;
+                }
+            }
+        }
+
+        if (!found) {
+            break;
+        }
+
+        int count = 0;
+        for (int i = 0; i < num_lists; i++) {
+            while (indices[i] < list_sizes[i] && lists[i][indices[i]] == min_val) {
+                indices[i]++;
+                count++;
+                total_processed++;
+            }
+        }
+
+        if (heap->size < k) {
+            if (!heap_insert(heap, min_val, count)) {
+                free(indices);
+                destroy_heap(heap);
+                *return_size = 0;
+                return NULL;
+            }
+        } else if (count > heap->nodes[0].frequency) {
+            heap_replace_min(heap, min_val, count);
+        }
+    }
+
+    free(indices);
+
+    *return_size = heap->size;
+    int* result = (int*)malloc(heap->size * sizeof(int));
+    if (result == NULL) {
+        destroy_heap(heap);
+        *return_size = 0;
+        return NULL;
+    }
+
+    qsort(heap->nodes, heap->size, sizeof(HeapNode), compare_nodes);
+
+    for (int i = 0; i < heap->size; i++) {
+        result[i] = heap->nodes[i].value;
+    }
+
+    destroy_heap(heap);
+    return result;
+}
+
+int main() {
+    int list1[] = {1, 3, 5, 7, 9, 11};
+    int list2[] = {1, 2, 3, 5, 7, 8, 11};
+    int list3[] = {1, 3, 5, 7, 9, 11, 13};
+    
+    int* lists[] = {list1, list2, list3};
+    int sizes[] = {6, 7, 7};
+    int num_lists = 3;
+    int k = 3;
+    int return_size = 0;
+
+    int* result = top_k_frequent(lists, sizes, num_lists, k, &return_size);
+
+    if (result != NULL) {
+        printf("Top %d most frequent integers: ", k);
+        for (int i = 0; i < return_size; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+    } else {
+        printf("Error processing lists.\n");
+    }
+
+    return 0;
+}
+```

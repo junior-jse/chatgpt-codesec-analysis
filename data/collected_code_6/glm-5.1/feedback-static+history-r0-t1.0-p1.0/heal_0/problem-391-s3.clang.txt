@@ -1,0 +1,15 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:43:29: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   43 |         *root = create_node(lists[0][0]);
+      |                             ^~~~~~~~~~~
+      |                             &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:11:31: note: passing argument to parameter 'key' here
+   11 | Dict *create_node(const char *key) {
+      |                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:50:50: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   50 |             current = find_or_add_child(current, lists[i][j]);
+      |                                                  ^~~~~~~~~~~
+      |                                                  &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:25:51: note: passing argument to parameter 'key' here
+   25 | Dict *find_or_add_child(Dict *parent, const char *key) {
+      |                                                   ^
+2 errors generated.

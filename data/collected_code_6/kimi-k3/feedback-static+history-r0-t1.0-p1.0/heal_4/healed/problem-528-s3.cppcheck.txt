@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-528-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-528-s3.c:70:62: style: Condition 'src->data!=NULL' is always true [knownConditionTrueFalse]
+        if (copy_size > 0U && dst->data != NULL && src->data != NULL) {
+                                                             ^

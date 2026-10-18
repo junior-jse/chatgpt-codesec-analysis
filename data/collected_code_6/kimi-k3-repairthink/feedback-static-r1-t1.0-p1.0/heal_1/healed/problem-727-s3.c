@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+#define MAX_INPUT_LENGTH 4096
+
+char* remove_non_alnum(const char* input) {
+    regex_t regex;
+    char* result;
+    size_t i;
+    regmatch_t match;
+    size_t result_len = 0;
+    size_t input_len;
+    int ret;
+
+    if (input == NULL) {
+        return NULL;
+    }
+
+    input_len = strnlen(input, MAX_INPUT_LENGTH);
+    if (input_len == MAX_INPUT_LENGTH) {
+        return NULL;
+    }
+
+    result = malloc(input_len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    ret = regcomp(&regex, "[A-Za-z0-9]", REG_EXTENDED);
+    if (ret != 0) {
+        free(result);
+        return NULL;
+    }
+
+    for (i = 0; i < input_len; i++) {
+        ret = regexec(&regex, input + i, 1, &match, 0);
+        if (ret == 0 && match.rm_so == 0) {
+            result[result_len++] = input[i];
+        }
+    }
+    result[result_len] = '\0';
+
+    regfree(&regex);
+    return result;
+}
+
+int main(void) {
+    const char* test_string = "Hello, World! 123 @#$%";
+    char* cleaned;
+
+    cleaned = remove_non_alnum(test_string);
+    if (cleaned == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed or invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original: %s\n", test_string);
+    printf("Cleaned:  %s\n", cleaned);
+
+    free(cleaned);
+    return EXIT_SUCCESS;
+}

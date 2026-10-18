@@ -1,0 +1,31 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:24:19: style: Condition 'total_len==0' is always false [knownConditionTrueFalse]
+    if (total_len == 0 || total_len < len1) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:23:36: note: Assignment 'total_len=len1+len2+1', assigned value is greater than 0
+    size_t total_len = len1 + len2 + 1;
+                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:24:19: note: Condition 'total_len==0' is always false
+    if (total_len == 0 || total_len < len1) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:113:21: style: Condition 'data_length>0' is always true [knownConditionTrueFalse]
+    if (data_length > 0 && items_alloc / sizeof(char *) != (size_t)data_length) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:105:36: note: Assignment 'data_length=sizeof(data)/sizeof(data[0])', assigned value is 4
+    int data_length = sizeof(data) / sizeof(data[0]);
+                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:108:15: note: Assuming condition is false
+    if (input == NULL) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:113:21: note: Condition 'data_length>0' is always true
+    if (data_length > 0 && items_alloc / sizeof(char *) != (size_t)data_length) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:133:23: style: Condition 'alloc_len<item_len' is always false [knownConditionTrueFalse]
+        if (alloc_len < item_len) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:132:26: note: alloc_len is assigned 'item_len+1' here.
+        size_t alloc_len = item_len + 1;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-206.c:133:23: note: Condition 'alloc_len<item_len' is always false
+        if (alloc_len < item_len) {
+                      ^

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-206.c:111:31: error: use of undeclared identifier 'INT_MAX'
+  111 |     if (data_length > (size_t)INT_MAX) {
+      |                               ^~~~~~~
+1 error generated.

@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int max_segments(int n, int a, int b, int c) {
+    if (n < 0 || a <= 0 || b <= 0 || c <= 0) {
+        return -1;
+    }
+    
+    if (n == 0) {
+        return 0;
+    }
+    
+    int *dp = malloc((size_t)(n + 1) * sizeof(int));
+    if (dp == NULL) {
+        return -1;
+    }
+    
+    dp[0] = 0;
+    for (int i = 1; i <= n; i++) {
+        dp[i] = INT_MIN;
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        if (i >= a && dp[i - a] != INT_MIN) {
+            if (dp[i - a] + 1 > dp[i]) {
+                dp[i] = dp[i - a] + 1;
+            }
+        }
+        if (i >= b && dp[i - b] != INT_MIN) {
+            if (dp[i - b] + 1 > dp[i]) {
+                dp[i] = dp[i - b] + 1;
+            }
+        }
+        if (i >= c && dp[i - c] != INT_MIN) {
+            if (dp[i - c] + 1 > dp[i]) {
+                dp[i] = dp[i - c] + 1;
+            }
+        }
+    }
+    
+    int result = (dp[n] < 0) ? -1 : dp[n];
+    free(dp);
+    return result;
+}
+
+int main(void) {
+    int n, a, b, c;
+    
+    if (scanf("%d %d %d %d", &n, &a, &b, &c) != 4) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    int result = max_segments(n, a, b, c);
+    if (result >= 0) {
+        printf("%d\n", result);
+    } else {
+        printf("-1\n");
+    }
+    
+    return EXIT_SUCCESS;
+}

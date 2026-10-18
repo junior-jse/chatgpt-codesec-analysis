@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:41:28: error: use of undeclared identifier 'SIZE_MAX'
+   41 |         if (new_capacity > SIZE_MAX / sizeof **words) {
+      |                            ^~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-946-s2.c:93:36: error: use of undeclared identifier 'SIZE_MAX'
+   93 |                 if (buf_capacity > SIZE_MAX / 2) {
+      |                                    ^~~~~~~~
+2 errors generated.

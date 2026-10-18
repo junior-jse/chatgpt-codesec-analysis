@@ -1,0 +1,141 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_WORDS 1000
+#define MAX_WORD_LEN 100
+
+typedef struct {
+    char **words;
+    int count;
+    int capacity;
+} WordList;
+
+static void init_word_list(WordList *list) {
+    list->capacity = 16;
+    list->count = 0;
+    list->words = malloc(list->capacity * sizeof(char *));
+    if (!list->words) {
+        list->capacity = 0;
+    }
+}
+
+static void free_word_list(WordList *list) {
+    for (int i = 0; i < list->count; i++) {
+        free(list->words[i]);
+    }
+    free(list->words);
+    list->words = NULL;
+    list->count = 0;
+    list->capacity = 0;
+}
+
+static int contains_word(WordList *list, const char *word) {
+    for (int i = 0; i < list->count; i++) {
+        if (strcmp(list->words[i], word) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int add_word(WordList *list, const char *word) {
+    if (list->count >= MAX_WORDS) {
+        return 0;
+    }
+    if (list->count == list->capacity) {
+        int new_capacity = (list->capacity == 0) ? 16 : list->capacity * 2;
+        if (new_capacity > MAX_WORDS) {
+            new_capacity = MAX_WORDS;
+        }
+        char **new_words = realloc(list->words, new_capacity * sizeof(char *));
+        if (!new_words) {
+            return 0;
+        }
+        list->words = new_words;
+        list->capacity = new_capacity;
+    }
+
+    size_t len = strnlen(word, MAX_WORD_LEN);
+    if (len >= MAX_WORD_LEN) {
+        len = MAX_WORD_LEN - 1;
+    }
+    char *word_copy = malloc(len + 1);
+    if (!word_copy) {
+        return 0;
+    }
+    memcpy(word_copy, word, len);
+    word_copy[len] = '\0';
+
+    list->words[list->count] = word_copy;
+    list->count++;
+    return 1;
+}
+
+void remove_duplicate_words(const char *input, char *output, size_t output_size) {
+    WordList seen;
+    init_word_list(&seen);
+
+    size_t input_len = strlen(input);
+    char *copy = malloc(input_len + 1);
+    if (!copy) {
+        if (output_size > 0) {
+            output[0] = '\0';
+        }
+        free_word_list(&seen);
+        return;
+    }
+    memcpy(copy, input, input_len + 1);
+
+    int offset = 0;
+    int first = 1;
+
+    char *token = strtok(copy, " \t\n\r");
+    while (token != NULL) {
+        if (!contains_word(&seen, token)) {
+            add_word(&seen, token);
+            int written;
+            if (!first) {
+                written = snprintf(output + offset, output_size - offset, " %s", token);
+            } else {
+                written = snprintf(output + offset, output_size - offset, "%s", token);
+                first = 0;
+            }
+            if (written < 0 || (size_t)written >= output_size - offset) {
+                break;
+            }
+            offset += written;
+        }
+        token = strtok(NULL, " \t\n\r");
+    }
+
+    if (output_size > 0 && offset >= 0 && (size_t)offset < output_size) {
+        output[offset] = '\0';
+    }
+
+    free(copy);
+    free_word_list(&seen);
+}
+
+int main() {
+    char input[2048];
+    char output[2048];
+
+    printf("Enter a string: ");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        fprintf(stderr, "Error reading input.\n");
+        return 1;
+    }
+
+    input[strcspn(input, "\n")] = '\0';
+
+    remove_duplicate_words(input, output, sizeof(output));
+
+    printf("Original: %s\n", input);
+    printf("After removing duplicates: %s\n", output);
+
+    return 0;
+}
+```

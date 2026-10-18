@@ -1,0 +1,204 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct DictEntry {
+    char *key;
+    char *value;
+    struct DictEntry *next;
+} DictEntry;
+
+typedef struct Dictionary {
+    DictEntry **buckets;
+    size_t capacity;
+    size_t size;
+} Dictionary;
+
+static unsigned long hash_string(const char *str) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash;
+}
+
+static DictEntry *create_entry(const char *key, const char *value) {
+    DictEntry *entry = (DictEntry *)malloc(sizeof(DictEntry));
+    if (entry == NULL) {
+        return NULL;
+    }
+    entry->key = (char *)malloc(strlen(key) + 1);
+    if (entry->key == NULL) {
+        free(entry);
+        return NULL;
+    }
+    strcpy(entry->key, key);
+    entry->value = (char *)malloc(strlen(value) + 1);
+    if (entry->value == NULL) {
+        free(entry->key);
+        free(entry);
+        return NULL;
+    }
+    strcpy(entry->value, value);
+    entry->next = NULL;
+    return entry;
+}
+
+static void free_entry(DictEntry *entry) {
+    if (entry != NULL) {
+        free(entry->key);
+        free(entry->value);
+        free(entry);
+    }
+}
+
+static int init_dictionary(Dictionary *dict, size_t capacity) {
+    dict->buckets = (DictEntry **)calloc(capacity, sizeof(DictEntry *));
+    if (dict->buckets == NULL) {
+        return 0;
+    }
+    dict->capacity = capacity;
+    dict->size = 0;
+    return 1;
+}
+
+static void free_dictionary(Dictionary *dict) {
+    size_t i;
+    for (i = 0; i < dict->capacity; i++) {
+        DictEntry *entry = dict->buckets[i];
+        while (entry != NULL) {
+            DictEntry *next = entry->next;
+            free_entry(entry);
+            entry = next;
+        }
+    }
+    free(dict->buckets);
+    dict->buckets = NULL;
+    dict->capacity = 0;
+    dict->size = 0;
+}
+
+static int insert_entry(Dictionary *dict, const char *key, const char *value) {
+    unsigned long hash = hash_string(key);
+    size_t index = hash % dict->capacity;
+    DictEntry *current = dict->buckets[index];
+    
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            char *new_value = (char *)malloc(strlen(value) + 1);
+            if (new_value == NULL) {
+                return 0;
+            }
+            strcpy(new_value, value);
+            free(current->value);
+            current->value = new_value;
+            return 1;
+        }
+        current = current->next;
+    }
+    
+    DictEntry *new_entry = create_entry(key, value);
+    if (new_entry == NULL) {
+        return 0;
+    }
+    
+    new_entry->next = dict->buckets[index];
+    dict->buckets[index] = new_entry;
+    dict->size++;
+    return 1;
+}
+
+static int merge_dictionaries(Dictionary *dest, const Dictionary *src) {
+    size_t i;
+    for (i = 0; i < src->capacity; i++) {
+        DictEntry *entry = src->buckets[i];
+        while (entry != NULL) {
+            if (!insert_entry(dest, entry->key, entry->value)) {
+                return 0;
+            }
+            entry = entry->next;
+        }
+    }
+    return 1;
+}
+
+static const char *get_value(const Dictionary *dict, const char *key) {
+    unsigned long hash = hash_string(key);
+    size_t index = hash % dict->capacity;
+    DictEntry *current = dict->buckets[index];
+    
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            return current->value;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+static void print_dictionary(const Dictionary *dict) {
+    size_t i;
+    for (i = 0; i < dict->capacity; i++) {
+        DictEntry *entry = dict->buckets[i];
+        while (entry != NULL) {
+            printf("%s: %s\n", entry->key, entry->value);
+            entry = entry->next;
+        }
+    }
+}
+
+int main(void) {
+    Dictionary dict1;
+    Dictionary dict2;
+    Dictionary merged;
+    
+    if (!init_dictionary(&dict1, 16)) {
+        return 1;
+    }
+    if (!init_dictionary(&dict2, 16)) {
+        free_dictionary(&dict1);
+        return 1;
+    }
+    if (!init_dictionary(&merged, 32)) {
+        free_dictionary(&dict1);
+        free_dictionary(&dict2);
+        return 1;
+    }
+    
+    insert_entry(&dict1, "name", "Alice");
+    insert_entry(&dict1, "age", "30");
+    insert_entry(&dict1, "city", "New York");
+    
+    insert_entry(&dict2, "country", "USA");
+    insert_entry(&dict2, "age", "31");
+    insert_entry(&dict2, "occupation", "Engineer");
+    
+    if (!merge_dictionaries(&merged, &dict1)) {
+        free_dictionary(&dict1);
+        free_dictionary(&dict2);
+        free_dictionary(&merged);
+        return 1;
+    }
+    
+    if (!merge_dictionaries(&merged, &dict2)) {
+        free_dictionary(&dict1);
+        free_dictionary(&dict2);
+        free_dictionary(&merged);
+        return 1;
+    }
+    
+    printf("Merged dictionary:\n");
+    print_dictionary(&merged);
+    
+    printf("\nAge: %s\n", get_value(&merged, "age"));
+    printf("Country: %s\n", get_value(&merged, "country"));
+    
+    free_dictionary(&dict1);
+    free_dictionary(&dict2);
+    free_dictionary(&merged);
+    
+    return 0;
+}
+```

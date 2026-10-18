@@ -1,0 +1,286 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int value;
+    int freq;
+} HeapNode;
+
+typedef struct {
+    HeapNode *data;
+    int size;
+    int capacity;
+} MinHeap;
+
+MinHeap* createMinHeap(int capacity) {
+    MinHeap* heap = (MinHeap*)malloc(sizeof(MinHeap));
+    if (!heap) return NULL;
+    heap->data = (HeapNode*)malloc(sizeof(HeapNode) * capacity);
+    if (!heap->data) {
+        free(heap);
+        return NULL;
+    }
+    heap->size = 0;
+    heap->capacity = capacity;
+    return heap;
+}
+
+void swap(HeapNode *a, HeapNode *b) {
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapify(MinHeap *heap, int idx) {
+    int smallest = idx;
+    int left = 2 * idx + 1;
+    int right = 2 * idx + 2;
+    
+    if (left < heap->size && heap->data[left].freq < heap->data[smallest].freq)
+        smallest = left;
+    if (right < heap->size && heap->data[right].freq < heap->data[smallest].freq)
+        smallest = right;
+    
+    if (smallest != idx) {
+        swap(&heap->data[idx], &heap->data[smallest]);
+        heapify(heap, smallest);
+    }
+}
+
+void insertHeap(MinHeap *heap, int value, int freq) {
+    if (heap->size < heap->capacity) {
+        heap->data[heap->size].value = value;
+        heap->data[heap->size].freq = freq;
+        heap->size++;
+        for (int i = heap->size / 2 - 1; i >= 0; i--)
+            heapify(heap, i);
+    } else if (freq > heap->data[0].freq) {
+        heap->data[0].value = value;
+        heap->data[0].freq = freq;
+        heapify(heap, 0);
+    }
+}
+
+HeapNode* extractMin(MinHeap *heap) {
+    if (heap->size <= 0) return NULL;
+    HeapNode *minNode = (HeapNode*)malloc(sizeof(HeapNode));
+    if (!minNode) return NULL;
+    *minNode = heap->data[0];
+    heap->data[0] = heap->data[heap->size - 1];
+    heap->size--;
+    heapify(heap, 0);
+    return minNode;
+}
+
+void freeMinHeap(MinHeap *heap) {
+    if (heap) {
+        if (heap->data) free(heap->data);
+        free(heap);
+    }
+}
+
+typedef struct {
+    int value;
+    int freq;
+} FreqEntry;
+
+typedef struct {
+    FreqEntry *data;
+    int size;
+    int capacity;
+} FreqList;
+
+FreqList* createFreqList(int capacity) {
+    FreqList* list = (FreqList*)malloc(sizeof(FreqList));
+    if (!list) return NULL;
+    list->data = (FreqEntry*)malloc(sizeof(FreqEntry) * capacity);
+    if (!list->data) {
+        free(list);
+        return NULL;
+    }
+    list->size = 0;
+    list->capacity = capacity;
+    return list;
+}
+
+void addFreqEntry(FreqList *list, int value, int freq) {
+    if (list->size < list->capacity) {
+        list->data[list->size].value = value;
+        list->data[list->size].freq = freq;
+        list->size++;
+    }
+}
+
+void freeFreqList(FreqList *list) {
+    if (list) {
+        if (list->data) free(list->data);
+        free(list);
+    }
+}
+
+int compareFreq(const void *a, const void *b) {
+    FreqEntry *entryA = (FreqEntry*)a;
+    FreqEntry *entryB = (FreqEntry*)b;
+    if (entryB->freq != entryA->freq)
+        return entryB->freq - entryA->freq;
+    return entryB->value - entryA->value;
+}
+
+int* topKFrequent(int** nums, int numsSize, int* numsColSize, int k, int* returnSize) {
+    if (nums == NULL || numsSize <= 0 || numsColSize == NULL || returnSize == NULL) {
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    int totalElements = 0;
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i] == NULL || numsColSize[i] <= 0) {
+            *returnSize = 0;
+            return NULL;
+        }
+        totalElements += numsColSize[i];
+    }
+    
+    if (totalElements == 0 || k <= 0) {
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    FreqList *freqList = createFreqList(totalElements);
+    if (!freqList) {
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    int *indices = (int*)malloc(sizeof(int) * numsSize);
+    if (!indices) {
+        freeFreqList(freqList);
+        *returnSize = 0;
+        return NULL;
+    }
+    for (int i = 0; i < numsSize; i++) {
+        indices[i] = 0;
+    }
+    
+    int prevValue = 0;
+    int prevFreq = 0;
+    int hasPrev = 0;
+    
+    while (1) {
+        int minValue = 0;
+        int minListIdx = -1;
+        int found = 0;
+        
+        for (int i = 0; i < numsSize; i++) {
+            if (indices[i] < numsColSize[i]) {
+                if (!found || nums[i][indices[i]] < minValue) {
+                    minValue = nums[i][indices[i]];
+                    minListIdx = i;
+                    found = 1;
+                }
+            }
+        }
+        
+        if (!found) break;
+        
+        if (hasPrev && prevValue == minValue) {
+            prevFreq++;
+        } else {
+            if (hasPrev) {
+                addFreqEntry(freqList, prevValue, prevFreq);
+            }
+            prevValue = minValue;
+            prevFreq = 1;
+            hasPrev = 1;
+        }
+        
+        indices[minListIdx]++;
+    }
+    
+    if (hasPrev) {
+        addFreqEntry(freqList, prevValue, prevFreq);
+    }
+    
+    free(indices);
+    
+    MinHeap *heap = createMinHeap(k);
+    if (!heap) {
+        freeFreqList(freqList);
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    for (int i = 0; i < freqList->size; i++) {
+        insertHeap(heap, freqList->data[i].value, freqList->data[i].freq);
+    }
+    
+    int resultSize = heap->size;
+    if (resultSize > k) resultSize = k;
+    
+    int *result = (int*)malloc(sizeof(int) * resultSize);
+    if (!result) {
+        freeMinHeap(heap);
+        freeFreqList(freqList);
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    FreqEntry *tempEntries = (FreqEntry*)malloc(sizeof(FreqEntry) * heap->size);
+    if (!tempEntries) {
+        free(result);
+        freeMinHeap(heap);
+        freeFreqList(freqList);
+        *returnSize = 0;
+        return NULL;
+    }
+    
+    int tempSize = 0;
+    while (heap->size > 0) {
+        HeapNode *node = extractMin(heap);
+        if (node) {
+            tempEntries[tempSize].value = node->value;
+            tempEntries[tempSize].freq = node->freq;
+            tempSize++;
+            free(node);
+        }
+    }
+    
+    qsort(tempEntries, tempSize, sizeof(FreqEntry), compareFreq);
+    
+    for (int i = 0; i < resultSize && i < tempSize; i++) {
+        result[i] = tempEntries[i].value;
+    }
+    
+    free(tempEntries);
+    freeMinHeap(heap);
+    freeFreqList(freqList);
+    
+    *returnSize = resultSize;
+    return result;
+}
+
+int main() {
+    int list1[] = {1, 2, 3, 4};
+    int list2[] = {2, 3, 5};
+    int list3[] = {1, 4, 5, 6, 7};
+    
+    int* nums[] = {list1, list2, list3};
+    int numsColSize[] = {4, 3, 5};
+    int numsSize = 3;
+    int k = 3;
+    int returnSize = 0;
+    
+    int* result = topKFrequent(nums, numsSize, numsColSize, k, &returnSize);
+    
+    if (result) {
+        for (int i = 0; i < returnSize; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+    }
+    
+    return 0;
+}
+```

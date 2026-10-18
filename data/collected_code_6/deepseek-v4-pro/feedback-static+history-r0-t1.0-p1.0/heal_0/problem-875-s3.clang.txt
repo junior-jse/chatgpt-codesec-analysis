@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875-s3.c:59:5: warning: Value stored to 'result' is never read [deadcode.DeadStores]
+   59 |     result = min_difference(empty, 0, &err);
+      |     ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-875-s3.c:67:5: warning: Value stored to 'result' is never read [deadcode.DeadStores]
+   67 |     result = min_difference(null_tuples, 5, &err);
+      |     ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.

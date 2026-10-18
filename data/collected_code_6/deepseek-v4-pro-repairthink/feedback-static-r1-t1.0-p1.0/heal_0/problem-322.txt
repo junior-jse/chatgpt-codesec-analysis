@@ -1,0 +1,62 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int* find_min_indices(const int *arr, int size, int *count) {
+    if (arr == NULL || size <= 0 || count == NULL) {
+        return NULL;
+    }
+
+    int min_val = INT_MAX;
+    int min_positions = 0;
+
+    for (int i = 0; i < size; i++) {
+        if (arr[i] < min_val) {
+            min_val = arr[i];
+            min_positions = 1;
+        } else if (arr[i] == min_val) {
+            min_positions++;
+        }
+    }
+
+    int *indices = (int*)malloc(min_positions * sizeof(int));
+    if (indices == NULL) {
+        return NULL;
+    }
+
+    int index = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == min_val) {
+            indices[index++] = i;
+        }
+    }
+
+    *count = min_positions;
+    return indices;
+}
+
+int main(void) {
+    int arr[] = {5, 2, 8, 2, 9, 2, 1, 7, 1};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int count = 0;
+
+    int *min_indices = find_min_indices(arr, size, &count);
+
+    if (min_indices != NULL) {
+        printf("Minimum value indices: ");
+        for (int i = 0; i < count; i++) {
+            printf("%d", min_indices[i]);
+            if (i < count - 1) {
+                printf(", ");
+            }
+        }
+        printf("\n");
+        free(min_indices);
+    } else {
+        printf("Failed to find minimum indices or invalid input.\n");
+    }
+
+    return 0;
+}
+```

@@ -1,0 +1,117 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+char **extract_strings(const char *const *list, size_t count, size_t extract_size, size_t *out_count)
+{
+    if (list == NULL || out_count == NULL || count == 0 || extract_size == 0)
+    {
+        return NULL;
+    }
+
+    char **result = malloc(count * sizeof(char *));
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    size_t extracted = 0;
+
+    for (size_t i = 0; i < count; i++)
+    {
+        if (list[i] == NULL)
+        {
+            continue;
+        }
+
+        size_t len = strlen(list[i]);
+        if (len != extract_size)
+        {
+            continue;
+        }
+
+        result[extracted] = malloc(len + 1);
+        if (result[extracted] == NULL)
+        {
+            for (size_t j = 0; j < extracted; j++)
+            {
+                free(result[j]);
+            }
+            free(result);
+            return NULL;
+        }
+
+        memcpy(result[extracted], list[i], len + 1);
+        extracted++;
+    }
+
+    if (extracted == 0)
+    {
+        free(result);
+        *out_count = 0;
+        return NULL;
+    }
+
+    char **resized = realloc(result, extracted * sizeof(char *));
+    if (resized != NULL)
+    {
+        result = resized;
+    }
+
+    *out_count = extracted;
+    return result;
+}
+
+void free_extracted(char **list, size_t count)
+{
+    if (list == NULL)
+    {
+        return;
+    }
+
+    for (size_t i = 0; i < count; i++)
+    {
+        free(list[i]);
+    }
+    free(list);
+}
+
+int main(void)
+{
+    const char *strings[] = {
+        "apple",
+        "banana",
+        "cherry",
+        "grape",
+        "kiwi",
+        "mango",
+        "orange",
+        "peach",
+        "plum",
+        "strawberry"
+    };
+    size_t count = sizeof(strings) / sizeof(strings[0]);
+    size_t extract_size = 5;
+    size_t result_count = 0;
+
+    char **extracted = extract_strings(strings, count, extract_size, &result_count);
+
+    if (extracted != NULL)
+    {
+        printf("Strings of length %zu:\n", extract_size);
+        for (size_t i = 0; i < result_count; i++)
+        {
+            printf("%s\n", extracted[i]);
+        }
+        free_extracted(extracted, result_count);
+    }
+    else
+    {
+        printf("No strings of length %zu found.\n", extract_size);
+    }
+
+    return 0;
+}
+```

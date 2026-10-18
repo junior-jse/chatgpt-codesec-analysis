@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+typedef struct {
+    /* Possible weaknesses found:
+     *  struct member 'Tuple::elements' is never used. [unusedStructMember]
+     */
+    int *elements;
+    size_t length;
+} Tuple;
+
+bool all_tuples_equal_length(const Tuple *tuples, size_t tuple_count) {
+    if (tuples == NULL) {
+        return tuple_count == 0;
+    }
+    
+    if (tuple_count == 0) {
+        return true;
+    }
+    
+    size_t first_length = tuples[0].length;
+    
+    for (size_t i = 1; i < tuple_count; i++) {
+        if (tuples[i].length != first_length) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+int main(void) {
+    int tuple1_elements[] = {1, 2, 3};
+    int tuple2_elements[] = {4, 5, 6};
+    int tuple3_elements[] = {7, 8, 9};
+    int tuple4_elements[] = {10, 11};
+    
+    /* Possible weaknesses found:
+     *  Variable 'tuples' can be declared as const array [constVariable]
+     */
+    Tuple tuples[] = {
+        {tuple1_elements, 3},
+        {tuple2_elements, 3},
+        {tuple3_elements, 3}
+    };
+    
+    bool result1 = all_tuples_equal_length(tuples, 3);
+    printf("All tuples equal length (test 1): %s\n", result1 ? "true" : "false");
+    
+    /* Possible weaknesses found:
+     *  Variable 'tuples2' can be declared as const array [constVariable]
+     */
+    Tuple tuples2[] = {
+        {tuple1_elements, 3},
+        {tuple2_elements, 3},
+        {tuple4_elements, 2}
+    };
+    
+    bool result2 = all_tuples_equal_length(tuples2, 3);
+    printf("All tuples equal length (test 2): %s\n", result2 ? "true" : "false");
+    
+    /* Possible weaknesses found:
+     *  Calling function 'all_tuples_equal_length' returns 1
+     *  Assignment 'result3=all_tuples_equal_length(NULL,0)', assigned value is 1
+     */
+    bool result3 = all_tuples_equal_length(NULL, 0);
+    /* Possible weaknesses found:
+     *  Condition 'result3' is always true
+     *  Condition 'result3' is always true [knownConditionTrueFalse]
+     */
+    printf("All tuples equal length (empty): %s\n", result3 ? "true" : "false");
+    
+    bool result4 = all_tuples_equal_length(tuples, 0);
+    printf("All tuples equal length (zero count): %s\n", result4 ? "true" : "false");
+    
+    return 0;
+}

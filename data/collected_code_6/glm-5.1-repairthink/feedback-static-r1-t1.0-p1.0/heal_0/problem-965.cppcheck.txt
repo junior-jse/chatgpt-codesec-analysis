@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c:71:19: style: Condition 'null_test==NULL' is always true [knownConditionTrueFalse]
+    if (null_test == NULL) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c:70:37: note: Calling function 'camel_to_snake' returns 0
+    char *null_test = camel_to_snake(NULL);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c:70:37: note: Assignment 'null_test=camel_to_snake(NULL)', assigned value is 0
+    char *null_test = camel_to_snake(NULL);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c:71:19: note: Condition 'null_test==NULL' is always true
+    if (null_test == NULL) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-965.c:70:11: style: Variable 'null_test' can be declared as pointer to const [constVariablePointer]
+    char *null_test = camel_to_snake(NULL);
+          ^

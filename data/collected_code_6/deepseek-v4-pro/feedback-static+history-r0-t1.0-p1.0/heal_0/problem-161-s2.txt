@@ -1,0 +1,117 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void appendNode(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+int contains(Node* head, int data) {
+    Node* current = head;
+    while (current != NULL) {
+        if (current->data == data) {
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+void removeElementsFromList(Node** list1, Node* list2) {
+    if (list1 == NULL || *list1 == NULL || list2 == NULL) {
+        return;
+    }
+
+    Node* current = *list1;
+    Node* previous = NULL;
+
+    while (current != NULL) {
+        if (contains(list2, current->data)) {
+            if (previous == NULL) {
+                *list1 = current->next;
+                free(current);
+                current = *list1;
+            } else {
+                previous->next = current->next;
+                free(current);
+                current = previous->next;
+            }
+        } else {
+            previous = current;
+            current = current->next;
+        }
+    }
+}
+
+void freeList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void printList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* list1 = NULL;
+    Node* list2 = NULL;
+
+    appendNode(&list1, 1);
+    appendNode(&list1, 2);
+    appendNode(&list1, 3);
+    appendNode(&list1, 4);
+    appendNode(&list1, 5);
+
+    appendNode(&list2, 2);
+    appendNode(&list2, 4);
+
+    printf("Original list1: ");
+    printList(list1);
+    printf("List2 (elements to remove): ");
+    printList(list2);
+
+    removeElementsFromList(&list1, list2);
+
+    printf("Modified list1: ");
+    printList(list1);
+
+    freeList(list1);
+    freeList(list2);
+
+    return 0;
+}
+```

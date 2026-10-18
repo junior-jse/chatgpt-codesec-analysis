@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define DICT_SIZE 10
+
+typedef struct {
+    int key[10];
+    int value[10];
+    int size;
+} Dictionary;
+
+void initDictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    dict->size = 0;
+}
+
+bool addToDictionary(Dictionary *dict, int key, int value) {
+    if (dict == NULL || dict->size >= DICT_SIZE) {
+        return false;
+    }
+    for (int i = 0; i < dict->size; i++) {
+        if (dict->key[i] == key) {
+            dict->value[i] = value;
+            return true;
+        }
+    }
+    dict->key[dict->size] = key;
+    dict->value[dict->size] = value;
+    dict->size++;
+    return true;
+}
+
+bool allValuesSame(Dictionary *dict) {
+    if (dict == NULL || dict->size == 0) {
+        return true;
+    }
+    int firstValue = dict->value[0];
+    for (int i = 1; i < dict->size; i++) {
+        if (dict->value[i] != firstValue) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main(void) {
+    Dictionary dict;
+    initDictionary(&dict);
+
+    addToDictionary(&dict, 1, 100);
+    addToDictionary(&dict, 2, 100);
+    addToDictionary(&dict, 3, 100);
+
+    if (allValuesSame(&dict)) {
+        printf("All values are same\n");
+    } else {
+        printf("Values are different\n");
+    }
+
+    addToDictionary(&dict, 4, 200);
+
+    if (allValuesSame(&dict)) {
+        printf("All values are same\n");
+    } else {
+        printf("Values are different\n");
+    }
+
+    return 0;
+}

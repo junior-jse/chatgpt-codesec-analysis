@@ -1,0 +1,100 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    int count;
+} TupleCount;
+
+typedef struct {
+    int frequency;
+    int num_records;
+} FreqGroup;
+
+int check_similar_occurrences(Tuple *tuples, int num_tuples, FreqGroup **groups, int *num_groups) {
+    if (tuples == NULL || num_tuples <= 0 || groups == NULL || num_groups == NULL) {
+        return -1;
+    }
+
+    TupleCount *counts = (TupleCount *)malloc(num_tuples * sizeof(TupleCount));
+    if (counts == NULL) {
+        return -1;
+    }
+
+    int unique_count = 0;
+    for (int i = 0; i < num_tuples; i++) {
+        int found = 0;
+        for (int j = 0; j < unique_count; j++) {
+            if (counts[j].tuple.first == tuples[i].first && counts[j].tuple.second == tuples[i].second) {
+                counts[j].count++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            counts[unique_count].tuple = tuples[i];
+            counts[unique_count].count = 1;
+            unique_count++;
+        }
+    }
+
+    *groups = (FreqGroup *)malloc(unique_count * sizeof(FreqGroup));
+    if (*groups == NULL) {
+        free(counts);
+        return -1;
+    }
+
+    *num_groups = 0;
+    for (int i = 0; i < unique_count; i++) {
+        int found = 0;
+        for (int j = 0; j < *num_groups; j++) {
+            if ((*groups)[j].frequency == counts[i].count) {
+                (*groups)[j].num_records++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            (*groups)[*num_groups].frequency = counts[i].count;
+            (*groups)[*num_groups].num_records = 1;
+            (*num_groups)++;
+        }
+    }
+
+    free(counts);
+    return 0;
+}
+
+int main() {
+    Tuple tuples[] = {
+        {1, 2},
+        {3, 4},
+        {1, 2},
+        {5, 6},
+        {3, 4},
+        {3, 4},
+        {7, 8},
+        {7, 8}
+    };
+    int num_tuples = sizeof(tuples) / sizeof(tuples[0]);
+
+    FreqGroup *groups = NULL;
+    int num_groups = 0;
+
+    if (check_similar_occurrences(tuples, num_tuples, &groups, &num_groups) == 0) {
+        for (int i = 0; i < num_groups; i++) {
+            printf("Frequency: %d, Number of Records: %d\n", groups[i].frequency, groups[i].num_records);
+        }
+        free(groups);
+    }
+
+    return 0;
+}
+```

@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+void remove_lowercase_substrings(const char *input, char *output, size_t output_size) {
+    if (input == NULL || output == NULL || output_size == 0) {
+        return;
+    }
+
+    size_t out_pos = 0;
+    for (size_t i = 0; input[i] != '\0'; i++) {
+        if (islower((unsigned char)input[i])) {
+            continue;
+        }
+        if (out_pos < output_size - 1) {
+            output[out_pos++] = input[i];
+        } else {
+            break;
+        }
+    }
+    output[out_pos] = '\0';
+}
+
+int main(void) {
+    const char test_str[] = "HelloWorld123abcDEFxyz456";
+    size_t len = sizeof(test_str) - 1;
+    char *result = malloc(len + 1);
+    if (result == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+
+    remove_lowercase_substrings(test_str, result, len + 1);
+    printf("Original: %s\n", test_str);
+    printf("Result: %s\n", result);
+
+    free(result);
+    return 0;
+}

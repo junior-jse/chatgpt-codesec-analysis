@@ -1,0 +1,60 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int *remove_odd_numbers(const int *src, size_t src_len, size_t *out_len) {
+    if (src == NULL || out_len == NULL) {
+        if (out_len != NULL) {
+            *out_len = 0;
+        }
+        return NULL;
+    }
+
+    size_t even_count = 0;
+    for (size_t i = 0; i < src_len; i++) {
+        if (src[i] % 2 == 0) {
+            even_count++;
+        }
+    }
+
+    if (even_count == 0) {
+        *out_len = 0;
+        return NULL;
+    }
+
+    int *result = (int *)malloc(even_count * sizeof(int));
+    if (result == NULL) {
+        *out_len = 0;
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < src_len; i++) {
+        if (src[i] % 2 == 0) {
+            result[j] = src[i];
+            j++;
+        }
+    }
+
+    *out_len = even_count;
+    return result;
+}
+
+int main(void) {
+    int list[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    size_t list_len = sizeof(list) / sizeof(list[0]);
+    size_t out_len = 0;
+
+    int *filtered = remove_odd_numbers(list, list_len, &out_len);
+
+    for (size_t i = 0; i < out_len; i++) {
+        printf("%d ", filtered[i]);
+    }
+    printf("\n");
+
+    free(filtered);
+    filtered = NULL;
+
+    return 0;
+}
+```

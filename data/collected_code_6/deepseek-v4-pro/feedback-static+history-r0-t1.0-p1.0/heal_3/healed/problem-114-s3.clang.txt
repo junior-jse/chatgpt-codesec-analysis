@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:30:21: error: use of undeclared identifier 'INT_MAX'
+   30 |     if (src->size > INT_MAX / (int)sizeof(int)) {
+      |                     ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-114-s3.c:66:23: error: use of undeclared identifier 'INT_MAX'
+   66 |     if (tuple_count > INT_MAX / (int)sizeof(TupleFrequency)) {
+      |                       ^~~~~~~
+2 errors generated.

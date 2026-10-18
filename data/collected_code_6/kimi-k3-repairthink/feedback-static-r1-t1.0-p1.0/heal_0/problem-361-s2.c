@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} IntList;
+
+typedef struct {
+    IntList *lists;
+    size_t count;
+    size_t capacity;
+} ListOfLists;
+
+int init_list_of_lists(ListOfLists *lol, size_t capacity) {
+    if (lol == NULL || capacity == 0) {
+        return -1;
+    }
+    lol->lists = malloc(capacity * sizeof(IntList));
+    if (lol->lists == NULL) {
+        return -1;
+    }
+    lol->count = 0;
+    lol->capacity = capacity;
+    return 0;
+}
+
+int add_list(ListOfLists *lol, const int *data, size_t size) {
+    if (lol == NULL || (data == NULL && size > 0)) {
+        return -1;
+    }
+    if (lol->count >= lol->capacity) {
+        size_t new_capacity = lol->capacity * 2;
+        IntList *new_lists = realloc(lol->lists, new_capacity * sizeof(IntList));
+        if (new_lists == NULL) {
+            return -1;
+        }
+        lol->lists = new_lists;
+        lol->capacity = new_capacity;
+    }
+    lol->lists[lol->count].data = NULL;
+    lol->lists[lol->count].size = size;
+    if (size > 0) {
+        lol->lists[lol->count].data = malloc(size * sizeof(int));
+        if (lol->lists[lol->count].data == NULL) {
+            return -1;
+        }
+        memcpy(lol->lists[lol->count].data, data, size * sizeof(int));
+    }
+    lol->count++;
+    return 0;
+}
+
+void remove_empty_lists(ListOfLists *lol) {
+    if (lol == NULL || lol->lists == NULL) {
+        return;
+    }
+    size_t write_idx = 0;
+    for (size_t i = 0; i < lol->count; i++) {
+        if (lol->lists[i].size == 0) {
+            free(lol->lists[i].data);
+            lol->lists[i].data = NULL;
+        } else {
+            if (write_idx != i) {
+                lol->lists[write_idx] = lol->lists[i];
+                lol->lists[i].data = NULL;
+                lol->lists[i].size = 0;
+            }
+            write_idx++;
+        }
+    }
+    lol->count = write_idx;
+}
+
+void free_list_of_lists(ListOfLists *lol) {
+    if (lol == NULL) {
+        return;
+    }
+    if (lol->lists != NULL) {
+        for (size_t i = 0; i < lol->count; i++) {
+            free(lol->lists[i].data);
+            lol->lists[i].data = NULL;
+        }
+        free(lol->lists);
+        lol->lists = NULL;
+    }
+    lol->count = 0;
+    lol->capacity = 0;
+}
+
+void print_list_of_lists(const ListOfLists *lol) {
+    if (lol == NULL) {
+        return;
+    }
+    printf("[");
+    for (size_t i = 0; i < lol->count; i++) {
+        printf("[");
+        for (size_t j = 0; j < lol->lists[i].size; j++) {
+            printf("%d", lol->lists[i].data[j]);
+            if (j < lol->lists[i].size - 1) {
+                printf(", ");
+            }
+        }
+        printf("]");
+        if (i < lol->count - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    ListOfLists lol;
+    if (init_list_of_lists(&lol, 4) != 0) {
+        fprintf(stderr, "Failed to initialize list of lists\n");
+        return EXIT_FAILURE;
+    }
+
+    int data1[] = {1, 2, 3};
+    int data2[] = {4, 5};
+    int data3[] = {6, 7, 8, 9};
+
+    if (add_list(&lol, data1, 3) != 0) {
+        fprintf(stderr, "Failed to add list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+    if (add_list(&lol, NULL, 0) != 0) {
+        fprintf(stderr, "Failed to add empty list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+    if (add_list(&lol, data2, 2) != 0) {
+        fprintf(stderr, "Failed to add list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+    if (add_list(&lol, NULL, 0) != 0) {
+        fprintf(stderr, "Failed to add empty list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+    if (add_list(&lol, data3, 4) != 0) {
+        fprintf(stderr, "Failed to add list\n");
+        free_list_of_lists(&lol);
+        return EXIT_FAILURE;
+    }
+
+    printf("Before: ");
+    print_list_of_lists(&lol);
+
+    remove_empty_lists(&lol);
+
+    printf("After:  ");
+    print_list_of_lists(&lol);
+
+    free_list_of_lists(&lol);
+    return EXIT_SUCCESS;
+}

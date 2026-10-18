@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int capacity;
+    int size;
+    int *keys;
+    int *values;
+} Dictionary;
+
+Dictionary *create_dictionary() {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->capacity = 16;
+    dict->size = 0;
+    dict->keys = (int *)malloc(16 * sizeof(int));
+    dict->values = (int *)malloc(16 * sizeof(int));
+    if (dict->keys == NULL || dict->values == NULL) {
+        free(dict->keys);
+        free(dict->values);
+        free(dict);
+        return NULL;
+    }
+    return dict;
+}
+
+Dictionary **create_empty_dictionary_list(int count) {
+    if (count <= 0) {
+        return NULL;
+    }
+    Dictionary **list = (Dictionary **)malloc(count * sizeof(Dictionary *));
+    if (list == NULL) {
+        return NULL;
+    }
+    int initialized = 0;
+    for (int i = 0; i < count; i++) {
+        list[i] = create_dictionary();
+        if (list[i] == NULL) {
+            for (int j = 0; j < initialized; j++) {
+                free(list[j]->keys);
+                free(list[j]->values);
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+        initialized++;
+    }
+    return list;
+}
+
+void free_dictionary_list(Dictionary **list, int count) {
+    if (list == NULL || count <= 0) {
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        free(list[i]->keys);
+        free(list[i]->values);
+        free(list[i]);
+    }
+    free(list);
+}
+
+int main() {
+    int num_dicts = 5;
+    Dictionary **dict_list = create_empty_dictionary_list(num_dicts);
+    if (dict_list == NULL) {
+        fprintf(stderr, "Failed to allocate dictionary list\n");
+        return 1;
+    }
+    for (int i = 0; i < num_dicts; i++) {
+        printf("Dictionary %d: size=%d, capacity=%d\n", i, dict_list[i]->size, dict_list[i]->capacity);
+    }
+    free_dictionary_list(dict_list, num_dicts);
+    return 0;
+}

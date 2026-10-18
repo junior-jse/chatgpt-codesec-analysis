@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char *remove_non_alphanumeric(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t count = 0;
+    for (const char *p = input; *p != '\0'; ++p) {
+        char c = *p;
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+            ++count;
+        }
+    }
+
+    char *result = (char *)malloc(count + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (const char *p = input; *p != '\0'; ++p) {
+        char c = *p;
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+            result[j++] = c;
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char *test_string = "Hello, World! 123...";
+    char *cleaned = remove_non_alphanumeric(test_string);
+
+    if (cleaned != NULL) {
+        printf("%s\n", cleaned);
+        free(cleaned);
+    }
+
+    return 0;
+}

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-748-s2.c:110:13: warning: Value stored to 'result_len' is never read [deadcode.DeadStores]
+  110 |             result_len += remaining;
+      |             ^             ~~~~~~~~~
+1 warning generated.

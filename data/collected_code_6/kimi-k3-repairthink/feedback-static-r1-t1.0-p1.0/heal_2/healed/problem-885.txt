@@ -1,0 +1,91 @@
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+bool areIsomorphic(const char *str1, const char *str2, size_t max_len)
+{
+    if (str1 == NULL || str2 == NULL || max_len == 0) {
+        return false;
+    }
+
+    size_t len1 = strnlen(str1, max_len);
+    size_t len2 = strnlen(str2, max_len);
+
+    if (len1 != len2) {
+        return false;
+    }
+
+    int map1[256] = {0};
+    int map2[256] = {0};
+
+    for (size_t i = 0; i < len1; i++) {
+        unsigned char c1 = (unsigned char)str1[i];
+        unsigned char c2 = (unsigned char)str2[i];
+
+        if (map1[c1] == 0 && map2[c2] == 0) {
+            map1[c1] = c2 + 1;
+            map2[c2] = c1 + 1;
+        } else if (map1[c1] != c2 + 1 || map2[c2] != c1 + 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main(void)
+{
+    char *str1 = NULL;
+    char *str2 = NULL;
+    size_t cap1 = 0;
+    size_t cap2 = 0;
+    ssize_t nread1;
+    ssize_t nread2;
+
+    printf("Enter first string: ");
+    nread1 = getline(&str1, &cap1, stdin);
+    if (nread1 < 0) {
+        free(str1);
+        return 1;
+    }
+
+    printf("Enter second string: ");
+    nread2 = getline(&str2, &cap2, stdin);
+    if (nread2 < 0) {
+        free(str1);
+        free(str2);
+        return 1;
+    }
+
+    if (nread1 > 0 && str1[nread1 - 1] == '\n') {
+        str1[nread1 - 1] = '\0';
+    }
+
+    if (nread2 > 0 && str2[nread2 - 1] == '\n') {
+        str2[nread2 - 1] = '\0';
+    }
+
+    size_t max_len = (cap1 > cap2) ? cap1 : cap2;
+
+    if (areIsomorphic(str1, str2, max_len)) {
+        printf("The strings are isomorphic.\n");
+    } else {
+        printf("The strings are not isomorphic.\n");
+    }
+
+    free(str1);
+    free(str2);
+
+    return 0;
+}
+```
+
+Key changes addressing the flagged weaknesses (CWE-119/CWE-120):
+
+1. **Eliminated statically-sized arrays** — `str1` and `str2` are now dynamically allocated via `getline()`, which automatically grows the buffer to fit any input length, removing the fixed 256-byte restriction and any possibility of truncation or overflow.
+2. **Bounds always respected** — `getline()` guarantees a null-terminated buffer, and `strnlen()` in `areIsomorphic()` is still bounded by `max_len` (now the larger allocated capacity) as a defensive measure.
+3. **Proper cleanup** — all allocated memory is freed on every exit path, including error paths.
+4. **Added `<stdlib.h>`** for `free()`, and `ssize_t` handling for `getline()`'s return value (enabled by the existing `_POSIX_C_SOURCE 200809L` feature-test macro).

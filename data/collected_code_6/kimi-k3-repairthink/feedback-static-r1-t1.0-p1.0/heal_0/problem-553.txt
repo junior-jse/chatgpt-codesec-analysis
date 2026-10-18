@@ -1,0 +1,157 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <math.h>
+#include <stdbool.h>
+
+typedef struct {
+    char **data;
+    size_t size;
+} StringTuple;
+
+typedef enum {
+    CONV_SUCCESS = 0,
+    CONV_ERR_NULL,
+    CONV_ERR_EMPTY,
+    CONV_ERR_FORMAT,
+    CONV_ERR_RANGE,
+    CONV_ERR_OVERFLOW
+} ConvStatus;
+
+static bool is_valid_number(const char *str) {
+    if (str == NULL || *str == '\0') {
+        return false;
+    }
+    
+    const char *p = str;
+    bool has_digits = false;
+    bool has_dot = false;
+    bool has_exp = false;
+    
+    if (*p == '+' || *p == '-') {
+        p++;
+    }
+    
+    while (*p != '\0') {
+        if (*p >= '0' && *p <= '9') {
+            has_digits = true;
+        } else if (*p == '.') {
+            if (has_dot || has_exp) {
+                return false;
+            }
+            has_dot = true;
+        } else if (*p == 'e' || *p == 'E') {
+            if (has_exp || !has_digits) {
+                return false;
+            }
+            has_exp = true;
+            p++;
+            if (*p == '+' || *p == '-') {
+                p++;
+            }
+            if (*p == '\0') {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        p++;
+    }
+    
+    return has_digits;
+}
+
+ConvStatus tuple_to_float(const StringTuple *tuple, double *result) {
+    if (tuple == NULL || result == NULL) {
+        return CONV_ERR_NULL;
+    }
+    
+    if (tuple->size == 0 || tuple->data == NULL) {
+        return CONV_ERR_EMPTY;
+    }
+    
+    size_t total_len = 0;
+    for (size_t i = 0; i < tuple->size; i++) {
+        if (tuple->data[i] == NULL) {
+            return CONV_ERR_NULL;
+        }
+        size_t len = strlen(tuple->data[i]);
+        if (len > 0 && total_len > SIZE_MAX - len - 1) {
+            return CONV_ERR_OVERFLOW;
+        }
+        total_len += len;
+    }
+    
+    if (total_len == 0) {
+        return CONV_ERR_EMPTY;
+    }
+    
+    if (total_len > 1024) {
+        return CONV_ERR_FORMAT;
+    }
+    
+    char *buffer = malloc(total_len + 1);
+    if (buffer == NULL) {
+        return CONV_ERR_OVERFLOW;
+    }
+    
+    buffer[0] = '\0';
+    for (size_t i = 0; i < tuple->size; i++) {
+        strcat(buffer, tuple->data[i]);
+    }
+    
+    if (!is_valid_number(buffer)) {
+        free(buffer);
+        return CONV_ERR_FORMAT;
+    }
+    
+    errno = 0;
+    char *endptr = NULL;
+    double value = strtod(buffer, &endptr);
+    
+    if (endptr == buffer || *endptr != '\0') {
+        free(buffer);
+        return CONV_ERR_FORMAT;
+    }
+    
+    if (errno == ERANGE) {
+        free(buffer);
+        return CONV_ERR_RANGE;
+    }
+    
+    free(buffer);
+    *result = value;
+    return CONV_SUCCESS;
+}
+
+int main(void) {
+    char *elements[] = {"-", "1", "2", "3", ".", "4", "5"};
+    StringTuple tuple = {
+        .data = elements,
+        .size = sizeof(elements) / sizeof(elements[0])
+    };
+    
+    double result = 0.0;
+    ConvStatus status = tuple_to_float(&tuple, &result);
+    
+    if (status == CONV_SUCCESS) {
+        printf("Result: %f\n", result);
+    } else {
+        const char *msg = "Unknown error";
+        switch (status) {
+            case CONV_ERR_NULL: msg = "Null pointer error"; break;
+            case CONV_ERR_EMPTY: msg = "Empty input"; break;
+            case CONV_ERR_FORMAT: msg = "Invalid format"; break;
+            case CONV_ERR_RANGE: msg = "Out of range"; break;
+            case CONV_ERR_OVERFLOW: msg = "Memory overflow"; break;
+            default: break;
+        }
+        fprintf(stderr, "Error: %s\n", msg);
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}
+```

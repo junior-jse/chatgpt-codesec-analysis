@@ -1,0 +1,141 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static char *reverse_string(const char *str) {
+    if (!str) {
+        return NULL;
+    }
+    
+    size_t len = 0;
+    while (str[len] != '\0') {
+        len++;
+        if (len > SIZE_MAX - 1) {
+            return NULL;
+        }
+    }
+    
+    char *reversed = malloc(len + 1);
+    if (!reversed) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < len; i++) {
+        reversed[i] = str[len - 1 - i];
+    }
+    reversed[len] = '\0';
+    
+    return reversed;
+}
+
+int count_reverse_pairs(char **list, int size) {
+    if (!list || size <= 0) {
+        return 0;
+    }
+
+    char **reversed_list = malloc((size_t)size * sizeof(char *));
+    if (!reversed_list) {
+        return 0;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (!list[i]) {
+            for (int j = 0; j < i; j++) {
+                free(reversed_list[j]);
+            }
+            free(reversed_list);
+            return 0;
+        }
+        reversed_list[i] = reverse_string(list[i]);
+        if (!reversed_list[i]) {
+            for (int j = 0; j < i; j++) {
+                free(reversed_list[j]);
+            }
+            free(reversed_list);
+            return 0;
+        }
+    }
+
+    int *used = calloc((size_t)size, sizeof(int));
+    if (!used) {
+        for (int i = 0; i < size; i++) {
+            free(reversed_list[i]);
+        }
+        free(reversed_list);
+        return 0;
+    }
+
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (used[i]) {
+            continue;
+        }
+        for (int j = i + 1; j < size; j++) {
+            if (!used[j] && strcmp(list[i], reversed_list[j]) == 0) {
+                count++;
+                used[i] = 1;
+                used[j] = 1;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < size; i++) {
+        free(reversed_list[i]);
+    }
+    free(reversed_list);
+    free(used);
+
+    return count;
+}
+
+int main(void) {
+    const char *words[] = {
+        "abc", "cba", "test", "tset", "hello", "olleh", "world"
+    };
+    size_t size = sizeof(words) / sizeof(words[0]);
+
+    char **list = malloc(size * sizeof(char *));
+    if (!list) {
+        return 1;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        size_t word_len = 0;
+        while (words[i][word_len] != '\0') {
+            word_len++;
+            if (word_len > SIZE_MAX - 1) {
+                for (size_t j = 0; j < i; j++) {
+                    free(list[j]);
+                }
+                free(list);
+                return 1;
+            }
+        }
+        
+        list[i] = malloc(word_len + 1);
+        if (!list[i]) {
+            for (size_t j = 0; j < i; j++) {
+                free(list[j]);
+            }
+            free(list);
+            return 1;
+        }
+        
+        for (size_t k = 0; k <= word_len; k++) {
+            list[i][k] = words[i][k];
+        }
+    }
+
+    int pairs = count_reverse_pairs(list, (int)size);
+    printf("Number of reverse pairs: %d\n", pairs);
+
+    for (size_t i = 0; i < size; i++) {
+        free(list[i]);
+    }
+    free(list);
+
+    return 0;
+}
+```

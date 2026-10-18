@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-829.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-829.c:33:26: style: Condition 'copy_len>0' is always false [knownConditionTrueFalse]
+            if (copy_len > 0) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-829.c:32:58: note: Assignment 'copy_len=src_len<(100-1)?src_len:(100-1)', assigned value is less than 1
+            size_t copy_len = src_len < (MAX_LENGTH - 1) ? src_len : (MAX_LENGTH - 1);
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-829.c:33:26: note: Condition 'copy_len>0' is always false
+            if (copy_len > 0) {
+                         ^

@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <arpa/inet.h>
+
+void remove_leading_zeroes(char *ip) {
+    if (ip == NULL) return;
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char tmp[INET_ADDRSTRLEN];
+    int pos = 0;
+    int octet_start = 1;
+    for (int i = 0; ip[i] != '\0' && pos < INET_ADDRSTRLEN - 1; i++) {
+        if (ip[i] == '.') {
+            tmp[pos++] = '.';
+            octet_start = 1;
+        } else if (ip[i] >= '0' && ip[i] <= '9') {
+            if (octet_start) {
+                if (ip[i] == '0' && ip[i+1] >= '0' && ip[i+1] <= '9') {
+                    continue;
+                }
+                /* Possible weaknesses found:
+                 *  Value stored to 'octet_start' is never read [deadcode.DeadStores]
+                 */
+                octet_start = 0;
+            }
+            tmp[pos++] = ip[i];
+            octet_start = 0;
+        }
+    }
+    tmp[pos] = '\0';
+    snprintf(ip, INET_ADDRSTRLEN, "%s", tmp);
+}
+
+int main(void) {
+    char ip1[] = "192.168.001.001";
+    char ip2[] = "010.000.000.001";
+    char ip3[] = "000.000.000.000";
+    char ip4[] = "255.255.255.255";
+    char ip5[] = "001.002.003.004";
+
+    remove_leading_zeroes(ip1);
+    remove_leading_zeroes(ip2);
+    remove_leading_zeroes(ip3);
+    remove_leading_zeroes(ip4);
+    remove_leading_zeroes(ip5);
+
+    printf("%s\n", ip1);
+    printf("%s\n", ip2);
+    printf("%s\n", ip3);
+    printf("%s\n", ip4);
+    printf("%s\n", ip5);
+
+    return 0;
+}

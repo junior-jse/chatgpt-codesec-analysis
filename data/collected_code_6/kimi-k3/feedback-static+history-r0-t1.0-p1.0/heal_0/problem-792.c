@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    Node* head;
+    size_t size;
+} List;
+
+int list_init(List* list) {
+    if (list == NULL) {
+        return -1;
+    }
+    list->head = NULL;
+    list->size = 0;
+    return 0;
+}
+
+int list_push(List* list, int value) {
+    if (list == NULL) {
+        return -1;
+    }
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return -1;
+    }
+    new_node->data = value;
+    new_node->next = list->head;
+    list->head = new_node;
+    list->size++;
+    return 0;
+}
+
+void list_destroy(List* list) {
+    if (list == NULL) {
+        return;
+    }
+    Node* current = list->head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+    list->head = NULL;
+    list->size = 0;
+}
+
+size_t count_lists(const List* lists, size_t num_lists) {
+    if (lists == NULL) {
+        return 0;
+    }
+    size_t count = 0;
+    for (size_t i = 0; i < num_lists; i++) {
+        if (lists[i].head != NULL) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main(void) {
+    const size_t num_lists = 3;
+    List* lists = (List*)malloc(num_lists * sizeof(List));
+    if (lists == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < num_lists; i++) {
+        if (list_init(&lists[i]) != 0) {
+            for (size_t j = 0; j < i; j++) {
+                list_destroy(&lists[j]);
+            }
+            free(lists);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (list_push(&lists[0], 10) != 0) {
+        for (size_t i = 0; i < num_lists; i++) {
+            list_destroy(&lists[i]);
+        }
+        free(lists);
+        return EXIT_FAILURE;
+    }
+    if (list_push(&lists[0], 20) != 0) {
+        for (size_t i = 0; i < num_lists; i++) {
+            list_destroy(&lists[i]);
+        }
+        free(lists);
+        return EXIT_FAILURE;
+    }
+    if (list_push(&lists[2], 30) != 0) {
+        for (size_t i = 0; i < num_lists; i++) {
+            list_destroy(&lists[i]);
+        }
+        free(lists);
+        return EXIT_FAILURE;
+    }
+
+    size_t non_empty_count = count_lists(lists, num_lists);
+    printf("Number of non-empty lists: %zu\n", non_empty_count);
+    printf("Total number of lists: %zu\n", num_lists);
+
+    for (size_t i = 0; i < num_lists; i++) {
+        list_destroy(&lists[i]);
+    }
+    free(lists);
+
+    return EXIT_SUCCESS;
+}

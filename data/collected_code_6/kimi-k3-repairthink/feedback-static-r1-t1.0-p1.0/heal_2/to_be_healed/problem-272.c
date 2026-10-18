@@ -1,0 +1,236 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TUPLE_NAME_SIZE 32
+
+typedef struct {
+    int id;
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char name[TUPLE_NAME_SIZE];
+    double value;
+} Tuple;
+
+typedef struct Node {
+    Tuple data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    Node *tail;
+    size_t size;
+} TupleList;
+
+static int tuple_set_name(Tuple *tuple, const char *name)
+{
+    int written;
+
+    if (tuple == NULL || name == NULL) {
+        return -1;
+    }
+
+    written = snprintf(tuple->name, TUPLE_NAME_SIZE, "%s", name);
+    if (written < 0 || (size_t)written >= TUPLE_NAME_SIZE) {
+        tuple->name[0] = '\0';
+        return -1;
+    }
+
+    return 0;
+}
+
+int tuple_init(Tuple *tuple, int id, const char *name, double value)
+{
+    if (tuple == NULL) {
+        return -1;
+    }
+
+    tuple->id = id;
+    tuple->value = value;
+    tuple->name[0] = '\0';
+
+    if (tuple_set_name(tuple, name) != 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int tuple_name_is_valid(const Tuple *tuple)
+{
+    if (tuple == NULL) {
+        return 0;
+    }
+
+    return memchr(tuple->name, '\0', TUPLE_NAME_SIZE) != NULL;
+}
+
+void list_init(TupleList *list)
+{
+    if (list != NULL) {
+        list->head = NULL;
+        list->tail = NULL;
+        list->size = 0;
+    }
+}
+
+int list_append(TupleList *list, const Tuple *data)
+{
+    Node *new_node;
+
+    if (list == NULL || data == NULL) {
+        return -1;
+    }
+
+    if (!tuple_name_is_valid(data)) {
+        return -1;
+    }
+
+    new_node = malloc(sizeof(*new_node));
+    if (new_node == NULL) {
+        return -1;
+    }
+
+    new_node->data = *data;
+    new_node->next = NULL;
+
+    if (list->tail != NULL) {
+        list->tail->next = new_node;
+    } else {
+        list->head = new_node;
+    }
+
+    list->tail = new_node;
+    list->size++;
+
+    return 0;
+}
+
+int list_extract_rear(TupleList *list, Tuple *out)
+{
+    Node *current;
+    Node *prev;
+
+    if (list == NULL || out == NULL) {
+        return -1;
+    }
+
+    if (list->tail == NULL) {
+        return -1;
+    }
+
+    *out = list->tail->data;
+
+    current = list->head;
+    prev = NULL;
+
+    while (current != NULL && current->next != NULL) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (prev != NULL) {
+        prev->next = NULL;
+        list->tail = prev;
+    } else {
+        list->head = NULL;
+        list->tail = NULL;
+    }
+
+    free(current);
+    list->size--;
+
+    return 0;
+}
+
+void list_destroy(TupleList *list)
+{
+    Node *current;
+    Node *next;
+
+    if (list == NULL) {
+        return;
+    }
+
+    current = list->head;
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+int main(void)
+{
+    TupleList list;
+    Tuple extracted;
+    Tuple t1;
+    Tuple t2;
+    Tuple t3;
+    int status;
+
+    list_init(&list);
+
+    if (tuple_init(&t1, 1, "record_a", 10.5) != 0) {
+        fprintf(stderr, "Failed to initialize t1\n");
+        return EXIT_FAILURE;
+    }
+
+    if (tuple_init(&t2, 2, "record_b", 20.75) != 0) {
+        fprintf(stderr, "Failed to initialize t2\n");
+        return EXIT_FAILURE;
+    }
+
+    if (tuple_init(&t3, 3, "record_c", 30.25) != 0) {
+        fprintf(stderr, "Failed to initialize t3\n");
+        return EXIT_FAILURE;
+    }
+
+    status = list_append(&list, &t1);
+    if (status != 0) {
+        fprintf(stderr, "Failed to append t1\n");
+        list_destroy(&list);
+        return EXIT_FAILURE;
+    }
+
+    status = list_append(&list, &t2);
+    if (status != 0) {
+        fprintf(stderr, "Failed to append t2\n");
+        list_destroy(&list);
+        return EXIT_FAILURE;
+    }
+
+    status = list_append(&list, &t3);
+    if (status != 0) {
+        fprintf(stderr, "Failed to append t3\n");
+        list_destroy(&list);
+        return EXIT_FAILURE;
+    }
+
+    printf("List size before extraction: %zu\n", list.size);
+
+    status = list_extract_rear(&list, &extracted);
+    if (status == 0) {
+        printf("Extracted: id=%d, name=%s, value=%.2f\n",
+               extracted.id, extracted.name, extracted.value);
+        printf("List size after extraction: %zu\n", list.size);
+    } else {
+        fprintf(stderr, "Failed to extract rear element\n");
+    }
+
+    status = list_extract_rear(&list, &extracted);
+    if (status == 0) {
+        printf("Extracted: id=%d, name=%s, value=%.2f\n",
+               extracted.id, extracted.name, extracted.value);
+    }
+
+    list_destroy(&list);
+
+    return EXIT_SUCCESS;
+}

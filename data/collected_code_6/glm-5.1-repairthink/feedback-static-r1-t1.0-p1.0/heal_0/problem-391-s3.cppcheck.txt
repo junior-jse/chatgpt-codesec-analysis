@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:42:30: style: Condition 'list_count>0' is always true [knownConditionTrueFalse]
+    if (!*root && list_count > 0 && sizes[0] > 0) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:40:49: note: Assuming that condition 'list_count<=0' is not redundant
+    if (!root || !lists || !sizes || list_count <= 0) return -1;
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:42:30: note: Condition 'list_count>0' is always true
+    if (!*root && list_count > 0 && sizes[0] > 0) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s3.c:39:58: style: Parameter 'sizes' can be declared as pointer to const [constParameterPointer]
+int lists_to_nested_dict(Dict **root, char **lists, int *sizes, int list_count) {
+                                                         ^

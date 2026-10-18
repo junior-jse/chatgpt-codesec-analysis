@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:34:41: error: call to undeclared library function 'sqrt' with type 'double (double)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   34 |         double center_y_offset = size * sqrt(3.0) / 2.0;
+      |                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:34:41: note: include the header <math.h> or explicitly provide a declaration for 'sqrt'
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:41:32: error: use of undeclared identifier 'M_PI'
+   41 |                 double angle = M_PI / 180.0 * (60.0 * i);
+      |                                ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:42:56: error: call to undeclared library function 'cos' with type 'double (double)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   42 |                 grid[r][c].vertices[i].x = cx + size * cos(angle);
+      |                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:42:56: note: include the header <math.h> or explicitly provide a declaration for 'cos'
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:43:56: error: call to undeclared library function 'sin' with type 'double (double)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   43 |                 grid[r][c].vertices[i].y = cy + size * sin(angle);
+      |                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-493.c:43:56: note: include the header <math.h> or explicitly provide a declaration for 'sin'
+4 errors generated.

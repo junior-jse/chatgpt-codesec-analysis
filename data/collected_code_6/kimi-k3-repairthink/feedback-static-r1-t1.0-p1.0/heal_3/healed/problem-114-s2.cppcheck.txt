@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-114-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-114-s2.c:55:19: style: Condition 'copy_size>sorted_tuples_capacity' is always false [knownConditionTrueFalse]
+    if (copy_size > sorted_tuples_capacity) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-114-s2.c:48:35: note: sorted_tuples_capacity is assigned 'copy_size' here.
+    size_t sorted_tuples_capacity = copy_size;
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-114-s2.c:51:23: note: Assuming condition is false
+    if (sorted_tuples == NULL) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-114-s2.c:55:19: note: Condition 'copy_size>sorted_tuples_capacity' is always false
+    if (copy_size > sorted_tuples_capacity) {
+                  ^

@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* remove_leading_zeroes_ip(const char* ip) {
+    if (ip == NULL) {
+        return NULL;
+    }
+
+    size_t len = strlen(ip);
+    char* result = (char*)malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t r_idx = 0;
+    int segment_start = 1;
+
+    for (size_t i = 0; i < len; i++) {
+        if (ip[i] == '.') {
+            if (r_idx > 0 && result[r_idx - 1] == '.') {
+                free(result);
+                return NULL;
+            }
+            result[r_idx++] = '.';
+            segment_start = 1;
+        } else if (ip[i] >= '0' && ip[i] <= '9') {
+            if (segment_start) {
+                if (ip[i] != '0') {
+                    result[r_idx++] = ip[i];
+                    segment_start = 0;
+                } else {
+                    if (i + 1 < len && (ip[i + 1] >= '0' && ip[i + 1] <= '9')) {
+                        continue;
+                    } else {
+                        result[r_idx++] = '0';
+                        segment_start = 0;
+                    }
+                }
+            } else {
+                result[r_idx++] = ip[i];
+            }
+        } else {
+            free(result);
+            return NULL;
+        }
+    }
+
+    if (r_idx == 0 || result[r_idx - 1] == '.') {
+        free(result);
+        return NULL;
+    }
+
+    result[r_idx] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char* ip1 = "010.000.020.001";
+    char* res1 = remove_leading_zeroes_ip(ip1);
+    if (res1 != NULL) {
+        printf("%s -> %s\n", ip1, res1);
+        free(res1);
+    }
+
+    const char* ip2 = "192.168.1.1";
+    char* res2 = remove_leading_zeroes_ip(ip2);
+    if (res2 != NULL) {
+        printf("%s -> %s\n", ip2, res2);
+        free(res2);
+    }
+
+    const char* ip3 = "0.0.0.0";
+    char* res3 = remove_leading_zeroes_ip(ip3);
+    if (res3 != NULL) {
+        printf("%s -> %s\n", ip3, res3);
+        free(res3);
+    }
+
+    return 0;
+}

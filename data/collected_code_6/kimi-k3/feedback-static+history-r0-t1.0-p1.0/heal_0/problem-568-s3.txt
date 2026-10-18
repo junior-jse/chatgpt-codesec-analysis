@@ -1,0 +1,59 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    void *data;
+} Dictionary;
+
+Dictionary **create_dictionary_list(size_t count) {
+    if (count == 0) {
+        return NULL;
+    }
+    
+    Dictionary **list = calloc(count, sizeof(Dictionary *));
+    if (list == NULL) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        list[i] = calloc(1, sizeof(Dictionary));
+        if (list[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+    }
+    
+    return list;
+}
+
+void destroy_dictionary_list(Dictionary **list, size_t count) {
+    if (list == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        free(list[i]);
+    }
+    free(list);
+}
+
+int main(void) {
+    size_t count = 5;
+    Dictionary **dict_list = create_dictionary_list(count);
+    
+    if (dict_list == NULL) {
+        fprintf(stderr, "Failed to create dictionary list\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Created %zu empty dictionaries\n", count);
+    
+    destroy_dictionary_list(dict_list, count);
+    
+    return EXIT_SUCCESS;
+}
+```

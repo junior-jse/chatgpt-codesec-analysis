@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <float.h>
+
+static void findMaxAvgPathUtil(int **matrix, int n, int row, int col, 
+                               double current_sum, int current_len,
+                               double *max_avg, double **best_path, 
+                               double *current_path) {
+    current_path[current_len] = matrix[row][col];
+    current_sum += matrix[row][col];
+    current_len++;
+    
+    if (row == n - 1 && col == n - 1) {
+        double avg = current_sum / current_len;
+        if (avg > *max_avg) {
+            *max_avg = avg;
+            for (int i = 0; i < current_len; i++) {
+                best_path[0][i] = current_path[i];
+            }
+            best_path[0][current_len] = -1;
+        }
+        return;
+    }
+    
+    if (row + 1 < n) {
+        findMaxAvgPathUtil(matrix, n, row + 1, col, current_sum, current_len,
+                          max_avg, best_path, current_path);
+    }
+    
+    if (col + 1 < n) {
+        findMaxAvgPathUtil(matrix, n, row, col + 1, current_sum, current_len,
+                          max_avg, best_path, current_path);
+    }
+}
+
+double* findMaxAveragePath(int **matrix, int n) {
+    if (matrix == NULL || n <= 0) {
+        return NULL;
+    }
+    
+    double *result = (double *)malloc((2 * n) * sizeof(double));
+    if (result == NULL) {
+        return NULL;
+    }
+    
+    double *current_path = (double *)malloc((2 * n) * sizeof(double));
+    if (current_path == NULL) {
+        free(result);
+        return NULL;
+    }
+    
+    double *best_path[1];
+    best_path[0] = result;
+    
+    double max_avg = -DBL_MAX;
+    
+    findMaxAvgPathUtil(matrix, n, 0, 0, 0.0, 0, &max_avg, best_path, current_path);
+    
+    free(current_path);
+    
+    if (max_avg == -DBL_MAX) {
+        free(result);
+        return NULL;
+    }
+    
+    return result;
+}
+
+int main() {
+    int n;
+    printf("Enter matrix size n: ");
+    scanf("%d", &n);
+    
+    if (n <= 0) {
+        printf("Invalid matrix size\n");
+        return 1;
+    }
+    
+    int **matrix = (int **)malloc(n * sizeof(int *));
+    if (matrix == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        matrix[i] = (int *)malloc(n * sizeof(int));
+        if (matrix[i] == NULL) {
+            printf("Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free(matrix[j]);
+            }
+            free(matrix);
+            return 1;
+        }
+    }
+    
+    printf("Enter matrix elements:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+    
+    double *path = findMaxAveragePath(matrix, n);
+    
+    if (path != NULL) {
+        printf("Maximum average path: ");
+        int i = 0;
+        while (path[i] != -1) {
+            printf("%.0f ", path[i]);
+            i++;
+        }
+        printf("\n");
+        
+        free(path);
+    } else {
+        printf("No path found\n");
+    }
+    
+    for (int i = 0; i < n; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+    
+    return 0;
+}

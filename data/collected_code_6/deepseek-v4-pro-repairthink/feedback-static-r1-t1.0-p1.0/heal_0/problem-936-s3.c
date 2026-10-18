@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t size;
+} TupleList;
+
+typedef struct {
+    char **keys;
+    size_t size;
+} OrderedList;
+
+void free_tuple_list(TupleList *list) {
+    if (!list) return;
+    for (size_t i = 0; i < list->size; i++) {
+        free(list->tuples[i].key);
+        free(list->tuples[i].value);
+    }
+    free(list->tuples);
+    list->tuples = NULL;
+    list->size = 0;
+}
+
+void free_ordered_list(OrderedList *list) {
+    if (!list) return;
+    for (size_t i = 0; i < list->size; i++) {
+        free(list->keys[i]);
+    }
+    free(list->keys);
+    list->keys = NULL;
+    list->size = 0;
+}
+
+int arrange_tuples(TupleList *tuples, const OrderedList *order) {
+    if (!tuples || !order || !tuples->tuples || !order->keys) {
+        return -1;
+    }
+
+    Tuple *temp = malloc(tuples->size * sizeof(Tuple));
+    if (!temp) {
+        return -1;
+    }
+
+    size_t placed = 0;
+    for (size_t i = 0; i < order->size; i++) {
+        for (size_t j = 0; j < tuples->size; j++) {
+            if (tuples->tuples[j].key && 
+                strcmp(tuples->tuples[j].key, order->keys[i]) == 0) {
+                temp[placed++] = tuples->tuples[j];
+                tuples->tuples[j].key = NULL;
+                tuples->tuples[j].value = NULL;
+                break;
+            }
+        }
+    }
+
+    for (size_t j = 0; j < tuples->size; j++) {
+        if (tuples->tuples[j].key) {
+            temp[placed++] = tuples->tuples[j];
+        }
+    }
+
+    free(tuples->tuples);
+    tuples->tuples = temp;
+    return 0;
+}
+
+int main(void) {
+    TupleList tuples;
+    OrderedList order;
+    
+    tuples.size = 4;
+    tuples.tuples = malloc(tuples.size * sizeof(Tuple));
+    if (!tuples.tuples) {
+        return 1;
+    }
+    
+    tuples.tuples[0].key = strdup("name");
+    tuples.tuples[0].value = strdup("John");
+    tuples.tuples[1].key = strdup("age");
+    tuples.tuples[1].value = strdup("30");
+    tuples.tuples[2].key = strdup("city");
+    tuples.tuples[2].value = strdup("New York");
+    tuples.tuples[3].key = strdup("country");
+    tuples.tuples[3].value = strdup("USA");
+    
+    order.size = 3;
+    order.keys = malloc(order.size * sizeof(char *));
+    if (!order.keys) {
+        free_tuple_list(&tuples);
+        return 1;
+    }
+    
+    order.keys[0] = strdup("country");
+    order.keys[1] = strdup("name");
+    order.keys[2] = strdup("city");
+    
+    if (arrange_tuples(&tuples, &order) != 0) {
+        free_tuple_list(&tuples);
+        free_ordered_list(&order);
+        return 1;
+    }
+    
+    for (size_t i = 0; i < tuples.size; i++) {
+        printf("%s: %s\n", tuples.tuples[i].key, tuples.tuples[i].value);
+    }
+    
+    free_tuple_list(&tuples);
+    free_ordered_list(&order);
+    
+    return 0;
+}

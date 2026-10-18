@@ -1,0 +1,93 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *values;
+    size_t size;
+} Tuple;
+
+Tuple parse_tuple(const char *str) {
+    Tuple result = {NULL, 0};
+    if (str == NULL) {
+        return result;
+    }
+
+    size_t len = strlen(str);
+    if (len < 2 || str[0] != '(' || str[len - 1] != ')') {
+        return result;
+    }
+
+    char *copy = (char *)malloc(len - 1);
+    if (copy == NULL) {
+        return result;
+    }
+
+    strncpy(copy, str + 1, len - 2);
+    copy[len - 2] = '\0';
+
+    size_t capacity = 8;
+    int *values = (int *)malloc(capacity * sizeof(int));
+    if (values == NULL) {
+        free(copy);
+        return result;
+    }
+
+    char *token = strtok(copy, ",");
+    size_t count = 0;
+
+    while (token != NULL) {
+        while (*token == ' ') {
+            token++;
+        }
+
+        if (count == capacity) {
+            capacity *= 2;
+            int *temp = (int *)realloc(values, capacity * sizeof(int));
+            if (temp == NULL) {
+                free(values);
+                free(copy);
+                return result;
+            }
+            values = temp;
+        }
+
+        values[count++] = atoi(token);
+        token = strtok(NULL, ",");
+    }
+
+    free(copy);
+
+    result.values = values;
+    result.size = count;
+
+    return result;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple != NULL && tuple->values != NULL) {
+        free(tuple->values);
+        tuple->values = NULL;
+        tuple->size = 0;
+    }
+}
+
+int main(void) {
+    const char *input = "(1, 2, 3, 4, 5)";
+    Tuple tuple = parse_tuple(input);
+
+    if (tuple.values == NULL) {
+        fprintf(stderr, "Failed to parse tuple\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < tuple.size; i++) {
+        printf("%d ", tuple.values[i]);
+    }
+    printf("\n");
+
+    free_tuple(&tuple);
+    return EXIT_SUCCESS;
+}
+```

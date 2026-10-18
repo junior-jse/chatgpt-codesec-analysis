@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+static bool safe_copy(char *dest, size_t dest_size, size_t *offset, const char *src, size_t n) {
+    if (*offset > dest_size || n > dest_size - *offset) {
+        return false;
+    }
+    for (size_t i = 0; i < n; i++) {
+        dest[*offset + i] = src[i];
+    }
+    *offset += n;
+    return true;
+}
+
+char *add_spaces_capitals(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    int reti = regcomp(&regex, "([A-Z][a-z]*)", REG_EXTENDED);
+    if (reti != 0) {
+        return NULL;
+    }
+
+    size_t max_len = (SIZE_MAX - 2) / 2;
+    size_t len = strnlen(str, max_len + 1);
+    if (len > max_len) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    size_t buffer_size = len * 2 + 2;
+    char *result = malloc(buffer_size);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    size_t res_idx = 0;
+    const char *p = str;
+
+    while (*p) {
+        regmatch_t match;
+        reti = regexec(&regex, p, 1, &match, 0);
+        if (reti == REG_NOMATCH) {
+            size_t remaining_len = len - (p - str);
+            if (!safe_copy(result, buffer_size, &res_idx, p, remaining_len)) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            break;
+        } else if (reti != 0) {
+            free(result);
+            regfree(&regex);
+            return NULL;
+        } else {
+            if (match.rm_so > 0) {
+                if (!safe_copy(result, buffer_size, &res_idx, p, match.rm_so)) {
+                    free(result);
+                    regfree(&regex);
+                    return NULL;
+                }
+            }
+            if (p != str && res_idx > 0) {
+                if (res_idx + 1 < buffer_size) {
+                    result[res_idx++] = ' ';
+                } else {
+                    free(result);
+                    regfree(&regex);
+                    return NULL;
+                }
+            }
+            size_t match_len = match.rm_eo - match.rm_so;
+            if (!safe_copy(result, buffer_size, &res_idx, p + match.rm_so, match_len)) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            p += match.rm_eo;
+        }
+    }
+
+    if (res_idx >= buffer_size) {
+        free(result);
+        regfree(&regex);
+        return NULL;
+    }
+    result[res_idx] = '\0';
+
+    regfree(&regex);
+    return result;
+}
+
+int main(int argc, const char * const argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
+        return 1;
+    }
+
+    char *res = add_spaces_capitals(argv[1]);
+    if (res == NULL) {
+        fprintf(stderr, "Error processing string\n");
+        return 1;
+    }
+
+    printf("%s\n", res);
+    free(res);
+
+    return 0;
+}

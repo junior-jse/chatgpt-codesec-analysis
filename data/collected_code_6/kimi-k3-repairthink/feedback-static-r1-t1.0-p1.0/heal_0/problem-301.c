@@ -1,0 +1,272 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_DEPTH 1000
+
+typedef struct {
+    const char *data;
+    size_t pos;
+    size_t len;
+} Parser;
+
+static void skip_whitespace(Parser *p) {
+    while (p->pos < p->len && isspace((unsigned char)p->data[p->pos])) {
+        p->pos++;
+    }
+}
+
+static int parse_value(Parser *p, int current_depth, int *max_depth);
+
+static int parse_string(Parser *p) {
+    if (p->pos >= p->len || p->data[p->pos] != '"') {
+        return 0;
+    }
+    p->pos++;
+    while (p->pos < p->len) {
+        if (p->data[p->pos] == '\\') {
+            p->pos++;
+            if (p->pos >= p->len) {
+                return 0;
+            }
+        } else if (p->data[p->pos] == '"') {
+            p->pos++;
+            return 1;
+        }
+        p->pos++;
+    }
+    return 0;
+}
+
+static int parse_number(Parser *p) {
+    size_t start = p->pos;
+    if (p->pos < p->len && (p->data[p->pos] == '-' || p->data[p->pos] == '+')) {
+        p->pos++;
+    }
+    while (p->pos < p->len && (isdigit((unsigned char)p->data[p->pos]) || 
+           p->data[p->pos] == '.' || p->data[p->pos] == 'e' || 
+           p->data[p->pos] == 'E' || p->data[p->pos] == '-' || 
+           p->data[p->pos] == '+')) {
+        p->pos++;
+    }
+    return p->pos > start;
+}
+
+static int parse_object(Parser *p, int current_depth, int *max_depth) {
+    if (p->pos >= p->len || p->data[p->pos] != '{') {
+        return 0;
+    }
+    
+    if (current_depth >= MAX_DEPTH) {
+        return 0;
+    }
+    
+    if (current_depth > *max_depth) {
+        *max_depth = current_depth;
+    }
+    
+    p->pos++;
+    skip_whitespace(p);
+    
+    if (p->pos < p->len && p->data[p->pos] == '}') {
+        p->pos++;
+        return 1;
+    }
+    
+    while (p->pos < p->len) {
+        skip_whitespace(p);
+        
+        if (!parse_string(p)) {
+            return 0;
+        }
+        
+        skip_whitespace(p);
+        
+        if (p->pos >= p->len || p->data[p->pos] != ':') {
+            return 0;
+        }
+        p->pos++;
+        
+        skip_whitespace(p);
+        
+        if (!parse_value(p, current_depth, max_depth)) {
+            return 0;
+        }
+        
+        skip_whitespace(p);
+        
+        if (p->pos >= p->len) {
+            return 0;
+        }
+        
+        if (p->data[p->pos] == '}') {
+            p->pos++;
+            return 1;
+        }
+        
+        if (p->data[p->pos] != ',') {
+            return 0;
+        }
+        p->pos++;
+    }
+    
+    return 0;
+}
+
+static int parse_array(Parser *p, int current_depth, int *max_depth) {
+    if (p->pos >= p->len || p->data[p->pos] != '[') {
+        return 0;
+    }
+    
+    if (current_depth >= MAX_DEPTH) {
+        return 0;
+    }
+    
+    p->pos++;
+    skip_whitespace(p);
+    
+    if (p->pos < p->len && p->data[p->pos] == ']') {
+        p->pos++;
+        return 1;
+    }
+    
+    while (p->pos < p->len) {
+        skip_whitespace(p);
+        
+        if (!parse_value(p, current_depth, max_depth)) {
+            return 0;
+        }
+        
+        skip_whitespace(p);
+        
+        if (p->pos >= p->len) {
+            return 0;
+        }
+        
+        if (p->data[p->pos] == ']') {
+            p->pos++;
+            return 1;
+        }
+        
+        if (p->data[p->pos] != ',') {
+            return 0;
+        }
+        p->pos++;
+    }
+    
+    return 0;
+}
+
+static int parse_value(Parser *p, int current_depth, int *max_depth) {
+    skip_whitespace(p);
+    
+    if (p->pos >= p->len) {
+        return 0;
+    }
+    
+    char c = p->data[p->pos];
+    
+    if (c == '{') {
+        return parse_object(p, current_depth + 1, max_depth);
+    }
+    
+    if (c == '[') {
+        return parse_array(p, current_depth + 1, max_depth);
+    }
+    
+    if (c == '"') {
+        return parse_string(p);
+    }
+    
+    if (c == 't') {
+        if (p->pos + 4 <= p->len && strncmp(p->data + p->pos, "true", 4) == 0) {
+            p->pos += 4;
+            return 1;
+        }
+        return 0;
+    }
+    
+    if (c == 'f') {
+        if (p->pos + 5 <= p->len && strncmp(p->data + p->pos, "false", 5) == 0) {
+            p->pos += 5;
+            return 1;
+        }
+        return 0;
+    }
+    
+    if (c == 'n') {
+        if (p->pos + 4 <= p->len && strncmp(p->data + p->pos, "null", 4) == 0) {
+            p->pos += 4;
+            return 1;
+        }
+        return 0;
+    }
+    
+    return parse_number(p);
+}
+
+int find_dict_depth(const char *json, int *depth) {
+    if (json == NULL || depth == NULL) {
+        return 0;
+    }
+    
+    Parser p;
+    p.data = json;
+    p.pos = 0;
+    p.len = strlen(json);
+    
+    *depth = 0;
+    
+    skip_whitespace(&p);
+    
+    if (p.pos >= p.len || p.data[p.pos] != '{') {
+        return 0;
+    }
+    
+    if (!parse_object(&p, 1, depth)) {
+        return 0;
+    }
+    
+    skip_whitespace(&p);
+    
+    if (p.pos != p.len) {
+        return 0;
+    }
+    
+    return 1;
+}
+
+int main(void) {
+    const char *test1 = "{\"a\": 1, \"b\": {\"c\": 2, \"d\": {\"e\": 3}}}";
+    const char *test2 = "{\"a\": {\"b\": {\"c\": {\"d\": {\"e\": 5}}}}}";
+    const char *test3 = "{\"simple\": \"value\"}";
+    const char *test4 = "{\"arr\": [1, [2, [3, [4]]]]}";
+    
+    int depth;
+    
+    if (find_dict_depth(test1, &depth)) {
+        printf("Test 1 depth: %d\n", depth);
+    } else {
+        printf("Test 1: Invalid JSON\n");
+    }
+    
+    if (find_dict_depth(test2, &depth)) {
+        printf("Test 2 depth: %d\n", depth);
+    } else {
+        printf("Test 2: Invalid JSON\n");
+    }
+    
+    if (find_dict_depth(test3, &depth)) {
+        printf("Test 3 depth: %d\n", depth);
+    } else {
+        printf("Test 3: Invalid JSON\n");
+    }
+    
+    if (find_dict_depth(test4, &depth)) {
+        printf("Test 4 depth: %d\n", depth);
+    } else {
+        printf("Test 4: Invalid JSON\n");
+    }
+    
+    return 0;
+}

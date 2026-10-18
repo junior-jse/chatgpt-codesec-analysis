@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:38:21: style: Condition 'str_len>0' is always true [knownConditionTrueFalse]
+        if (str_len > 0) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:10:17: note: Assuming that condition 'str_len==0' is not redundant
+    if (str_len == 0) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:35:18: note: Assuming condition is false
+        if (copy == NULL) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:38:21: note: Condition 'str_len>0' is always true
+        if (str_len > 0) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:94:21: style: Condition 'null_result==NULL' is always true [knownConditionTrueFalse]
+    if (null_result == NULL) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:93:54: note: Calling function 'minimize_by_removing_one_char' returns 0
+    char* null_result = minimize_by_removing_one_char(NULL, 0);
+                                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:93:54: note: Assignment 'null_result=minimize_by_removing_one_char(NULL,0)', assigned value is 0
+    char* null_result = minimize_by_removing_one_char(NULL, 0);
+                                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-350-s2.c:94:21: note: Condition 'null_result==NULL' is always true
+    if (null_result == NULL) {
+                    ^

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-310-s3.c:32:49: error: use of undeclared identifier 'INT_MAX'
+   32 |     if (first_len > SIZE_MAX - 1 || first_len > INT_MAX) {
+      |                                                 ^~~~~~~
+1 error generated.

@@ -1,0 +1,13 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c: In function 'dict_init':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c:37:21: error: implicit declaration of function 'calloc' [-Wimplicit-function-declaration]
+   37 |     dict->entries = calloc(capacity, sizeof(DictEntry));
+      |                     ^~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c:4:1: note: include '<stdlib.h>' or provide a declaration of 'calloc'
+    3 | #include <string.h>
+  +++ |+#include <stdlib.h>
+    4 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c: In function 'dict_free':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c:48:9: error: implicit declaration of function 'free' [-Wimplicit-function-declaration]
+   48 |         free(dict->entries);
+      |         ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s3.c:48:9: note: include '<stdlib.h>' or provide a declaration of 'free'

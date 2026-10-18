@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-127-s2.c:31:18: error: use of undeclared identifier 'INT_MAX'
+   31 |     if (result > INT_MAX || result < INT_MIN) {
+      |                  ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-127-s2.c:31:38: error: use of undeclared identifier 'INT_MIN'
+   31 |     if (result > INT_MAX || result < INT_MIN) {
+      |                                      ^~~~~~~
+2 errors generated.

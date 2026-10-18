@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char **split_uppercase(const char *input, int *count) {
+    regex_t regex;
+    regmatch_t matches[256];
+    char **result = NULL;
+    int capacity = 16;
+    int pos = 0;
+    int len = strlen(input);
+    char *temp = strdup(input);
+    char *current = temp;
+    
+    *count = 0;
+    result = malloc(capacity * sizeof(char *));
+    if (!result) {
+        free(temp);
+        return NULL;
+    }
+    
+    if (regcomp(&regex, "[A-Z]", REG_EXTENDED) != 0) {
+        free(temp);
+        free(result);
+        return NULL;
+    }
+    
+    int last_end = 0;
+    int found = 0;
+    
+    for (int i = 0; i < len; i++) {
+        if (input[i] >= 'A' && input[i] <= 'Z') {
+            if (i > 0) {
+                if (*count >= capacity) {
+                    capacity *= 2;
+                    char **new_result = realloc(result, capacity * sizeof(char *));
+                    if (!new_result) {
+                        for (int j = 0; j < *count; j++) {
+                            free(result[j]);
+                        }
+                        free(result);
+                        free(temp);
+                        regfree(&regex);
+                        return NULL;
+                    }
+                    result = new_result;
+                }
+                int segment_len = i - last_end;
+                result[*count] = malloc(segment_len + 1);
+                if (!result[*count]) {
+                    for (int j = 0; j < *count; j++) {
+                        free(result[j]);
+                    }
+                    free(result);
+                    free(temp);
+                    regfree(&regex);
+                    return NULL;
+                }
+                strncpy(result[*count], current + last_end, segment_len);
+                result[*count][segment_len] = '\0';
+                (*count)++;
+                last_end = i;
+                found = 1;
+            }
+        }
+    }
+    
+    if (last_end < len) {
+        if (*count >= capacity) {
+            capacity *= 2;
+            char **new_result = realloc(result, capacity * sizeof(char *));
+            if (!new_result) {
+                for (int j = 0; j < *count; j++) {
+                    free(result[j]);
+                }
+                free(result);
+                free(temp);
+                regfree(&regex);
+                return NULL;
+            }
+            result = new_result;
+        }
+        int segment_len = len - last_end;
+        result[*count] = malloc(segment_len + 1);
+        if (!result[*count]) {
+            for (int j = 0; j < *count; j++) {
+                free(result[j]);
+            }
+            free(result);
+            free(temp);
+            regfree(&regex);
+            return NULL;
+        }
+        strncpy(result[*count], current + last_end, segment_len);
+        result[*count][segment_len] = '\0';
+        (*count)++;
+    }
+    
+    regfree(&regex);
+    free(temp);
+    return result;
+}
+
+void free_split_result(char **result, int count) {
+    if (result) {
+        for (int i = 0; i < count; i++) {
+            free(result[i]);
+        }
+        free(result);
+    }
+}
+
+int main(void) {
+    const char *test_string = "HelloWorldThisIsATest";
+    int count = 0;
+    char **parts = split_uppercase(test_string, &count);
+    
+    if (parts) {
+        printf("Original: %s\n", test_string);
+        printf("Split into %d parts:\n", count);
+        for (int i = 0; i < count; i++) {
+            printf("  [%d]: %s\n", i, parts[i]);
+        }
+        free_split_result(parts, count);
+    } else {
+        fprintf(stderr, "Failed to split string\n");
+        return 1;
+    }
+    
+    return 0;
+}

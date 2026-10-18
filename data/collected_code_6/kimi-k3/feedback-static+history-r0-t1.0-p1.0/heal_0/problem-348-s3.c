@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MOD 1000000007LL
+
+static int compare_ll(const void *a, const void *b) {
+    long long x = *(const long long *)a;
+    long long y = *(const long long *)b;
+    if (x < y) return -1;
+    if (x > y) return 1;
+    return 0;
+}
+
+long long count_sequences(int n, const long long *values, int num_values) {
+    if (n < 0 || num_values <= 0 || values == NULL) {
+        return 0;
+    }
+
+    long long *sorted = (long long *)malloc((size_t)num_values * sizeof(long long));
+    if (sorted == NULL) {
+        return 0;
+    }
+    memcpy(sorted, values, (size_t)num_values * sizeof(long long));
+    qsort(sorted, (size_t)num_values, sizeof(long long), compare_ll);
+
+    long long max_pos = 0;
+    long long min_neg = 0;
+    for (int i = 0; i < num_values; i++) {
+        if (sorted[i] > max_pos) max_pos = sorted[i];
+        if (sorted[i] < min_neg) min_neg = sorted[i];
+    }
+
+    long long max_sum = max_pos * (long long)n;
+    long long min_sum = min_neg * (long long)n;
+    long long range = max_sum - min_sum + 1;
+
+    if (range <= 0 || range > 1000000LL) {
+        free(sorted);
+        return 0;
+    }
+
+    size_t offset = (size_t)(-min_sum);
+    size_t size = (size_t)range;
+
+    long long *dp = (long long *)calloc(size, sizeof(long long));
+    long long *new_dp = (long long *)calloc(size, sizeof(long long));
+    if (dp == NULL || new_dp == NULL) {
+        free(sorted);
+        free(dp);
+        free(new_dp);
+        return 0;
+    }
+
+    dp[offset] = 1;
+
+    for (int pos = 0; pos < n; pos++) {
+        memset(new_dp, 0, size * sizeof(long long));
+        for (size_t s = 0; s < size; s++) {
+            if (dp[s] == 0) continue;
+            long long cur_sum = (long long)s - (long long)offset;
+            for (int v = 0; v < num_values; v++) {
+                long long nsum = cur_sum + sorted[v];
+                if (nsum >= 0 && nsum <= max_sum) {
+                    size_t idx = (size_t)(nsum - min_sum);
+                    new_dp[idx] = (new_dp[idx] + dp[s]) % MOD;
+                }
+            }
+        }
+        long long *tmp = dp;
+        dp = new_dp;
+        new_dp = tmp;
+    }
+
+    long long result = 0;
+    for (size_t s = offset; s < size; s++) {
+        result = (result + dp[s]) % MOD;
+    }
+
+    free(sorted);
+    free(dp);
+    free(new_dp);
+    return result;
+}
+
+int main(void) {
+    long long values1[] = {1, -1};
+    printf("%lld\n", count_sequences(4, values1, 2));
+
+    long long values2[] = {1, 2, -1};
+    printf("%lld\n", count_sequences(3, values2, 3));
+
+    long long values3[] = {1, -1, 0};
+    printf("%lld\n", count_sequences(5, values3, 3));
+
+    return 0;
+}

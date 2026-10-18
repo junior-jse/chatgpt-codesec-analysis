@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-310-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-310-s2.c:111:15: style: Variable 'trimmed' can be declared as pointer to const [constVariablePointer]
+        char *trimmed = trim_whitespace(token);
+              ^

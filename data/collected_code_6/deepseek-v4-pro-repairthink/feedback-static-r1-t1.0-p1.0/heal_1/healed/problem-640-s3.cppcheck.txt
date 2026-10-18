@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-640-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-640-s3.c:95:39: style: Condition 'remove_parenthesis_area(NULL)==NULL' is always true [knownConditionTrueFalse]
+    if (remove_parenthesis_area(NULL) == NULL) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-640-s3.c:95:32: note: Calling function 'remove_parenthesis_area' returns 0
+    if (remove_parenthesis_area(NULL) == NULL) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-640-s3.c:95:39: note: Condition 'remove_parenthesis_area(NULL)==NULL' is always true
+    if (remove_parenthesis_area(NULL) == NULL) {
+                                      ^

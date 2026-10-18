@@ -1,0 +1,40 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:247:9: style: The if condition is the same as the previous if condition [duplicateCondition]
+    if (success) {
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:243:9: note: First condition
+    if (success) {
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:247:9: note: Second condition
+    if (success) {
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:40:20: style: Condition 'new_length<list->length' is always false [knownConditionTrueFalse]
+    if (new_length < list->length) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:39:16: note: new_length is assigned 'list->length+1U' here.
+    new_length = list->length + 1U;
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:40:20: note: Condition 'new_length<list->length' is always false
+    if (new_length < list->length) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:66:19: style: Condition 'new_count<container->count' is always false [knownConditionTrueFalse]
+    if (new_count < container->count) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:65:15: note: new_count is assigned 'container->count+1U' here.
+    new_count = container->count + 1U;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:66:19: note: Condition 'new_count<container->count' is always false
+    if (new_count < container->count) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:93:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:198:12: style: The scope of the variable 'min_count' can be reduced. [variableScope]
+    size_t min_count;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:199:12: style: The scope of the variable 'min_length' can be reduced. [variableScope]
+    size_t min_length;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-528.c:200:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^

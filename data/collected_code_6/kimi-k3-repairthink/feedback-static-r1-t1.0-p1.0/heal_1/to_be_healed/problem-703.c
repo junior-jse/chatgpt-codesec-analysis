@@ -1,0 +1,164 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#define MAX_KEY_LENGTH 100
+#define MAX_VALUE_LENGTH 100
+#define INITIAL_CAPACITY 16
+
+typedef struct {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char key[MAX_KEY_LENGTH];
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char value[MAX_VALUE_LENGTH];
+    bool is_occupied;
+} Entry;
+
+typedef struct {
+    Entry *entries;
+    size_t capacity;
+    size_t count;
+} Dictionary;
+
+bool dictionary_init(Dictionary *dict, size_t capacity) {
+    if (dict == NULL) {
+        return false;
+    }
+    if (capacity == 0) {
+        capacity = INITIAL_CAPACITY;
+    }
+    
+    dict->entries = calloc(capacity, sizeof(Entry));
+    if (dict->entries == NULL) {
+        return false;
+    }
+    
+    dict->capacity = capacity;
+    dict->count = 0;
+    return true;
+}
+
+void dictionary_free(Dictionary *dict) {
+    if (dict != NULL) {
+        free(dict->entries);
+        dict->entries = NULL;
+        dict->capacity = 0;
+        dict->count = 0;
+    }
+}
+
+bool dictionary_contains_key(const Dictionary *dict, const char *key) {
+    if (dict == NULL || dict->entries == NULL || key == NULL) {
+        return false;
+    }
+    
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t key_len = strlen(key);
+    if (key_len == 0 || key_len >= MAX_KEY_LENGTH) {
+        return false;
+    }
+    
+    for (size_t i = 0; i < dict->capacity; i++) {
+        if (dict->entries[i].is_occupied) {
+            if (strcmp(dict->entries[i].key, key) == 0) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+bool dictionary_insert(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || dict->entries == NULL || key == NULL || value == NULL) {
+        return false;
+    }
+    
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t key_len = strlen(key);
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t value_len = strlen(value);
+    
+    if (key_len == 0 || key_len >= MAX_KEY_LENGTH || value_len >= MAX_VALUE_LENGTH) {
+        return false;
+    }
+    
+    if (dict->count >= dict->capacity) {
+        return false;
+    }
+    
+    for (size_t i = 0; i < dict->capacity; i++) {
+        if (!dict->entries[i].is_occupied) {
+            /* Possible weaknesses found:
+             * Flawfinder strncpy: Easily used incorrectly; doesn't always \0-terminate or check for invalid pointers [MS-banned] (CWE-120). (risk 1, buffer)
+             */
+            strncpy(dict->entries[i].key, key, MAX_KEY_LENGTH - 1);
+            dict->entries[i].key[MAX_KEY_LENGTH - 1] = '\0';
+            /* Possible weaknesses found:
+             * Flawfinder strncpy: Easily used incorrectly; doesn't always \0-terminate or check for invalid pointers [MS-banned] (CWE-120). (risk 1, buffer)
+             */
+            strncpy(dict->entries[i].value, value, MAX_VALUE_LENGTH - 1);
+            dict->entries[i].value[MAX_VALUE_LENGTH - 1] = '\0';
+            dict->entries[i].is_occupied = true;
+            dict->count++;
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+int main(void) {
+    Dictionary dict;
+    
+    if (!dictionary_init(&dict, 0)) {
+        fprintf(stderr, "Failed to initialize dictionary\n");
+        return EXIT_FAILURE;
+    }
+    
+    if (!dictionary_insert(&dict, "name", "Alice")) {
+        fprintf(stderr, "Failed to insert key\n");
+        dictionary_free(&dict);
+        return EXIT_FAILURE;
+    }
+    
+    if (!dictionary_insert(&dict, "age", "30")) {
+        fprintf(stderr, "Failed to insert key\n");
+        dictionary_free(&dict);
+        return EXIT_FAILURE;
+    }
+    
+    if (!dictionary_insert(&dict, "city", "New York")) {
+        fprintf(stderr, "Failed to insert key\n");
+        dictionary_free(&dict);
+        return EXIT_FAILURE;
+    }
+    
+    const char *test_key = "age";
+    if (dictionary_contains_key(&dict, test_key)) {
+        printf("Key '%s' is present in the dictionary\n", test_key);
+    } else {
+        printf("Key '%s' is not present in the dictionary\n", test_key);
+    }
+    
+    test_key = "country";
+    if (dictionary_contains_key(&dict, test_key)) {
+        printf("Key '%s' is present in the dictionary\n", test_key);
+    } else {
+        printf("Key '%s' is not present in the dictionary\n", test_key);
+    }
+    
+    dictionary_free(&dict);
+    return EXIT_SUCCESS;
+}

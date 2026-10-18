@@ -1,0 +1,65 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *add_spaces_before_capitals(const char *input, size_t max_len) {
+    size_t input_len;
+    size_t output_size;
+    char *output;
+    size_t out_idx = 0;
+    size_t i;
+
+    if (input == NULL || max_len == 0) {
+        return NULL;
+    }
+
+    input_len = strnlen(input, max_len);
+    if (input_len == max_len) {
+        return NULL;
+    }
+
+    output_size = input_len * 2 + 1;
+    output = malloc(output_size);
+
+    if (output == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < input_len; i++) {
+        if (i > 0 && isupper((unsigned char)input[i])) {
+            if (out_idx + 2 > output_size) {
+                free(output);
+                return NULL;
+            }
+            output[out_idx++] = ' ';
+        }
+
+        if (out_idx + 1 > output_size) {
+            free(output);
+            return NULL;
+        }
+        output[out_idx++] = input[i];
+    }
+
+    output[out_idx] = '\0';
+    return output;
+}
+
+int main(void) {
+    const char *input = "HelloWorldThisIsATest";
+    char *result = add_spaces_before_capitals(input, 1024);
+
+    if (result == NULL) {
+        fprintf(stderr, "Error processing string\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original: %s\n", input);
+    printf("Modified: %s\n", result);
+
+    free(result);
+    return EXIT_SUCCESS;
+}
+```

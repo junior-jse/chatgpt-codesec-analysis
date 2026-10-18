@@ -1,0 +1,202 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stddef.h>
+
+#define MAX_STRING_LENGTH 4096
+
+typedef enum {
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_DOUBLE,
+    TYPE_CHAR,
+    TYPE_STRING,
+    TYPE_UNKNOWN
+} DataType;
+
+typedef struct {
+    DataType type;
+    void *data;
+} TupleElement;
+
+typedef struct {
+    TupleElement *elements;
+    size_t size;
+    size_t capacity;
+} Tuple;
+
+Tuple *tuple_create(void) {
+    Tuple *t = (Tuple *)malloc(sizeof(Tuple));
+    if (!t) return NULL;
+    t->elements = NULL;
+    t->size = 0;
+    t->capacity = 0;
+    return t;
+}
+
+void tuple_destroy(Tuple *t) {
+    if (!t) return;
+    for (size_t i = 0; i < t->size; i++) {
+        free(t->elements[i].data);
+    }
+    free(t->elements);
+    free(t);
+}
+
+int tuple_add(Tuple *t, DataType type, const void *data) {
+    if (!t || !data) return -1;
+    
+    if (t->size >= t->capacity) {
+        size_t new_capacity = (t->capacity == 0) ? 4 : t->capacity * 2;
+        TupleElement *new_elements = (TupleElement *)realloc(t->elements, new_capacity * sizeof(TupleElement));
+        if (!new_elements) return -1;
+        t->elements = new_elements;
+        t->capacity = new_capacity;
+    }
+    
+    t->elements[t->size].type = type;
+    
+    switch (type) {
+        case TYPE_INT: {
+            t->elements[t->size].data = malloc(sizeof(int));
+            if (!t->elements[t->size].data) return -1;
+            *(int *)(t->elements[t->size].data) = *(const int *)data;
+            break;
+        }
+        case TYPE_FLOAT: {
+            t->elements[t->size].data = malloc(sizeof(float));
+            if (!t->elements[t->size].data) return -1;
+            *(float *)(t->elements[t->size].data) = *(const float *)data;
+            break;
+        }
+        case TYPE_DOUBLE: {
+            t->elements[t->size].data = malloc(sizeof(double));
+            if (!t->elements[t->size].data) return -1;
+            *(double *)(t->elements[t->size].data) = *(const double *)data;
+            break;
+        }
+        case TYPE_CHAR: {
+            t->elements[t->size].data = malloc(sizeof(char));
+            if (!t->elements[t->size].data) return -1;
+            *(char *)(t->elements[t->size].data) = *(const char *)data;
+            break;
+        }
+        case TYPE_STRING: {
+            const char *str = (const char *)data;
+            size_t len = strnlen(str, MAX_STRING_LENGTH);
+            if (len == MAX_STRING_LENGTH) return -1;
+            t->elements[t->size].data = malloc(len + 1);
+            if (!t->elements[t->size].data) return -1;
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(t->elements[t->size].data, str, len + 1);
+            break;
+        }
+        default:
+            return -1;
+    }
+    
+    t->size++;
+    return 0;
+}
+
+Tuple *tuple_remove_type(const Tuple *t, DataType type_to_remove) {
+    if (!t) return NULL;
+    
+    Tuple *result = tuple_create();
+    if (!result) return NULL;
+    
+    for (size_t i = 0; i < t->size; i++) {
+        if (t->elements[i].type != type_to_remove) {
+            if (tuple_add(result, t->elements[i].type, t->elements[i].data) != 0) {
+                tuple_destroy(result);
+                return NULL;
+            }
+        }
+    }
+    
+    return result;
+}
+
+void tuple_print(const Tuple *t) {
+    if (!t) return;
+    
+    printf("(");
+    for (size_t i = 0; i < t->size; i++) {
+        if (i > 0) printf(", ");
+        
+        switch (t->elements[i].type) {
+            case TYPE_INT:
+                printf("%d", *(int *)t->elements[i].data);
+                break;
+            case TYPE_FLOAT:
+                printf("%f", *(float *)t->elements[i].data);
+                break;
+            case TYPE_DOUBLE:
+                printf("%lf", *(double *)t->elements[i].data);
+                break;
+            case TYPE_CHAR:
+                printf("'%c'", *(char *)t->elements[i].data);
+                break;
+            case TYPE_STRING:
+                printf("\"%s\"", (char *)t->elements[i].data);
+                break;
+            default:
+                printf("?");
+                break;
+        }
+    }
+    printf(")\n");
+}
+
+int main(void) {
+    Tuple *tuple = tuple_create();
+    if (!tuple) {
+        fprintf(stderr, "Failed to create tuple\n");
+        return 1;
+    }
+    
+    int int_val = 42;
+    float float_val = 3.14f;
+    double double_val = 2.71828;
+    char char_val = 'A';
+    const char *str_val = "hello";
+    int int_val2 = 100;
+    
+    tuple_add(tuple, TYPE_INT, &int_val);
+    tuple_add(tuple, TYPE_FLOAT, &float_val);
+    tuple_add(tuple, TYPE_DOUBLE, &double_val);
+    tuple_add(tuple, TYPE_CHAR, &char_val);
+    tuple_add(tuple, TYPE_STRING, str_val);
+    tuple_add(tuple, TYPE_INT, &int_val2);
+    
+    printf("Original tuple: ");
+    tuple_print(tuple);
+    
+    Tuple *no_ints = tuple_remove_type(tuple, TYPE_INT);
+    if (no_ints) {
+        printf("After removing INT: ");
+        tuple_print(no_ints);
+        tuple_destroy(no_ints);
+    }
+    
+    Tuple *no_strings = tuple_remove_type(tuple, TYPE_STRING);
+    if (no_strings) {
+        printf("After removing STRING: ");
+        tuple_print(no_strings);
+        tuple_destroy(no_strings);
+    }
+    
+    Tuple *no_doubles = tuple_remove_type(tuple, TYPE_DOUBLE);
+    if (no_doubles) {
+        printf("After removing DOUBLE: ");
+        tuple_print(no_doubles);
+        tuple_destroy(no_doubles);
+    }
+    
+    tuple_destroy(tuple);
+    
+    return 0;
+}

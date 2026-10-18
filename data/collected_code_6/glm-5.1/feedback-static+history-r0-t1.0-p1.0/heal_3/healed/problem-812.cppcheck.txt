@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-812.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-812.c:58:12: style: Condition 's3==NULL' is always true [knownConditionTrueFalse]
+    if (s3 == NULL) {
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-812.c:57:37: note: Calling function 'abbreviate_road' returns 0
+    const char *s3 = abbreviate_road(NULL);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-812.c:57:37: note: Assignment 's3=abbreviate_road(NULL)', assigned value is 0
+    const char *s3 = abbreviate_road(NULL);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-812.c:58:12: note: Condition 's3==NULL' is always true
+    if (s3 == NULL) {
+           ^

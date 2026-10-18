@@ -1,0 +1,62 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int first;
+    char *second;
+    double third;
+} Tuple;
+
+char *flatten_tuple_list(Tuple *tuples, int count) {
+    size_t total_length = 0;
+    size_t *lengths = (size_t *)malloc(count * sizeof(size_t));
+    if (!lengths) return NULL;
+
+    for (int i = 0; i < count; i++) {
+        int int_len = snprintf(NULL, 0, "%d", tuples[i].first);
+        int double_len = snprintf(NULL, 0, "%.2f", tuples[i].third);
+        size_t second_len = tuples[i].second ? strlen(tuples[i].second) : 0;
+        lengths[i] = int_len + second_len + double_len + 2;
+        total_length += lengths[i];
+    }
+
+    char *result = (char *)malloc((total_length + count) * sizeof(char));
+    if (!result) {
+        free(lengths);
+        return NULL;
+    }
+
+    char *ptr = result;
+    for (int i = 0; i < count; i++) {
+        ptr += sprintf(ptr, "%d%s%.2f", tuples[i].first, 
+                       tuples[i].second ? tuples[i].second : "", 
+                       tuples[i].third);
+        if (i < count - 1) {
+            *ptr++ = ',';
+        }
+    }
+    *ptr = '\0';
+
+    free(lengths);
+    return result;
+}
+
+int main(void) {
+    Tuple tuples[] = {
+        {1, "abc", 3.14},
+        {2, "def", 2.71},
+        {3, "ghi", 1.41}
+    };
+    int count = sizeof(tuples) / sizeof(tuples[0]);
+
+    char *flat = flatten_tuple_list(tuples, count);
+    if (flat) {
+        printf("%s\n", flat);
+        free(flat);
+    }
+
+    return 0;
+}
+```

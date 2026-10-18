@@ -1,0 +1,86 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_IP_RESULT 16
+#define WORK_BUFFER_SIZE 64
+
+void removeLeadingZeros(char *ip, size_t ip_size) {
+    if (ip == NULL || ip_size == 0) {
+        return;
+    }
+
+    size_t ip_len = strnlen(ip, ip_size);
+    if (ip_len == 0 || ip_len == ip_size || ip_len >= WORK_BUFFER_SIZE) {
+        return;
+    }
+
+    char buffer[WORK_BUFFER_SIZE];
+    memcpy(buffer, ip, ip_len + 1);
+
+    char result[MAX_IP_RESULT];
+    size_t result_len = 0;
+    int first = 1;
+
+    char *saveptr = NULL;
+    char *token = strtok_r(buffer, ".", &saveptr);
+
+    while (token != NULL) {
+        while (token[0] == '0' && token[1] != '\0') {
+            token++;
+        }
+
+        size_t token_len = strnlen(token, WORK_BUFFER_SIZE);
+        if (token_len == WORK_BUFFER_SIZE) {
+            return;
+        }
+
+        size_t separator_len = first ? 0u : 1u;
+
+        if (token_len >= sizeof(result) ||
+            result_len + separator_len + token_len >= sizeof(result)) {
+            return;
+        }
+
+        if (!first) {
+            result[result_len++] = '.';
+        }
+
+        memcpy(result + result_len, token, token_len);
+        result_len += token_len;
+        result[result_len] = '\0';
+
+        first = 0;
+        token = strtok_r(NULL, ".", &saveptr);
+    }
+
+    if (result_len > 0 && result_len + 1 <= ip_size) {
+        memcpy(ip, result, result_len + 1);
+    }
+}
+
+int main(void) {
+    char ip1[] = "192.168.001.001";
+    char ip2[] = "010.000.000.001";
+    char ip3[] = "000.000.000.000";
+    char ip4[] = "255.255.255.255";
+
+    printf("Original: %s\n", ip1);
+    removeLeadingZeros(ip1, sizeof(ip1));
+    printf("Modified: %s\n\n", ip1);
+
+    printf("Original: %s\n", ip2);
+    removeLeadingZeros(ip2, sizeof(ip2));
+    printf("Modified: %s\n\n", ip2);
+
+    printf("Original: %s\n", ip3);
+    removeLeadingZeros(ip3, sizeof(ip3));
+    printf("Modified: %s\n\n", ip3);
+
+    printf("Original: %s\n", ip4);
+    removeLeadingZeros(ip4, sizeof(ip4));
+    printf("Modified: %s\n", ip4);
+
+    return 0;
+}

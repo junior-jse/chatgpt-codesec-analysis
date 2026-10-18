@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-440-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-440-s3.c:45:31: warning: Opposite inner 'if' condition leads to a dead code block. [oppositeInnerCondition]
+                    if (count >= max_adverbs) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-440-s3.c:33:41: note: outer condition: count<max_adverbs
+    while (pos <= sentence_len && count < max_adverbs) {
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-440-s3.c:45:31: note: opposite inner condition: count>=max_adverbs
+                    if (count >= max_adverbs) {
+                              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-440-s3.c:65:10: style: Variable 'sentence' can be declared as const array [constVariable]
+    char sentence[] = "She quickly ran to the store and carefully picked the items. He slowly walked home.";
+         ^

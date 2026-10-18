@@ -1,0 +1,175 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+typedef struct {
+    int id;
+    char *name;
+    double value;
+} Tuple;
+
+typedef struct {
+    Tuple *data;
+    size_t size;
+    size_t capacity;
+} TupleList;
+
+static void tuple_clear(Tuple *tuple) {
+    if (tuple != NULL) {
+        free(tuple->name);
+        tuple->name = NULL;
+    }
+}
+
+static int tuple_copy(Tuple *dest, const Tuple *src) {
+    char *name_copy;
+    size_t name_len;
+
+    if (dest == NULL || src == NULL || src->name == NULL) {
+        return -1;
+    }
+
+    name_len = strlen(src->name);
+    if (name_len > 1024) {
+        return -1;
+    }
+
+    name_copy = malloc(name_len + 1);
+    if (name_copy == NULL) {
+        return -1;
+    }
+
+    memcpy(name_copy, src->name, name_len + 1);
+
+    dest->id = src->id;
+    dest->name = name_copy;
+    dest->value = src->value;
+
+    return 0;
+}
+
+int tuple_list_init(TupleList *list, size_t initial_capacity) {
+    if (list == NULL || initial_capacity == 0) {
+        return -1;
+    }
+    if (initial_capacity > SIZE_MAX / sizeof(Tuple)) {
+        return -1;
+    }
+    list->data = calloc(initial_capacity, sizeof(Tuple));
+    if (list->data == NULL) {
+        return -1;
+    }
+    list->size = 0;
+    list->capacity = initial_capacity;
+    return 0;
+}
+
+void tuple_list_free(TupleList *list) {
+    size_t i;
+
+    if (list != NULL && list->data != NULL) {
+        for (i = 0; i < list->size; i++) {
+            tuple_clear(&list->data[i]);
+        }
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->capacity = 0;
+    }
+}
+
+int tuple_list_add(TupleList *list, const Tuple *tuple) {
+    Tuple *new_data;
+    size_t new_capacity;
+
+    if (list == NULL || tuple == NULL || tuple->name == NULL) {
+        return -1;
+    }
+
+    if (list->size >= list->capacity) {
+        if (list->capacity > SIZE_MAX / 2) {
+            return -1;
+        }
+        new_capacity = list->capacity * 2;
+        if (new_capacity > SIZE_MAX / sizeof(Tuple)) {
+            return -1;
+        }
+        new_data = realloc(list->data, new_capacity * sizeof(Tuple));
+        if (new_data == NULL) {
+            return -1;
+        }
+        memset(new_data + list->capacity, 0,
+               (new_capacity - list->capacity) * sizeof(Tuple));
+        list->data = new_data;
+        list->capacity = new_capacity;
+    }
+
+    if (tuple_copy(&list->data[list->size], tuple) != 0) {
+        return -1;
+    }
+
+    list->size++;
+    return 0;
+}
+
+int extract_nth_element(const TupleList *list, size_t n, Tuple *result) {
+    if (list == NULL || result == NULL) {
+        return -1;
+    }
+    if (list->data == NULL || n >= list->size) {
+        return -1;
+    }
+    if (list->data[n].name == NULL) {
+        return -1;
+    }
+
+    return tuple_copy(result, &list->data[n]);
+}
+
+void tuple_free_contents(Tuple *tuple) {
+    tuple_clear(tuple);
+}
+
+int main(void) {
+    TupleList list;
+    Tuple result = {0, NULL, 0.0};
+    size_t nth = 2;
+    int status = EXIT_SUCCESS;
+
+    Tuple t1 = {1, "First", 10.5};
+    Tuple t2 = {2, "Second", 20.75};
+    Tuple t3 = {3, "Third", 30.25};
+    Tuple t4 = {4, "Fourth", 40.0};
+
+    if (tuple_list_init(&list, 4) != 0) {
+        fprintf(stderr, "Failed to initialize list\n");
+        return EXIT_FAILURE;
+    }
+
+    if (tuple_list_add(&list, &t1) != 0 ||
+        tuple_list_add(&list, &t2) != 0 ||
+        tuple_list_add(&list, &t3) != 0 ||
+        tuple_list_add(&list, &t4) != 0) {
+        fprintf(stderr, "Failed to add elements\n");
+        tuple_list_free(&list);
+        return EXIT_FAILURE;
+    }
+
+    if (extract_nth_element(&list, nth, &result) != 0) {
+        fprintf(stderr, "Failed to extract element at index %zu\n", nth);
+        tuple_list_free(&list);
+        return EXIT_FAILURE;
+    }
+
+    printf("Element at index %zu:\n", nth);
+    printf("  ID: %d\n", result.id);
+    printf("  Name: %s\n", result.name);
+    printf("  Value: %.2f\n", result.value);
+
+    tuple_free_contents(&result);
+    tuple_list_free(&list);
+
+    return status;
+}

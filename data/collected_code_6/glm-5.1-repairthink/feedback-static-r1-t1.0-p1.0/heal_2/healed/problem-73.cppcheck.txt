@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-73.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-73.c:15:12: style: The scope of the variable 'offset' can be reduced. [variableScope]
+    size_t offset;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-73.c:16:12: style: The scope of the variable 'remaining_len' can be reduced. [variableScope]
+    size_t remaining_len;
+           ^

@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char **extract_strings(char **input_list, int list_size, int *extract_sizes, int *result_count) {
+    if (input_list == NULL || extract_sizes == NULL || list_size <= 0) {
+        if (result_count != NULL) *result_count = 0;
+        return NULL;
+    }
+
+    char **result = malloc(list_size * sizeof(char *));
+    if (result == NULL) {
+        if (result_count != NULL) *result_count = 0;
+        return NULL;
+    }
+
+    int count = 0;
+    for (int i = 0; i < list_size; i++) {
+        if (input_list[i] == NULL || extract_sizes[i] < 0) {
+            for (int j = 0; j < count; j++) free(result[j]);
+            free(result);
+            if (result_count != NULL) *result_count = 0;
+            return NULL;
+        }
+
+        size_t max_len = (size_t)extract_sizes[i];
+        size_t len = 0;
+        while (len < max_len && input_list[i][len] != '\0') len++;
+        int copy_len = (int)len;
+
+        result[count] = malloc(copy_len + 1);
+        if (result[count] == NULL) {
+            for (int j = 0; j < count; j++) free(result[j]);
+            free(result);
+            if (result_count != NULL) *result_count = 0;
+            return NULL;
+        }
+
+        for (int k = 0; k < copy_len; k++) {
+            result[count][k] = input_list[i][k];
+        }
+        result[count][copy_len] = '\0';
+        count++;
+    }
+
+    *result_count = count;
+    return result;
+}
+
+int main(void) {
+    char *input[] = {"HelloWorld", "Test", "CProgramming", "OpenAI"};
+    int sizes[] = {5, 2, 4, 10};
+    int count = 0;
+
+    char **result = extract_strings(input, 4, sizes, &count);
+    if (result == NULL) {
+        printf("Extraction failed\n");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        printf("%s\n", result[i]);
+        free(result[i]);
+    }
+    free(result);
+
+    return 0;
+}

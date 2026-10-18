@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-391-s2.c:54:64: style: Parameter 'list_lengths' can be declared as pointer to const [constParameterPointer]
+Dict *convert_lists_to_dict(char ***lists, int num_lists, int *list_lengths) {
+                                                               ^

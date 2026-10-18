@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c:62:13: style: The scope of the variable 'minList' can be reduced. [variableScope]
+        int minList = -1;
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c:34:37: style: Parameter 'listSizes' can be declared as pointer to const [constParameterPointer]
+int* topKFrequent(int **lists, int *listSizes, int numLists, int k, int *returnSize) {
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c:62:21: style: Variable 'minList' is assigned a value that is never used. [unreadVariable]
+        int minList = -1;
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-31.c:69:29: style: Variable 'minList' is assigned a value that is never used. [unreadVariable]
+                    minList = i;
+                            ^

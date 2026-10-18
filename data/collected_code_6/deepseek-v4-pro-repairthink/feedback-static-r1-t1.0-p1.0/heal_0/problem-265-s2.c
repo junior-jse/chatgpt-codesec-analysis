@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int data;
+    struct ListNode *next;
+};
+
+struct ListPair {
+    struct ListNode *first;
+    struct ListNode *second;
+};
+
+struct ListNode *create_node(int data) {
+    struct ListNode *node = (struct ListNode *)malloc(sizeof(struct ListNode));
+    if (!node) {
+        return NULL;
+    }
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+void append_node(struct ListNode **head, struct ListNode **tail, int data) {
+    struct ListNode *node = create_node(data);
+    if (!node) {
+        return;
+    }
+    if (!*head) {
+        *head = node;
+        *tail = node;
+    } else {
+        (*tail)->next = node;
+        *tail = node;
+    }
+}
+
+void free_list(struct ListNode *head) {
+    struct ListNode *current = head;
+    while (current) {
+        struct ListNode *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+struct ListPair split_list(struct ListNode *head, int n) {
+    struct ListPair result;
+    result.first = NULL;
+    result.second = NULL;
+
+    if (head == NULL || n <= 0) {
+        return result;
+    }
+
+    struct ListNode *first_head = NULL;
+    struct ListNode *first_tail = NULL;
+    struct ListNode *second_head = NULL;
+    struct ListNode *second_tail = NULL;
+
+    struct ListNode *current = head;
+    int count = 0;
+
+    while (current) {
+        struct ListNode *next = current->next;
+        current->next = NULL;
+
+        if (count < n) {
+            if (!first_head) {
+                first_head = current;
+                first_tail = current;
+            } else {
+                first_tail->next = current;
+                first_tail = current;
+            }
+        } else {
+            if (!second_head) {
+                second_head = current;
+                second_tail = current;
+            } else {
+                second_tail->next = current;
+                second_tail = current;
+            }
+        }
+
+        count++;
+        current = next;
+    }
+
+    result.first = first_head;
+    result.second = second_head;
+    return result;
+}
+
+void print_list(struct ListNode *head) {
+    struct ListNode *current = head;
+    while (current) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    struct ListNode *head = NULL;
+    struct ListNode *tail = NULL;
+    int values[] = {1, 2, 3, 4, 5, 6, 7};
+    int num_values = sizeof(values) / sizeof(values[0]);
+
+    for (int i = 0; i < num_values; i++) {
+        append_node(&head, &tail, values[i]);
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    struct ListPair result = split_list(head, 3);
+
+    printf("First part (first 3 elements): ");
+    print_list(result.first);
+
+    printf("Second part (remaining elements): ");
+    print_list(result.second);
+
+    free_list(result.first);
+    free_list(result.second);
+
+    return 0;
+}

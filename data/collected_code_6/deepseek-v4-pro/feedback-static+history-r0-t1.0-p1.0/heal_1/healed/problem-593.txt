@@ -1,0 +1,76 @@
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <arpa/inet.h>
+
+void remove_leading_zeroes(char *ip) {
+    if (ip == NULL || *ip == '\0') {
+        return;
+    }
+
+    char result[INET_ADDRSTRLEN];
+    result[0] = '\0';
+
+    char temp[INET_ADDRSTRLEN];
+    strncpy(temp, ip, INET_ADDRSTRLEN - 1);
+    temp[INET_ADDRSTRLEN - 1] = '\0';
+
+    char *token;
+    char *saveptr;
+    int first = 1;
+    size_t current_length = 0;
+
+    token = strtok_r(temp, ".", &saveptr);
+
+    while (token != NULL) {
+        char *start = token;
+        while (*start == '0' && *(start + 1) != '\0') {
+            start++;
+        }
+
+        if (!first) {
+            size_t remaining = INET_ADDRSTRLEN - current_length;
+            if (remaining > 1) {
+                strncat(result, ".", remaining - 1);
+                current_length++;
+            }
+        }
+
+        size_t token_len = strlen(start);
+        size_t remaining = INET_ADDRSTRLEN - current_length;
+        if (remaining > token_len) {
+            strncat(result, start, remaining - 1);
+            current_length += token_len;
+        }
+
+        first = 0;
+        token = strtok_r(NULL, ".", &saveptr);
+    }
+
+    strncpy(ip, result, INET_ADDRSTRLEN - 1);
+    ip[INET_ADDRSTRLEN - 1] = '\0';
+}
+
+int main(void) {
+    char ip1[INET_ADDRSTRLEN] = "192.168.001.001";
+    char ip2[INET_ADDRSTRLEN] = "010.000.000.001";
+    char ip3[INET_ADDRSTRLEN] = "000.000.000.000";
+    char ip4[INET_ADDRSTRLEN] = "255.255.255.255";
+    char ip5[INET_ADDRSTRLEN] = "001.002.003.004";
+
+    remove_leading_zeroes(ip1);
+    remove_leading_zeroes(ip2);
+    remove_leading_zeroes(ip3);
+    remove_leading_zeroes(ip4);
+    remove_leading_zeroes(ip5);
+
+    printf("%s\n", ip1);
+    printf("%s\n", ip2);
+    printf("%s\n", ip3);
+    printf("%s\n", ip4);
+    printf("%s\n", ip5);
+
+    return 0;
+}
+```

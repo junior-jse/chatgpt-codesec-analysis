@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:37:17: error: use of undeclared identifier 'errno'
+   37 |             if (errno == EINTR) {
+      |                 ^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-904.c:37:26: error: use of undeclared identifier 'EINTR'
+   37 |             if (errno == EINTR) {
+      |                          ^~~~~
+2 errors generated.

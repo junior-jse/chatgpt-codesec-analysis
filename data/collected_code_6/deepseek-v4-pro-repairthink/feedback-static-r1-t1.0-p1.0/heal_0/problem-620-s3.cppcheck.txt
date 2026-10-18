@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:28:25: style: Condition 'return_size!=NULL' is always true [knownConditionTrueFalse]
+        if (return_size != NULL) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:13:55: note: Assuming condition 'return_size==NULL' is false
+    if (nums == NULL || nums_size <= 0 || return_size == NULL) {
+                                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:28:25: note: Condition 'return_size!=NULL' is always true
+        if (return_size != NULL) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:59:25: style: Condition 'return_size!=NULL' is always true [knownConditionTrueFalse]
+        if (return_size != NULL) {
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:13:55: note: Assuming condition 'return_size==NULL' is false
+    if (nums == NULL || nums_size <= 0 || return_size == NULL) {
+                                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:25:20: note: Assuming condition is false
+    if (dp == NULL || prev == NULL) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-620-s3.c:59:25: note: Condition 'return_size!=NULL' is always true
+        if (return_size != NULL) {
+                        ^

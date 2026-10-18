@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int find_max_sublist_length(const int *arr, int n) {
+    if (arr == NULL || n <= 0) {
+        return 0;
+    }
+
+    int max_length = 1;
+    int current_length = 1;
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] >= arr[i - 1]) {
+            current_length++;
+            if (current_length > max_length) {
+                max_length = current_length;
+            }
+        } else {
+            current_length = 1;
+        }
+    }
+
+    return max_length;
+}
+
+int main(void) {
+    int n;
+
+    printf("Enter number of elements: ");
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    int *arr = (int *)malloc((size_t)n * sizeof(int));
+    if (arr == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter %d integers: ", n);
+    for (int i = 0; i < n; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            fprintf(stderr, "Invalid input\n");
+            free(arr);
+            return EXIT_FAILURE;
+        }
+    }
+
+    int result = find_max_sublist_length(arr, n);
+    printf("Maximum sublist length: %d\n", result);
+
+    free(arr);
+    return EXIT_SUCCESS;
+}

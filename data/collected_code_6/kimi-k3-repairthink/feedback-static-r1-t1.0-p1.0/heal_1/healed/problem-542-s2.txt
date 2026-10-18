@@ -1,0 +1,85 @@
+The flagged weakness is the unbounded `strlen(input)` call (CWE-126). The fix is to bound the length computation with `strnlen()` by adding a maximum-length parameter, and to reject inputs that are not NUL-terminated within that bound. Here is the corrected code:
+
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <regex.h>
+#include <string.h>
+
+int replace_with_colon(const char *input, size_t max_len, char **output) {
+    regex_t regex;
+    regmatch_t match;
+    const char *pattern = "[ ,.]";
+    size_t input_len;
+    size_t result_len = 0;
+    size_t i = 0;
+    char *result;
+
+    if (input == NULL || output == NULL || max_len == 0) {
+        return -1;
+    }
+
+    *output = NULL;
+
+    input_len = strnlen(input, max_len);
+    if (input_len == max_len) {
+        return -1;
+    }
+
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return -1;
+    }
+
+    result = malloc(input_len + 1);
+    if (result == NULL) {
+        regfree(&regex);
+        return -1;
+    }
+
+    while (i < input_len) {
+        if (regexec(&regex, input + i, 1, &match, 0) == 0) {
+            size_t match_start = i + (size_t)match.rm_so;
+            size_t match_end = i + (size_t)match.rm_eo;
+
+            while (i < match_start) {
+                result[result_len++] = input[i++];
+            }
+
+            result[result_len++] = ':';
+            i = match_end;
+        } else {
+            result[result_len++] = input[i++];
+        }
+    }
+
+    result[result_len] = '\0';
+    regfree(&regex);
+    *output = result;
+    return 0;
+}
+
+int main(void) {
+    const char *input = "Hello, world. This is a test";
+    char *output = NULL;
+
+    if (replace_with_colon(input, strlen(input) + 1, &output) == 0) {
+        printf("Original: %s\n", input);
+        printf("Modified: %s\n", output);
+        free(output);
+    } else {
+        fprintf(stderr, "Error processing string\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+```
+
+Key changes addressing the weakness:
+
+- **Bounded length check**: `strlen()` was replaced with `strnlen(input, max_len)`, which never reads beyond `max_len` bytes, eliminating the over-read risk on non-NUL-terminated input.
+- **Termination validation**: if `strnlen` returns `max_len`, the string lacks a NUL terminator within the allowed region, so the function safely returns an error instead of proceeding.
+- **Explicit contract**: the caller now supplies the size of the buffer containing the string, which is the standard defensive pattern (as with `strncpy`, `snprintf`, etc.). In `main`, `strlen(input) + 1` is passed since the literal is known to be properly terminated.
+- `_POSIX_C_SOURCE 200809L` is defined to guarantee the prototype of `strnlen()` is exposed by the headers.

@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    Tuple *data;
+    size_t size;
+    size_t capacity;
+} TupleList;
+
+typedef struct {
+    int *data;
+    size_t size;
+} IntList;
+
+int init_tuple_list(TupleList *list, size_t initial_capacity) {
+    if (list == NULL || initial_capacity == 0) {
+        return -1;
+    }
+    list->data = (Tuple *)malloc(initial_capacity * sizeof(Tuple));
+    if (list->data == NULL) {
+        return -1;
+    }
+    list->size = 0;
+    list->capacity = initial_capacity;
+    return 0;
+}
+
+int add_tuple(TupleList *list, int first, int second) {
+    if (list == NULL) {
+        return -1;
+    }
+    if (list->size >= list->capacity) {
+        size_t new_capacity = list->capacity * 2;
+        Tuple *new_data = (Tuple *)realloc(list->data, new_capacity * sizeof(Tuple));
+        if (new_data == NULL) {
+            return -1;
+        }
+        list->data = new_data;
+        list->capacity = new_capacity;
+    }
+    list->data[list->size].first = first;
+    list->data[list->size].second = second;
+    list->size++;
+    return 0;
+}
+
+IntList *extract_rear_elements(const TupleList *list) {
+    if (list == NULL) {
+        return NULL;
+    }
+    IntList *result = (IntList *)malloc(sizeof(IntList));
+    if (result == NULL) {
+        return NULL;
+    }
+    result->data = (int *)malloc(list->size * sizeof(int));
+    if (result->data == NULL) {
+        free(result);
+        return NULL;
+    }
+    result->size = list->size;
+    for (size_t i = 0; i < list->size; i++) {
+        result->data[i] = list->data[i].second;
+    }
+    return result;
+}
+
+void free_tuple_list(TupleList *list) {
+    if (list != NULL) {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        list->capacity = 0;
+    }
+}
+
+void free_int_list(IntList *list) {
+    if (list != NULL) {
+        free(list->data);
+        list->data = NULL;
+        list->size = 0;
+        free(list);
+    }
+}
+
+int main(void) {
+    TupleList tuples;
+    if (init_tuple_list(&tuples, 4) != 0) {
+        return 1;
+    }
+
+    if (add_tuple(&tuples, 10, 20) != 0 ||
+        add_tuple(&tuples, 30, 40) != 0 ||
+        add_tuple(&tuples, 50, 60) != 0) {
+        free_tuple_list(&tuples);
+        return 1;
+    }
+
+    IntList *rear_elements = extract_rear_elements(&tuples);
+    if (rear_elements == NULL) {
+        free_tuple_list(&tuples);
+        return 1;
+    }
+
+    for (size_t i = 0; i < rear_elements->size; i++) {
+        printf("%d ", rear_elements->data[i]);
+    }
+    printf("\n");
+
+    free_int_list(rear_elements);
+    free_tuple_list(&tuples);
+
+    return 0;
+}

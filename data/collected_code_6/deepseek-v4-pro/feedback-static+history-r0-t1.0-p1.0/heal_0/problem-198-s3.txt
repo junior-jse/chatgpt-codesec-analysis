@@ -1,0 +1,97 @@
+```c
+#include <stdio.h>
+#include <math.h>
+#include <float.h>
+
+typedef struct {
+    double x;
+    double y;
+} Point;
+
+typedef struct {
+    double a;
+    double b;
+} Ellipse;
+
+typedef struct {
+    Point p1;
+    Point p2;
+    Point p3;
+    double area;
+} Triangle;
+
+static double triangle_area(Point p1, Point p2, Point p3) {
+    return 0.5 * fabs((p2.x - p1.x) * (p3.y - p1.y) - 
+                       (p2.y - p1.y) * (p3.x - p1.x));
+}
+
+static Point ellipse_point(Ellipse e, double t) {
+    Point p;
+    p.x = e.a * cos(t);
+    p.y = e.b * sin(t);
+    return p;
+}
+
+Triangle largest_triangle_in_ellipse(Ellipse e) {
+    Triangle best;
+    double best_area = -1.0;
+    int i, j, k;
+    double angles[360];
+    
+    if (e.a <= 0 || e.b <= 0) {
+        best.area = -1.0;
+        best.p1.x = best.p1.y = 0;
+        best.p2.x = best.p2.y = 0;
+        best.p3.x = best.p3.y = 0;
+        return best;
+    }
+    
+    for (i = 0; i < 360; i++) {
+        angles[i] = i * M_PI / 180.0;
+    }
+    
+    for (i = 0; i < 360; i++) {
+        for (j = i + 1; j < 360; j++) {
+            for (k = j + 1; k < 360; k++) {
+                Point p1 = ellipse_point(e, angles[i]);
+                Point p2 = ellipse_point(e, angles[j]);
+                Point p3 = ellipse_point(e, angles[k]);
+                double area = triangle_area(p1, p2, p3);
+                
+                if (area > best_area) {
+                    best_area = area;
+                    best.p1 = p1;
+                    best.p2 = p2;
+                    best.p3 = p3;
+                    best.area = area;
+                }
+            }
+        }
+    }
+    
+    return best;
+}
+
+int main(void) {
+    Ellipse e;
+    Triangle t;
+    
+    e.a = 5.0;
+    e.b = 3.0;
+    
+    t = largest_triangle_in_ellipse(e);
+    
+    if (t.area < 0) {
+        printf("Invalid ellipse parameters\n");
+        return 1;
+    }
+    
+    printf("Largest triangle in ellipse (a=%.2f, b=%.2f):\n", e.a, e.b);
+    printf("Area: %.6f\n", t.area);
+    printf("Point 1: (%.6f, %.6f)\n", t.p1.x, t.p1.y);
+    printf("Point 2: (%.6f, %.6f)\n", t.p2.x, t.p2.y);
+    printf("Point 3: (%.6f, %.6f)\n", t.p3.x, t.p3.y);
+    
+    return 0;
+}
+```

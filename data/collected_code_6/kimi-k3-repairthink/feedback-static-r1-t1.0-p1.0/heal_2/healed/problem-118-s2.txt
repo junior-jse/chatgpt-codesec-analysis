@@ -1,0 +1,154 @@
+The `memcpy` calls were replaced with size-bounded `snprintf` copies, with truncation/encoding-error checks, so the destination capacity is enforced at the copy itself (addressing the CWE-120 notes). Everything else remains unchanged.
+
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STRING_LENGTH 4096
+
+typedef struct Node {
+    char *data;
+    struct Node *next;
+} Node;
+
+Node* create_node(const char *data) {
+    if (data == NULL) {
+        return NULL;
+    }
+
+    size_t data_len = strnlen(data, MAX_STRING_LENGTH);
+    if (data_len == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    size_t buf_size = data_len + 1;
+
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+
+    new_node->data = malloc(buf_size);
+    if (new_node->data == NULL) {
+        free(new_node);
+        return NULL;
+    }
+
+    int written = snprintf(new_node->data, buf_size, "%s", data);
+    if (written < 0 || (size_t)written >= buf_size) {
+        free(new_node->data);
+        free(new_node);
+        return NULL;
+    }
+
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* string_to_list(const char *str, const char *delim) {
+    if (str == NULL || delim == NULL) {
+        return NULL;
+    }
+
+    if (strnlen(delim, MAX_STRING_LENGTH) == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    size_t str_len = strnlen(str, MAX_STRING_LENGTH);
+    if (str_len == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    size_t buf_size = str_len + 1;
+
+    char *str_copy = malloc(buf_size);
+    if (str_copy == NULL) {
+        return NULL;
+    }
+
+    int written = snprintf(str_copy, buf_size, "%s", str);
+    if (written < 0 || (size_t)written >= buf_size) {
+        free(str_copy);
+        return NULL;
+    }
+
+    Node *head = NULL;
+    Node *tail = NULL;
+    char *saveptr = NULL;
+    char *token = strtok_r(str_copy, delim, &saveptr);
+
+    while (token != NULL) {
+        Node *new_node = create_node(token);
+        if (new_node == NULL) {
+            while (head != NULL) {
+                Node *temp = head;
+                head = head->next;
+                free(temp->data);
+                free(temp);
+            }
+            free(str_copy);
+            return NULL;
+        }
+
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+
+    free(str_copy);
+    return head;
+}
+
+void free_list(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp->data);
+        free(temp);
+    }
+}
+
+void print_list(const Node *head) {
+    const Node *current = head;
+    while (current != NULL) {
+        printf("%s", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    const char *input = "apple,banana,cherry,date";
+    const char *delimiter = ",";
+
+    Node *list = string_to_list(input, delimiter);
+    if (list == NULL) {
+        fprintf(stderr, "Failed to convert string to list\n");
+        return EXIT_FAILURE;
+    }
+
+    print_list(list);
+    free_list(list);
+
+    return EXIT_SUCCESS;
+}
+```
+
+Key points of the fix:
+
+- `snprintf(dest, buf_size, "%s", src)` never writes more than `buf_size` bytes, so the destination can never overflow regardless of source length.
+- The return value is checked: `< 0` catches encoding errors, and `>= buf_size` catches any truncation; on failure all allocations are freed before returning `NULL`.
+- The explicit `buf_size` variable makes the relationship between allocation size and copy bound obvious to both reviewers and static analyzers.
+- The pre-validation with `strnlen` is kept, so in practice truncation can never occur, and behavior is identical to the original safe-path execution.

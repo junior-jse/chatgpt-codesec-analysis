@@ -1,0 +1,64 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:112:12: warning: Either the condition '!safe_a1' is redundant or there is possible null pointer dereference: safe_a1. [nullPointerRedundantCheck]
+    memcpy(safe_a1, a1, 3 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:9: note: Assuming that condition '!safe_a1' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:112:12: note: Null pointer dereference
+    memcpy(safe_a1, a1, 3 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:113:12: warning: Either the condition '!safe_a2' is redundant or there is possible null pointer dereference: safe_a2. [nullPointerRedundantCheck]
+    memcpy(safe_a2, a2, 3 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:21: note: Assuming that condition '!safe_a2' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:113:12: note: Null pointer dereference
+    memcpy(safe_a2, a2, 3 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:114:12: warning: Either the condition '!safe_a3' is redundant or there is possible null pointer dereference: safe_a3. [nullPointerRedundantCheck]
+    memcpy(safe_a3, a3, 2 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:33: note: Assuming that condition '!safe_a3' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:114:12: note: Null pointer dereference
+    memcpy(safe_a3, a3, 2 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:115:12: warning: Either the condition '!safe_a4' is redundant or there is possible null pointer dereference: safe_a4. [nullPointerRedundantCheck]
+    memcpy(safe_a4, a4, 4 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:45: note: Assuming that condition '!safe_a4' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:115:12: note: Null pointer dereference
+    memcpy(safe_a4, a4, 4 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:116:12: warning: Either the condition '!safe_a5' is redundant or there is possible null pointer dereference: safe_a5. [nullPointerRedundantCheck]
+    memcpy(safe_a5, a5, 2 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:57: note: Assuming that condition '!safe_a5' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:116:12: note: Null pointer dereference
+    memcpy(safe_a5, a5, 2 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:117:12: warning: Either the condition '!safe_a6' is redundant or there is possible null pointer dereference: safe_a6. [nullPointerRedundantCheck]
+    memcpy(safe_a6, a6, 1 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:69: note: Assuming that condition '!safe_a6' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                                                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:117:12: note: Null pointer dereference
+    memcpy(safe_a6, a6, 1 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:118:12: warning: Either the condition '!safe_a7' is redundant or there is possible null pointer dereference: safe_a7. [nullPointerRedundantCheck]
+    memcpy(safe_a7, a7, 1 * sizeof(int));
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:120:81: note: Assuming that condition '!safe_a7' is not redundant
+    if (!safe_a1 || !safe_a2 || !safe_a3 || !safe_a4 || !safe_a5 || !safe_a6 || !safe_a7) {
+                                                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-779.c:118:12: note: Null pointer dereference
+    memcpy(safe_a7, a7, 1 * sizeof(int));
+           ^

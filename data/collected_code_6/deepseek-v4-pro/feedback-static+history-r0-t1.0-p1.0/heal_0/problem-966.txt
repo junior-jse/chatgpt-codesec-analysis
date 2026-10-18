@@ -1,0 +1,111 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Tuple {
+    int *data;
+    int size;
+} Tuple;
+
+typedef struct TupleList {
+    Tuple *tuples;
+    int count;
+} TupleList;
+
+int is_empty_tuple(Tuple tuple) {
+    return tuple.size == 0;
+}
+
+TupleList *remove_empty_tuples(TupleList *list) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    int non_empty_count = 0;
+    for (int i = 0; i < list->count; i++) {
+        if (!is_empty_tuple(list->tuples[i])) {
+            non_empty_count++;
+        }
+    }
+
+    Tuple *new_tuples = malloc(non_empty_count * sizeof(Tuple));
+    if (new_tuples == NULL) {
+        return NULL;
+    }
+
+    int write_index = 0;
+    for (int i = 0; i < list->count; i++) {
+        if (!is_empty_tuple(list->tuples[i])) {
+            new_tuples[write_index] = list->tuples[i];
+            write_index++;
+        } else {
+            free(list->tuples[i].data);
+        }
+    }
+
+    free(list->tuples);
+    list->tuples = new_tuples;
+    list->count = non_empty_count;
+
+    return list;
+}
+
+int main() {
+    TupleList list;
+    list.count = 4;
+    list.tuples = malloc(list.count * sizeof(Tuple));
+    
+    if (list.tuples == NULL) {
+        return 1;
+    }
+
+    list.tuples[0].size = 3;
+    list.tuples[0].data = malloc(3 * sizeof(int));
+    if (list.tuples[0].data == NULL) {
+        free(list.tuples);
+        return 1;
+    }
+    list.tuples[0].data[0] = 1;
+    list.tuples[0].data[1] = 2;
+    list.tuples[0].data[2] = 3;
+
+    list.tuples[1].size = 0;
+    list.tuples[1].data = NULL;
+
+    list.tuples[2].size = 2;
+    list.tuples[2].data = malloc(2 * sizeof(int));
+    if (list.tuples[2].data == NULL) {
+        free(list.tuples[0].data);
+        free(list.tuples);
+        return 1;
+    }
+    list.tuples[2].data[0] = 4;
+    list.tuples[2].data[1] = 5;
+
+    list.tuples[3].size = 0;
+    list.tuples[3].data = NULL;
+
+    printf("Before removal: %d tuples\n", list.count);
+    for (int i = 0; i < list.count; i++) {
+        printf("Tuple %d: size=%d\n", i, list.tuples[i].size);
+    }
+
+    remove_empty_tuples(&list);
+
+    printf("After removal: %d tuples\n", list.count);
+    for (int i = 0; i < list.count; i++) {
+        printf("Tuple %d: size=%d, data: ", i, list.tuples[i].size);
+        for (int j = 0; j < list.tuples[i].size; j++) {
+            printf("%d ", list.tuples[i].data[j]);
+        }
+        printf("\n");
+    }
+
+    for (int i = 0; i < list.count; i++) {
+        free(list.tuples[i].data);
+    }
+    free(list.tuples);
+
+    return 0;
+}
+```

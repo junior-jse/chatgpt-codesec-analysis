@@ -1,0 +1,84 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int count;
+    int value;
+} RLEPair;
+
+RLEPair* rle_encode(const int* data, size_t size, size_t* out_size) {
+    if (data == NULL || out_size == NULL || size == 0) {
+        if (out_size != NULL) {
+            *out_size = 0;
+        }
+        return NULL;
+    }
+
+    RLEPair* encoded = (RLEPair*)malloc(size * sizeof(RLEPair));
+    if (encoded == NULL) {
+        *out_size = 0;
+        return NULL;
+    }
+
+    size_t encoded_index = 0;
+    size_t i = 0;
+
+    while (i < size) {
+        int current_value = data[i];
+        size_t count = 1;
+
+        while (i + count < size && data[i + count] == current_value) {
+            count++;
+        }
+
+        encoded[encoded_index].value = current_value;
+        encoded[encoded_index].count = (int)count;
+        encoded_index++;
+
+        i += count;
+    }
+
+    *out_size = encoded_index;
+    
+    RLEPair* result = (RLEPair*)realloc(encoded, encoded_index * sizeof(RLEPair));
+    if (result == NULL) {
+        free(encoded);
+        *out_size = 0;
+        return NULL;
+    }
+
+    return result;
+}
+
+void rle_free(RLEPair* ptr) {
+    free(ptr);
+}
+
+int main(void) {
+    int data[] = {1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 5, 5};
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+    size_t encoded_size = 0;
+
+    RLEPair* encoded = rle_encode(data, data_size, &encoded_size);
+
+    if (encoded == NULL) {
+        fprintf(stderr, "Encoding failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original size: %zu\n", data_size);
+    printf("Encoded size: %zu\n", encoded_size);
+    printf("Encoded pairs: ");
+    
+    for (size_t i = 0; i < encoded_size; i++) {
+        printf("[%d x %d] ", encoded[i].count, encoded[i].value);
+    }
+    printf("\n");
+
+    rle_free(encoded);
+
+    return EXIT_SUCCESS;
+}
+```

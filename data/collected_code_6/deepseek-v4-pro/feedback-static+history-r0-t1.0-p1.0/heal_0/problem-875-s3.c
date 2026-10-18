@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+int min_difference(Tuple *tuples, int size, int *err) {
+    if (tuples == NULL || size <= 0) {
+        *err = 1;
+        return INT_MAX;
+    }
+    
+    int min_diff = INT_MAX;
+    int found = 0;
+    
+    for (int i = 0; i < size; i++) {
+        int diff = abs(tuples[i].first - tuples[i].second);
+        if (diff < min_diff) {
+            min_diff = diff;
+            found = 1;
+        }
+    }
+    
+    if (!found) {
+        *err = 1;
+        return INT_MAX;
+    }
+    
+    *err = 0;
+    return min_diff;
+}
+
+int main(void) {
+    Tuple tuples[] = {
+        {10, 20},
+        {5, 8},
+        {100, 200},
+        {3, 3},
+        {15, 25}
+    };
+    
+    int size = sizeof(tuples) / sizeof(tuples[0]);
+    int err = 0;
+    
+    int result = min_difference(tuples, size, &err);
+    
+    if (err != 0) {
+        printf("Error processing tuples\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Minimum difference: %d\n", result);
+    
+    Tuple empty[] = {};
+    err = 0;
+    result = min_difference(empty, 0, &err);
+    
+    if (err != 0) {
+        printf("Error processing empty array\n");
+    }
+    
+    Tuple *null_tuples = NULL;
+    err = 0;
+    result = min_difference(null_tuples, 5, &err);
+    
+    if (err != 0) {
+        printf("Error processing NULL array\n");
+    }
+    
+    return EXIT_SUCCESS;
+}

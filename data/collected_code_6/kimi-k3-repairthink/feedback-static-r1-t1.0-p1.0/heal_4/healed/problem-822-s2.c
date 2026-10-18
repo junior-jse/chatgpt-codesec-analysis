@@ -1,0 +1,120 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#define MIN_PASSWORD_LENGTH 8
+#define MAX_PASSWORD_LENGTH 128
+#define INPUT_BUFFER_SIZE ((size_t)MAX_PASSWORD_LENGTH + 3)
+#define MAX_DISCARD_COUNT ((size_t)4096)
+
+typedef char input_buffer_size_check[
+    (INPUT_BUFFER_SIZE > (size_t)MAX_PASSWORD_LENGTH + 2) ? 1 : -1];
+
+bool is_valid_password(const char *password)
+{
+    size_t length;
+    size_t i;
+    bool has_upper;
+    bool has_lower;
+    bool has_digit;
+    bool has_special;
+
+    if (password == NULL) {
+        return false;
+    }
+
+    length = strnlen(password, (size_t)MAX_PASSWORD_LENGTH + 1);
+    if (length < (size_t)MIN_PASSWORD_LENGTH ||
+        length > (size_t)MAX_PASSWORD_LENGTH) {
+        return false;
+    }
+
+    has_upper = false;
+    has_lower = false;
+    has_digit = false;
+    has_special = false;
+
+    for (i = 0; i < length; i++) {
+        unsigned char c = (unsigned char)password[i];
+
+        if (isupper(c)) {
+            has_upper = true;
+        } else if (islower(c)) {
+            has_lower = true;
+        } else if (isdigit(c)) {
+            has_digit = true;
+        } else if (ispunct(c)) {
+            has_special = true;
+        } else {
+            return false;
+        }
+    }
+
+    return has_upper && has_lower && has_digit && has_special;
+}
+
+static void secure_clear(void *buffer, size_t size)
+{
+    volatile unsigned char *p = (volatile unsigned char *)buffer;
+
+    while (size > 0) {
+        *p = 0;
+        p++;
+        size--;
+    }
+}
+
+static void discard_remaining_input(void)
+{
+    size_t discarded = 0;
+
+    while (discarded < MAX_DISCARD_COUNT) {
+        int ch = getchar();
+
+        if (ch == EOF || ch == '\n') {
+            break;
+        }
+
+        discarded++;
+    }
+}
+
+int main(void)
+{
+    char password[INPUT_BUFFER_SIZE];
+    size_t len;
+    bool valid;
+
+    if (fgets(password, (int)sizeof(password), stdin) == NULL) {
+        fprintf(stderr, "Error reading input\n");
+        return 1;
+    }
+
+    len = strnlen(password, sizeof(password));
+
+    if (len == sizeof(password) - 1 && password[len - 1] != '\n') {
+        discard_remaining_input();
+        secure_clear(password, sizeof(password));
+        printf("Invalid password\n");
+        return 0;
+    }
+
+    if (len > 0 && password[len - 1] == '\n') {
+        password[len - 1] = '\0';
+    }
+
+    valid = is_valid_password(password);
+
+    secure_clear(password, sizeof(password));
+
+    if (valid) {
+        printf("Valid password\n");
+    } else {
+        printf("Invalid password\n");
+    }
+
+    return 0;
+}

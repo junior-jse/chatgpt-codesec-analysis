@@ -1,0 +1,69 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+void remove_digits(char *str)
+{
+    if (str == NULL) {
+        return;
+    }
+    
+    char *src = str;
+    char *dst = str;
+    
+    while (*src != '\0') {
+        if (!isdigit((unsigned char)*src)) {
+            *dst = *src;
+            dst++;
+        }
+        src++;
+    }
+    *dst = '\0';
+}
+
+int process_string_list(char **list, size_t count)
+{
+    if (list == NULL) {
+        return -1;
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            remove_digits(list[i]);
+        }
+    }
+    
+    return 0;
+}
+
+int main(void)
+{
+    char *strings[] = {
+        "abc123def",
+        "test456",
+        "no digits here",
+        "789",
+        "a1b2c3"
+    };
+    size_t count = sizeof(strings) / sizeof(strings[0]);
+    
+    printf("Original strings:\n");
+    for (size_t i = 0; i < count; i++) {
+        printf("%s\n", strings[i]);
+    }
+    
+    if (process_string_list(strings, count) != 0) {
+        fprintf(stderr, "Error processing string list\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("\nStrings after removing digits:\n");
+    for (size_t i = 0; i < count; i++) {
+        printf("%s\n", strings[i]);
+    }
+    
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-936-s2.c: In function 'rearrange_tuples':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-936-s2.c:16:29: error: initialization of 'long unsigned int' from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+   16 |     TupleArray result = {0, NULL};
+      |                             ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-936-s2.c:16:29: note: (near initialization for 'result.count')

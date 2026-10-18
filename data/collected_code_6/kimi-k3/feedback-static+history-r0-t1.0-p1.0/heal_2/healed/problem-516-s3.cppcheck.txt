@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c:63:19: style: Condition 'copy_size>output_size' is always false [knownConditionTrueFalse]
+    if (copy_size > output_size) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c:38:21: note: Assuming that condition 'output_size<n*sizeof(int)' is not redundant
+    if (output_size < n * sizeof(int)) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c:42:11: note: Assuming condition is false
+    if (n > SIZE_MAX / sizeof(int)) {
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c:46:15: note: copy_size is assigned 'n*sizeof(int)' here.
+    copy_size = n * sizeof(int);
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-516-s3.c:63:19: note: Condition 'copy_size>output_size' is always false
+    if (copy_size > output_size) {
+                  ^

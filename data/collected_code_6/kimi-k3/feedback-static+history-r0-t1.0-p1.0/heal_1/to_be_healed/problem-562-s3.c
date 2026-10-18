@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+/* Possible weaknesses found:
+ *  Parameter 'arr' can be declared as const array [constParameter]
+ */
+int maxSublistLength(int arr[], int n) {
+    if (arr == NULL || n <= 0) {
+        return 0;
+    }
+    
+    int maxLen = 1;
+    int currentLen = 1;
+    
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > arr[i-1]) {
+            currentLen++;
+            if (currentLen > maxLen) {
+                maxLen = currentLen;
+            }
+        } else {
+            currentLen = 1;
+        }
+    }
+    
+    return maxLen;
+}
+
+int main() {
+    int arr[] = {1, 3, 5, 4, 7, 2, 8, 9, 10};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    int result = maxSublistLength(arr, n);
+    printf("Maximum length of sublist: %d\n", result);
+    
+    return 0;
+}

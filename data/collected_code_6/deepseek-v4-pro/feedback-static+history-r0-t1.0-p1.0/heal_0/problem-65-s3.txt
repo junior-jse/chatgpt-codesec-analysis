@@ -1,0 +1,72 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+int list_sum(struct Node* head) {
+    if (head == NULL) {
+        return 0;
+    }
+    return head->data + list_sum(head->next);
+}
+
+struct Node* create_node(int data) {
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+struct Node* append(struct Node* head, int data) {
+    struct Node* new_node = create_node(data);
+    if (new_node == NULL) {
+        return NULL;
+    }
+    if (head == NULL) {
+        return new_node;
+    }
+    struct Node* current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+void free_list(struct Node* head) {
+    struct Node* current = head;
+    while (current != NULL) {
+        struct Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    struct Node* head = NULL;
+    int values[] = {10, 20, 30, 40, 50};
+    int count = sizeof(values) / sizeof(values[0]);
+
+    for (int i = 0; i < count; i++) {
+        struct Node* result = append(head, values[i]);
+        if (result == NULL) {
+            free_list(head);
+            return 1;
+        }
+        head = result;
+    }
+
+    int sum = list_sum(head);
+    printf("Sum of list elements: %d\n", sum);
+
+    free_list(head);
+    return 0;
+}
+```

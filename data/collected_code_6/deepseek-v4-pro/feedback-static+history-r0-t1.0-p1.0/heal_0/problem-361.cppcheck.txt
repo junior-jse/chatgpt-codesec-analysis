@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-361.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-361.c:129:15: style: Condition 'lists!=NULL' is always true [knownConditionTrueFalse]
+    if (lists != NULL) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-361.c:141:15: style: Condition 'lists!=NULL' is always true [knownConditionTrueFalse]
+    if (lists != NULL) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-361.c:76:35: style: Parameter 'values' can be declared as pointer to const [constParameterPointer]
+List* create_list_with_nodes(int* values, int count) {
+                                  ^

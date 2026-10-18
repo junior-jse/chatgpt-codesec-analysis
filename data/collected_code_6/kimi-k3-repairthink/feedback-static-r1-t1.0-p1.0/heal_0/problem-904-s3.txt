@@ -1,0 +1,29 @@
+```c
+#include <stdio.h>
+#include <stdbool.h>
+
+bool isEven(int number) {
+    return (number % 2) == 0;
+}
+
+int main(void) {
+    int number;
+    int result;
+    
+    printf("Enter an integer: ");
+    result = scanf("%d", &number);
+    
+    if (result != 1) {
+        fprintf(stderr, "Error: Invalid input\n");
+        return 1;
+    }
+    
+    if (isEven(number)) {
+        printf("true\n");
+    } else {
+        printf("false\n");
+    }
+    
+    return 0;
+}
+```

@@ -1,0 +1,21 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c: In function 'min_swaps_binary_strings':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:10:22: error: 's2' undeclared (first use in this function); did you mean 's1'?
+   10 |         if (s1[i] != s2[i]) {
+      |                      ^~
+      |                      s1
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:10:22: note: each undeclared identifier is reported only once for each function it appears in
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:58:47: error: passing argument 2 of 'min_swaps_binary_strings' makes integer from pointer without a cast [-Wint-conversion]
+   58 |     int result = min_swaps_binary_strings(s1, s2, len1);
+      |                                               ^~
+      |                                               |
+      |                                               const char *
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:5:53: note: expected 'size_t' {aka 'long unsigned int'} but argument is of type 'const char *'
+    5 | int min_swaps_binary_strings(const char *s1, size_t len) {
+      |                                              ~~~~~~~^~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:58:18: error: too many arguments to function 'min_swaps_binary_strings'; expected 2, have 3
+   58 |     int result = min_swaps_binary_strings(s1, s2, len1);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~         ~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:5:5: note: declared here
+    5 | int min_swaps_binary_strings(const char *s1, size_t len) {
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,107 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int max(int a, int b, int c) {
+    int max = a;
+    if (b > max) max = b;
+    if (c > max) max = c;
+    return max;
+}
+
+int goldMine(int **mine, int m, int n) {
+    int **goldTable = (int **)malloc(m * sizeof(int *));
+    if (goldTable == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < m; i++) {
+        goldTable[i] = (int *)malloc(n * sizeof(int));
+        if (goldTable[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free(goldTable[j]);
+            }
+            free(goldTable);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (int i = 0; i < m; i++) {
+        goldTable[i][n - 1] = mine[i][n - 1];
+    }
+
+    for (int j = n - 2; j >= 0; j--) {
+        for (int i = 0; i < m; i++) {
+            int right = goldTable[i][j + 1];
+            int rightUp = (i == 0) ? 0 : goldTable[i - 1][j + 1];
+            int rightDown = (i == m - 1) ? 0 : goldTable[i + 1][j + 1];
+            goldTable[i][j] = mine[i][j] + max(right, rightUp, rightDown);
+        }
+    }
+
+    int result = goldTable[0][0];
+    for (int i = 1; i < m; i++) {
+        if (goldTable[i][0] > result) {
+            result = goldTable[i][0];
+        }
+    }
+
+    for (int i = 0; i < m; i++) {
+        free(goldTable[i]);
+    }
+    free(goldTable);
+
+    return result;
+}
+
+int main() {
+    int m, n;
+    printf("Enter the number of rows and columns: ");
+    if (scanf("%d %d", &m, &n) != 2 || m <= 0 || n <= 0) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    int **mine = (int **)malloc(m * sizeof(int *));
+    if (mine == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    for (int i = 0; i < m; i++) {
+        mine[i] = (int *)malloc(n * sizeof(int));
+        if (mine[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free(mine[j]);
+            }
+            free(mine);
+            return EXIT_FAILURE;
+        }
+    }
+
+    printf("Enter the gold mine matrix:\n");
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (scanf("%d", &mine[i][j]) != 1) {
+                fprintf(stderr, "Invalid input\n");
+                for (int k = 0; k < m; k++) {
+                    free(mine[k]);
+                }
+                free(mine);
+                return EXIT_FAILURE;
+            }
+        }
+    }
+
+    int result = goldMine(mine, m, n);
+    printf("Maximum gold collected: %d\n", result);
+
+    for (int i = 0; i < m; i++) {
+        free(mine[i]);
+    }
+    free(mine);
+
+    return EXIT_SUCCESS;
+}
+```

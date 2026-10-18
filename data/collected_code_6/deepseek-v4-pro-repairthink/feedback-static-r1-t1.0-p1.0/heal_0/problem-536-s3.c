@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data) {
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+Node *append_node(Node *head, int data) {
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return NULL;
+    }
+    if (head == NULL) {
+        return new_node;
+    }
+    Node *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+int nth_item(Node *head, int n, int *result) {
+    if (head == NULL || n <= 0 || result == NULL) {
+        return 0;
+    }
+    Node *current = head;
+    int index = 1;
+    while (current != NULL) {
+        if (index == n) {
+            *result = current->data;
+            return 1;
+        }
+        current = current->next;
+        index++;
+    }
+    return 0;
+}
+
+int main(void) {
+    Node *head = NULL;
+    int test_data[] = {10, 20, 30, 40, 50};
+    size_t data_size = sizeof(test_data) / sizeof(test_data[0]);
+    
+    for (size_t i = 0; i < data_size; i++) {
+        Node *new_head = append_node(head, test_data[i]);
+        if (new_head == NULL) {
+            free_list(head);
+            return 1;
+        }
+        head = new_head;
+    }
+    
+    int result;
+    if (nth_item(head, 3, &result)) {
+        printf("3rd item: %d\n", result);
+    } else {
+        printf("3rd item not found\n");
+    }
+    
+    if (nth_item(head, 1, &result)) {
+        printf("1st item: %d\n", result);
+    } else {
+        printf("1st item not found\n");
+    }
+    
+    if (nth_item(head, 5, &result)) {
+        printf("5th item: %d\n", result);
+    } else {
+        printf("5th item not found\n");
+    }
+    
+    if (nth_item(head, 6, &result)) {
+        printf("6th item: %d\n", result);
+    } else {
+        printf("6th item not found\n");
+    }
+    
+    if (nth_item(head, 0, &result)) {
+        printf("0th item: %d\n", result);
+    } else {
+        printf("0th item not found\n");
+    }
+    
+    free_list(head);
+    return 0;
+}

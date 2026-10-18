@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:32:11: warning: Value stored to 's1' during its initialization is never read [deadcode.DeadStores]
+   32 |     char *s1 = "hello";
+      |           ^~   ~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-413-s3.c:33:11: warning: Value stored to 's2' during its initialization is never read [deadcode.DeadStores]
+   33 |     char *s2 = "world";
+      |           ^~   ~~~~~~~
+2 warnings generated.

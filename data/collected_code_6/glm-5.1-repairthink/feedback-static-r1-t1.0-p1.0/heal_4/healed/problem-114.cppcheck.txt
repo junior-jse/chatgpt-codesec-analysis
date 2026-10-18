@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-114.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-114.c:25:31: style: Parameter 'tuples' can be declared as pointer to const [constParameterPointer]
+int assign_frequencies(Tuple *tuples, size_t tuple_count, TupleFrequency **result, size_t *result_count) {
+                              ^

@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-411-s2.c:36:5: warning: Value stored to 'j' is never read [deadcode.DeadStores]
+   36 |     j = 0;
+      |     ^   ~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-411-s2.c:43:20: warning: Value stored to 'match_len' during its initialization is never read [deadcode.DeadStores]
+   43 |             size_t match_len = (size_t)(matches[0].rm_eo - matches[0].rm_so);
+      |                    ^~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.

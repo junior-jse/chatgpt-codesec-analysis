@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_WORD_LEN 4096
+
+static int safe_memcpy(char *dest, size_t dest_size, const char *src, size_t src_len)
+{
+    if (dest == NULL || src == NULL || src_len + 1 > dest_size) {
+        return -1;
+    }
+    memcpy(dest, src, src_len + 1);
+    return 0;
+}
+
+char **shortlist_words(char **words, int count, int n, int *result_count)
+{
+    if (words == NULL || count < 0 || n < 0 || result_count == NULL) {
+        if (result_count != NULL) {
+            *result_count = 0;
+        }
+        return NULL;
+    }
+
+    if ((size_t)count > SIZE_MAX / sizeof(char *)) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    char **result = malloc((size_t)count * sizeof(char *));
+    if (result == NULL) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    int j = 0;
+    for (int i = 0; i < count; i++) {
+        if (words[i] == NULL) {
+            continue;
+        }
+
+        size_t len = strnlen(words[i], (size_t)MAX_WORD_LEN + 1);
+        if (len > (size_t)MAX_WORD_LEN) {
+            continue;
+        }
+
+        if ((int)len > n) {
+            size_t dest_size = len + 1;
+            result[j] = malloc(dest_size);
+            if (result[j] == NULL) {
+                for (int k = 0; k < j; k++) {
+                    free(result[k]);
+                }
+                free(result);
+                *result_count = 0;
+                return NULL;
+            }
+            if (safe_memcpy(result[j], dest_size, words[i], len) != 0) {
+                free(result[j]);
+                for (int k = 0; k < j; k++) {
+                    free(result[k]);
+                }
+                free(result);
+                *result_count = 0;
+                return NULL;
+            }
+            j++;
+        }
+    }
+
+    *result_count = j;
+    return result;
+}
+
+void free_words(char **words, int count)
+{
+    if (words == NULL) {
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        free(words[i]);
+    }
+    free(words);
+}
+
+int main(void)
+{
+    char *words[] = {"apple", "hi", "banana", "cat", "elephant", "dog"};
+    int count = 6;
+    int n = 3;
+    int result_count = 0;
+
+    char **shortlisted = shortlist_words(words, count, n, &result_count);
+
+    if (shortlisted == NULL && result_count == 0) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Words longer than %d:\n", n);
+    for (int i = 0; i < result_count; i++) {
+        printf("%s\n", shortlisted[i]);
+    }
+
+    free_words(shortlisted, result_count);
+
+    return EXIT_SUCCESS;
+}

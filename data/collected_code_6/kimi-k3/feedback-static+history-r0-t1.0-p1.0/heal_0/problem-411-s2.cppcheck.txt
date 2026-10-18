@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-411-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-411-s2.c:36:7: style: Variable 'j' is assigned a value that is never used. [unreadVariable]
+    j = 0;
+      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-411-s2.c:43:30: style: Variable 'match_len' is assigned a value that is never used. [unreadVariable]
+            size_t match_len = (size_t)(matches[0].rm_eo - matches[0].rm_so);
+                             ^

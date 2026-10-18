@@ -1,0 +1,129 @@
+## Analysis
+
+The flagged weakness is the `fgetc` loop in `read_input_line` (CWE-120 / CWE-20). The original code partially mitigates it with a bounds check and `realloc`, but it still has gaps an experienced developer should close:
+
+1. **Integer overflow on growth** — `capacity * 2` can wrap around for a huge input, causing `realloc` to allocate a *smaller* buffer and the subsequent `buffer[length++]` write to overflow the heap (CWE-190 → CWE-120).
+2. **Invariant enforcement** — the write `buffer[length++]` and the final `buffer[length] = '\0'` must be provably inside the allocation; the growth check `length + 1 >= capacity` must run before *every* write.
+3. **Input validation** — NULL stream, `ferror()` after the loop, and clean handling of EOF must all be checked (CWE-20).
+4. **Leak-free failure paths** — original buffer freed if `realloc` fails.
+
+## Rewritten code
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define CHAR_SET_SIZE 256
+#define INITIAL_CAPACITY 128
+
+char find_first_repeated(const char *str)
+{
+    int seen[CHAR_SET_SIZE] = {0};
+    size_t i;
+
+    if (str == NULL)
+    {
+        return '\0';
+    }
+
+    for (i = 0; str[i] != '\0'; i++)
+    {
+        unsigned char c = (unsigned char)str[i];
+        if (seen[c])
+        {
+            return (char)c;
+        }
+        seen[c] = 1;
+    }
+
+    return '\0';
+}
+
+static char *read_input_line(FILE *stream)
+{
+    size_t capacity = INITIAL_CAPACITY;
+    size_t length = 0;
+    char *buffer;
+    int ch;
+
+    if (stream == NULL)
+    {
+        return NULL;
+    }
+
+    buffer = (char *)malloc(capacity);
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
+
+    while ((ch = fgetc(stream)) != EOF && ch != '\n')
+    {
+        if (length + 1 >= capacity)
+        {
+            size_t new_capacity;
+            char *temp;
+
+            if (capacity > SIZE_MAX / 2)
+            {
+                free(buffer);
+                return NULL;
+            }
+            new_capacity = capacity * 2;
+
+            temp = (char *)realloc(buffer, new_capacity);
+            if (temp == NULL)
+            {
+                free(buffer);
+                return NULL;
+            }
+            buffer = temp;
+            capacity = new_capacity;
+        }
+        buffer[length++] = (char)ch;
+    }
+
+    if (ferror(stream) || (ch == EOF && length == 0))
+    {
+        free(buffer);
+        return NULL;
+    }
+
+    buffer[length] = '\0';
+    return buffer;
+}
+
+int main(void)
+{
+    char *buffer;
+    char result;
+
+    printf("Enter a string: ");
+    fflush(stdout);
+
+    buffer = read_input_line(stdin);
+    if (buffer == NULL)
+    {
+        fprintf(stderr, "Error reading input\n");
+        return 1;
+    }
+
+    result = find_first_repeated(buffer);
+
+    if (result != '\0')
+    {
+        printf("First repeated character: %c\n", result);
+    }
+    else
+    {
+        printf("No repeated character found\n");
+    }
+
+    free(buffer);
+    return 0;
+}
+```
+
+**Key changes:** the `capacity > SIZE_MAX / 2` guard prevents the doubling from overflowing `size_t` before `realloc` is called; the bounds check remains ahead of every write so both the stored character and the terminating `'\0'` always land inside the allocation; all stream-error and EOF conditions are validated before the buffer is returned.

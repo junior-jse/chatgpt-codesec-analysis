@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-440-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-440-s2.c:80:34: style: Variable 'clean_word[wlen]' is assigned a value that is never used. [unreadVariable]
+                clean_word[wlen] = sentence[i];
+                                 ^

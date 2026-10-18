@@ -1,0 +1,140 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+char *snake_to_camel(const char *snake) {
+    if (snake == NULL) {
+        return NULL;
+    }
+
+    size_t bufsize = 16;
+    char *camel = (char *)malloc(bufsize);
+    if (camel == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    int capitalize_next = 0;
+    const char *s = snake;
+
+    if (*s == '_') {
+        if (j + 2 > bufsize) {
+            bufsize *= 2;
+            char *tmp = (char *)realloc(camel, bufsize);
+            if (tmp == NULL) {
+                free(camel);
+                return NULL;
+            }
+            camel = tmp;
+        }
+        camel[j++] = '_';
+        s++;
+    }
+
+    for (size_t i = 0; s[i] != '\0'; i++) {
+        char c = s[i];
+        if (c == '_') {
+            capitalize_next = 1;
+        } else {
+            char out;
+            if (capitalize_next) {
+                out = (char)toupper((unsigned char)c);
+                capitalize_next = 0;
+            } else {
+                out = c;
+            }
+
+            if (j + 2 > bufsize) {
+                bufsize *= 2;
+                char *tmp = (char *)realloc(camel, bufsize);
+                if (tmp == NULL) {
+                    free(camel);
+                    return NULL;
+                }
+                camel = tmp;
+            }
+            camel[j++] = out;
+        }
+    }
+
+    if (j + 1 > bufsize) {
+        bufsize = j + 1;
+        char *tmp = (char *)realloc(camel, bufsize);
+        if (tmp == NULL) {
+            free(camel);
+            return NULL;
+        }
+        camel = tmp;
+    }
+    camel[j] = '\0';
+    return camel;
+}
+
+int main(void) {
+    const char *test1 = "snake_case_string";
+    const char *test2 = "_leading_underscore";
+    const char *test3 = "trailing_underscore_";
+    const char *test4 = "multiple__underscores";
+    const char *test5 = "alreadyCamel";
+    const char *test6 = "";
+    const char *test7 = "a";
+    const char *test8 = "a_b_c_d_e_f";
+
+    char *result = NULL;
+
+    result = snake_to_camel(test1);
+    if (result != NULL) {
+        printf("%s -> %s\n", test1, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test2);
+    if (result != NULL) {
+        printf("%s -> %s\n", test2, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test3);
+    if (result != NULL) {
+        printf("%s -> %s\n", test3, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test4);
+    if (result != NULL) {
+        printf("%s -> %s\n", test4, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test5);
+    if (result != NULL) {
+        printf("%s -> %s\n", test5, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test6);
+    if (result != NULL) {
+        printf("\"%s\" -> \"%s\"\n", test6, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test7);
+    if (result != NULL) {
+        printf("%s -> %s\n", test7, result);
+        free(result);
+    }
+
+    result = snake_to_camel(test8);
+    if (result != NULL) {
+        printf("%s -> %s\n", test8, result);
+        free(result);
+    }
+
+    result = snake_to_camel(NULL);
+    printf("NULL -> NULL\n");
+    free(result);
+
+    return 0;
+}
+```

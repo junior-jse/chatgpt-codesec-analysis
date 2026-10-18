@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *data;
+    struct Node *next;
+} Node;
+
+Node *create_node(const char *str) {
+    Node *node;
+    size_t len;
+    
+    if (!str) return NULL;
+    
+    node = (Node *)malloc(sizeof(Node));
+    if (!node) return NULL;
+    
+    len = strlen(str);
+    node->data = (char *)malloc(len + 1);
+    if (!node->data) {
+        free(node);
+        return NULL;
+    }
+    
+    memcpy(node->data, str, len);
+    node->data[len] = '\0';
+    node->next = NULL;
+    return node;
+}
+
+static void cleanup_list(Node *head) {
+    Node *current = head;
+    while (current) {
+        Node *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+}
+
+Node *string_to_list(const char *str) {
+    if (!str) return NULL;
+    
+    Node *head = NULL;
+    Node *tail = NULL;
+    const char *start = str;
+    const char *p = str;
+    
+    while (*p) {
+        if (*p == ' ' || *p == '\t' || *p == '\n' || *p == ',') {
+            if (p > start) {
+                size_t len = p - start;
+                char *token = (char *)malloc(len + 1);
+                if (!token) {
+                    cleanup_list(head);
+                    return NULL;
+                }
+                memcpy(token, start, len);
+                token[len] = '\0';
+                
+                Node *node = create_node(token);
+                free(token);
+                if (!node) {
+                    cleanup_list(head);
+                    return NULL;
+                }
+                
+                if (!head) {
+                    head = node;
+                    tail = node;
+                } else {
+                    tail->next = node;
+                    tail = node;
+                }
+            }
+            start = p + 1;
+        }
+        p++;
+    }
+    
+    if (p > start) {
+        size_t len = p - start;
+        char *token = (char *)malloc(len + 1);
+        if (!token) {
+            cleanup_list(head);
+            return NULL;
+        }
+        memcpy(token, start, len);
+        token[len] = '\0';
+        
+        Node *node = create_node(token);
+        free(token);
+        if (!node) {
+            cleanup_list(head);
+            return NULL;
+        }
+        
+        if (!head) {
+            head = node;
+        } else {
+            tail->next = node;
+        }
+    }
+    
+    return head;
+}
+
+void free_list(Node *head) {
+    cleanup_list(head);
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current) {
+        printf("%s\n", current->data);
+        current = current->next;
+    }
+}
+
+int main(void) {
+    const char *input = "hello world foo bar";
+    Node *list = string_to_list(input);
+    
+    if (list) {
+        print_list(list);
+        free_list(list);
+    } else {
+        fprintf(stderr, "Error converting string to list\n");
+        return 1;
+    }
+    
+    return 0;
+}

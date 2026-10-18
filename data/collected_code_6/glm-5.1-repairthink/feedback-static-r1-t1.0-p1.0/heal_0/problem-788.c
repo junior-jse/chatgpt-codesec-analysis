@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *string;
+    int *list;
+    size_t list_size;
+} Tuple;
+
+Tuple *create_tuple(const char *str, const int *list, size_t list_size) {
+    if (str == NULL || (list == NULL && list_size > 0)) {
+        return NULL;
+    }
+
+    Tuple *new_tuple = (Tuple *)malloc(sizeof(Tuple));
+    if (new_tuple == NULL) {
+        return NULL;
+    }
+
+    new_tuple->string = (char *)malloc(strlen(str) + 1);
+    if (new_tuple->string == NULL) {
+        free(new_tuple);
+        return NULL;
+    }
+    strcpy(new_tuple->string, str);
+
+    if (list_size > 0) {
+        new_tuple->list = (int *)malloc(list_size * sizeof(int));
+        if (new_tuple->list == NULL) {
+            free(new_tuple->string);
+            free(new_tuple);
+            return NULL;
+        }
+        memcpy(new_tuple->list, list, list_size * sizeof(int));
+    } else {
+        new_tuple->list = NULL;
+    }
+
+    new_tuple->list_size = list_size;
+    return new_tuple;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple != NULL) {
+        free(tuple->string);
+        free(tuple->list);
+        free(tuple);
+    }
+}
+
+int main(void) {
+    const char *str = "example";
+    int list[] = {1, 2, 3, 4, 5};
+    size_t list_size = sizeof(list) / sizeof(list[0]);
+
+    Tuple *my_tuple = create_tuple(str, list, list_size);
+    if (my_tuple != NULL) {
+        printf("String: %s\n", my_tuple->string);
+        printf("List: ");
+        for (size_t i = 0; i < my_tuple->list_size; i++) {
+            printf("%d ", my_tuple->list[i]);
+        }
+        printf("\n");
+        free_tuple(my_tuple);
+    } else {
+        fprintf(stderr, "Failed to create tuple\n");
+        return 1;
+    }
+
+    return 0;
+}

@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115.c:35:16: style: Variable 'dictionaries' can be declared as const array [constVariable]
+    Dictionary dictionaries[3] = {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115.c:7:11: style: struct member 'DictionaryEntry::key' is never used. [unusedStructMember]
+    char *key;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115.c:8:11: style: struct member 'DictionaryEntry::value' is never used. [unusedStructMember]
+    char *value;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-115.c:9:29: style: struct member 'DictionaryEntry::next' is never used. [unusedStructMember]
+    struct DictionaryEntry *next;
+                            ^

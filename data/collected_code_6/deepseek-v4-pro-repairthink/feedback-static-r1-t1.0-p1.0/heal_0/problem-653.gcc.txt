@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c: In function 'find_pair':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c:33:17: error: assignment to 'Pair *' from incompatible pointer type 'struct Pair *' [-Wincompatible-pointer-types]
+   33 |         current = current->next;
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c: In function 'add_value':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c:59:20: error: assignment to 'struct Pair *' from incompatible pointer type 'Pair *' [-Wincompatible-pointer-types]
+   59 |     new_pair->next = map->head;
+      |                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c: In function 'print_map':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c:86:22: error: assignment to 'Pair *' from incompatible pointer type 'struct Pair *' [-Wincompatible-pointer-types]
+   86 |         current_pair = current_pair->next;
+      |                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c: In function 'free_map':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-653.c:93:27: error: initialization of 'Pair *' from incompatible pointer type 'struct Pair *' [-Wincompatible-pointer-types]
+   93 |         Pair* next_pair = current_pair->next;
+      |                           ^~~~~~~~~~~~

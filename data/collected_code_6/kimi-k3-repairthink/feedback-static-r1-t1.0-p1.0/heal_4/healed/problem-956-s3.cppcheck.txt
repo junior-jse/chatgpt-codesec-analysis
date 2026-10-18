@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:56:23: style: Condition 'input_len>input_copy_size' is always false [knownConditionTrueFalse]
+        if (input_len > input_copy_size) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:49:21: note: input_copy_size is assigned 'input_len+1' here.
+    input_copy_size = input_len + 1;
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:52:20: note: Assuming condition is false
+    if (input_copy == NULL)
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:56:23: note: Condition 'input_len>input_copy_size' is always false
+        if (input_len > input_copy_size) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:141:21: style: Condition 'len>part_size' is always false [knownConditionTrueFalse]
+            if (len > part_size) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:130:19: note: part_size is assigned 'len+1' here.
+        part_size = len + 1;
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:133:22: note: Assuming condition is false
+        if (parts[n] == NULL) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-956-s3.c:141:21: note: Condition 'len>part_size' is always false
+            if (len > part_size) {
+                    ^

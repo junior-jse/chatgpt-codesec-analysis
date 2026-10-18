@@ -1,0 +1,138 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int value;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    int key;
+    Node* values;
+    struct Pair* next;
+} Pair;
+
+typedef struct {
+    Pair* head;
+    int size;
+} Map;
+
+Map* create_map() {
+    Map* map = (Map*)malloc(sizeof(Map));
+    if (!map) return NULL;
+    map->head = NULL;
+    map->size = 0;
+    return map;
+}
+
+Pair* find_pair(Map* map, int key) {
+    Pair* current = map->head;
+    while (current) {
+        if (current->key == key) return current;
+        current = current->next;
+    }
+    return NULL;
+}
+
+int add_value(Map* map, int key, int value) {
+    Pair* pair = find_pair(map, key);
+    if (pair) {
+        Node* new_node = (Node*)malloc(sizeof(Node));
+        if (!new_node) return -1;
+        new_node->value = value;
+        new_node->next = pair->values;
+        pair->values = new_node;
+        return 0;
+    }
+    
+    Pair* new_pair = (Pair*)malloc(sizeof(Pair));
+    if (!new_pair) return -1;
+    new_pair->key = key;
+    new_pair->values = (Node*)malloc(sizeof(Node));
+    if (!new_pair->values) {
+        free(new_pair);
+        return -1;
+    }
+    new_pair->values->value = value;
+    new_pair->values->next = NULL;
+    new_pair->next = map->head;
+    map->head = new_pair;
+    map->size++;
+    return 0;
+}
+
+void group_pairs(int** pairs, int count, Map* result) {
+    int i;
+    for (i = 0; i < count; i++) {
+        int key = pairs[i][0];
+        int value = pairs[i][1];
+        if (add_value(result, key, value) != 0) {
+            return;
+        }
+    }
+}
+
+void print_map(Map* map) {
+    Pair* current_pair = map->head;
+    while (current_pair) {
+        printf("Key %d: ", current_pair->key);
+        Node* current_node = current_pair->values;
+        while (current_node) {
+            printf("%d ", current_node->value);
+            current_node = current_node->next;
+        }
+        printf("\n");
+        current_pair = current_pair->next;
+    }
+}
+
+void free_map(Map* map) {
+    Pair* current_pair = map->head;
+    while (current_pair) {
+        Pair* next_pair = current_pair->next;
+        Node* current_node = current_pair->values;
+        while (current_node) {
+            Node* next_node = current_node->next;
+            free(current_node);
+            current_node = next_node;
+        }
+        free(current_pair);
+        current_pair = next_pair;
+    }
+    free(map);
+}
+
+int main() {
+    int pairs_data[][2] = {
+        {1, 10},
+        {2, 20},
+        {1, 30},
+        {3, 40},
+        {2, 50},
+        {1, 60}
+    };
+    int count = sizeof(pairs_data) / sizeof(pairs_data[0]);
+    
+    int** pairs = (int**)malloc(count * sizeof(int*));
+    int i;
+    for (i = 0; i < count; i++) {
+        pairs[i] = (int*)malloc(2 * sizeof(int));
+        pairs[i][0] = pairs_data[i][0];
+        pairs[i][1] = pairs_data[i][1];
+    }
+    
+    Map* result = create_map();
+    group_pairs(pairs, count, result);
+    print_map(result);
+    
+    free_map(result);
+    for (i = 0; i < count; i++) {
+        free(pairs[i]);
+    }
+    free(pairs);
+    
+    return 0;
+}
+```

@@ -1,0 +1,310 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <float.h>
+#include <limits.h>
+
+#define MAX_PATH_LENGTH 256
+
+typedef struct {
+    int row;
+    int col;
+} Position;
+
+typedef struct {
+    Position* positions;
+    int length;
+    double average;
+    double sum;
+} Path;
+
+typedef struct {
+    int** matrix;
+    int size;
+    Path best_path;
+    int found;
+} MatrixContext;
+
+static int is_valid_position(int row, int col, int size) {
+    return row >= 0 && row < size && col >= 0 && col < size;
+}
+
+static void initialize_path(Path* path) {
+    if (path == NULL) {
+        return;
+    }
+    path->positions = NULL;
+    path->length = 0;
+    path->average = -DBL_MAX;
+    path->sum = 0.0;
+}
+
+static void free_path(Path* path) {
+    if (path == NULL) {
+        return;
+    }
+    if (path->positions != NULL) {
+        free(path->positions);
+        path->positions = NULL;
+    }
+    path->length = 0;
+    path->average = -DBL_MAX;
+    path->sum = 0.0;
+}
+
+static int copy_path(Path* dest, const Path* src) {
+    if (dest == NULL || src == NULL || src->length <= 0) {
+        return 0;
+    }
+    
+    free_path(dest);
+    
+    dest->positions = (Position*)malloc((size_t)src->length * sizeof(Position));
+    if (dest->positions == NULL) {
+        return 0;
+    }
+    
+    for (int i = 0; i < src->length; i++) {
+        dest->positions[i] = src->positions[i];
+    }
+    
+    dest->length = src->length;
+    dest->average = src->average;
+    dest->sum = src->sum;
+    
+    return 1;
+}
+
+static void update_best_path(MatrixContext* context, const Path* current_path) {
+    if (context == NULL || current_path == NULL || current_path->length == 0) {
+        return;
+    }
+    
+    double current_avg = current_path->sum / (double)current_path->length;
+    
+    if (!context->found || current_avg > context->best_path.average) {
+        Path temp;
+        temp.positions = current_path->positions;
+        temp.length = current_path->length;
+        temp.sum = current_path->sum;
+        temp.average = current_avg;
+        
+        if (copy_path(&context->best_path, &temp)) {
+            context->found = 1;
+        }
+    }
+}
+
+static void dfs_paths(MatrixContext* context, int row, int col, 
+                     int** visited, Path* current_path) {
+    if (context == NULL || visited == NULL || current_path == NULL) {
+        return;
+    }
+    
+    if (!is_valid_position(row, col, context->size)) {
+        return;
+    }
+    
+    if (visited[row][col]) {
+        return;
+    }
+    
+    if (current_path->length >= MAX_PATH_LENGTH) {
+        return;
+    }
+    
+    visited[row][col] = 1;
+    current_path->positions[current_path->length].row = row;
+    current_path->positions[current_path->length].col = col;
+    current_path->length++;
+    current_path->sum += (double)context->matrix[row][col];
+    
+    update_best_path(context, current_path);
+    
+    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    
+    for (int i = 0; i < 4; i++) {
+        int new_row = row + directions[i][0];
+        int new_col = col + directions[i][1];
+        
+        if (is_valid_position(new_row, new_col, context->size) && 
+            !visited[new_row][new_col]) {
+            dfs_paths(context, new_row, new_col, visited, current_path);
+        }
+    }
+    
+    current_path->length--;
+    current_path->sum -= (double)context->matrix[row][col];
+    visited[row][col] = 0;
+}
+
+static int find_max_average_path(int** matrix, int n, Path* result) {
+    if (matrix == NULL || n <= 0 || result == NULL) {
+        return 0;
+    }
+    
+    MatrixContext context;
+    context.matrix = matrix;
+    context.size = n;
+    context.found = 0;
+    initialize_path(&context.best_path);
+    
+    int** visited = (int**)calloc((size_t)n, sizeof(int*));
+    if (visited == NULL) {
+        return 0;
+    }
+    
+    int allocation_failed = 0;
+    for (int i = 0; i < n; i++) {
+        visited[i] = (int*)calloc((size_t)n, sizeof(int));
+        if (visited[i] == NULL) {
+            allocation_failed = 1;
+            for (int j = 0; j < i; j++) {
+                free(visited[j]);
+            }
+            free(visited);
+            return 0;
+        }
+    }
+    
+    Path current_path;
+    current_path.positions = (Position*)malloc(MAX_PATH_LENGTH * sizeof(Position));
+    if (current_path.positions == NULL) {
+        for (int i = 0; i < n; i++) {
+            free(visited[i]);
+        }
+        free(visited);
+        return 0;
+    }
+    current_path.length = 0;
+    current_path.sum = 0.0;
+    current_path.average = 0.0;
+    
+    for (int i = 0; i < n && !allocation_failed; i++) {
+        for (int j = 0; j < n && !allocation_failed; j++) {
+            current_path.length = 0;
+            current_path.sum = 0.0;
+            dfs_paths(&context, i, j, visited, &current_path);
+        }
+    }
+    
+    free(current_path.positions);
+    
+    for (int i = 0; i < n; i++) {
+        free(visited[i]);
+    }
+    free(visited);
+    
+    if (!context.found) {
+        free_path(&context.best_path);
+        return 0;
+    }
+    
+    *result = context.best_path;
+    return 1;
+}
+
+static int** allocate_matrix(int n) {
+    if (n <= 0) {
+        return NULL;
+    }
+    
+    int** matrix = (int**)malloc((size_t)n * sizeof(int*));
+    if (matrix == NULL) {
+        return NULL;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        matrix[i] = (int*)malloc((size_t)n * sizeof(int));
+        if (matrix[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(matrix[j]);
+            }
+            free(matrix);
+            return NULL;
+        }
+    }
+    
+    return matrix;
+}
+
+static void free_matrix(int** matrix, int n) {
+    if (matrix == NULL) {
+        return;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        if (matrix[i] != NULL) {
+            free(matrix[i]);
+        }
+    }
+    free(matrix);
+}
+
+static void print_path(const Path* path, int** matrix) {
+    if (path == NULL || matrix == NULL || path->length == 0) {
+        printf("No path found\n");
+        return;
+    }
+    
+    printf("Path with maximum average: %.6f\n", path->average);
+    printf("Path length: %d\n", path->length);
+    printf("Path: ");
+    
+    for (int i = 0; i < path->length; i++) {
+        int row = path->positions[i].row;
+        int col = path->positions[i].col;
+        printf("(%d,%d)=%d", row, col, matrix[row][col]);
+        if (i < path->length - 1) {
+            printf(" -> ");
+        }
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int n = 4;
+    
+    int** matrix = allocate_matrix(n);
+    if (matrix == NULL) {
+        fprintf(stderr, "Failed to allocate matrix\n");
+        return EXIT_FAILURE;
+    }
+    
+    int values[4][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12},
+        {13, 14, 15, 16}
+    };
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            matrix[i][j] = values[i][j];
+        }
+    }
+    
+    printf("Matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%3d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    
+    Path result;
+    initialize_path(&result);
+    
+    if (find_max_average_path(matrix, n, &result)) {
+        print_path(&result, matrix);
+        free_path(&result);
+    } else {
+        printf("No valid path found\n");
+    }
+    
+    free_matrix(matrix, n);
+    
+    return EXIT_SUCCESS;
+}
+```

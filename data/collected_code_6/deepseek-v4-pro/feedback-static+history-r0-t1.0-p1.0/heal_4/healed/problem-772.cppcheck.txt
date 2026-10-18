@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-772.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-772.c:20:34: style: Condition 'str[i]!='\0'' is always true [knownConditionTrueFalse]
+    while (i < max_len && str[i] != '\0') {
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-772.c:21:38: style: Condition 'str[i]!='\0'' is always true [knownConditionTrueFalse]
+        while (i < max_len && str[i] != '\0' && isspace((unsigned char)str[i])) {
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-772.c:27:38: style: Condition 'str[i]!='\0'' is always true [knownConditionTrueFalse]
+        while (i < max_len && str[i] != '\0' && !isspace((unsigned char)str[i])) {
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-772.c:86:16: style: Variable 'len' is assigned a value that is never used. [unreadVariable]
+            len--;
+               ^

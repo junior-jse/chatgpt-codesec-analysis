@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    int start;
+    int end;
+    int length;
+} SublistInfo;
+
+static Node *create_node(int data)
+{
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+static void free_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+static int find_min_sublist(Node *head, SublistInfo *result)
+{
+    if (head == NULL || result == NULL) {
+        return -1;
+    }
+    
+    int min_length = INT_MAX;
+    int current_start = 0;
+    int current_length = 0;
+    int min_start = 0;
+    int min_end = 0;
+    int index = 0;
+    Node *current = head;
+    
+    while (current != NULL) {
+        if (current->data == 0) {
+            if (current_length > 0 && current_length < min_length) {
+                min_length = current_length;
+                min_start = current_start;
+                min_end = index - 1;
+            }
+            current_length = 0;
+            current_start = index + 1;
+        } else {
+            current_length++;
+        }
+        current = current->next;
+        index++;
+    }
+    
+    if (current_length > 0 && current_length < min_length) {
+        min_length = current_length;
+        min_start = current_start;
+        min_end = index - 1;
+    }
+    
+    if (min_length == INT_MAX) {
+        return -1;
+    }
+    
+    result->start = min_start;
+    result->end = min_end;
+    result->length = min_length;
+    
+    return 0;
+}
+
+static int append_node(Node **head, int data)
+{
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return -1;
+    }
+    
+    if (*head == NULL) {
+        *head = new_node;
+        return 0;
+    }
+    
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return 0;
+}
+
+int main(void)
+{
+    Node *head = NULL;
+    SublistInfo result = {0, 0, 0};
+    int values[] = {1, 2, 3, 0, 4, 5, 0, 6, 7, 8, 9, 0, 1};
+    size_t num_values = sizeof(values) / sizeof(values[0]);
+    size_t i;
+    
+    for (i = 0; i < num_values; i++) {
+        if (append_node(&head, values[i]) != 0) {
+            fprintf(stderr, "Memory allocation failed\n");
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+    }
+    
+    if (find_min_sublist(head, &result) == 0) {
+        printf("Minimum sublist: start=%d, end=%d, length=%d\n", 
+               result.start, result.end, result.length);
+    } else {
+        printf("No valid sublist found\n");
+    }
+    
+    free_list(head);
+    return EXIT_SUCCESS;
+}

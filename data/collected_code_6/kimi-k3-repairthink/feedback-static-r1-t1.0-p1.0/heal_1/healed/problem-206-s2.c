@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STRING_LENGTH 65536
+
+static size_t bounded_length(const char* s, size_t max_len) {
+    size_t len = 0;
+    while (len < max_len && s[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+char* concatenate_adjacent(const char* tuple[], int size) {
+    if (size <= 0 || tuple == NULL) {
+        return NULL;
+    }
+
+    size_t total_len = 0;
+    int i;
+
+    for (i = 0; i < size; i++) {
+        if (tuple[i] == NULL) {
+            return NULL;
+        }
+        size_t len = bounded_length(tuple[i], MAX_STRING_LENGTH);
+        if (i > 0 && i < size - 1) {
+            total_len += 2 * len;
+        } else {
+            total_len += len;
+        }
+    }
+
+    char* result = (char*)malloc(total_len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t offset = 0;
+
+    for (i = 0; i < size - 1; i++) {
+        size_t len = bounded_length(tuple[i], MAX_STRING_LENGTH);
+        size_t next_len = bounded_length(tuple[i + 1], MAX_STRING_LENGTH);
+        memcpy(result + offset, tuple[i], len);
+        offset += len;
+        memcpy(result + offset, tuple[i + 1], next_len);
+        offset += next_len;
+    }
+    result[offset] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char* tuple[] = {"Hello", "World", "C", "Programming"};
+    int size = (int)(sizeof(tuple) / sizeof(tuple[0]));
+
+    char* concatenated = concatenate_adjacent(tuple, size);
+
+    if (concatenated != NULL) {
+        printf("%s\n", concatenated);
+        free(concatenated);
+        concatenated = NULL;
+    } else {
+        fprintf(stderr, "Memory allocation failed or invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}

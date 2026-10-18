@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+int has_all_k_elements(const Tuple *tuples, size_t num_tuples, size_t k) {
+    size_t i;
+    
+    if (tuples == NULL && num_tuples > 0) {
+        return 0;
+    }
+    
+    for (i = 0; i < num_tuples; i++) {
+        if (tuples[i].data == NULL || tuples[i].size != k) {
+            return 0;
+        }
+    }
+    
+    return 1;
+}
+
+int main(void) {
+    Tuple *tuples = NULL;
+    size_t num_tuples = 3;
+    size_t k = 2;
+    size_t i;
+    int result;
+    
+    tuples = (Tuple *)malloc(num_tuples * sizeof(Tuple));
+    if (tuples == NULL) {
+        return EXIT_FAILURE;
+    }
+    
+    for (i = 0; i < num_tuples; i++) {
+        tuples[i].size = k;
+        tuples[i].data = (int *)malloc(k * sizeof(int));
+        if (tuples[i].data == NULL) {
+            size_t j;
+            for (j = 0; j < i; j++) {
+                free(tuples[j].data);
+            }
+            free(tuples);
+            return EXIT_FAILURE;
+        }
+    }
+    
+    tuples[0].data[0] = 1;
+    tuples[0].data[1] = 2;
+    tuples[1].data[0] = 3;
+    tuples[1].data[1] = 4;
+    tuples[2].data[0] = 5;
+    tuples[2].data[1] = 6;
+    
+    result = has_all_k_elements(tuples, num_tuples, k);
+    printf("All tuples have %zu elements: %s\n", k, result ? "true" : "false");
+    
+    for (i = 0; i < num_tuples; i++) {
+        free(tuples[i].data);
+    }
+    free(tuples);
+    
+    return EXIT_SUCCESS;
+}

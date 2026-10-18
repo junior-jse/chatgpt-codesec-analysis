@@ -1,0 +1,1 @@
+problem-904.c:11:0:medium:Flawfinder srand: This function is not sufficiently random for security-related functions such as key and nonce creation (CWE-327). Use a more secure technique for acquiring random values. (risk 3, random)

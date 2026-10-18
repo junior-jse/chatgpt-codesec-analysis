@@ -1,0 +1,75 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *add_spaces(const char *input)
+{
+    regex_t regex;
+    regmatch_t match;
+    char *result = NULL;
+    size_t result_len = 0;
+    size_t input_len = 0;
+    size_t i = 0;
+    size_t j = 0;
+    int reti;
+
+    if (input == NULL) {
+        return NULL;
+    }
+
+    input_len = strlen(input);
+    if (input_len == 0) {
+        result = malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    reti = regcomp(&regex, "[A-Z][a-z]*", REG_EXTENDED);
+    if (reti != 0) {
+        return NULL;
+    }
+
+    result = malloc(input_len * 2 + 1);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    while (i < input_len) {
+        reti = regexec(&regex, input + i, 1, &match, 0);
+        if (reti == 0 && match.rm_so == 0) {
+            if (j > 0 && match.rm_eo > 0) {
+                result[j++] = ' ';
+            }
+            while (match.rm_so < match.rm_eo) {
+                result[j++] = input[i + match.rm_so++];
+            }
+            i += match.rm_eo;
+        } else {
+            result[j++] = input[i++];
+        }
+    }
+
+    result[j] = '\0';
+    regfree(&regex);
+    return result;
+}
+
+int main(void)
+{
+    char *result;
+    const char *input = "HelloWorldThisIsATest";
+
+    result = add_spaces(input);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    return 0;
+}
+```

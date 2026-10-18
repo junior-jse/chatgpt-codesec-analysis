@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int remove_non_alnum(const char *input, char *output, size_t output_size) {
+    size_t out_idx = 0;
+
+    if (input == NULL || output == NULL || output_size == 0) {
+        return -1;
+    }
+
+    while (*input != '\0') {
+        if (isalnum((unsigned char)*input)) {
+            if (out_idx + 1 >= output_size) {
+                return -1;
+            }
+            output[out_idx++] = *input;
+        }
+        input++;
+    }
+
+    output[out_idx] = '\0';
+    return 0;
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     *  Assignment 'input="Hello, World! 123 @#$"', assigned value is "Hello, World! 123 @#$"
+     */
+    const char *input = "Hello, World! 123 @#$";
+    char *output = NULL;
+    size_t input_len;
+    size_t output_size;
+    int result;
+
+    /* Possible weaknesses found:
+     *  Condition 'input==NULL' is always false
+     *  Condition 'input==NULL' is always false [knownConditionTrueFalse]
+     */
+    if (input == NULL) {
+        fprintf(stderr, "Error: Invalid input\n");
+        return EXIT_FAILURE;
+    }
+
+    input_len = strnlen(input, 1024);
+    if (input_len == 1024) {
+        fprintf(stderr, "Error: Input string too long or not null-terminated\n");
+        return EXIT_FAILURE;
+    }
+
+    output_size = input_len + 1;
+
+    output = (char *)malloc(output_size);
+    if (output == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    memset(output, 0, output_size);
+
+    result = remove_non_alnum(input, output, output_size);
+    if (result == 0) {
+        printf("Original: %s\n", input);
+        printf("Filtered: %s\n", output);
+    } else {
+        fprintf(stderr, "Error processing string\n");
+        free(output);
+        return EXIT_FAILURE;
+    }
+
+    free(output);
+    output = NULL;
+
+    return EXIT_SUCCESS;
+}

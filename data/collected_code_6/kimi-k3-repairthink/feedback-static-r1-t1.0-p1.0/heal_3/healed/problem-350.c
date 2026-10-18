@@ -1,0 +1,72 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+
+char* minimizeString(const char* str, size_t maxLen) {
+    if (str == NULL || maxLen == 0) {
+        return NULL;
+    }
+
+    size_t len = strnlen(str, maxLen);
+    if (len == 0) {
+        char* result = malloc(1);
+        if (result != NULL) {
+            result[0] = '\0';
+        }
+        return result;
+    }
+
+    size_t freq[256] = {0};
+    for (size_t i = 0; i < len; i++) {
+        freq[(unsigned char)str[i]]++;
+    }
+
+    size_t maxFreq = 0;
+    unsigned char maxChar = 0;
+    for (size_t i = 0; i < 256; i++) {
+        if (freq[i] > maxFreq) {
+            maxFreq = freq[i];
+            maxChar = (unsigned char)i;
+        }
+    }
+
+    size_t newLen = len - maxFreq;
+    char* result = malloc(newLen + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if ((unsigned char)str[i] != maxChar) {
+            result[j++] = str[i];
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    char* input = NULL;
+    size_t inputCapacity = 0;
+
+    ssize_t lineLength = getline(&input, &inputCapacity, stdin);
+    if (lineLength >= 0) {
+        if (lineLength > 0 && input[lineLength - 1] == '\n') {
+            input[lineLength - 1] = '\0';
+        }
+
+        char* result = minimizeString(input, (size_t)lineLength + 1);
+        if (result != NULL) {
+            printf("%s\n", result);
+            free(result);
+        }
+    }
+
+    free(input);
+    return 0;
+}

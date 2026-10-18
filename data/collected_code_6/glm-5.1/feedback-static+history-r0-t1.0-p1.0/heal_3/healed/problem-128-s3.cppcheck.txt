@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-128-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-128-s3.c:16:37: style: Condition 'dest_size<len' is always false [knownConditionTrueFalse]
+        memcpy(new_s, s, (dest_size < len) ? dest_size : len);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-128-s3.c:15:26: note: dest_size is assigned 'len+1' here.
+        size_t dest_size = len + 1;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-128-s3.c:16:37: note: Condition 'dest_size<len' is always false
+        memcpy(new_s, s, (dest_size < len) ? dest_size : len);
+                                    ^

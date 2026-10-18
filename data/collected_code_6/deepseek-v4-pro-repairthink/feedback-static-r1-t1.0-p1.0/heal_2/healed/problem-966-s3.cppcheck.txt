@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-966-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-966-s3.c:101:9: style: Variable 'data1' can be declared as const array [constVariable]
+    int data1[] = {1, 2, 3};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-966-s3.c:102:9: style: Variable 'data2' can be declared as const array [constVariable]
+    int data2[] = {4, 5};
+        ^

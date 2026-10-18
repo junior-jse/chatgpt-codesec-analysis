@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-298-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-298-s2.c:84:9: style: The scope of the variable 'i' can be reduced. [variableScope]
+    int i;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-298-s2.c:4:21: style: Parameter 'list' can be declared as pointer to const [constParameterPointer]
+int is_present(int *list, int list_size, int value) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-298-s2.c:17:51: style: Parameter 'sub_sizes' can be declared as pointer to const [constParameterPointer]
+int *find_nested_elements(int **nested_list, int *sub_sizes, int nested_count, int *other_list, int other_size, int *result_count) {
+                                                  ^

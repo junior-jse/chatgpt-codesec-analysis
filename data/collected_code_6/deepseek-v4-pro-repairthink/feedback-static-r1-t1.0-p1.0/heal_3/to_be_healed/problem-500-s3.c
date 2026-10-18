@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef struct Node {
+    char *data;
+    size_t data_len;
+    struct Node *next;
+} Node;
+
+char *concatenate_list(Node *head) {
+    size_t total_length = 0;
+    Node *current = head;
+
+    while (current != NULL) {
+        if (current->data_len > SIZE_MAX - total_length) {
+            return NULL;
+        }
+        total_length += current->data_len;
+        current = current->next;
+    }
+
+    if (total_length > SIZE_MAX - 1) {
+        return NULL;
+    }
+
+    char *result = (char *)malloc(total_length + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    current = head;
+    size_t offset = 0;
+    while (current != NULL) {
+        if (offset + current->data_len > total_length) {
+            free(result);
+            return NULL;
+        }
+        if (current->data_len > SIZE_MAX - offset) {
+            free(result);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(result + offset, current->data, current->data_len);
+        offset += current->data_len;
+        current = current->next;
+    }
+    result[offset] = '\0';
+    return result;
+}
+
+Node *create_node(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t len = strlen(str);
+    if (len > SIZE_MAX - 1) {
+        return NULL;
+    }
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->data = (char *)malloc(len + 1);
+    if (node->data == NULL) {
+        free(node);
+        return NULL;
+    }
+
+    if (len > 0) {
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(node->data, str, len);
+    }
+    node->data[len] = '\0';
+    node->data_len = len;
+    node->next = NULL;
+
+    return node;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Node *head = NULL;
+    Node *tail = NULL;
+    char *result;
+
+    const char *words[] = {"Hello", " ", "World", "!", NULL};
+    int i;
+
+    for (i = 0; words[i] != NULL; i++) {
+        Node *node = create_node(words[i]);
+        if (node == NULL) {
+            free_list(head);
+            return 1;
+        }
+        if (head == NULL) {
+            head = node;
+            tail = node;
+        } else {
+            tail->next = node;
+            tail = node;
+        }
+    }
+
+    result = concatenate_list(head);
+    if (result == NULL) {
+        free_list(head);
+        return 1;
+    }
+
+    printf("%s\n", result);
+
+    free(result);
+    free_list(head);
+
+    return 0;
+}

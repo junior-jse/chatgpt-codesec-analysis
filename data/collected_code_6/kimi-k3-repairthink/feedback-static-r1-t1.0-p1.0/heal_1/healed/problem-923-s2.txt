@@ -1,0 +1,105 @@
+The flagged weakness (CWE-126, over-read via `strlen` on non-`\0`-terminated data) is fixed by replacing `strlen` with a bounded length scan (`boundedStringLength`) capped at `MAX_INPUT_LENGTH`. Inputs that are unterminated within that bound (or exceed it) are rejected with `-1`, which also guarantees the subsequent `malloc` size computations and the `size_t`→`int` casts cannot overflow.
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX_INPUT_LENGTH 65536
+
+static size_t boundedStringLength(const char *s, size_t maxLength) {
+    size_t length = 0;
+    while (length < maxLength && s[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+
+int shortestCommonSupersequenceLength(const char *str1, const char *str2) {
+    if (str1 == NULL || str2 == NULL) {
+        return -1;
+    }
+
+    size_t len1 = boundedStringLength(str1, MAX_INPUT_LENGTH + 1);
+    size_t len2 = boundedStringLength(str2, MAX_INPUT_LENGTH + 1);
+
+    if (len1 > MAX_INPUT_LENGTH || len2 > MAX_INPUT_LENGTH) {
+        return -1;
+    }
+
+    if (len1 == 0) {
+        return (int)len2;
+    }
+    if (len2 == 0) {
+        return (int)len1;
+    }
+
+    int **dp = malloc((len1 + 1) * sizeof(int *));
+    if (dp == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i <= len1; i++) {
+        dp[i] = malloc((len2 + 1) * sizeof(int));
+        if (dp[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return -1;
+        }
+    }
+
+    for (size_t i = 0; i <= len1; i++) {
+        dp[i][0] = 0;
+    }
+    for (size_t j = 0; j <= len2; j++) {
+        dp[0][j] = 0;
+    }
+
+    for (size_t i = 1; i <= len1; i++) {
+        for (size_t j = 1; j <= len2; j++) {
+            if (str1[i - 1] == str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = (dp[i - 1][j] > dp[i][j - 1]) ? dp[i - 1][j] : dp[i][j - 1];
+            }
+        }
+    }
+
+    int lcsLength = dp[len1][len2];
+    int result = (int)(len1 + len2) - lcsLength;
+
+    for (size_t i = 0; i <= len1; i++) {
+        free(dp[i]);
+    }
+    free(dp);
+
+    return result;
+}
+
+int main(void) {
+    const char *str1 = "AGGTAB";
+    const char *str2 = "GXTXAYB";
+
+    int result = shortestCommonSupersequenceLength(str1, str2);
+
+    if (result >= 0) {
+        printf("Length of shortest common supersequence: %d\n", result);
+    } else {
+        fprintf(stderr, "Error: Invalid input or memory allocation failure\n");
+        return 1;
+    }
+
+    return 0;
+}
+```
+
+Key changes:
+
+- **`boundedStringLength()`** replaces both `strlen` calls. It never reads more than `MAX_INPUT_LENGTH + 1` bytes, so an unterminated buffer causes a bounded, predictable rejection instead of an over-read/crash.
+- **Overlong/unterminated input rejection**: if the scan hits the bound without finding `\0`, the function returns `-1`, so callers get a clean error rather than silently processing a truncated length.
+- **Side-effect hardening**: capping lengths also bounds `(len1 + 1) * sizeof(int *)` and `(len2 + 1) * sizeof(int)`, eliminating any integer-overflow risk in the allocation sizes, and makes the `size_t`→`int` return-value casts always safe.
+- The custom helper is used instead of `strnlen` so the code remains strictly portable standard C (no POSIX feature-test macros required).
+
+The DP logic, cleanup paths, and `main` behavior are unchanged; for the sample input the program still prints `9`.

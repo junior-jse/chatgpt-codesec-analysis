@@ -1,0 +1,10 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-936-s2.c:16:29: error: incompatible pointer to integer conversion initializing 'size_t' (aka 'unsigned long') with an expression of type 'void *' [-Wint-conversion]
+   16 |     TupleArray result = {0, NULL};
+      |                             ^~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_null.h:49:15: note: expanded from macro 'NULL'
+   49 | #define NULL  __DARWIN_NULL
+      |               ^~~~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types.h:64:23: note: expanded from macro '__DARWIN_NULL'
+   64 | #define __DARWIN_NULL ((void *)0)
+      |                       ^~~~~~~~~~~
+1 error generated.

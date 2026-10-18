@@ -1,0 +1,134 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int append(Node **head, int data)
+{
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return -1;
+    }
+
+    if (*head == NULL) {
+        *head = new_node;
+        return 0;
+    }
+
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return 0;
+}
+
+void free_list(Node **head)
+{
+    if (head == NULL) {
+        return;
+    }
+
+    Node *current = *head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+    *head = NULL;
+}
+
+int replace_last_with_list(Node **head, Node *replacement)
+{
+    if (head == NULL) {
+        free_list(&replacement);
+        return -1;
+    }
+
+    if (*head == NULL) {
+        *head = replacement;
+        return 0;
+    }
+
+    if ((*head)->next == NULL) {
+        free(*head);
+        *head = replacement;
+        return 0;
+    }
+
+    Node *current = *head;
+    while (current->next->next != NULL) {
+        current = current->next;
+    }
+
+    free(current->next);
+    current->next = replacement;
+    return 0;
+}
+
+void print_list(const Node *head)
+{
+    const Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    Node *list1 = NULL;
+    Node *list2 = NULL;
+
+    if (append(&list1, 1) != 0 || append(&list1, 2) != 0 || 
+        append(&list1, 3) != 0 || append(&list1, 4) != 0) {
+        free_list(&list1);
+        return EXIT_FAILURE;
+    }
+
+    if (append(&list2, 10) != 0 || append(&list2, 20) != 0 || 
+        append(&list2, 30) != 0) {
+        free_list(&list1);
+        free_list(&list2);
+        return EXIT_FAILURE;
+    }
+
+    printf("Original list: ");
+    print_list(list1);
+
+    printf("Replacement list: ");
+    print_list(list2);
+
+    if (replace_last_with_list(&list1, list2) != 0) {
+        free_list(&list1);
+        return EXIT_FAILURE;
+    }
+
+    printf("Modified list: ");
+    print_list(list1);
+
+    free_list(&list1);
+
+    return EXIT_SUCCESS;
+}
+```

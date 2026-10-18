@@ -1,0 +1,102 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    int size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    int count;
+} Chunk;
+
+Chunk *chunk_tuples(Tuple *tuples, int tuple_count, int chunk_size) {
+    if (tuples == NULL || tuple_count <= 0 || chunk_size <= 0) {
+        return NULL;
+    }
+    
+    int num_chunks = (tuple_count + chunk_size - 1) / chunk_size;
+    Chunk *chunks = (Chunk *)malloc(num_chunks * sizeof(Chunk));
+    if (chunks == NULL) {
+        return NULL;
+    }
+    
+    for (int i = 0; i < num_chunks; i++) {
+        int start = i * chunk_size;
+        int remaining = tuple_count - start;
+        int current_size = (remaining < chunk_size) ? remaining : chunk_size;
+        
+        chunks[i].tuples = (Tuple *)malloc(current_size * sizeof(Tuple));
+        if (chunks[i].tuples == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(chunks[j].tuples);
+            }
+            free(chunks);
+            return NULL;
+        }
+        
+        chunks[i].count = current_size;
+        
+        for (int j = 0; j < current_size; j++) {
+            chunks[i].tuples[j].data = tuples[start + j].data;
+            chunks[i].tuples[j].size = tuples[start + j].size;
+        }
+    }
+    
+    return chunks;
+}
+
+int main(void) {
+    Tuple tuples[5];
+    int data1[] = {1, 2, 3};
+    int data2[] = {4, 5};
+    int data3[] = {6, 7, 8, 9};
+    int data4[] = {10};
+    int data5[] = {11, 12};
+    
+    tuples[0].data = data1;
+    tuples[0].size = 3;
+    tuples[1].data = data2;
+    tuples[1].size = 2;
+    tuples[2].data = data3;
+    tuples[2].size = 4;
+    tuples[3].data = data4;
+    tuples[3].size = 1;
+    tuples[4].data = data5;
+    tuples[4].size = 2;
+    
+    Chunk *chunks = chunk_tuples(tuples, 5, 2);
+    if (chunks == NULL) {
+        printf("Chunking failed\n");
+        return 1;
+    }
+    
+    int num_chunks = (5 + 2 - 1) / 2;
+    for (int i = 0; i < num_chunks; i++) {
+        printf("Chunk %d: ", i);
+        for (int j = 0; j < chunks[i].count; j++) {
+            printf("(");
+            for (int k = 0; k < chunks[i].tuples[j].size; k++) {
+                printf("%d", chunks[i].tuples[j].data[k]);
+                if (k < chunks[i].tuples[j].size - 1) {
+                    printf(",");
+                }
+            }
+            printf(")");
+            if (j < chunks[i].count - 1) {
+                printf(" ");
+            }
+        }
+        printf("\n");
+    }
+    
+    for (int i = 0; i < num_chunks; i++) {
+        free(chunks[i].tuples);
+    }
+    free(chunks);
+    
+    return 0;
+}
+```

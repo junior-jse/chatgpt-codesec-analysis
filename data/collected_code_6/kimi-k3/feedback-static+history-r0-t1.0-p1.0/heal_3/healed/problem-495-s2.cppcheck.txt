@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:48:40: style: Condition 'result_len+remaining<=str_size' is always true [knownConditionTrueFalse]
+            if (result_len + remaining <= str_size) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:43:40: note: Assuming that condition 'result_len+remaining>=str_size' is not redundant
+            if (result_len + remaining >= str_size) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:48:40: note: Condition 'result_len+remaining<=str_size' is always true
+            if (result_len + remaining <= str_size) {
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:65:50: style: Condition 'result_len+(unsigned long)match.rm_so<=str_size' is always true [knownConditionTrueFalse]
+            if (result_len + (size_t)match.rm_so <= str_size) {
+                                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:60:50: note: Assuming that condition 'result_len+(unsigned long)match.rm_so>=str_size' is not redundant
+            if (result_len + (size_t)match.rm_so >= str_size) {
+                                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-495-s2.c:65:50: note: Condition 'result_len+(unsigned long)match.rm_so<=str_size' is always true
+            if (result_len + (size_t)match.rm_so <= str_size) {
+                                                 ^

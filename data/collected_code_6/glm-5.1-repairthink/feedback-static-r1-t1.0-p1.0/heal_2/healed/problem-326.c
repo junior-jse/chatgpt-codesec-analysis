@@ -1,0 +1,150 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdint.h>
+
+typedef struct {
+    char *word;
+    int count;
+} WordEntry;
+
+char *strdup_custom(const char *src) {
+    if (!src) {
+        return NULL;
+    }
+    size_t max_len = 1048576;
+    size_t len = strnlen(src, max_len);
+    if (len == max_len) {
+        return NULL;
+    }
+    char *dst = malloc(len + 1);
+    if (dst) {
+        snprintf(dst, len + 1, "%s", src);
+    }
+    return dst;
+}
+
+char *get_next_word(const char **str) {
+    while (**str && !isalpha((unsigned char)**str)) {
+        (*str)++;
+    }
+    if (!**str) {
+        return NULL;
+    }
+
+    const char *start = *str;
+    while (**str && isalpha((unsigned char)**str)) {
+        (*str)++;
+    }
+
+    size_t len = *str - start;
+    char *word = malloc(len + 1);
+    if (!word) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < len; i++) {
+        word[i] = tolower((unsigned char)start[i]);
+    }
+    word[len] = '\0';
+    return word;
+}
+
+char *get_most_frequent_word(char **strings, int num_strings) {
+    size_t capacity = 16;
+    size_t size = 0;
+    WordEntry *entries = malloc(capacity * sizeof(WordEntry));
+    if (!entries) {
+        return NULL;
+    }
+
+    for (int i = 0; i < num_strings; i++) {
+        if (!strings[i]) {
+            continue;
+        }
+        const char *ptr = strings[i];
+        char *word;
+        while ((word = get_next_word(&ptr)) != NULL) {
+            int found = 0;
+            size_t found_index = 0;
+            for (size_t j = 0; j < size; j++) {
+                if (strcmp(entries[j].word, word) == 0) {
+                    found = 1;
+                    found_index = j;
+                    break;
+                }
+            }
+
+            if (found) {
+                free(word);
+                entries[found_index].count++;
+            } else {
+                if (size == capacity) {
+                    size_t new_capacity = capacity * 2;
+                    if (new_capacity < capacity || new_capacity > SIZE_MAX / sizeof(WordEntry)) {
+                        free(word);
+                        for (size_t k = 0; k < size; k++) free(entries[k].word);
+                        free(entries);
+                        return NULL;
+                    }
+                    WordEntry *new_entries = realloc(entries, new_capacity * sizeof(WordEntry));
+                    if (!new_entries) {
+                        free(word);
+                        for (size_t k = 0; k < size; k++) free(entries[k].word);
+                        free(entries);
+                        return NULL;
+                    }
+                    entries = new_entries;
+                    capacity = new_capacity;
+                }
+                entries[size].word = word;
+                entries[size].count = 1;
+                size++;
+            }
+        }
+    }
+
+    if (size == 0) {
+        free(entries);
+        return NULL;
+    }
+
+    int max_count = 0;
+    size_t max_index = 0;
+    for (size_t i = 0; i < size; i++) {
+        if (entries[i].count > max_count) {
+            max_count = entries[i].count;
+            max_index = i;
+        }
+    }
+
+    char *result = strdup_custom(entries[max_index].word);
+
+    for (size_t i = 0; i < size; i++) {
+        free(entries[i].word);
+    }
+    free(entries);
+
+    return result;
+}
+
+int main() {
+    char *strings[] = {
+        "Hello world! This is a test.",
+        "Hello again, hello world.",
+        "A test is just a test.",
+        NULL
+    };
+    int num_strings = 3;
+
+    char *most_frequent = get_most_frequent_word(strings, num_strings);
+    if (most_frequent) {
+        printf("Most frequent word: %s\n", most_frequent);
+        free(most_frequent);
+    } else {
+        printf("No words found.\n");
+    }
+
+    return 0;
+}

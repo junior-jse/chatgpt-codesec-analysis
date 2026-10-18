@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-415-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-415-s3.c:51:14: style: Condition 'size>=2' is always true [knownConditionTrueFalse]
+    if (size >= 2) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-415-s3.c:46:28: note: Assignment 'size=sizeof(arr)/sizeof(arr[0])', assigned value is 6
+    int size = sizeof(arr) / sizeof(arr[0]);
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-415-s3.c:51:14: note: Condition 'size>=2' is always true
+    if (size >= 2) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-415-s3.c:5:33: style: Parameter 'arr' can be declared as pointer to const [constParameterPointer]
+void find_max_product_pair(int *arr, int size, int *pair) {
+                                ^

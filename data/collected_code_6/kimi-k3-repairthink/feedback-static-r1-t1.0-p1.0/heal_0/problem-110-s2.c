@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int start;
+    int end;
+} Range;
+
+int compare_ranges(const void *a, const void *b)
+{
+    const Range *ra = (const Range *)a;
+    const Range *rb = (const Range *)b;
+    
+    if (ra->start < rb->start) {
+        return -1;
+    }
+    if (ra->start > rb->start) {
+        return 1;
+    }
+    return 0;
+}
+
+size_t find_missing_ranges(const Range *ranges, size_t count, 
+                          int start_range, int end_range, 
+                          Range **missing)
+{
+    Range *sorted = NULL;
+    Range *result = NULL;
+    size_t result_count = 0;
+    size_t result_capacity = 0;
+    int current;
+    size_t i;
+    
+    if (missing == NULL || start_range > end_range) {
+        return 0;
+    }
+    
+    *missing = NULL;
+    
+    if (count > 0 && ranges == NULL) {
+        return 0;
+    }
+    
+    if (count > 0) {
+        sorted = malloc(count * sizeof(Range));
+        if (sorted == NULL) {
+            return 0;
+        }
+        
+        for (i = 0; i < count; i++) {
+            sorted[i] = ranges[i];
+        }
+        
+        qsort(sorted, count, sizeof(Range), compare_ranges);
+    }
+    
+    result_capacity = count + 1;
+    result = malloc(result_capacity * sizeof(Range));
+    if (result == NULL) {
+        free(sorted);
+        return 0;
+    }
+    
+    current = start_range;
+    
+    for (i = 0; i < count; i++) {
+        if (sorted[i].end < current) {
+            continue;
+        }
+        
+        if (sorted[i].start > end_range) {
+            break;
+        }
+        
+        if (sorted[i].start > current) {
+            if (result_count >= result_capacity) {
+                Range *new_result;
+                result_capacity *= 2;
+                new_result = realloc(result, result_capacity * sizeof(Range));
+                if (new_result == NULL) {
+                    free(result);
+                    free(sorted);
+                    return 0;
+                }
+                result = new_result;
+            }
+            
+            result[result_count].start = current;
+            result[result_count].end = sorted[i].start - 1;
+            result_count++;
+        }
+        
+        if (sorted[i].end >= current) {
+            current = sorted[i].end + 1;
+        }
+        
+        if (current > end_range) {
+            break;
+        }
+    }
+    
+    if (current <= end_range) {
+        if (result_count >= result_capacity) {
+            Range *new_result;
+            result_capacity++;
+            new_result = realloc(result, result_capacity * sizeof(Range));
+            if (new_result == NULL) {
+                free(result);
+                free(sorted);
+                return 0;
+            }
+            result = new_result;
+        }
+        
+        result[result_count].start = current;
+        result[result_count].end = end_range;
+        result_count++;
+    }
+    
+    free(sorted);
+    
+    if (result_count == 0) {
+        free(result);
+        return 0;
+    }
+    
+    *missing = result;
+    return result_count;
+}
+
+int main(void)
+{
+    Range ranges[] = {{1, 3}, {5, 7}, {10, 12}};
+    size_t count = sizeof(ranges) / sizeof(ranges[0]);
+    int start_range = 0;
+    int end_range = 15;
+    Range *missing = NULL;
+    size_t missing_count;
+    size_t i;
+    
+    missing_count = find_missing_ranges(ranges, count, start_range, end_range, &missing);
+    
+    if (missing_count > 0 && missing != NULL) {
+        printf("Missing ranges:\n");
+        for (i = 0; i < missing_count; i++) {
+            printf("[%d, %d]\n", missing[i].start, missing[i].end);
+        }
+        free(missing);
+    } else {
+        printf("No missing ranges found.\n");
+    }
+    
+    return 0;
+}

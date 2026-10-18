@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_INPUT_SIZE 1024
+
+static size_t boundedStringLength(const char *s, size_t maxLen)
+{
+    size_t len = 0;
+
+    if (s == NULL) {
+        return 0;
+    }
+
+    while (len < maxLen && s[len] != '\0') {
+        len++;
+    }
+
+    return len;
+}
+
+int shortestCommonSupersequenceLength(const char *str1, size_t len1, const char *str2, size_t len2)
+{
+    if (str1 == NULL || str2 == NULL) {
+        return -1;
+    }
+
+    if (len1 == 0) {
+        if (len2 > (size_t)INT32_MAX) {
+            return -1;
+        }
+        return (int)len2;
+    }
+    if (len2 == 0) {
+        if (len1 > (size_t)INT32_MAX) {
+            return -1;
+        }
+        return (int)len1;
+    }
+
+    if (len2 + 1 > SIZE_MAX / sizeof(size_t)) {
+        return -1;
+    }
+
+    size_t *prev = (size_t *)calloc(len2 + 1, sizeof(size_t));
+    if (prev == NULL) {
+        return -1;
+    }
+
+    size_t *curr = (size_t *)calloc(len2 + 1, sizeof(size_t));
+    if (curr == NULL) {
+        free(prev);
+        return -1;
+    }
+
+    for (size_t j = 0; j <= len2; j++) {
+        prev[j] = j;
+    }
+
+    for (size_t i = 1; i <= len1; i++) {
+        curr[0] = i;
+        for (size_t j = 1; j <= len2; j++) {
+            if (str1[i - 1] == str2[j - 1]) {
+                curr[j] = prev[j - 1] + 1;
+            } else {
+                size_t del = prev[j] + 1;
+                size_t ins = curr[j - 1] + 1;
+                curr[j] = (del < ins) ? del : ins;
+            }
+        }
+        size_t *temp = prev;
+        prev = curr;
+        curr = temp;
+    }
+
+    size_t result = prev[len2];
+
+    free(prev);
+    free(curr);
+
+    if (result > (size_t)INT32_MAX) {
+        return -1;
+    }
+
+    return (int)result;
+}
+
+static char *readInputLine(const char *prompt, size_t maxLen, int *tooLong)
+{
+    size_t capacity = 64;
+    size_t length = 0;
+    int ch;
+
+    if (tooLong != NULL) {
+        *tooLong = 0;
+    }
+
+    char *buffer = (char *)malloc(capacity);
+    if (buffer == NULL) {
+        return NULL;
+    }
+
+    if (prompt != NULL) {
+        fputs(prompt, stdout);
+        fflush(stdout);
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder fgetc: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+     */
+    while ((ch = fgetc(stdin)) != EOF && ch != '\n') {
+        if (length >= maxLen) {
+            if (tooLong != NULL) {
+                *tooLong = 1;
+            }
+            free(buffer);
+            return NULL;
+        }
+        if (length + 1 >= capacity) {
+            size_t newCapacity = capacity * 2;
+            if (newCapacity > maxLen + 1) {
+                newCapacity = maxLen + 1;
+            }
+            char *newBuffer = (char *)realloc(buffer, newCapacity);
+            if (newBuffer == NULL) {
+                free(buffer);
+                return NULL;
+            }
+            buffer = newBuffer;
+            capacity = newCapacity;
+        }
+        buffer[length++] = (char)ch;
+    }
+
+    if (ch == EOF && length == 0) {
+        free(buffer);
+        return NULL;
+    }
+
+    buffer[length] = '\0';
+
+    return buffer;
+}
+
+int main(void)
+{
+    int tooLong = 0;
+
+    char *str1 = readInputLine("Enter first string: ", MAX_INPUT_SIZE, &tooLong);
+    if (str1 == NULL) {
+        if (tooLong) {
+            fprintf(stderr, "Input too long\n");
+        } else {
+            fprintf(stderr, "Error reading input\n");
+        }
+        return EXIT_FAILURE;
+    }
+
+    tooLong = 0;
+    char *str2 = readInputLine("Enter second string: ", MAX_INPUT_SIZE, &tooLong);
+    if (str2 == NULL) {
+        if (tooLong) {
+            fprintf(stderr, "Input too long\n");
+        } else {
+            fprintf(stderr, "Error reading input\n");
+        }
+        free(str1);
+        return EXIT_FAILURE;
+    }
+
+    size_t len1 = boundedStringLength(str1, MAX_INPUT_SIZE + 1);
+    size_t len2 = boundedStringLength(str2, MAX_INPUT_SIZE + 1);
+
+    int result = shortestCommonSupersequenceLength(str1, len1, str2, len2);
+
+    free(str1);
+    free(str2);
+
+    if (result < 0) {
+        fprintf(stderr, "Error computing result\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Length of shortest common supersequence: %d\n", result);
+
+    return EXIT_SUCCESS;
+}

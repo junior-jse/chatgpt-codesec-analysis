@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:61:35: style: Condition 'remaining>=len1' is always true [knownConditionTrueFalse]
+        if (len1 > 0 && remaining >= len1) {
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:39:23: note: Assuming that condition 'total_len<len1' is not redundant
+        if (total_len < len1 || total_len < len2 || total_len == SIZE_MAX) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:49:22: note: Assuming condition is false
+        if (combined == NULL) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:59:26: note: remaining is assigned 'total_len' here.
+        size_t remaining = total_len;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:61:35: note: Condition 'remaining>=len1' is always true
+        if (len1 > 0 && remaining >= len1) {
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-421.c:74:23: style: Variable 'remaining' is assigned a value that is never used. [unreadVariable]
+            remaining -= len2;
+                      ^

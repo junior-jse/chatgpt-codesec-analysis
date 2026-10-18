@@ -1,0 +1,130 @@
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STRING_LENGTH 4096
+
+typedef struct Node {
+    char *data;
+    struct Node *next;
+} Node;
+
+Node* create_node(const char *data) {
+    if (data == NULL) {
+        return NULL;
+    }
+
+    size_t data_len = strnlen(data, MAX_STRING_LENGTH);
+    if (data_len == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+
+    new_node->data = malloc(data_len + 1);
+    if (new_node->data == NULL) {
+        free(new_node);
+        return NULL;
+    }
+
+    memcpy(new_node->data, data, data_len + 1);
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* string_to_list(const char *str, const char *delim) {
+    if (str == NULL || delim == NULL) {
+        return NULL;
+    }
+
+    if (strnlen(delim, MAX_STRING_LENGTH) == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    size_t str_len = strnlen(str, MAX_STRING_LENGTH);
+    if (str_len == MAX_STRING_LENGTH) {
+        return NULL;
+    }
+
+    char *str_copy = malloc(str_len + 1);
+    if (str_copy == NULL) {
+        return NULL;
+    }
+    memcpy(str_copy, str, str_len + 1);
+
+    Node *head = NULL;
+    Node *tail = NULL;
+    char *saveptr = NULL;
+    char *token = strtok_r(str_copy, delim, &saveptr);
+
+    while (token != NULL) {
+        Node *new_node = create_node(token);
+        if (new_node == NULL) {
+            while (head != NULL) {
+                Node *temp = head;
+                head = head->next;
+                free(temp->data);
+                free(temp);
+            }
+            free(str_copy);
+            return NULL;
+        }
+
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+
+    free(str_copy);
+    return head;
+}
+
+void free_list(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp->data);
+        free(temp);
+    }
+}
+
+void print_list(const Node *head) {
+    const Node *current = head;
+    while (current != NULL) {
+        printf("%s", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    const char *input = "apple,banana,cherry,date";
+    const char *delimiter = ",";
+
+    Node *list = string_to_list(input, delimiter);
+    if (list == NULL) {
+        fprintf(stderr, "Failed to convert string to list\n");
+        return EXIT_FAILURE;
+    }
+
+    print_list(list);
+    free_list(list);
+
+    return EXIT_SUCCESS;
+}
+```

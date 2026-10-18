@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int is_hex_even(const char *hex, size_t max_len) {
+    if (hex == NULL || max_len == 0) {
+        return -1;
+    }
+
+    size_t len = strnlen(hex, max_len);
+    if (len == 0 || len >= max_len) {
+        return -1;
+    }
+
+    size_t start = 0;
+
+    if (len > 2 && hex[0] == '0' && (hex[1] == 'x' || hex[1] == 'X')) {
+        start = 2;
+    }
+
+    if (start >= len) {
+        return -1;
+    }
+
+    for (size_t i = start; i < len; i++) {
+        if (!isxdigit((unsigned char)hex[i])) {
+            return -1;
+        }
+    }
+
+    char last = hex[len - 1];
+    int digit;
+
+    if (last >= '0' && last <= '9') {
+        digit = last - '0';
+    } else if (last >= 'a' && last <= 'f') {
+        digit = last - 'a' + 10;
+    } else if (last >= 'A' && last <= 'F') {
+        digit = last - 'A' + 10;
+    } else {
+        return -1;
+    }
+
+    return (digit % 2 == 0) ? 1 : 0;
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char buffer[256];
+
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        return 1;
+    }
+
+    size_t input_len = strnlen(buffer, sizeof(buffer));
+    if (input_len == sizeof(buffer) - 1 && buffer[input_len - 1] != '\n') {
+        int c;
+        /* Possible weaknesses found:
+         * Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+         */
+        while ((c = getchar()) != '\n' && c != EOF) {
+        }
+        printf("Invalid hexadecimal number\n");
+        return 1;
+    }
+
+    buffer[strcspn(buffer, "\n")] = '\0';
+
+    int result = is_hex_even(buffer, sizeof(buffer));
+
+    if (result == 1) {
+        printf("Even\n");
+    } else if (result == 0) {
+        printf("Odd\n");
+    } else {
+        printf("Invalid hexadecimal number\n");
+    }
+
+    return 0;
+}

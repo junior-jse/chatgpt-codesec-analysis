@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* merge_sorted_lists(Node* l1, Node* l2) {
+    Node dummy;
+    Node* tail = &dummy;
+    dummy.next = NULL;
+
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->data <= l2->data) {
+            tail->next = l1;
+            l1 = l1->next;
+        } else {
+            tail->next = l2;
+            l2 = l2->next;
+        }
+        tail = tail->next;
+    }
+
+    if (l1 != NULL) {
+        tail->next = l1;
+    } else {
+        tail->next = l2;
+    }
+
+    return dummy.next;
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    Node* next_node;
+    while (current != NULL) {
+        next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+}
+
+int main() {
+    Node* l1 = create_node(1);
+    l1->next = create_node(3);
+    l1->next->next = create_node(5);
+
+    Node* l2 = create_node(2);
+    l2->next = create_node(4);
+    l2->next->next = create_node(6);
+
+    Node* merged = merge_sorted_lists(l1, l2);
+
+    Node* curr = merged;
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->next;
+    }
+    printf("\n");
+
+    free_list(merged);
+
+    return 0;
+}

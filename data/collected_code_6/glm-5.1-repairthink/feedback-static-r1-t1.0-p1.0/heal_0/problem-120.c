@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int find_max_product(int *tuples, size_t num_tuples) {
+    if (tuples == NULL) {
+        return INT_MIN;
+    }
+
+    if (num_tuples == 0) {
+        return INT_MIN;
+    }
+
+    int max_product = INT_MIN;
+
+    for (size_t i = 0; i < num_tuples; i++) {
+        int a = tuples[i * 2];
+        int b = tuples[i * 2 + 1];
+        int product = a * b;
+
+        if (product > max_product) {
+            max_product = product;
+        }
+    }
+
+    return max_product;
+}
+
+int main(void) {
+    int data[] = {1, 5, -2, 3, 4, -4, 2, 2};
+    size_t num_tuples = sizeof(data) / sizeof(data[0]) / 2;
+
+    int result = find_max_product(data, num_tuples);
+
+    printf("%d\n", result);
+
+    return 0;
+}

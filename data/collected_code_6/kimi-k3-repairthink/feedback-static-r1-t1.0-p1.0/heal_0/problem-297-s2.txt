@@ -1,0 +1,265 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct NestedList {
+    int isInteger;
+    int value;
+    struct NestedList** list;
+    int size;
+    int capacity;
+} NestedList;
+
+typedef struct {
+    int* data;
+    int size;
+    int capacity;
+} FlattenedList;
+
+NestedList* createNestedList(int initialCapacity) {
+    if (initialCapacity <= 0) {
+        return NULL;
+    }
+    NestedList* nl = (NestedList*)malloc(sizeof(NestedList));
+    if (nl == NULL) {
+        return NULL;
+    }
+    nl->isInteger = 0;
+    nl->value = 0;
+    nl->size = 0;
+    nl->capacity = initialCapacity;
+    nl->list = (NestedList**)calloc((size_t)initialCapacity, sizeof(NestedList*));
+    if (nl->list == NULL) {
+        free(nl);
+        return NULL;
+    }
+    return nl;
+}
+
+NestedList* createInteger(int value) {
+    NestedList* nl = (NestedList*)malloc(sizeof(NestedList));
+    if (nl == NULL) {
+        return NULL;
+    }
+    nl->isInteger = 1;
+    nl->value = value;
+    nl->list = NULL;
+    nl->size = 0;
+    nl->capacity = 0;
+    return nl;
+}
+
+int addToList(NestedList* parent, NestedList* child) {
+    if (parent == NULL || child == NULL || parent->isInteger) {
+        return -1;
+    }
+    if (parent->size >= parent->capacity) {
+        int newCapacity = parent->capacity * 2;
+        NestedList** newList = (NestedList**)realloc(parent->list, (size_t)newCapacity * sizeof(NestedList*));
+        if (newList == NULL) {
+            return -1;
+        }
+        parent->list = newList;
+        parent->capacity = newCapacity;
+    }
+    parent->list[parent->size] = child;
+    parent->size++;
+    return 0;
+}
+
+FlattenedList* createFlattenedList(int initialCapacity) {
+    if (initialCapacity <= 0) {
+        return NULL;
+    }
+    FlattenedList* fl = (FlattenedList*)malloc(sizeof(FlattenedList));
+    if (fl == NULL) {
+        return NULL;
+    }
+    fl->data = (int*)malloc((size_t)initialCapacity * sizeof(int));
+    if (fl->data == NULL) {
+        free(fl);
+        return NULL;
+    }
+    fl->size = 0;
+    fl->capacity = initialCapacity;
+    return fl;
+}
+
+int addToFlattenedList(FlattenedList* fl, int value) {
+    if (fl == NULL) {
+        return -1;
+    }
+    if (fl->size >= fl->capacity) {
+        int newCapacity = fl->capacity * 2;
+        int* newData = (int*)realloc(fl->data, (size_t)newCapacity * sizeof(int));
+        if (newData == NULL) {
+            return -1;
+        }
+        fl->data = newData;
+        fl->capacity = newCapacity;
+    }
+    fl->data[fl->size] = value;
+    fl->size++;
+    return 0;
+}
+
+int flattenHelper(NestedList* nested, FlattenedList* result) {
+    if (nested == NULL || result == NULL) {
+        return -1;
+    }
+    if (nested->isInteger) {
+        return addToFlattenedList(result, nested->value);
+    }
+    for (int i = 0; i < nested->size; i++) {
+        if (flattenHelper(nested->list[i], result) != 0) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+FlattenedList* flatten(NestedList* nestedList) {
+    if (nestedList == NULL) {
+        return NULL;
+    }
+    FlattenedList* result = createFlattenedList(16);
+    if (result == NULL) {
+        return NULL;
+    }
+    if (flattenHelper(nestedList, result) != 0) {
+        free(result->data);
+        free(result);
+        return NULL;
+    }
+    return result;
+}
+
+void freeNestedList(NestedList* nl) {
+    if (nl == NULL) {
+        return;
+    }
+    if (!nl->isInteger && nl->list != NULL) {
+        for (int i = 0; i < nl->size; i++) {
+            freeNestedList(nl->list[i]);
+        }
+        free(nl->list);
+    }
+    free(nl);
+}
+
+void freeFlattenedList(FlattenedList* fl) {
+    if (fl == NULL) {
+        return;
+    }
+    if (fl->data != NULL) {
+        free(fl->data);
+    }
+    free(fl);
+}
+
+int main(void) {
+    NestedList* nestedList = createNestedList(4);
+    if (nestedList == NULL) {
+        fprintf(stderr, "Failed to create nested list\n");
+        return EXIT_FAILURE;
+    }
+
+    NestedList* subList1 = createNestedList(2);
+    if (subList1 == NULL) {
+        fprintf(stderr, "Failed to create sublist 1\n");
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    NestedList* subList2 = createNestedList(2);
+    if (subList2 == NULL) {
+        fprintf(stderr, "Failed to create sublist 2\n");
+        freeNestedList(subList1);
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    NestedList* int1 = createInteger(1);
+    NestedList* int2 = createInteger(2);
+    NestedList* int3 = createInteger(3);
+    NestedList* int4 = createInteger(4);
+    NestedList* int5 = createInteger(5);
+    NestedList* int6 = createInteger(6);
+
+    if (int1 == NULL || int2 == NULL || int3 == NULL || 
+        int4 == NULL || int5 == NULL || int6 == NULL) {
+        fprintf(stderr, "Failed to create integers\n");
+        freeNestedList(int1);
+        freeNestedList(int2);
+        freeNestedList(int3);
+        freeNestedList(int4);
+        freeNestedList(int5);
+        freeNestedList(int6);
+        freeNestedList(subList1);
+        freeNestedList(subList2);
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    if (addToList(subList1, int1) != 0 || addToList(subList1, int2) != 0) {
+        fprintf(stderr, "Failed to add to sublist 1\n");
+        freeNestedList(int1);
+        freeNestedList(int2);
+        freeNestedList(int3);
+        freeNestedList(int4);
+        freeNestedList(int5);
+        freeNestedList(int6);
+        freeNestedList(subList1);
+        freeNestedList(subList2);
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    if (addToList(subList2, int3) != 0 || addToList(subList2, int4) != 0) {
+        fprintf(stderr, "Failed to add to sublist 2\n");
+        freeNestedList(int3);
+        freeNestedList(int4);
+        freeNestedList(int5);
+        freeNestedList(int6);
+        freeNestedList(subList1);
+        freeNestedList(subList2);
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    if (addToList(nestedList, subList1) != 0 || 
+        addToList(nestedList, subList2) != 0 ||
+        addToList(nestedList, int5) != 0 ||
+        addToList(nestedList, int6) != 0) {
+        fprintf(stderr, "Failed to build nested list\n");
+        freeNestedList(int5);
+        freeNestedList(int6);
+        freeNestedList(subList1);
+        freeNestedList(subList2);
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    FlattenedList* flattened = flatten(nestedList);
+    if (flattened == NULL) {
+        fprintf(stderr, "Failed to flatten list\n");
+        freeNestedList(nestedList);
+        return EXIT_FAILURE;
+    }
+
+    printf("Flattened list: [");
+    for (int i = 0; i < flattened->size; i++) {
+        printf("%d", flattened->data[i]);
+        if (i < flattened->size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+
+    freeFlattenedList(flattened);
+    freeNestedList(nestedList);
+
+    return EXIT_SUCCESS;
+}
+```

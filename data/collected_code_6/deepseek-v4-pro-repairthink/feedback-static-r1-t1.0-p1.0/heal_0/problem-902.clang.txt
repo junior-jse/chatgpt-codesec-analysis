@@ -1,0 +1,20 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:85:13: error: call to undeclared function 'free_dictionary'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   85 |             free_dictionary(result);
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:85:13: note: did you mean 'create_dictionary'?
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:15:13: note: 'create_dictionary' declared here
+   15 | Dictionary *create_dictionary(void) {
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:96:17: error: call to undeclared function 'free_dictionary'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   96 |                 free_dictionary(result);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:101:17: error: call to undeclared function 'free_dictionary'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  101 |                 free_dictionary(result);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:111:6: error: conflicting types for 'free_dictionary'
+  111 | void free_dictionary(Dictionary *dict) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-902.c:85:13: note: previous implicit declaration is here
+   85 |             free_dictionary(result);
+      |             ^
+4 errors generated.

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-290-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-290-s2.c:68:39: style: Parameter 'lengths' can be declared as const array [constParameter]
+ListOfLists *create_list_of_lists(int lengths[], int size) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-290-s2.c:5:11: style: struct member 'Node::data' is never used. [unusedStructMember]
+    void *data;
+          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-290-s2.c:6:18: style: struct member 'Node::next' is never used. [unusedStructMember]
+    struct Node *next;
+                 ^

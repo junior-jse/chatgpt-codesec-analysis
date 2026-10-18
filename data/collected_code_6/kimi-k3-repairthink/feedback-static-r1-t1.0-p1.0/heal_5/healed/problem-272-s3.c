@@ -1,0 +1,205 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NAME_LENGTH 1024
+
+typedef struct {
+    int id;
+    char* name;
+    float value;
+} Tuple;
+
+typedef struct Node {
+    Tuple data;
+    struct Node* next;
+} Node;
+
+static size_t bounded_strlen(const char* src, size_t max_len) {
+    size_t len = 0;
+    while (len < max_len && src[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+static char* duplicate_string(const char* src) {
+    if (src == NULL) {
+        return NULL;
+    }
+    size_t len = bounded_strlen(src, MAX_NAME_LENGTH);
+    char* copy = malloc(len + 1);
+    if (copy != NULL) {
+        size_t i;
+        for (i = 0; i < len; i++) {
+            copy[i] = src[i];
+        }
+        copy[len] = '\0';
+    }
+    return copy;
+}
+
+static void tuple_set_name(Tuple* tuple, const char* name) {
+    if (tuple == NULL) {
+        return;
+    }
+    free(tuple->name);
+    tuple->name = duplicate_string(name);
+}
+
+static void tuple_free(Tuple* tuple) {
+    if (tuple == NULL) {
+        return;
+    }
+    free(tuple->name);
+    tuple->name = NULL;
+}
+
+Tuple create_tuple(int id, const char* name, float value) {
+    Tuple tuple;
+    tuple.id = id;
+    tuple.name = NULL;
+    tuple.value = value;
+    tuple_set_name(&tuple, name);
+    return tuple;
+}
+
+Node* create_node(const Tuple* data) {
+    if (data == NULL) {
+        return NULL;
+    }
+    Node* new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data.id = data->id;
+    new_node->data.value = data->value;
+    new_node->data.name = duplicate_string(data->name);
+    if (data->name != NULL && new_node->data.name == NULL) {
+        free(new_node);
+        return NULL;
+    }
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append(Node** head, const Tuple* data) {
+    if (head == NULL || data == NULL) {
+        return;
+    }
+
+    Node* new_node = create_node(data);
+    if (new_node == NULL) {
+        return;
+    }
+
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+int extract_rear(Node** head, Tuple* result) {
+    if (head == NULL || *head == NULL || result == NULL) {
+        return 0;
+    }
+
+    Node* current = *head;
+    Node* prev = NULL;
+
+    while (current->next != NULL) {
+        prev = current;
+        current = current->next;
+    }
+
+    tuple_free(result);
+    result->id = current->data.id;
+    result->name = current->data.name;
+    result->value = current->data.value;
+    current->data.name = NULL;
+
+    if (prev == NULL) {
+        *head = NULL;
+    } else {
+        prev->next = NULL;
+    }
+
+    free(current);
+    return 1;
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        tuple_free(&temp->data);
+        free(temp);
+    }
+}
+
+void print_list(const Node* head) {
+    const Node* current = head;
+    while (current != NULL) {
+        printf("ID: %d, Name: %s, Value: %.2f\n",
+               current->data.id,
+               current->data.name != NULL ? current->data.name : "(null)",
+               current->data.value);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node* list = NULL;
+    Tuple t1 = create_tuple(1, "First", 10.5f);
+    Tuple t2 = create_tuple(2, "Second", 20.3f);
+    Tuple t3 = create_tuple(3, "Third", 30.7f);
+    Tuple extracted = {0, NULL, 0.0f};
+
+    append(&list, &t1);
+    append(&list, &t2);
+    append(&list, &t3);
+
+    printf("Original list:\n");
+    print_list(list);
+
+    if (extract_rear(&list, &extracted)) {
+        printf("Extracted rear element:\n");
+        printf("ID: %d, Name: %s, Value: %.2f\n\n",
+               extracted.id,
+               extracted.name != NULL ? extracted.name : "(null)",
+               extracted.value);
+
+        printf("List after extraction:\n");
+        print_list(list);
+    } else {
+        printf("Failed to extract rear element\n");
+    }
+
+    if (extract_rear(&list, &extracted)) {
+        printf("Extracted rear element:\n");
+        printf("ID: %d, Name: %s, Value: %.2f\n\n",
+               extracted.id,
+               extracted.name != NULL ? extracted.name : "(null)",
+               extracted.value);
+
+        printf("List after extraction:\n");
+        print_list(list);
+    } else {
+        printf("Failed to extract rear element\n");
+    }
+
+    tuple_free(&extracted);
+    tuple_free(&t1);
+    tuple_free(&t2);
+    tuple_free(&t3);
+    free_list(list);
+    return 0;
+}

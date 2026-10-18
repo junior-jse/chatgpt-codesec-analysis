@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_KEY_LENGTH 256
+#define MAX_KEYS 100
+
+typedef struct {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char keys[MAX_KEYS][MAX_KEY_LENGTH];
+    size_t count;
+} KeyList;
+
+static size_t bounded_strlen(const char *s, size_t max_len)
+{
+    const char *end;
+
+    if (s == NULL) {
+        return 0;
+    }
+    end = memchr(s, '\0', max_len);
+    if (end == NULL) {
+        return max_len;
+    }
+    return (size_t)(end - s);
+}
+
+int add_key(KeyList *list, const char *key)
+{
+    size_t key_len;
+
+    if (list == NULL || key == NULL) {
+        return -1;
+    }
+    if (list->count >= MAX_KEYS) {
+        return -1;
+    }
+    key_len = bounded_strlen(key, MAX_KEY_LENGTH);
+    if (key_len >= MAX_KEY_LENGTH) {
+        return -1;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(list->keys[list->count], key, key_len + 1);
+    list->count++;
+    return 0;
+}
+
+char **get_dictionary_keys(const KeyList *list, size_t *num_keys)
+{
+    char **keys;
+
+    if (list == NULL || num_keys == NULL) {
+        return NULL;
+    }
+    *num_keys = 0;
+    if (list->count == 0) {
+        return NULL;
+    }
+    if (list->count > MAX_KEYS) {
+        return NULL;
+    }
+    keys = malloc(list->count * sizeof(*keys));
+    if (keys == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < list->count; i++) {
+        size_t key_len = bounded_strlen(list->keys[i], MAX_KEY_LENGTH);
+        keys[i] = malloc(key_len + 1);
+        if (keys[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(keys[j]);
+            }
+            free(keys);
+            return NULL;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(keys[i], list->keys[i], key_len + 1);
+    }
+    *num_keys = list->count;
+    return keys;
+}
+
+void free_keys(char **keys, size_t num_keys)
+{
+    if (keys == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < num_keys; i++) {
+        free(keys[i]);
+    }
+    free(keys);
+}
+
+int main(void)
+{
+    KeyList dict = {0};
+
+    if (add_key(&dict, "name") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        return EXIT_FAILURE;
+    }
+    if (add_key(&dict, "age") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        return EXIT_FAILURE;
+    }
+    if (add_key(&dict, "city") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        return EXIT_FAILURE;
+    }
+    size_t num_keys = 0;
+    char **keys = get_dictionary_keys(&dict, &num_keys);
+    if (keys == NULL && num_keys > 0) {
+        fprintf(stderr, "Failed to retrieve keys\n");
+        return EXIT_FAILURE;
+    }
+    for (size_t i = 0; i < num_keys; i++) {
+        printf("%s\n", keys[i]);
+    }
+    free_keys(keys, num_keys);
+    return EXIT_SUCCESS;
+}

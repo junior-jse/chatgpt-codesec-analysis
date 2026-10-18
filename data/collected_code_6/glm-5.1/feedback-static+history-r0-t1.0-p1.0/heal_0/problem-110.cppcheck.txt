@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-110.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-110.c:9:33: style: Parameter 'nums' can be declared as pointer to const [constParameterPointer]
+Range* find_missing_ranges(int* nums, int nums_size, int start, int end, int* result_size) {
+                                ^

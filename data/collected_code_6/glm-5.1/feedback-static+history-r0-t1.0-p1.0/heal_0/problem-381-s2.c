@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *elements;
+    int count;
+} InnerList;
+
+typedef struct {
+    InnerList *lists;
+    int count;
+} OuterList;
+
+int sort_index;
+
+int compare_inner_lists(const void *a, const void *b) {
+    const InnerList *list_a = (const InnerList *)a;
+    const InnerList *list_b = (const InnerList *)b;
+
+    if (sort_index >= list_a->count || sort_index >= list_b->count) {
+        return 0;
+    }
+    if (list_a->elements[sort_index] < list_b->elements[sort_index]) {
+        return -1;
+    }
+    if (list_a->elements[sort_index] > list_b->elements[sort_index]) {
+        return 1;
+    }
+    return 0;
+}
+
+void sort_list_of_lists(OuterList *outer, int index) {
+    if (outer == NULL || outer->lists == NULL || outer->count == 0) {
+        return;
+    }
+    sort_index = index;
+    qsort(outer->lists, outer->count, sizeof(InnerList), compare_inner_lists);
+}
+
+void free_outer_list(OuterList *outer) {
+    if (outer == NULL) {
+        return;
+    }
+    if (outer->lists != NULL) {
+        for (int i = 0; i < outer->count; i++) {
+            free(outer->lists[i].elements);
+            outer->lists[i].elements = NULL;
+            outer->lists[i].count = 0;
+        }
+        free(outer->lists);
+        outer->lists = NULL;
+        outer->count = 0;
+    }
+}
+
+int main(void) {
+    OuterList outer;
+    outer.count = 3;
+    outer.lists = (InnerList *)malloc(outer.count * sizeof(InnerList));
+    if (outer.lists == NULL) {
+        return 1;
+    }
+
+    outer.lists[0].count = 3;
+    outer.lists[0].elements = (int *)malloc(outer.lists[0].count * sizeof(int));
+    if (outer.lists[0].elements == NULL) {
+        free(outer.lists);
+        return 1;
+    }
+    outer.lists[0].elements[0] = 5;
+    outer.lists[0].elements[1] = 2;
+    outer.lists[0].elements[2] = 9;
+
+    outer.lists[1].count = 3;
+    outer.lists[1].elements = (int *)malloc(outer.lists[1].count * sizeof(int));
+    if (outer.lists[1].elements == NULL) {
+        free(outer.lists[0].elements);
+        free(outer.lists);
+        return 1;
+    }
+    outer.lists[1].elements[0] = 1;
+    outer.lists[1].elements[1] = 4;
+    outer.lists[1].elements[2] = 6;
+
+    outer.lists[2].count = 3;
+    outer.lists[2].elements = (int *)malloc(outer.lists[2].count * sizeof(int));
+    if (outer.lists[2].elements == NULL) {
+        free(outer.lists[1].elements);
+        free(outer.lists[0].elements);
+        free(outer.lists);
+        return 1;
+    }
+    outer.lists[2].elements[0] = 8;
+    outer.lists[2].elements[1] = 7;
+    outer.lists[2].elements[2] = 3;
+
+    for (int i = 0; i < outer.count; i++) {
+        printf("%d ", outer.lists[i].elements[1]);
+    }
+    printf("\n");
+
+    sort_list_of_lists(&outer, 1);
+
+    for (int i = 0; i < outer.count; i++) {
+        printf("%d ", outer.lists[i].elements[1]);
+    }
+    printf("\n");
+
+    free_outer_list(&outer);
+
+    return 0;
+}

@@ -1,0 +1,22 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:61:21: warning: Logical disjunction always evaluates to true: null_result || !(null_result). [incorrectLogicOperator]
+    if (null_result || !null_result) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:62:58: style: Condition 'null_result' is always false [knownConditionTrueFalse]
+        printf("Password: NULL             Valid: %s\n", null_result ? "true" : "false");
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:59:41: note: Calling function 'is_valid_password' returns 0
+    bool null_result = is_valid_password(null_password, 64);
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:59:41: note: Assignment 'null_result=is_valid_password(null_password,64)', assigned value is 0
+    bool null_result = is_valid_password(null_password, 64);
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:62:58: note: Condition 'null_result' is always false
+        printf("Password: NULL             Valid: %s\n", null_result ? "true" : "false");
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:61:21: style: Opposite expression on both sides of '||'. [oppositeExpression]
+    if (null_result || !null_result) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-822-s3.c:58:11: style: Variable 'null_password' can be declared as pointer to const [constVariablePointer]
+    char *null_password = NULL;
+          ^

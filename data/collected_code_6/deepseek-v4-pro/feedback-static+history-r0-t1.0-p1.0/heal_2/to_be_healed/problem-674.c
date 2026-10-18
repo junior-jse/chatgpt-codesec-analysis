@@ -1,0 +1,110 @@
+/* Repair history (previous round):
+ * - Flawfinder strcat was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strcat was replaced by strncat, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strcpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strcpy was replaced by strncat, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strncpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strncpy was replaced by strncat, which Flawfinder flags with the same CWE (CWE-120).
+ */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define MAX_WORDS 1000
+#define MAX_WORD_LEN 100
+
+typedef struct {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char words[MAX_WORDS][MAX_WORD_LEN];
+    int count;
+} WordList;
+
+int is_duplicate(WordList *list, const char *word) {
+    for (int i = 0; i < list->count; i++) {
+        if (strncmp(list->words[i], word, MAX_WORD_LEN) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int add_word(WordList *list, const char *word) {
+    if (list->count >= MAX_WORDS) {
+        return 0;
+    }
+    size_t len = strnlen(word, MAX_WORD_LEN);
+    size_t copy_len = len < MAX_WORD_LEN - 1 ? len : MAX_WORD_LEN - 1;
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(list->words[list->count], word, copy_len);
+    list->words[list->count][copy_len] = '\0';
+    list->count++;
+    return 1;
+}
+
+void remove_duplicate_words(char *str) {
+    if (str == NULL || *str == '\0') {
+        return;
+    }
+
+    WordList seen = { .count = 0 };
+    size_t input_len = strnlen(str, SIZE_MAX);
+    char *result = (char *)malloc(input_len + 1);
+    if (result == NULL) {
+        return;
+    }
+    result[0] = '\0';
+
+    size_t result_capacity = input_len + 1;
+    size_t result_len = 0;
+
+    char *token = strtok(str, " \t\n\r");
+    int first = 1;
+
+    while (token != NULL) {
+        if (!is_duplicate(&seen, token)) {
+            add_word(&seen, token);
+            if (!first) {
+                if (result_len + 2 <= result_capacity) {
+                    /* Possible weaknesses found:
+                     * Flawfinder strncat: Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf, or automatically resizing strings. Risk is low because the source is a constant character. (risk 1, buffer)
+                     */
+                    strncat(result, " ", result_capacity - result_len - 1);
+                    result_len++;
+                }
+            }
+            size_t token_len = strnlen(token, MAX_WORD_LEN);
+            if (result_len + token_len + 1 <= result_capacity) {
+                /* Possible weaknesses found:
+                 * Flawfinder strncat: Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf, or automatically resizing strings. (risk 1, buffer)
+                 */
+                strncat(result, token, result_capacity - result_len - 1);
+                result_len += token_len;
+            }
+            first = 0;
+        }
+        token = strtok(NULL, " \t\n\r");
+    }
+
+    size_t final_len = strnlen(result, input_len);
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(str, result, final_len);
+    str[final_len] = '\0';
+    free(result);
+}
+
+int main(void) {
+    char str[] = "hello world hello again world test hello";
+    
+    printf("Original: %s\n", str);
+    remove_duplicate_words(str);
+    printf("After removing duplicates: %s\n", str);
+
+    return 0;
+}

@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int max_list_sum(int **lists, int num_lists, int *sizes) {
+    int max_sum = INT_MIN;
+    int found_valid_list = 0;
+    
+    if (lists == NULL || sizes == NULL || num_lists <= 0) {
+        return 0;
+    }
+    
+    for (int i = 0; i < num_lists; i++) {
+        if (lists[i] == NULL || sizes[i] <= 0) {
+            continue;
+        }
+        
+        int current_sum = 0;
+        for (int j = 0; j < sizes[i]; j++) {
+            current_sum += lists[i][j];
+        }
+        
+        if (!found_valid_list || current_sum > max_sum) {
+            max_sum = current_sum;
+            found_valid_list = 1;
+        }
+    }
+    
+    return found_valid_list ? max_sum : 0;
+}
+
+int main(void) {
+    int *lists[4];
+    int sizes[4];
+    int result;
+    
+    lists[0] = malloc(3 * sizeof(int));
+    if (lists[0] == NULL) {
+        return EXIT_FAILURE;
+    }
+    lists[0][0] = 1;
+    lists[0][1] = 2;
+    lists[0][2] = 3;
+    sizes[0] = 3;
+    
+    lists[1] = malloc(4 * sizeof(int));
+    if (lists[1] == NULL) {
+        free(lists[0]);
+        return EXIT_FAILURE;
+    }
+    lists[1][0] = 10;
+    lists[1][1] = 20;
+    lists[1][2] = 30;
+    lists[1][3] = 40;
+    sizes[1] = 4;
+    
+    lists[2] = malloc(2 * sizeof(int));
+    if (lists[2] == NULL) {
+        free(lists[0]);
+        free(lists[1]);
+        return EXIT_FAILURE;
+    }
+    lists[2][0] = -5;
+    lists[2][1] = -10;
+    sizes[2] = 2;
+    
+    lists[3] = malloc(3 * sizeof(int));
+    if (lists[3] == NULL) {
+        free(lists[0]);
+        free(lists[1]);
+        free(lists[2]);
+        return EXIT_FAILURE;
+    }
+    lists[3][0] = 7;
+    lists[3][1] = 8;
+    lists[3][2] = 9;
+    sizes[3] = 3;
+    
+    result = max_list_sum(lists, 4, sizes);
+    
+    printf("Maximum sum: %d\n", result);
+    
+    for (int i = 0; i < 4; i++) {
+        free(lists[i]);
+    }
+    
+    return EXIT_SUCCESS;
+}

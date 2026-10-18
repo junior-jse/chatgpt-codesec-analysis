@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <limits.h>
+
+bool all_unique_chars(const char *str) {
+    if (str == NULL) {
+        return false;
+    }
+
+    unsigned char seen[UCHAR_MAX + 1] = {0};
+
+    size_t len = 0;
+    while (str[len] != '\0') {
+        if (len >= UCHAR_MAX) {
+            return false;
+        }
+        unsigned char ch = (unsigned char)str[len];
+        if (seen[ch]) {
+            return false;
+        }
+        seen[ch] = 1;
+        len++;
+    }
+    if (str[len] != '\0') {
+        return false;
+    }
+
+    return true;
+}
+
+int main(void) {
+    const char *test1 = "abcdef";
+    const char *test2 = "hello";
+    const char *test3 = "";
+    const char *test4 = "aA";
+
+    printf("Test 1: %s\n", all_unique_chars(test1) ? "true" : "false");
+    printf("Test 2: %s\n", all_unique_chars(test2) ? "true" : "false");
+    printf("Test 3: %s\n", all_unique_chars(test3) ? "true" : "false");
+    printf("Test 4: %s\n", all_unique_chars(test4) ? "true" : "false");
+
+    return 0;
+}

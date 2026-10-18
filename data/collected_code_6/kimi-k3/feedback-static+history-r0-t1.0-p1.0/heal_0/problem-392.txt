@@ -1,0 +1,39 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+long long max_sum(long long n, long long *memo, long long size) {
+    if (n < size && memo[n] != -1) {
+        return memo[n];
+    }
+    if (n == 0) {
+        return 0;
+    }
+    long long sum = max_sum(n / 2, memo, size) + max_sum(n / 3, memo, size) + max_sum(n / 4, memo, size) + max_sum(n / 5, memo, size);
+    long long result = (sum > n) ? sum : n;
+    if (n < size) {
+        memo[n] = result;
+    }
+    return result;
+}
+
+int main() {
+    long long n;
+    if (scanf("%lld", &n) != 1 || n < 0) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    long long size = n + 1;
+    long long *memo = malloc(size * sizeof(long long));
+    if (memo == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    for (long long i = 0; i < size; i++) {
+        memo[i] = -1;
+    }
+    printf("%lld\n", max_sum(n, memo, size));
+    free(memo);
+    return EXIT_SUCCESS;
+}
+```

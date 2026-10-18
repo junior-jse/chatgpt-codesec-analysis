@@ -1,0 +1,116 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int **data;
+    int rows;
+    int cols;
+} NestedList;
+
+int *extract_column(const NestedList *list, int col_index, int *out_size) {
+    int *column;
+    int i;
+
+    if (list == NULL || list->data == NULL || out_size == NULL) {
+        return NULL;
+    }
+
+    if (list->rows <= 0 || list->cols <= 0) {
+        return NULL;
+    }
+
+    if (col_index < 0 || col_index >= list->cols) {
+        return NULL;
+    }
+
+    column = malloc((size_t)list->rows * sizeof(int));
+    if (column == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < list->rows; i++) {
+        if (list->data[i] == NULL) {
+            free(column);
+            return NULL;
+        }
+        column[i] = list->data[i][col_index];
+    }
+
+    *out_size = list->rows;
+    return column;
+}
+
+void free_nested_list(NestedList *list) {
+    int i;
+
+    if (list == NULL) {
+        return;
+    }
+
+    if (list->data != NULL) {
+        for (i = 0; i < list->rows; i++) {
+            free(list->data[i]);
+        }
+        free(list->data);
+        list->data = NULL;
+    }
+
+    list->rows = 0;
+    list->cols = 0;
+}
+
+int main(void) {
+    NestedList list;
+    int *column;
+    int out_size;
+    int i;
+    int j;
+    int col_to_extract;
+
+    list.rows = 3;
+    list.cols = 4;
+    list.data = NULL;
+
+    list.data = malloc((size_t)list.rows * sizeof(int *));
+    if (list.data == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < list.rows; i++) {
+        list.data[i] = malloc((size_t)list.cols * sizeof(int));
+        if (list.data[i] == NULL) {
+            for (j = 0; j < i; j++) {
+                free(list.data[j]);
+            }
+            free(list.data);
+            return EXIT_FAILURE;
+        }
+    }
+
+    for (i = 0; i < list.rows; i++) {
+        for (j = 0; j < list.cols; j++) {
+            list.data[i][j] = i * list.cols + j + 1;
+        }
+    }
+
+    col_to_extract = 2;
+    column = extract_column(&list, col_to_extract, &out_size);
+
+    if (column != NULL) {
+        printf("Column %d: ", col_to_extract);
+        for (i = 0; i < out_size; i++) {
+            printf("%d ", column[i]);
+        }
+        printf("\n");
+        free(column);
+    } else {
+        printf("Failed to extract column %d\n", col_to_extract);
+    }
+
+    free_nested_list(&list);
+
+    return EXIT_SUCCESS;
+}
+```

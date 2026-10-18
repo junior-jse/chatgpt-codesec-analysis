@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    int *elements;
+    size_t length;
+} Sublist;
+
+typedef struct {
+    Sublist *sublists;
+    size_t count;
+} SublistArray;
+
+Node* create_node(int data) {
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void free_sublist_array(SublistArray *arr) {
+    if (arr == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < arr->count; i++) {
+        free(arr->sublists[i].elements);
+    }
+    free(arr->sublists);
+    arr->sublists = NULL;
+    arr->count = 0;
+}
+
+int split_list(const Node *head, SublistArray *result) {
+    if (result == NULL) {
+        return -1;
+    }
+    
+    result->sublists = NULL;
+    result->count = 0;
+    
+    if (head == NULL) {
+        return 0;
+    }
+    
+    size_t capacity = 4;
+    result->sublists = malloc(capacity * sizeof(Sublist));
+    if (result->sublists == NULL) {
+        return -1;
+    }
+    
+    const Node *current = head;
+    while (current != NULL) {
+        size_t sublist_capacity = 8;
+        size_t sublist_length = 0;
+        int *sublist_elements = malloc(sublist_capacity * sizeof(int));
+        
+        if (sublist_elements == NULL) {
+            free_sublist_array(result);
+            return -1;
+        }
+        
+        while (current != NULL) {
+            if (sublist_length >= sublist_capacity) {
+                sublist_capacity *= 2;
+                int *temp = realloc(sublist_elements, sublist_capacity * sizeof(int));
+                if (temp == NULL) {
+                    free(sublist_elements);
+                    free_sublist_array(result);
+                    return -1;
+                }
+                sublist_elements = temp;
+            }
+            
+            sublist_elements[sublist_length++] = current->data;
+            current = current->next;
+            
+            if (current != NULL && current->data < sublist_elements[sublist_length - 1]) {
+                break;
+            }
+        }
+        
+        if (result->count >= capacity) {
+            capacity *= 2;
+            Sublist *temp = realloc(result->sublists, capacity * sizeof(Sublist));
+            if (temp == NULL) {
+                free(sublist_elements);
+                free_sublist_array(result);
+                return -1;
+            }
+            result->sublists = temp;
+        }
+        
+        result->sublists[result->count].elements = sublist_elements;
+        result->sublists[result->count].length = sublist_length;
+        result->count++;
+    }
+    
+    return 0;
+}
+
+Sublist* find_min_length_sublist(SublistArray *arr) {
+    if (arr == NULL || arr->count == 0 || arr->sublists == NULL) {
+        return NULL;
+    }
+    
+    size_t min_index = 0;
+    size_t min_length = arr->sublists[0].length;
+    
+    for (size_t i = 1; i < arr->count; i++) {
+        if (arr->sublists[i].length < min_length) {
+            min_length = arr->sublists[i].length;
+            min_index = i;
+        }
+    }
+    
+    return &arr->sublists[min_index];
+}
+
+int main(void) {
+    Node *head = NULL;
+    Node *tail = NULL;
+    int values[] = {1, 2, 3, 2, 4, 5, 6, 3, 7, 8, 9, 10, 4, 5};
+    size_t num_values = sizeof(values) / sizeof(values[0]);
+    
+    for (size_t i = 0; i < num_values; i++) {
+        Node *new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+        
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+    
+    SublistArray sublists;
+    if (split_list(head, &sublists) != 0) {
+        free_list(head);
+        return EXIT_FAILURE;
+    }
+    
+    Sublist *min_sublist = find_min_length_sublist(&sublists);
+    
+    if (min_sublist != NULL) {
+        printf("Minimum length sublist (length %zu): ", min_sublist->length);
+        for (size_t i = 0; i < min_sublist->length; i++) {
+            printf("%d ", min_sublist->elements[i]);
+        }
+        printf("\n");
+    } else {
+        printf("No sublists found.\n");
+    }
+    
+    free_sublist_array(&sublists);
+    free_list(head);
+    
+    return EXIT_SUCCESS;
+}

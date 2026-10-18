@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c: In function 'nthSuperUglyNumber':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:100:51: error: 'LLONG_MAX' undeclared (first use in this function)
+  100 |             if (ugly[indices[dup.prime_index]] <= LLONG_MAX / primes[dup.prime_index]) {
+      |                                                   ^~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:3:1: note: 'LLONG_MAX' is defined in header '<limits.h>'; this is probably fixable by adding '#include <limits.h>'
+    2 | #include <stdlib.h>
+  +++ |+#include <limits.h>
+    3 | 
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:100:51: note: each undeclared identifier is reported only once for each function it appears in
+  100 |             if (ugly[indices[dup.prime_index]] <= LLONG_MAX / primes[dup.prime_index]) {
+      |                                                   ^~~~~~~~~

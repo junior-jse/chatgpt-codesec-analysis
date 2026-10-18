@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-932.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-932.c:94:57: style: Condition 'count>0' is always true [knownConditionTrueFalse]
+    if (unique_words == NULL && new_count == 0 && count > 0) {
+                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-932.c:87:17: note: Assignment 'count=(int)(sizeof(word_list)/sizeof(word_list[0]))', assigned value is 8
+    int count = (int)(sizeof(word_list) / sizeof(word_list[0]));
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-932.c:94:57: note: Condition 'count>0' is always true
+    if (unique_words == NULL && new_count == 0 && count > 0) {
+                                                        ^

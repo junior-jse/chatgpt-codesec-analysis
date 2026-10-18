@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-932-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-932-s3.c:24:23: style: Array index 'len' is used before limits check. [arrayIndexThenCheck]
+        while (current[len] != '\0' && len < (size_t)-1) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-932-s3.c:33:28: style: Array index 'existing_len' is used before limits check. [arrayIndexThenCheck]
+            while (existing[existing_len] != '\0' && existing_len < (size_t)-1) {
+                           ^

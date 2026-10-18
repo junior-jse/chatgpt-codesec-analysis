@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c:62:12: style: The scope of the variable 'new_capacity' can be reduced. [variableScope]
+    size_t new_capacity;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c:85:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c:104:12: style: The scope of the variable 'new_capacity' can be reduced. [variableScope]
+    size_t new_capacity;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c:127:12: style: The scope of the variable 'i' can be reduced. [variableScope]
+    size_t i;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-297-s3.c:128:9: style: The scope of the variable 'result' can be reduced. [variableScope]
+    int result;
+        ^

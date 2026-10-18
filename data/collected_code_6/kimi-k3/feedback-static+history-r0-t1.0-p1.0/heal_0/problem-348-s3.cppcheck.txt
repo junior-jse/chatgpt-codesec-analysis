@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-348-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-348-s3.c:87:15: style: Variable 'values1' can be declared as const array [constVariable]
+    long long values1[] = {1, -1};
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-348-s3.c:90:15: style: Variable 'values2' can be declared as const array [constVariable]
+    long long values2[] = {1, 2, -1};
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-348-s3.c:93:15: style: Variable 'values3' can be declared as const array [constVariable]
+    long long values3[] = {1, -1, 0};
+              ^

@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-712-s3.c: In function 'add_list':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-712-s3.c:49:9: error: implicit declaration of function 'memcpy_s'; did you mean 'memcpy'? [-Wimplicit-function-declaration]
+   49 |     if (memcpy_s(lol->lists[lol->count].data, bytes, data, bytes) != 0) {
+      |         ^~~~~~~~
+      |         memcpy

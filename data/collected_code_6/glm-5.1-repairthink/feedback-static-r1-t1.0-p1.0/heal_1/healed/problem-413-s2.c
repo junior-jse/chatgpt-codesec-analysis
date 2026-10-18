@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int a;
+    int b;
+    int c;
+} Tuple;
+
+int extract_nth_element(Tuple *list, size_t list_size, size_t n, size_t index, int *result) {
+    if (list == NULL || result == NULL) {
+        return -1;
+    }
+
+    if (index >= list_size) {
+        return -2;
+    }
+
+    switch (n) {
+        case 0:
+            *result = list[index].a;
+            break;
+        case 1:
+            *result = list[index].b;
+            break;
+        case 2:
+            *result = list[index].c;
+            break;
+        default:
+            return -3;
+    }
+
+    return 0;
+}
+
+void test_extract(Tuple *list, size_t list_size, size_t n, size_t index) {
+    int result;
+    int ret = extract_nth_element(list, list_size, n, index, &result);
+    if (ret == 0) {
+        printf("%d\n", result);
+    } else {
+        printf("Error: %d\n", ret);
+    }
+}
+
+int main(void) {
+    Tuple list[] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    size_t list_size = sizeof(list) / sizeof(list[0]);
+
+    test_extract(list, list_size, 1, 2);
+    test_extract(NULL, list_size, 0, 0);
+    test_extract(list, list_size, 3, 0);
+    test_extract(list, list_size, 0, 5);
+
+    return 0;
+}

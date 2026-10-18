@@ -1,0 +1,116 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+typedef struct StackNode {
+    char data;
+    struct StackNode* next;
+} StackNode;
+
+typedef struct {
+    StackNode* top;
+} Stack;
+
+void stack_init(Stack* s) {
+    s->top = NULL;
+}
+
+bool stack_is_empty(Stack* s) {
+    return s->top == NULL;
+}
+
+bool stack_push(Stack* s, char c) {
+    StackNode* new_node = (StackNode*)malloc(sizeof(StackNode));
+    if (new_node == NULL) {
+        return false;
+    }
+    new_node->data = c;
+    new_node->next = s->top;
+    s->top = new_node;
+    return true;
+}
+
+bool stack_pop(Stack* s, char* c) {
+    if (stack_is_empty(s)) {
+        return false;
+    }
+    StackNode* temp = s->top;
+    *c = temp->data;
+    s->top = temp->next;
+    free(temp);
+    return true;
+}
+
+void stack_destroy(Stack* s) {
+    char c;
+    while (stack_pop(s, &c)) {
+    }
+}
+
+bool is_matching_pair(char opening, char closing) {
+    return (opening == '(' && closing == ')') ||
+           (opening == '[' && closing == ']') ||
+           (opening == '{' && closing == '}');
+}
+
+bool is_balanced(const char* expression) {
+    Stack stack;
+    stack_init(&stack);
+    size_t length = strlen(expression);
+
+    for (size_t i = 0; i < length; i++) {
+        char current = expression[i];
+        if (current == '(' || current == '[' || current == '{') {
+            if (!stack_push(&stack, current)) {
+                stack_destroy(&stack);
+                return false;
+            }
+        } else if (current == ')' || current == ']' || current == '}') {
+            char top_char;
+            if (!stack_pop(&stack, &top_char)) {
+                stack_destroy(&stack);
+                return false;
+            }
+            if (!is_matching_pair(top_char, current)) {
+                stack_destroy(&stack);
+                return false;
+            }
+        }
+    }
+
+    bool result = stack_is_empty(&stack);
+    stack_destroy(&stack);
+    return result;
+}
+
+int main(void) {
+    const char* test_expressions[] = {
+        "()",
+        "()[]{}",
+        "(]",
+        "([)]",
+        "{[]}",
+        "",
+        "(",
+        ")",
+        "(((",
+        ")))",
+        "a*(b+c)-[d/e]",
+        "{[()]}",
+        "{[(])}",
+        "((()))",
+        "([{}])"
+    };
+
+    size_t num_tests = sizeof(test_expressions) / sizeof(test_expressions[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        printf("%s -> %s\n", test_expressions[i], 
+               is_balanced(test_expressions[i]) ? "Balanced" : "Not Balanced");
+    }
+
+    return 0;
+}
+```

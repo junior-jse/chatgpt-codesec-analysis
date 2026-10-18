@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-120.c:22:13: warning: Value stored to 'max_x' is never read [deadcode.DeadStores]
+   22 |             max_x = tuples[i].x;
+      |             ^       ~~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-120.c:23:13: warning: Value stored to 'max_y' is never read [deadcode.DeadStores]
+   23 |             max_y = tuples[i].y;
+      |             ^       ~~~~~~~~~~~
+2 warnings generated.

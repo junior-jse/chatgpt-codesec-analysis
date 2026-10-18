@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *create_node(int data) {
+    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+struct Node *combine_sorted_lists(struct Node *list1, struct Node *list2) {
+    struct Node dummy;
+    struct Node *tail = &dummy;
+    dummy.next = NULL;
+
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->data <= list2->data) {
+            tail->next = list1;
+            list1 = list1->next;
+        } else {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+
+    if (list1 != NULL) {
+        tail->next = list1;
+    } else {
+        tail->next = list2;
+    }
+
+    return dummy.next;
+}
+
+void free_list(struct Node *head) {
+    struct Node *current = head;
+    struct Node *next_node;
+    while (current != NULL) {
+        next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+}
+
+void print_list(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    struct Node *list1 = create_node(1);
+    list1->next = create_node(3);
+    list1->next->next = create_node(5);
+
+    struct Node *list2 = create_node(2);
+    list2->next = create_node(4);
+    list2->next->next = create_node(6);
+
+    struct Node *combined = combine_sorted_lists(list1, list2);
+
+    print_list(combined);
+
+    free_list(combined);
+
+    return 0;
+}

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-215-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-215-s3.c:4:22: style: Parameter 'encoded' can be declared as pointer to const [constParameterPointer]
+int *decode_rle(int *encoded, int encoded_size, int *decoded_size) {
+                     ^

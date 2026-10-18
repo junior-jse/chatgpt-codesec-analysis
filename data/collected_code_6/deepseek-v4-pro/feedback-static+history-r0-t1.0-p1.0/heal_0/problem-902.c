@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct KeyValue {
+    char *key;
+    int value;
+    struct KeyValue *next;
+} KeyValue;
+
+typedef struct Dictionary {
+    KeyValue *head;
+} Dictionary;
+
+Dictionary *create_dictionary(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->head = NULL;
+    return dict;
+}
+
+int dict_insert(Dictionary *dict, const char *key, int value) {
+    if (dict == NULL || key == NULL) {
+        return 0;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            current->value = value;
+            return 1;
+        }
+        current = current->next;
+    }
+    
+    KeyValue *new_entry = (KeyValue *)malloc(sizeof(KeyValue));
+    if (new_entry == NULL) {
+        return 0;
+    }
+    
+    new_entry->key = (char *)malloc(strlen(key) + 1);
+    if (new_entry->key == NULL) {
+        free(new_entry);
+        return 0;
+    }
+    
+    strcpy(new_entry->key, key);
+    new_entry->value = value;
+    new_entry->next = dict->head;
+    dict->head = new_entry;
+    return 1;
+}
+
+int dict_get(Dictionary *dict, const char *key, int *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return 0;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            *value = current->value;
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+Dictionary *combine_dictionaries(Dictionary *dict1, Dictionary *dict2) {
+    if (dict1 == NULL || dict2 == NULL) {
+        return NULL;
+    }
+    
+    Dictionary *result = create_dictionary();
+    if (result == NULL) {
+        return NULL;
+    }
+    
+    KeyValue *current = dict1->head;
+    while (current != NULL) {
+        if (!dict_insert(result, current->key, current->value)) {
+            free_dictionary(result);
+            return NULL;
+        }
+        current = current->next;
+    }
+    
+    current = dict2->head;
+    while (current != NULL) {
+        int existing_value;
+        if (dict_get(result, current->key, &existing_value)) {
+            if (!dict_insert(result, current->key, existing_value + current->value)) {
+                free_dictionary(result);
+                return NULL;
+            }
+        } else {
+            if (!dict_insert(result, current->key, current->value)) {
+                free_dictionary(result);
+                return NULL;
+            }
+        }
+        current = current->next;
+    }
+    
+    return result;
+}
+
+void free_dictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        KeyValue *temp = current;
+        current = current->next;
+        free(temp->key);
+        free(temp);
+    }
+    free(dict);
+}
+
+void print_dictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        printf("%s: %d\n", current->key, current->value);
+        current = current->next;
+    }
+}
+
+int main(void) {
+    Dictionary *dict1 = create_dictionary();
+    Dictionary *dict2 = create_dictionary();
+    
+    if (dict1 == NULL || dict2 == NULL) {
+        free_dictionary(dict1);
+        free_dictionary(dict2);
+        return 1;
+    }
+    
+    if (!dict_insert(dict1, "apple", 5) ||
+        !dict_insert(dict1, "banana", 3) ||
+        !dict_insert(dict1, "cherry", 8)) {
+        free_dictionary(dict1);
+        free_dictionary(dict2);
+        return 1;
+    }
+    
+    if (!dict_insert(dict2, "banana", 4) ||
+        !dict_insert(dict2, "cherry", 2) ||
+        !dict_insert(dict2, "date", 7)) {
+        free_dictionary(dict1);
+        free_dictionary(dict2);
+        return 1;
+    }
+    
+    printf("Dictionary 1:\n");
+    print_dictionary(dict1);
+    printf("\nDictionary 2:\n");
+    print_dictionary(dict2);
+    
+    Dictionary *combined = combine_dictionaries(dict1, dict2);
+    if (combined == NULL) {
+        free_dictionary(dict1);
+        free_dictionary(dict2);
+        return 1;
+    }
+    
+    printf("\nCombined dictionary:\n");
+    print_dictionary(combined);
+    
+    free_dictionary(dict1);
+    free_dictionary(dict2);
+    free_dictionary(combined);
+    
+    return 0;
+}

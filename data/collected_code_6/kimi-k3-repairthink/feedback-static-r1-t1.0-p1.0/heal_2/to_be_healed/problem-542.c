@@ -1,0 +1,82 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+#define MAX_INPUT_LENGTH 4096
+
+char *replace_with_colon(const char *input) {
+    regex_t regex;
+    regmatch_t match;
+    const char *pattern = "[ ,.]";
+    char *result;
+    char *safe_input;
+    size_t input_len;
+    size_t result_len = 0;
+    size_t i = 0;
+    int ret;
+
+    if (input == NULL) {
+        return NULL;
+    }
+
+    input_len = strnlen(input, MAX_INPUT_LENGTH);
+
+    safe_input = malloc(input_len + 1);
+    if (safe_input == NULL) {
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(safe_input, input, input_len);
+    safe_input[input_len] = '\0';
+
+    result = malloc(input_len + 1);
+    if (result == NULL) {
+        free(safe_input);
+        return NULL;
+    }
+
+    ret = regcomp(&regex, pattern, REG_EXTENDED);
+    if (ret != 0) {
+        free(safe_input);
+        free(result);
+        return NULL;
+    }
+
+    while (i < input_len) {
+        ret = regexec(&regex, safe_input + i, 1, &match, 0);
+        if (ret == 0 && match.rm_so == 0) {
+            result[result_len++] = ':';
+            i += (size_t)match.rm_eo;
+        } else {
+            result[result_len++] = safe_input[i++];
+        }
+    }
+
+    result[result_len] = '\0';
+    regfree(&regex);
+    free(safe_input);
+
+    return result;
+}
+
+int main(void) {
+    const char *test_string = "Hello, world. This is a test";
+    char *modified;
+
+    modified = replace_with_colon(test_string);
+    if (modified == NULL) {
+        fprintf(stderr, "Error: Failed to process string\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Original: %s\n", test_string);
+    printf("Modified: %s\n", modified);
+
+    free(modified);
+    return EXIT_SUCCESS;
+}

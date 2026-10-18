@@ -1,0 +1,92 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *camel_to_snake(const char *input) {
+    const char *pattern = "([A-Z])";
+    regex_t regex;
+    regmatch_t match;
+    char *result = NULL;
+    char *current = NULL;
+    size_t capacity = strlen(input) * 2 + 1;
+    size_t length = 0;
+    size_t input_len = strlen(input);
+    size_t pos = 0;
+
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return NULL;
+    }
+
+    result = (char *)malloc(capacity);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+    result[0] = '\0';
+
+    while (pos < input_len) {
+        if (regexec(&regex, input + pos, 1, &match, 0) == 0) {
+            size_t match_pos = match.rm_so;
+            size_t match_len = match.rm_eo - match.rm_so;
+
+            if (match_pos > 0) {
+                strncat(result, input + pos, match_pos);
+                length += match_pos;
+            }
+
+            if (length > 0 && result[length - 1] != '_') {
+                strcat(result, "_");
+                length++;
+            }
+
+            current = (char *)malloc(match_len + 1);
+            if (current == NULL) {
+                free(result);
+                regfree(&regex);
+                return NULL;
+            }
+            strncpy(current, input + pos + match_pos, match_len);
+            current[match_len] = '\0';
+
+            for (size_t i = 0; i < match_len; i++) {
+                current[i] = current[i] - 'A' + 'a';
+            }
+
+            strcat(result, current);
+            length += match_len;
+            free(current);
+
+            pos += match_pos + match_len;
+        } else {
+            strcat(result, input + pos);
+            break;
+        }
+    }
+
+    regfree(&regex);
+    return result;
+}
+
+int main(int argc, char *argv[]) {
+    const char *test_strings[] = {
+        "camelCaseString",
+        "thisIsATest",
+        "single",
+        "",
+        "ALLCAPS",
+        "mixedCASEString"
+    };
+
+    for (int i = 0; i < 6; i++) {
+        char *converted = camel_to_snake(test_strings[i]);
+        if (converted != NULL) {
+            printf("%s -> %s\n", test_strings[i], converted);
+            free(converted);
+        }
+    }
+
+    return 0;
+}
+```

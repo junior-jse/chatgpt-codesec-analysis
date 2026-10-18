@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:70:22: style: Condition 'word_len+1>dest_size' is always false [knownConditionTrueFalse]
+    if (word_len + 1 > dest_size) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:67:22: note: dest_size is assigned 'word_len+1' here.
+    size_t dest_size = word_len + 1;
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:69:9: note: Assuming condition is false
+    if (!copy) return -1;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:70:22: note: Condition 'word_len+1>dest_size' is always false
+    if (word_len + 1 > dest_size) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:108:22: style: Condition 'word_len>=word_buf_size' is always false [knownConditionTrueFalse]
+        if (word_len >= word_buf_size) {
+                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:101:30: note: word_buf_size is assigned 'word_len+1' here.
+        size_t word_buf_size = word_len + 1;
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:103:13: note: Assuming condition is false
+        if (!word) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-674-s2.c:108:22: note: Condition 'word_len>=word_buf_size' is always false
+        if (word_len >= word_buf_size) {
+                     ^

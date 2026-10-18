@@ -1,0 +1,49 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    void *data;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+} List;
+
+int count_lists_and_square(List *list_of_lists) {
+    int count = 0;
+    Node *current = list_of_lists->head;
+    
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    
+    return count * count;
+}
+
+int main(void) {
+    List list_of_lists = {0};
+    List sublist1 = {0};
+    List sublist2 = {0};
+    List sublist3 = {0};
+    Node node1 = {0};
+    Node node2 = {0};
+    Node node3 = {0};
+    
+    node1.data = &sublist1;
+    node1.next = &node2;
+    node2.data = &sublist2;
+    node2.next = &node3;
+    node3.data = &sublist3;
+    node3.next = NULL;
+    
+    list_of_lists.head = &node1;
+    
+    int result = count_lists_and_square(&list_of_lists);
+    printf("%d\n", result);
+    
+    return 0;
+}
+```

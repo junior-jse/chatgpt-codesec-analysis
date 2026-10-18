@@ -1,0 +1,172 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+#include <stdint.h>
+
+static char *dup_range(const char *src, size_t len)
+{
+    char *dst;
+    size_t dst_size;
+
+    if (src == NULL || len >= SIZE_MAX) {
+        return NULL;
+    }
+
+    dst_size = len + 1;
+
+    dst = malloc(dst_size);
+    if (dst == NULL) {
+        return NULL;
+    }
+
+    if (len > 0) {
+        if (len >= dst_size) {
+            free(dst);
+            return NULL;
+        }
+        memcpy(dst, src, len);
+    }
+    dst[len] = '\0';
+
+    return dst;
+}
+
+int split_at_uppercase(const char *input, char ***output, size_t *count)
+{
+    regex_t regex;
+    regmatch_t match;
+    char **result;
+    char **new_result;
+    char *token;
+    const char *start;
+    const char *current;
+    const char *upper;
+    const char *end;
+    size_t capacity;
+    size_t num_tokens;
+    size_t len;
+    int ret;
+
+    if (input == NULL || output == NULL || count == NULL) {
+        return -1;
+    }
+
+    *output = NULL;
+    *count = 0;
+
+    ret = regcomp(&regex, "[A-Z]", REG_EXTENDED);
+    if (ret != 0) {
+        return -1;
+    }
+
+    capacity = 8;
+    result = malloc(capacity * sizeof(*result));
+    if (result == NULL) {
+        regfree(&regex);
+        return -1;
+    }
+
+    start = input;
+    current = input;
+    num_tokens = 0;
+
+    while (*current != '\0') {
+        ret = regexec(&regex, current, 1, &match, 0);
+
+        if (ret == 0) {
+            upper = current + match.rm_so;
+            len = (size_t)(upper - start);
+
+            if (len > 0) {
+                token = dup_range(start, len);
+                if (token == NULL) {
+                    goto cleanup;
+                }
+
+                if (num_tokens >= capacity) {
+                    if (capacity > SIZE_MAX / (2 * sizeof(*result))) {
+                        free(token);
+                        goto cleanup;
+                    }
+                    capacity *= 2;
+                    new_result = realloc(result, capacity * sizeof(*result));
+                    if (new_result == NULL) {
+                        free(token);
+                        goto cleanup;
+                    }
+                    result = new_result;
+                }
+                result[num_tokens++] = token;
+            }
+
+            start = upper;
+            current = upper + 1;
+        } else if (ret == REG_NOMATCH) {
+            break;
+        } else {
+            goto cleanup;
+        }
+    }
+
+    if (*start != '\0' || num_tokens == 0) {
+        end = start;
+        while (*end != '\0') {
+            end++;
+        }
+        len = (size_t)(end - start);
+
+        token = dup_range(start, len);
+        if (token == NULL) {
+            goto cleanup;
+        }
+
+        if (num_tokens >= capacity) {
+            if (capacity > SIZE_MAX / (2 * sizeof(*result))) {
+                free(token);
+                goto cleanup;
+            }
+            capacity *= 2;
+            new_result = realloc(result, capacity * sizeof(*result));
+            if (new_result == NULL) {
+                free(token);
+                goto cleanup;
+            }
+            result = new_result;
+        }
+        result[num_tokens++] = token;
+    }
+
+    regfree(&regex);
+    *output = result;
+    *count = num_tokens;
+    return 0;
+
+cleanup:
+    for (size_t i = 0; i < num_tokens; i++) {
+        free(result[i]);
+    }
+    free(result);
+    regfree(&regex);
+    return -1;
+}
+
+int main(void)
+{
+    const char *input = "SplitThisStringAtUppercaseLetters";
+    char **tokens = NULL;
+    size_t count = 0;
+
+    if (split_at_uppercase(input, &tokens, &count) == 0) {
+        for (size_t i = 0; i < count; i++) {
+            printf("%s\n", tokens[i]);
+            free(tokens[i]);
+        }
+        free(tokens);
+    } else {
+        fprintf(stderr, "Error splitting string\n");
+        return 1;
+    }
+
+    return 0;
+}

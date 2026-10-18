@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-593.c: In function 'remove_leading_zeroes':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-593.c:12:17: error: 'INET_ADDRSTRLEN' undeclared (first use in this function)
+   12 |     char result[INET_ADDRSTRLEN];
+      |                 ^~~~~~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-593.c:12:17: note: each undeclared identifier is reported only once for each function it appears in

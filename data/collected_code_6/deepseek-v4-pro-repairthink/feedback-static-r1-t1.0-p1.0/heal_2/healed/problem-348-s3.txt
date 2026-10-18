@@ -1,0 +1,80 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int count_sequences(const int *values, int num_values, int length) {
+    if (length < 0 || num_values <= 0 || values == NULL) {
+        return 0;
+    }
+    
+    int max_sum = length;
+    int size = 2 * max_sum + 1;
+    int offset = max_sum;
+    
+    int *prev = (int *)calloc(size, sizeof(int));
+    int *curr = (int *)calloc(size, sizeof(int));
+    
+    if (prev == NULL || curr == NULL) {
+        free(prev);
+        free(curr);
+        return 0;
+    }
+    
+    prev[offset] = 1;
+    
+    for (int pos = 0; pos < length; pos++) {
+        for (int s = 0; s < size; s++) {
+            curr[s] = 0;
+        }
+        
+        for (int sum = 0; sum < size; sum++) {
+            if (prev[sum] == 0) {
+                continue;
+            }
+            
+            for (int v = 0; v < num_values; v++) {
+                int new_sum = (sum - offset) + values[v];
+                if (new_sum >= -max_sum && new_sum <= max_sum) {
+                    int idx = new_sum + offset;
+                    if (idx >= 0 && idx < size) {
+                        curr[idx] += prev[sum];
+                    }
+                }
+            }
+        }
+        
+        int *temp = prev;
+        prev = curr;
+        curr = temp;
+    }
+    
+    int total = 0;
+    for (int s = offset; s < size; s++) {
+        total += prev[s];
+    }
+    
+    free(prev);
+    free(curr);
+    
+    return total;
+}
+
+int main(void) {
+    const int values[] = {-1, 1};
+    int num_values = 2;
+    int length = 3;
+    
+    int result = count_sequences(values, num_values, length);
+    printf("%d\n", result);
+    
+    const int values2[] = {-1, 0, 1};
+    int result2 = count_sequences(values2, 3, 2);
+    printf("%d\n", result2);
+    
+    const int values3[] = {-2, -1, 1};
+    int result3 = count_sequences(values3, 3, 2);
+    printf("%d\n", result3);
+    
+    return 0;
+}
+```

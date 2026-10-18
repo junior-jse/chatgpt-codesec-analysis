@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    void **elements;
+    int tuple_size;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    int count;
+} TupleList;
+
+void *extract_nth_element(TupleList *list, int tuple_index, int element_index) {
+    if (list == NULL || tuple_index < 0 || tuple_index >= list->count) {
+        return NULL;
+    }
+    
+    Tuple *tuple = &list->tuples[tuple_index];
+    
+    if (tuple->elements == NULL || element_index < 0 || element_index >= tuple->tuple_size) {
+        return NULL;
+    }
+    
+    return tuple->elements[element_index];
+}
+
+int main(void) {
+    int a = 10, b = 20, c = 30;
+    int d = 40, e = 50, f = 60;
+    char *s1 = "hello";
+    char *s2 = "world";
+    
+    TupleList list;
+    list.count = 2;
+    list.tuples = malloc(sizeof(Tuple) * list.count);
+    
+    if (list.tuples == NULL) {
+        return 1;
+    }
+    
+    list.tuples[0].tuple_size = 3;
+    list.tuples[0].elements = malloc(sizeof(void *) * 3);
+    if (list.tuples[0].elements == NULL) {
+        free(list.tuples);
+        return 1;
+    }
+    list.tuples[0].elements[0] = &a;
+    list.tuples[0].elements[1] = &b;
+    list.tuples[0].elements[2] = &c;
+    
+    list.tuples[1].tuple_size = 3;
+    list.tuples[1].elements = malloc(sizeof(void *) * 3);
+    if (list.tuples[1].elements == NULL) {
+        free(list.tuples[0].elements);
+        free(list.tuples);
+        return 1;
+    }
+    list.tuples[1].elements[0] = &d;
+    list.tuples[1].elements[1] = &e;
+    list.tuples[1].elements[2] = &f;
+    
+    int *result1 = (int *)extract_nth_element(&list, 0, 1);
+    if (result1 != NULL) {
+        printf("%d\n", *result1);
+    }
+    
+    int *result2 = (int *)extract_nth_element(&list, 1, 2);
+    if (result2 != NULL) {
+        printf("%d\n", *result2);
+    }
+    
+    void *result3 = extract_nth_element(&list, 0, 5);
+    if (result3 == NULL) {
+        printf("Invalid index\n");
+    }
+    
+    free(list.tuples[0].elements);
+    free(list.tuples[1].elements);
+    free(list.tuples);
+    
+    return 0;
+}

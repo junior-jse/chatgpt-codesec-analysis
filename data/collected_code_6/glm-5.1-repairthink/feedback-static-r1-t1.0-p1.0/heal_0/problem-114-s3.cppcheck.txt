@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-114-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-114-s3.c:85:19: style: Condition 'count>0' is always true [knownConditionTrueFalse]
+        if (count > 0) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-114-s3.c:74:32: note: Assignment 'count=sizeof(tuples)/sizeof(tuples[0])', assigned value is 6
+    int count = sizeof(tuples) / sizeof(tuples[0]);
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-114-s3.c:85:19: note: Condition 'count>0' is always true
+        if (count > 0) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-114-s3.c:23:43: style: Parameter 'tuples' can be declared as pointer to const [constParameterPointer]
+TupleFrequency *assign_frequencies(Tuple *tuples, int count, int *unique_count) {
+                                          ^

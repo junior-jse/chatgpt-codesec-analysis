@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    int size;
+} Tuple;
+
+int *extract_single_elements(Tuple *tuples, int tuple_count, int *result_size) {
+    int max_elements = 0;
+    int i, j, k;
+    
+    for (i = 0; i < tuple_count; i++) {
+        max_elements += tuples[i].size;
+    }
+    
+    int *all_elements = (int *)malloc(max_elements * sizeof(int));
+    if (all_elements == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int *counts = (int *)calloc(max_elements, sizeof(int));
+    if (counts == NULL) {
+        free(all_elements);
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int total_elements = 0;
+    for (i = 0; i < tuple_count; i++) {
+        for (j = 0; j < tuples[i].size; j++) {
+            int current = tuples[i].data[j];
+            int found = 0;
+            
+            for (k = 0; k < total_elements; k++) {
+                if (all_elements[k] == current) {
+                    counts[k]++;
+                    found = 1;
+                    break;
+                }
+            }
+            
+            if (!found && total_elements < max_elements) {
+                all_elements[total_elements] = current;
+                counts[total_elements] = 1;
+                total_elements++;
+            }
+        }
+    }
+    
+    int single_count = 0;
+    for (i = 0; i < total_elements; i++) {
+        if (counts[i] == 1) {
+            single_count++;
+        }
+    }
+    
+    int *result = (int *)malloc(single_count * sizeof(int));
+    if (result == NULL) {
+        free(all_elements);
+        free(counts);
+        *result_size = 0;
+        return NULL;
+    }
+    
+    int result_index = 0;
+    for (i = 0; i < total_elements; i++) {
+        if (counts[i] == 1) {
+            result[result_index++] = all_elements[i];
+        }
+    }
+    
+    free(all_elements);
+    free(counts);
+    
+    *result_size = single_count;
+    return result;
+}
+
+int main(void) {
+    int tuple1_data[] = {1, 2, 3};
+    int tuple2_data[] = {2, 3, 4};
+    int tuple3_data[] = {5};
+    
+    Tuple tuples[3];
+    tuples[0].data = tuple1_data;
+    tuples[0].size = 3;
+    tuples[1].data = tuple2_data;
+    tuples[1].size = 3;
+    tuples[2].data = tuple3_data;
+    tuples[2].size = 1;
+    
+    int result_size = 0;
+    int *result = extract_single_elements(tuples, 3, &result_size);
+    
+    if (result != NULL) {
+        printf("Single elements: ");
+        for (int i = 0; i < result_size; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+    } else {
+        printf("No elements found or memory allocation failed\n");
+    }
+    
+    return 0;
+}

@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* remove_two_duplicates(int** lists, const int* list_sizes, int num_lists, int** out_sizes) {
+    int total_max_elements = 0;
+    for (int i = 0; i < num_lists; i++) {
+        total_max_elements += list_sizes[i];
+    }
+
+    int* result = malloc(total_max_elements * sizeof(int));
+    if (!result) {
+        *out_sizes = NULL;
+        return NULL;
+    }
+
+    *out_sizes = malloc(num_lists * sizeof(int));
+    if (!*out_sizes) {
+        free(result);
+        return NULL;
+    }
+
+    int pos = 0;
+    for (int i = 0; i < num_lists; i++) {
+        const int* list = lists[i];
+        int size = list_sizes[i];
+        int out_idx = 0;
+
+        int j = 0;
+        while (j < size) {
+            int count = 1;
+            while (j + count < size && list[j + count] == list[j] && count < 2) {
+                count++;
+            }
+
+            result[pos + out_idx] = list[j];
+            out_idx++;
+            j += count;
+        }
+
+        pos += out_idx;
+        (*out_sizes)[i] = out_idx;
+    }
+
+    return result;
+}
+
+int main(void) {
+    int list1[] = {1, 2, 2, 3, 4, 4, 4, 5};
+    int list2[] = {6, 7, 7, 7, 8};
+    int list3[] = {9, 9, 10, 10, 10, 11};
+    
+    int* lists[] = {list1, list2, list3};
+    const int list_sizes[] = {8, 5, 6};
+    int num_lists = 3;
+    int* out_sizes = NULL;
+
+    int* result = remove_two_duplicates(lists, list_sizes, num_lists, &out_sizes);
+
+    if (result && out_sizes) {
+        int offset = 0;
+        for (int i = 0; i < num_lists; i++) {
+            for (int j = 0; j < out_sizes[i]; j++) {
+                printf("%d ", result[offset + j]);
+            }
+            printf("\n");
+            offset += out_sizes[i];
+        }
+        free(result);
+        free(out_sizes);
+    }
+
+    return 0;
+}

@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct {
+    int *data;
+    int length;
+} Sublist;
+
+Sublist find_minimum_length_sublist(const int *arr, int n, int target_sum) {
+    Sublist result;
+    result.data = NULL;
+    result.length = 0;
+    
+    if (arr == NULL || n <= 0) {
+        return result;
+    }
+    
+    int min_length = INT_MAX;
+    int min_start = -1;
+    int current_sum = 0;
+    int start = 0;
+    
+    for (int end = 0; end < n; end++) {
+        current_sum += arr[end];
+        
+        while (current_sum >= target_sum && start <= end) {
+            int current_length = end - start + 1;
+            if (current_length < min_length) {
+                min_length = current_length;
+                min_start = start;
+            }
+            current_sum -= arr[start];
+            start++;
+        }
+    }
+    
+    if (min_start != -1) {
+        result.data = (int *)malloc(min_length * sizeof(int));
+        if (result.data != NULL) {
+            for (int i = 0; i < min_length; i++) {
+                result.data[i] = arr[min_start + i];
+            }
+            result.length = min_length;
+        }
+    }
+    
+    return result;
+}
+
+int main(void) {
+    int arr[] = {2, 3, 1, 2, 4, 3};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int target_sum = 7;
+    
+    Sublist result = find_minimum_length_sublist(arr, n, target_sum);
+    
+    if (result.data != NULL && result.length > 0) {
+        printf("Minimum length sublist: ");
+        for (int i = 0; i < result.length; i++) {
+            printf("%d ", result.data[i]);
+        }
+        printf("\n");
+        free(result.data);
+    } else {
+        printf("No sublist found\n");
+    }
+    
+    return 0;
+}

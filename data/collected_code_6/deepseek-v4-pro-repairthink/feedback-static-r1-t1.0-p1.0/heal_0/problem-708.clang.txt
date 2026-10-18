@@ -1,0 +1,10 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708.c:74:13: error: call to undeclared function 'list_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   74 |             list_free(list);
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708.c:85:6: error: conflicting types for 'list_free'
+   85 | void list_free(StringList *list) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708.c:74:13: note: previous implicit declaration is here
+   74 |             list_free(list);
+      |             ^
+2 errors generated.

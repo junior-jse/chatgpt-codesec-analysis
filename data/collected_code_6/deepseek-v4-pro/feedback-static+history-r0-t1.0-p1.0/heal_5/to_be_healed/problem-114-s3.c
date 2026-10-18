@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include <stdint.h>
+
+typedef struct {
+    int *data;
+    int size;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    int frequency;
+} TupleFrequency;
+
+static int tuple_equals(const Tuple *a, const Tuple *b) {
+    if (a->size != b->size) return 0;
+    for (int i = 0; i < a->size; i++) {
+        if (a->data[i] != b->data[i]) return 0;
+    }
+    return 1;
+}
+
+static Tuple* tuple_duplicate(const Tuple *src) {
+    if (src == NULL || src->data == NULL || src->size <= 0) return NULL;
+    
+    if (src->size > INT_MAX / (int)sizeof(int)) {
+        return NULL;
+    }
+    
+    Tuple *dst = malloc(sizeof(Tuple));
+    if (dst == NULL) return NULL;
+    
+    size_t alloc_size = (size_t)src->size * sizeof(int);
+    
+    dst->data = malloc(alloc_size);
+    if (dst->data == NULL) {
+        free(dst);
+        return NULL;
+    }
+    
+    dst->size = src->size;
+    
+    if (alloc_size > 0) {
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(dst->data, src->data, alloc_size);
+    }
+    
+    return dst;
+}
+
+static void tuple_free(Tuple *t) {
+    if (t) {
+        free(t->data);
+        free(t);
+    }
+}
+
+TupleFrequency* assign_frequencies(const Tuple *tuples, int tuple_count, int *result_count) {
+    if (tuples == NULL || tuple_count <= 0 || result_count == NULL) {
+        if (result_count != NULL) {
+            *result_count = 0;
+        }
+        return NULL;
+    }
+
+    if (tuple_count > INT_MAX / (int)sizeof(TupleFrequency)) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    TupleFrequency *result = malloc((size_t)tuple_count * sizeof(TupleFrequency));
+    if (result == NULL) {
+        *result_count = 0;
+        return NULL;
+    }
+
+    int unique_count = 0;
+
+    for (int i = 0; i < tuple_count; i++) {
+        int found = 0;
+        for (int j = 0; j < unique_count; j++) {
+            if (tuple_equals(&result[j].tuple, &tuples[i])) {
+                result[j].frequency++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            Tuple *copy = tuple_duplicate(&tuples[i]);
+            if (copy == NULL) {
+                for (int k = 0; k < unique_count; k++) {
+                    free(result[k].tuple.data);
+                }
+                free(result);
+                *result_count = 0;
+                return NULL;
+            }
+            result[unique_count].tuple = *copy;
+            free(copy);
+            result[unique_count].frequency = 1;
+            unique_count++;
+        }
+    }
+
+    *result_count = unique_count;
+    return result;
+}
+
+int main(void) {
+    int t1_data[] = {1, 2, 3};
+    int t2_data[] = {4, 5, 6};
+    int t3_data[] = {1, 2, 3};
+    int t4_data[] = {7, 8};
+
+    const Tuple tuples[] = {
+        {t1_data, 3},
+        {t2_data, 3},
+        {t3_data, 3},
+        {t4_data, 2}
+    };
+
+    int result_count = 0;
+    TupleFrequency *frequencies = assign_frequencies(tuples, 4, &result_count);
+
+    if (frequencies != NULL) {
+        for (int i = 0; i < result_count; i++) {
+            printf("Tuple (");
+            for (int j = 0; j < frequencies[i].tuple.size; j++) {
+                printf("%d", frequencies[i].tuple.data[j]);
+                if (j < frequencies[i].tuple.size - 1) printf(", ");
+            }
+            printf(") -> frequency: %d\n", frequencies[i].frequency);
+            free(frequencies[i].tuple.data);
+        }
+        free(frequencies);
+    } else {
+        printf("No tuples to process.\n");
+    }
+
+    return 0;
+}

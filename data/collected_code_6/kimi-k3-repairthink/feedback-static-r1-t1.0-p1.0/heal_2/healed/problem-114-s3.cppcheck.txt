@@ -1,0 +1,26 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:59:21: style: Condition 'source_size>sorted_capacity' is always false [knownConditionTrueFalse]
+    if (source_size > sorted_capacity) {
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:44:24: note: source_size is assigned 'count*sizeof(struct Tuple)' here.
+    size_t source_size = count * sizeof(Tuple);
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:47:16: note: Assuming condition is false
+    if (sorted == NULL) {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:43:28: note: sorted_capacity is assigned 'count*sizeof(struct Tuple)' here.
+    size_t sorted_capacity = count * sizeof(Tuple);
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:59:21: note: Condition 'source_size>sorted_capacity' is always false
+    if (source_size > sorted_capacity) {
+                    ^
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c: __STDC_LIB_EXT1__...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:43:12: style: Same expression used in consecutive assignments of 'sorted_capacity' and 'source_size'. [duplicateAssignExpression]
+    size_t sorted_capacity = count * sizeof(Tuple);
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:44:12: note: Same expression used in consecutive assignments of 'sorted_capacity' and 'source_size'.
+    size_t source_size = count * sizeof(Tuple);
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_2/healed/problem-114-s3.c:43:12: note: Same expression used in consecutive assignments of 'sorted_capacity' and 'source_size'.
+    size_t sorted_capacity = count * sizeof(Tuple);
+           ^

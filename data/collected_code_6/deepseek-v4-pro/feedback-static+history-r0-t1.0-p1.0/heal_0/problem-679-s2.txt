@@ -1,0 +1,150 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct KeyValue {
+    char *key;
+    char *value;
+    struct KeyValue *next;
+} KeyValue;
+
+typedef struct {
+    KeyValue *head;
+    int size;
+} Dictionary;
+
+Dictionary *create_dictionary(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return NULL;
+    }
+    dict->head = NULL;
+    dict->size = 0;
+    return dict;
+}
+
+int dictionary_add(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            char *new_value = strdup(value);
+            if (new_value == NULL) {
+                return -1;
+            }
+            free(current->value);
+            current->value = new_value;
+            return 0;
+        }
+        current = current->next;
+    }
+    
+    KeyValue *new_pair = (KeyValue *)malloc(sizeof(KeyValue));
+    if (new_pair == NULL) {
+        return -1;
+    }
+    
+    new_pair->key = strdup(key);
+    new_pair->value = strdup(value);
+    if (new_pair->key == NULL || new_pair->value == NULL) {
+        if (new_pair->key != NULL) free(new_pair->key);
+        if (new_pair->value != NULL) free(new_pair->value);
+        free(new_pair);
+        return -1;
+    }
+    
+    new_pair->next = dict->head;
+    dict->head = new_pair;
+    dict->size++;
+    return 0;
+}
+
+char *dictionary_get_by_index(Dictionary *dict, int index) {
+    if (dict == NULL || index < 0 || index >= dict->size) {
+        return NULL;
+    }
+    
+    KeyValue *current = dict->head;
+    int i = 0;
+    while (current != NULL && i < index) {
+        current = current->next;
+        i++;
+    }
+    
+    if (current == NULL) {
+        return NULL;
+    }
+    
+    return current->value;
+}
+
+char *dictionary_get_key_by_index(Dictionary *dict, int index) {
+    if (dict == NULL || index < 0 || index >= dict->size) {
+        return NULL;
+    }
+    
+    KeyValue *current = dict->head;
+    int i = 0;
+    while (current != NULL && i < index) {
+        current = current->next;
+        i++;
+    }
+    
+    if (current == NULL) {
+        return NULL;
+    }
+    
+    return current->key;
+}
+
+void dictionary_free(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    KeyValue *current = dict->head;
+    while (current != NULL) {
+        KeyValue *next = current->next;
+        free(current->key);
+        free(current->value);
+        free(current);
+        current = next;
+    }
+    
+    free(dict);
+}
+
+int main(void) {
+    Dictionary *dict = create_dictionary();
+    if (dict == NULL) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return 1;
+    }
+    
+    dictionary_add(dict, "name", "John");
+    dictionary_add(dict, "age", "30");
+    dictionary_add(dict, "city", "New York");
+    
+    for (int i = 0; i < dict->size; i++) {
+        char *key = dictionary_get_key_by_index(dict, i);
+        char *value = dictionary_get_by_index(dict, i);
+        if (key != NULL && value != NULL) {
+            printf("%s: %s\n", key, value);
+        }
+    }
+    
+    printf("\nAccess by index:\n");
+    printf("Index 0: %s\n", dictionary_get_by_index(dict, 0));
+    printf("Index 1: %s\n", dictionary_get_by_index(dict, 1));
+    printf("Index 2: %s\n", dictionary_get_by_index(dict, 2));
+    printf("Index 3: %s\n", dictionary_get_by_index(dict, 3));
+    printf("Index -1: %s\n", dictionary_get_by_index(dict, -1));
+    
+    dictionary_free(dict);
+    return 0;
+}
+```

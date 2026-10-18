@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *concatenate_list(char **list, int count) {
+    size_t total_length = 0;
+    int i;
+    char *result;
+    char *position;
+
+    if (list == NULL || count <= 0) {
+        return NULL;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            total_length += strlen(list[i]);
+        }
+    }
+
+    result = (char *)malloc(total_length + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    position = result;
+    for (i = 0; i < count; i++) {
+        if (list[i] != NULL) {
+            size_t len = strlen(list[i]);
+            memcpy(position, list[i], len);
+            position += len;
+        }
+    }
+
+    *position = '\0';
+    return result;
+}
+
+int main(void) {
+    char *list1[] = {"Hello", " ", "World", "!"};
+    char *list2[] = {"The", " ", "quick", " ", "brown", " ", "fox"};
+    char *list3[] = {"", "Empty", "", "String", ""};
+    char *result;
+
+    result = concatenate_list(list1, 4);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(list2, 7);
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(list3, 5);
+    if (result != NULL) {
+        printf("[%s]\n", result);
+        free(result);
+    }
+
+    result = concatenate_list(NULL, 3);
+    if (result == NULL) {
+        printf("NULL input handled\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,84 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} KeyValuePair;
+
+typedef struct {
+    KeyValuePair *pairs;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+typedef struct {
+    Dictionary *dicts;
+    size_t count;
+} DictList;
+
+DictList *create_dict_list(size_t num_dicts) {
+    DictList *list = malloc(sizeof(DictList));
+    if (list == NULL) {
+        return NULL;
+    }
+    
+    list->count = num_dicts;
+    
+    if (num_dicts == 0) {
+        list->dicts = NULL;
+        return list;
+    }
+    
+    list->dicts = calloc(num_dicts, sizeof(Dictionary));
+    if (list->dicts == NULL) {
+        free(list);
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < num_dicts; i++) {
+        list->dicts[i].pairs = NULL;
+        list->dicts[i].size = 0;
+        list->dicts[i].capacity = 0;
+    }
+    
+    return list;
+}
+
+void destroy_dict_list(DictList *list) {
+    if (list == NULL) {
+        return;
+    }
+    
+    if (list->dicts != NULL) {
+        for (size_t i = 0; i < list->count; i++) {
+            if (list->dicts[i].pairs != NULL) {
+                for (size_t j = 0; j < list->dicts[i].size; j++) {
+                    free(list->dicts[i].pairs[j].key);
+                    free(list->dicts[i].pairs[j].value);
+                }
+                free(list->dicts[i].pairs);
+            }
+        }
+        free(list->dicts);
+    }
+    free(list);
+}
+
+int main(void) {
+    size_t num_dicts = 5;
+    DictList *list = create_dict_list(num_dicts);
+    
+    if (list == NULL) {
+        fprintf(stderr, "Failed to create dictionary list\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Created %zu empty dictionaries\n", list->count);
+    
+    destroy_dict_list(list);
+    return EXIT_SUCCESS;
+}
+```

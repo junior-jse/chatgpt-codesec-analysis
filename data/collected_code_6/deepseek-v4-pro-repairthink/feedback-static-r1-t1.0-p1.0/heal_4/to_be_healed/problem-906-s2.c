@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+#include <errno.h>
+#include <limits.h>
+
+int extract_ymd(const char *url, int *year, int *month, int *day) {
+    if (!url || !year || !month || !day) return -1;
+    regex_t regex;
+    regmatch_t matches[4];
+    const char *pattern = "/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})(/|$)";
+    int ret = regcomp(&regex, pattern, REG_EXTENDED);
+    if (ret != 0) return -1;
+
+    ret = regexec(&regex, url, 4, matches, 0);
+    if (ret != 0) {
+        regfree(&regex);
+        return -1;
+    }
+
+    for (int i = 1; i <= 3; i++) {
+        int len = matches[i].rm_eo - matches[i].rm_so;
+        if (len <= 0 || len > 4) {
+            regfree(&regex);
+            return -1;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+         */
+        char buf[5];
+        int needed = snprintf(buf, sizeof(buf), "%.*s", len, url + matches[i].rm_so);
+        if (needed < 0 || needed >= (int)sizeof(buf)) {
+            regfree(&regex);
+            return -1;
+        }
+
+        char *endptr;
+        errno = 0;
+        long val = strtol(buf, &endptr, 10);
+        if (errno != 0 || endptr == buf || *endptr != '\0') {
+            regfree(&regex);
+            return -1;
+        }
+
+        if (val < 0 || val > INT_MAX) {
+            regfree(&regex);
+            return -1;
+        }
+        if (i == 1) {
+            *year = (int)val;
+        } else if (i == 2) {
+            if (val < 1 || val > 12) {
+                regfree(&regex);
+                return -1;
+            }
+            *month = (int)val;
+        } else {
+            if (val < 1 || val > 31) {
+                regfree(&regex);
+                return -1;
+            }
+            *day = (int)val;
+        }
+    }
+
+    regfree(&regex);
+    return 0;
+}
+
+int main(void) {
+    const char *test_urls[] = {
+        "https://example.com/2023/10/05/article",
+        "http://test.org/2024/1/9",
+        "https://nodate.com/path",
+        NULL
+    };
+    int year, month, day;
+
+    for (int i = 0; test_urls[i] != NULL; i++) {
+        int result = extract_ymd(test_urls[i], &year, &month, &day);
+        if (result == 0) {
+            printf("%s -> %d-%d-%d\n", test_urls[i], year, month, day);
+        } else {
+            printf("%s -> no date found\n", test_urls[i]);
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-585.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-585.c:90:10: warning: Either the condition '!result_size' is redundant or there is possible null pointer dereference: result_size. [nullPointerRedundantCheck]
+        *result_size = 0;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-585.c:89:52: note: Assuming that condition '!result_size' is not redundant
+    if (!dataset || dataset_size <= 0 || n <= 0 || !result_size) {
+                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-585.c:90:10: note: Null pointer dereference
+        *result_size = 0;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-585.c:88:41: style: Parameter 'dataset' can be declared as pointer to const [constParameterPointer]
+static Item *find_expensive_items(Item *dataset, int dataset_size, int n, int *result_size) {
+                                        ^

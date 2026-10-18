@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char **keys;
+    char **values;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+Dictionary *dictionary_create(size_t capacity) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    if (!dict) {
+        return NULL;
+    }
+    dict->keys = calloc(capacity, sizeof(char *));
+    if (!dict->keys) {
+        free(dict);
+        return NULL;
+    }
+    dict->values = calloc(capacity, sizeof(char *));
+    if (!dict->values) {
+        free(dict->keys);
+        free(dict);
+        return NULL;
+    }
+    dict->size = 0;
+    dict->capacity = capacity;
+    return dict;
+}
+
+int dictionary_insert(Dictionary *dict, const char *key, const char *value) {
+    if (!dict || !key || !value || dict->size >= dict->capacity) {
+        return 0;
+    }
+    size_t key_len = strnlen(key, 1024 * 1024);
+    if (key_len == 1024 * 1024) {
+        return 0;
+    }
+    size_t value_len = strnlen(value, 1024 * 1024);
+    if (value_len == 1024 * 1024) {
+        return 0;
+    }
+    key_len += 1;
+    value_len += 1;
+    dict->keys[dict->size] = malloc(key_len);
+    if (!dict->keys[dict->size]) {
+        return 0;
+    }
+    dict->values[dict->size] = malloc(value_len);
+    if (!dict->values[dict->size]) {
+        free(dict->keys[dict->size]);
+        dict->keys[dict->size] = NULL;
+        return 0;
+    }
+    memcpy(dict->keys[dict->size], key, key_len);
+    memcpy(dict->values[dict->size], value, value_len);
+    dict->size++;
+    return 1;
+}
+
+int dictionary_contains(Dictionary *dict, const char *key) {
+    if (!dict || !key) {
+        return 0;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        if (strcmp(dict->keys[i], key) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void dictionary_destroy(Dictionary *dict) {
+    if (!dict) {
+        return;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        free(dict->keys[i]);
+        free(dict->values[i]);
+    }
+    free(dict->keys);
+    free(dict->values);
+    free(dict);
+}
+
+int main(void) {
+    Dictionary *dict = dictionary_create(10);
+    if (!dict) {
+        return 1;
+    }
+    if (!dictionary_insert(dict, "apple", "fruit")) {
+        dictionary_destroy(dict);
+        return 1;
+    }
+    if (!dictionary_insert(dict, "broccoli", "vegetable")) {
+        dictionary_destroy(dict);
+        return 1;
+    }
+    if (!dictionary_insert(dict, "salmon", "fish")) {
+        dictionary_destroy(dict);
+        return 1;
+    }
+    if (dictionary_contains(dict, "apple")) {
+        printf("Key 'apple' found\n");
+    } else {
+        printf("Key 'apple' not found\n");
+    }
+    if (dictionary_contains(dict, "beef")) {
+        printf("Key 'beef' found\n");
+    } else {
+        printf("Key 'beef' not found\n");
+    }
+    dictionary_destroy(dict);
+    return 0;
+}

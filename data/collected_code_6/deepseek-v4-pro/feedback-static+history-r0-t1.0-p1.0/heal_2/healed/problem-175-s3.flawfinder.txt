@@ -1,0 +1,2 @@
+problem-175-s3.c:59:0:low:Flawfinder read: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+problem-175-s3.c:64:0:low:Flawfinder read: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)

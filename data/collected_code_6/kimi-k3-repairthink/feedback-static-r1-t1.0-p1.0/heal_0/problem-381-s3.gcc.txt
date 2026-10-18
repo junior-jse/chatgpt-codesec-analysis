@@ -1,0 +1,11 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-381-s3.c: In function 'sort_lists_by_index':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-381-s3.c:47:31: error: passing argument 5 of 'qsort_r' from incompatible pointer type [-Wincompatible-pointer-types]
+   47 |             compare_by_index, &index);
+      |                               ^~~~~~
+      |                               |
+      |                               size_t * {aka long unsigned int *}
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/stdlib.h:58,
+                 from /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-381-s3.c:2:
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/include/_stdlib.h:367:29: note: expected 'int (*)(void *, const void *, const void *)' but argument is of type 'size_t *' {aka 'long unsigned int *'}
+  367 |             int (* _Nonnull __compar)(void *, const void *, const void *));
+      |             ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,213 @@
+/* Repair history (previous round):
+ * - Flawfinder strncpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_WORDS 256
+#define MAX_WORD_LEN 64
+#define MAX_ADVERB_LEN 32
+#define BUFFER_SIZE 1024
+
+typedef struct {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char word[MAX_WORD_LEN];
+    int position;
+} AdverbInfo;
+
+static const char *adverb_suffixes[] = {
+    "ly",
+    "wise",
+    "wards",
+    "where",
+    "when",
+    "how",
+    "why",
+    NULL
+};
+
+static size_t safe_strlen(const char *str, size_t max_len) {
+    size_t len = 0;
+    if (str == NULL) {
+        return 0;
+    }
+    while (len < max_len && str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+static int ends_with(const char *str, size_t str_len, const char *suffix, size_t suffix_len) {
+    if (str_len < suffix_len) {
+        return 0;
+    }
+    return strncmp(str + str_len - suffix_len, suffix, suffix_len) == 0;
+}
+
+static int is_known_adverb_exception(const char *word) {
+    static const char *exceptions[] = {
+        "family",
+        "rely",
+        "apply",
+        "supply",
+        NULL
+    };
+    int i;
+    
+    for (i = 0; exceptions[i] != NULL; i++) {
+        if (strcmp(word, exceptions[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int is_adverb(const char *word) {
+    int i;
+    size_t len = safe_strlen(word, MAX_ADVERB_LEN);
+    
+    if (len < 2 || len >= MAX_ADVERB_LEN) {
+        return 0;
+    }
+    
+    if (isupper((unsigned char)word[0])) {
+        return 0;
+    }
+    
+    for (i = 0; adverb_suffixes[i] != NULL; i++) {
+        size_t suffix_len = safe_strlen(adverb_suffixes[i], MAX_ADVERB_LEN);
+        if (ends_with(word, len, adverb_suffixes[i], suffix_len)) {
+            if (is_known_adverb_exception(word)) {
+                continue;
+            }
+            return 1;
+        }
+    }
+    
+    return 0;
+}
+
+static void to_lowercase(char *str, size_t max_len) {
+    size_t i;
+    for (i = 0; i < max_len && str[i] != '\0'; i++) {
+        str[i] = (char)tolower((unsigned char)str[i]);
+    }
+}
+
+static int find_adverbs(const char *sentence, AdverbInfo *adverbs, int max_adverbs) {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char buffer[BUFFER_SIZE];
+    char *token;
+    const char *delimiters = " \t\n\r.,;:!?\"'()[]{}";
+    int count = 0;
+    int position = 0;
+    char *saveptr;
+    size_t sentence_len;
+    size_t i;
+    
+    if (sentence == NULL || adverbs == NULL || max_adverbs <= 0) {
+        return 0;
+    }
+    
+    sentence_len = safe_strlen(sentence, BUFFER_SIZE * 2);
+    if (sentence_len >= BUFFER_SIZE) {
+        sentence_len = BUFFER_SIZE - 1;
+    }
+    
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(buffer, sentence, sentence_len);
+    buffer[sentence_len] = '\0';
+    
+    token = strtok_r(buffer, delimiters, &saveptr);
+    while (token != NULL && count < max_adverbs) {
+        size_t token_len = safe_strlen(token, BUFFER_SIZE);
+        if (token_len > 0 && token_len < MAX_WORD_LEN) {
+            /* Possible weaknesses found:
+             * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+             */
+            char clean_word[MAX_WORD_LEN];
+            size_t clean_len = 0;
+            
+            for (i = 0; i < token_len && i < BUFFER_SIZE; i++) {
+                if (isalpha((unsigned char)token[i]) || token[i] == '-') {
+                    if (clean_len < MAX_WORD_LEN - 1) {
+                        clean_word[clean_len++] = token[i];
+                    }
+                }
+            }
+            /* Possible weaknesses found:
+             *  Either the condition 'copy_len>=64' is redundant or the array 'clean_word[64]' is accessed at index 64, which is out of bounds. [arrayIndexOutOfBoundsCond]
+             *  Array index out of bounds
+             */
+            clean_word[clean_len] = '\0';
+            
+            if (clean_len > 0) {
+                /* Possible weaknesses found:
+                 * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+                 */
+                char lower_word[MAX_WORD_LEN];
+                size_t copy_len;
+                
+                /* Possible weaknesses found:
+                 *  Assignment to 'copy_len=clean_len'
+                 */
+                copy_len = clean_len;
+                /* Possible weaknesses found:
+                 *  Assuming that condition 'copy_len>=64' is not redundant
+                 */
+                if (copy_len >= MAX_WORD_LEN) {
+                    copy_len = MAX_WORD_LEN - 1;
+                }
+                
+                /* Possible weaknesses found:
+                 * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                 */
+                memcpy(lower_word, clean_word, copy_len);
+                lower_word[copy_len] = '\0';
+                to_lowercase(lower_word, MAX_WORD_LEN);
+                
+                if (is_adverb(lower_word)) {
+                    /* Possible weaknesses found:
+                     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                     */
+                    memcpy(adverbs[count].word, clean_word, copy_len);
+                    adverbs[count].word[copy_len] = '\0';
+                    adverbs[count].position = position;
+                    count++;
+                }
+            }
+        }
+        
+        position += (int)safe_strlen(token, BUFFER_SIZE);
+        token = strtok_r(NULL, delimiters, &saveptr);
+        if (token != NULL) {
+            position++;
+        }
+    }
+    
+    return count;
+}
+
+int main(void) {
+    const char *sentence = "The quick brown fox jumped extremely quickly over the lazy dog gracefully";
+    AdverbInfo adverbs[MAX_WORDS];
+    int count;
+    int i;
+    
+    count = find_adverbs(sentence, adverbs, MAX_WORDS);
+    
+    printf("Adverbs found: %d\n", count);
+    for (i = 0; i < count; i++) {
+        printf("Adverb: '%s' at position %d\n", adverbs[i].word, adverbs[i].position);
+    }
+    
+    return 0;
+}

@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+int has_all_k_elements(const Tuple *tuples, size_t tuple_count, size_t k) {
+    if (tuples == NULL) {
+        return 0;
+    }
+    
+    if (tuple_count == 0) {
+        return 0;
+    }
+    
+    for (size_t i = 0; i < tuple_count; i++) {
+        if (tuples[i].data == NULL) {
+            return 0;
+        }
+        if (tuples[i].size != k) {
+            return 0;
+        }
+    }
+    
+    return 1;
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3};
+    int data2[] = {4, 5, 6};
+    int data3[] = {7, 8, 9};
+    
+    Tuple tuples[] = {
+        {data1, 3},
+        {data2, 3},
+        {data3, 3}
+    };
+    
+    size_t tuple_count = sizeof(tuples) / sizeof(tuples[0]);
+    size_t k = 3;
+    
+    if (has_all_k_elements(tuples, tuple_count, k)) {
+        printf("All tuples have %zu elements.\n", k);
+    } else {
+        printf("Not all tuples have %zu elements.\n", k);
+    }
+    
+    return 0;
+}

@@ -1,0 +1,14 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c:15:65: style: Parameter 'context' can be declared as pointer to const [constParameterPointer]
+static int compare_by_index(const void *a, const void *b, void *context)
+                                                                ^
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c: __GLIBC__...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c:15:65: style: Parameter 'context' can be declared as pointer to const. However it seems that 'compare_by_index' is a callback function, if 'context' is declared with const you might also need to cast function pointer(s). [constParameterCallback]
+static int compare_by_index(const void *a, const void *b, void *context)
+                                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c:50:58: note: You might need to cast the function pointer here
+    qsort_r(list->lists, list->count, sizeof(InnerList), compare_by_index, &index);
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-381-s2.c:15:65: note: Parameter 'context' can be declared as pointer to const
+static int compare_by_index(const void *a, const void *b, void *context)
+                                                                ^

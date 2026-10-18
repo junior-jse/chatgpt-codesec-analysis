@@ -1,0 +1,187 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *key;
+    int value;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    Node *tail;
+} List;
+
+typedef struct {
+    char *key;
+    List *list;
+    int occupied;
+} MapEntry;
+
+typedef struct {
+    MapEntry *entries;
+    int capacity;
+    int size;
+} Map;
+
+unsigned long hash_string(const char *str) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash;
+}
+
+Map *map_create(int capacity) {
+    Map *map = malloc(sizeof(Map));
+    if (!map) return NULL;
+    map->entries = calloc(capacity, sizeof(MapEntry));
+    if (!map->entries) {
+        free(map);
+        return NULL;
+    }
+    map->capacity = capacity;
+    map->size = 0;
+    return map;
+}
+
+void map_destroy(Map *map) {
+    if (!map) return;
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->entries[i].occupied) {
+            free(map->entries[i].key);
+            Node *current = map->entries[i].list->head;
+            while (current) {
+                Node *next = current->next;
+                free(current->key);
+                free(current);
+                current = next;
+            }
+            free(map->entries[i].list);
+        }
+    }
+    free(map->entries);
+    free(map);
+}
+
+void map_resize(Map *map, int new_capacity) {
+    MapEntry *new_entries = calloc(new_capacity, sizeof(MapEntry));
+    if (!new_entries) return;
+    
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->entries[i].occupied) {
+            unsigned long index = hash_string(map->entries[i].key) % new_capacity;
+            while (new_entries[index].occupied) {
+                index = (index + 1) % new_capacity;
+            }
+            new_entries[index] = map->entries[i];
+        }
+    }
+    
+    free(map->entries);
+    map->entries = new_entries;
+    map->capacity = new_capacity;
+}
+
+List *map_get_or_create(Map *map, const char *key) {
+    if (map->size >= map->capacity * 0.7) {
+        map_resize(map, map->capacity * 2);
+    }
+    
+    unsigned long index = hash_string(key) % map->capacity;
+    while (map->entries[index].occupied) {
+        if (strcmp(map->entries[index].key, key) == 0) {
+            return map->entries[index].list;
+        }
+        index = (index + 1) % map->capacity;
+    }
+    
+    map->entries[index].key = malloc(strlen(key) + 1);
+    if (!map->entries[index].key) return NULL;
+    strcpy(map->entries[index].key, key);
+    
+    map->entries[index].list = malloc(sizeof(List));
+    if (!map->entries[index].list) {
+        free(map->entries[index].key);
+        return NULL;
+    }
+    map->entries[index].list->head = NULL;
+    map->entries[index].list->tail = NULL;
+    map->entries[index].occupied = 1;
+    map->size++;
+    
+    return map->entries[index].list;
+}
+
+void list_append(List *list, const char *key, int value) {
+    Node *node = malloc(sizeof(Node));
+    if (!node) return;
+    node->key = malloc(strlen(key) + 1);
+    if (!node->key) {
+        free(node);
+        return;
+    }
+    strcpy(node->key, key);
+    node->value = value;
+    node->next = NULL;
+    
+    if (!list->tail) {
+        list->head = node;
+        list->tail = node;
+    } else {
+        list->tail->next = node;
+        list->tail = node;
+    }
+}
+
+Map *group_pairs(const char **keys, const int *values, int count) {
+    if (!keys || !values || count <= 0) return NULL;
+    
+    Map *map = map_create(16);
+    if (!map) return NULL;
+    
+    for (int i = 0; i < count; i++) {
+        List *list = map_get_or_create(map, keys[i]);
+        if (!list) {
+            map_destroy(map);
+            return NULL;
+        }
+        list_append(list, keys[i], values[i]);
+    }
+    
+    return map;
+}
+
+void map_print(Map *map) {
+    if (!map) return;
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->entries[i].occupied) {
+            printf("Key: %s -> Values: ", map->entries[i].key);
+            Node *current = map->entries[i].list->head;
+            while (current) {
+                printf("%d ", current->value);
+                current = current->next;
+            }
+            printf("\n");
+        }
+    }
+}
+
+int main(void) {
+    const char *keys[] = {"apple", "banana", "apple", "cherry", "banana", "apple"};
+    int values[] = {1, 2, 3, 4, 5, 6};
+    int count = sizeof(keys) / sizeof(keys[0]);
+    
+    Map *map = group_pairs(keys, values, count);
+    if (!map) {
+        fprintf(stderr, "Failed to group pairs\n");
+        return 1;
+    }
+    
+    map_print(map);
+    map_destroy(map);
+    
+    return 0;
+}

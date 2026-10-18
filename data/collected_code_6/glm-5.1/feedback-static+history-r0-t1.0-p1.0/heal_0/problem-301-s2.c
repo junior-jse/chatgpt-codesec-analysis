@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef enum {
+    DICT_NULL,
+    DICT_INT,
+    DICT_STRING,
+    DICT_DICT
+} DictType;
+
+typedef struct DictEntry {
+    char *key;
+    DictType type;
+    void *value;
+    struct DictEntry *next;
+} DictEntry;
+
+typedef struct {
+    DictEntry *head;
+} Dict;
+
+Dict *dict_create(void) {
+    Dict *d = (Dict *)malloc(sizeof(Dict));
+    if (d == NULL) return NULL;
+    d->head = NULL;
+    return d;
+}
+
+int dict_add(Dict *d, const char *key, DictType type, void *value) {
+    if (d == NULL || key == NULL) return -1;
+    DictEntry *entry = (DictEntry *)malloc(sizeof(DictEntry));
+    if (entry == NULL) return -1;
+    entry->key = strdup(key);
+    if (entry->key == NULL) {
+        free(entry);
+        return -1;
+    }
+    entry->type = type;
+    entry->value = value;
+    entry->next = d->head;
+    d->head = entry;
+    return 0;
+}
+
+int find_depth(Dict *d) {
+    if (d == NULL) return 0;
+    int max_depth = 1;
+    DictEntry *current = d->head;
+    while (current != NULL) {
+        if (current->type == DICT_DICT && current->value != NULL) {
+            int sub_depth = find_depth((Dict *)current->value);
+            if (sub_depth + 1 > max_depth) {
+                max_depth = sub_depth + 1;
+            }
+        }
+        current = current->next;
+    }
+    return max_depth;
+}
+
+void dict_free(Dict *d) {
+    if (d == NULL) return;
+    DictEntry *current = d->head;
+    while (current != NULL) {
+        DictEntry *next = current->next;
+        free(current->key);
+        if (current->type == DICT_DICT) {
+            dict_free((Dict *)current->value);
+        } else {
+            free(current->value);
+        }
+        free(current);
+        current = next;
+    }
+    free(d);
+}
+
+int main(void) {
+    Dict *level3 = dict_create();
+    int *val3 = (int *)malloc(sizeof(int));
+    *val3 = 30;
+    dict_add(level3, "val3", DICT_INT, val3);
+
+    Dict *level2 = dict_create();
+    int *val2 = (int *)malloc(sizeof(int));
+    *val2 = 20;
+    dict_add(level2, "val2", DICT_INT, val2);
+    dict_add(level2, "sub_dict", DICT_DICT, level3);
+
+    Dict *level1 = dict_create();
+    int *val1 = (int *)malloc(sizeof(int));
+    *val1 = 10;
+    dict_add(level1, "val1", DICT_INT, val1);
+    dict_add(level1, "sub_dict", DICT_DICT, level2);
+
+    printf("%d\n", find_depth(level1));
+
+    dict_free(level1);
+    return 0;
+}

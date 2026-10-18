@@ -1,0 +1,8 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-783-s3.c: In function 'rgb_to_hsv':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-783-s3.c:39:24: error: implicit declaration of function 'fmod' [-Wimplicit-function-declaration]
+   39 |         hsv.h = 60.0 * fmod(((g - b) / delta), 6.0);
+      |                        ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-783-s3.c:3:1: note: include '<math.h>' or provide a declaration of 'fmod'
+    2 | #include <stdlib.h>
+  +++ |+#include <math.h>
+    3 | 

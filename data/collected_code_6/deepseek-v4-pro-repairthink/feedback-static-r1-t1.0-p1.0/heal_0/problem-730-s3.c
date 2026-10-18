@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *remove_consecutive_duplicates(struct Node *head) {
+    if (head == NULL) {
+        return NULL;
+    }
+    
+    struct Node *current = head;
+    while (current->next != NULL) {
+        if (current->data == current->next->data) {
+            struct Node *temp = current->next;
+            current->next = temp->next;
+            free(temp);
+        } else {
+            current = current->next;
+        }
+    }
+    return head;
+}
+
+struct Node *create_node(int data) {
+    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append_node(struct Node **head, int data) {
+    struct Node *new_node = create_node(data);
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    struct Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+void print_list(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        struct Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    struct Node *list = NULL;
+    
+    append_node(&list, 1);
+    append_node(&list, 1);
+    append_node(&list, 2);
+    append_node(&list, 3);
+    append_node(&list, 3);
+    append_node(&list, 3);
+    append_node(&list, 4);
+    append_node(&list, 5);
+    append_node(&list, 5);
+    
+    printf("Original list: ");
+    print_list(list);
+    
+    list = remove_consecutive_duplicates(list);
+    
+    printf("After removing duplicates: ");
+    print_list(list);
+    
+    free_list(list);
+    
+    return 0;
+}

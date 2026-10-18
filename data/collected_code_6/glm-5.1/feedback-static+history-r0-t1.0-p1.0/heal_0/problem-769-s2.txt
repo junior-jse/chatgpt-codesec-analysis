@@ -1,0 +1,68 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct List {
+    int *items;
+    size_t size;
+};
+
+struct List get_difference(struct List list1, struct List list2) {
+    struct List diff;
+    diff.size = 0;
+    
+    if (list1.size == 0) {
+        diff.items = NULL;
+        return diff;
+    }
+    
+    diff.items = (int *)malloc(list1.size * sizeof(int));
+    if (diff.items == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    
+    for (size_t i = 0; i < list1.size; i++) {
+        int found = 0;
+        for (size_t j = 0; j < list2.size; j++) {
+            if (list1.items[i] == list2.items[j]) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            diff.items[diff.size] = list1.items[i];
+            diff.size++;
+        }
+    }
+    
+    if (diff.size == 0) {
+        free(diff.items);
+        diff.items = NULL;
+    } else if (diff.size < list1.size) {
+        int *temp = (int *)realloc(diff.items, diff.size * sizeof(int));
+        if (temp != NULL) {
+            diff.items = temp;
+        }
+    }
+    
+    return diff;
+}
+
+int main() {
+    int arr1[] = {1, 2, 3, 4, 5};
+    int arr2[] = {2, 5};
+    struct List list1 = {arr1, 5};
+    struct List list2 = {arr2, 2};
+    
+    struct List diff = get_difference(list1, list2);
+    
+    for (size_t i = 0; i < diff.size; i++) {
+        printf("%d ", diff.items[i]);
+    }
+    printf("\n");
+    
+    free(diff.items);
+    
+    return 0;
+}
+```

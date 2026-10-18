@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char* find_first_repeated_word(char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t len = 0;
+    while (len < (size_t)-1 && str[len] != '\0') {
+        len++;
+    }
+
+    char *buffer = (char *)malloc(len + 1);
+    if (buffer == NULL) {
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     *  Same expression on both sides of '<='. [duplicateExpression]
+     */
+    if (len + 1 <= len + 1) {
+        /* Possible weaknesses found:
+         * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+         */
+        memcpy(buffer, str, len + 1);
+    }
+
+    char **words = NULL;
+    size_t word_count = 0;
+    size_t capacity = 0;
+    char *token = strtok(buffer, " \t\n\r.,;:!?()-");
+    
+    while (token != NULL) {
+        if (word_count == capacity) {
+            capacity = capacity == 0 ? 16 : capacity * 2;
+            char **temp = (char **)realloc(words, capacity * sizeof(char *));
+            if (temp == NULL) {
+                free(buffer);
+                for (size_t i = 0; i < word_count; i++) {
+                    free(words[i]);
+                }
+                free(words);
+                return NULL;
+            }
+            words = temp;
+        }
+        
+        size_t token_len = 0;
+        while (token[token_len] != '\0') {
+            token_len++;
+        }
+
+        char *lower_token = (char *)malloc(token_len + 1);
+        if (lower_token == NULL) {
+            free(buffer);
+            for (size_t i = 0; i < word_count; i++) {
+                free(words[i]);
+            }
+            free(words);
+            return NULL;
+        }
+        
+        for (size_t i = 0; token[i] != '\0'; i++) {
+            lower_token[i] = tolower((unsigned char)token[i]);
+        }
+        lower_token[token_len] = '\0';
+        
+        for (size_t i = 0; i < word_count; i++) {
+            if (strcmp(words[i], lower_token) == 0) {
+                char *result = (char *)malloc(token_len + 1);
+                if (result == NULL) {
+                    free(lower_token);
+                    free(buffer);
+                    for (size_t j = 0; j < word_count; j++) {
+                        free(words[j]);
+                    }
+                    free(words);
+                    return NULL;
+                }
+                /* Possible weaknesses found:
+                 *  Same expression on both sides of '<='. [duplicateExpression]
+                 */
+                if (token_len + 1 <= token_len + 1) {
+                    /* Possible weaknesses found:
+                     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                     */
+                    memcpy(result, lower_token, token_len + 1);
+                }
+                free(lower_token);
+                free(buffer);
+                for (size_t j = 0; j < word_count; j++) {
+                    free(words[j]);
+                }
+                free(words);
+                return result;
+            }
+        }
+        
+        words[word_count++] = lower_token;
+        token = strtok(NULL, " \t\n\r.,;:!?()-");
+    }
+    
+    free(buffer);
+    for (size_t i = 0; i < word_count; i++) {
+        free(words[i]);
+    }
+    free(words);
+    return NULL;
+}
+
+int main() {
+    char str[] = "Hello world! This is a test. Hello again.";
+    char *repeated = find_first_repeated_word(str);
+    
+    if (repeated != NULL) {
+        printf("%s\n", repeated);
+        free(repeated);
+    } else {
+        printf("NULL\n");
+    }
+    
+    return 0;
+}

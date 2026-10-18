@@ -1,0 +1,120 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    size_t count;
+} TupleFrequency;
+
+static int compare_tuples(const void *a, const void *b)
+{
+    const Tuple *tuple_a = (const Tuple *)a;
+    const Tuple *tuple_b = (const Tuple *)b;
+
+    if (tuple_a->first < tuple_b->first) {
+        return -1;
+    }
+    if (tuple_a->first > tuple_b->first) {
+        return 1;
+    }
+    if (tuple_a->second < tuple_b->second) {
+        return -1;
+    }
+    if (tuple_a->second > tuple_b->second) {
+        return 1;
+    }
+    return 0;
+}
+
+static Tuple normalize_tuple(Tuple tuple)
+{
+    if (tuple.first > tuple.second) {
+        int temp = tuple.first;
+        tuple.first = tuple.second;
+        tuple.second = temp;
+    }
+    return tuple;
+}
+
+TupleFrequency *extract_tuple_frequencies(const Tuple *tuples, size_t size, size_t *unique_count)
+{
+    Tuple *normalized;
+    TupleFrequency *frequencies;
+    size_t i;
+    size_t count;
+
+    if (unique_count == NULL) {
+        return NULL;
+    }
+    *unique_count = 0;
+
+    if (tuples == NULL || size == 0) {
+        return NULL;
+    }
+
+    normalized = (Tuple *)malloc(size * sizeof(Tuple));
+    if (normalized == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < size; i++) {
+        normalized[i] = normalize_tuple(tuples[i]);
+    }
+
+    qsort(normalized, size, sizeof(Tuple), compare_tuples);
+
+    frequencies = (TupleFrequency *)malloc(size * sizeof(TupleFrequency));
+    if (frequencies == NULL) {
+        free(normalized);
+        return NULL;
+    }
+
+    count = 0;
+    for (i = 0; i < size; i++) {
+        if (count > 0 &&
+            frequencies[count - 1].tuple.first == normalized[i].first &&
+            frequencies[count - 1].tuple.second == normalized[i].second) {
+            frequencies[count - 1].count++;
+        } else {
+            frequencies[count].tuple = normalized[i];
+            frequencies[count].count = 1;
+            count++;
+        }
+    }
+
+    free(normalized);
+    *unique_count = count;
+    return frequencies;
+}
+
+int main(void)
+{
+    Tuple tuples[] = {
+        {1, 2}, {2, 1}, {3, 4}, {1, 2}, {4, 3}, {5, 6}
+    };
+    size_t size = sizeof(tuples) / sizeof(tuples[0]);
+    size_t unique_count = 0;
+    TupleFrequency *frequencies;
+    size_t i;
+
+    frequencies = extract_tuple_frequencies(tuples, size, &unique_count);
+    if (frequencies == NULL) {
+        fprintf(stderr, "Failed to extract tuple frequencies\n");
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < unique_count; i++) {
+        printf("(%d, %d): %zu\n",
+               frequencies[i].tuple.first,
+               frequencies[i].tuple.second,
+               frequencies[i].count);
+    }
+
+    free(frequencies);
+    return EXIT_SUCCESS;
+}

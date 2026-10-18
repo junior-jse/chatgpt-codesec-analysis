@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-102.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-102.c:86:28: style: Condition 'result' is always false [knownConditionTrueFalse]
+    printf("NULL -> %s\n", result ? result : "(null)");
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-102.c:85:28: note: Calling function 'snake_to_camel' returns 0
+    result = snake_to_camel(test8);
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-102.c:85:28: note: Assignment 'result=snake_to_camel(test8)', assigned value is 0
+    result = snake_to_camel(test8);
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-102.c:86:28: note: Condition 'result' is always false
+    printf("NULL -> %s\n", result ? result : "(null)");
+                           ^

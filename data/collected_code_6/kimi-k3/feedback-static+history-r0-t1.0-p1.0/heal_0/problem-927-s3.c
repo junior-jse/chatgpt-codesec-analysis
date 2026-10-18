@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+static Node *create_node(int data)
+{
+    Node *node = malloc(sizeof(*node));
+    if (node == NULL) {
+        return NULL;
+    }
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+static int tree_height(const Node *root)
+{
+    int left_height;
+    int right_height;
+
+    if (root == NULL) {
+        return 0;
+    }
+
+    left_height = tree_height(root->left);
+    right_height = tree_height(root->right);
+
+    return 1 + (left_height > right_height ? left_height : right_height);
+}
+
+static void free_tree(Node *root)
+{
+    if (root == NULL) {
+        return;
+    }
+    free_tree(root->left);
+    free_tree(root->right);
+    free(root);
+}
+
+int main(void)
+{
+    Node *root = create_node(1);
+    if (root == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    root->left = create_node(2);
+    if (root->left == NULL) {
+        free_tree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->right = create_node(3);
+    if (root->right == NULL) {
+        free_tree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->left->left = create_node(4);
+    if (root->left->left == NULL) {
+        free_tree(root);
+        return EXIT_FAILURE;
+    }
+
+    root->left->right = create_node(5);
+    if (root->left->right == NULL) {
+        free_tree(root);
+        return EXIT_FAILURE;
+    }
+
+    printf("Height: %d\n", tree_height(root));
+
+    free_tree(root);
+    return EXIT_SUCCESS;
+}

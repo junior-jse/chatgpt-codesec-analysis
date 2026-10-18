@@ -1,0 +1,198 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int value;
+    int frequency;
+} HeapNode;
+
+typedef struct {
+    HeapNode *nodes;
+    int size;
+    int capacity;
+} MinHeap;
+
+static void swap_nodes(HeapNode *a, HeapNode *b)
+{
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static void heapify_down(MinHeap *heap, int index)
+{
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < heap->size && heap->nodes[left].frequency < heap->nodes[smallest].frequency)
+        smallest = left;
+    if (right < heap->size && heap->nodes[right].frequency < heap->nodes[smallest].frequency)
+        smallest = right;
+
+    if (smallest != index) {
+        swap_nodes(&heap->nodes[index], &heap->nodes[smallest]);
+        heapify_down(heap, smallest);
+    }
+}
+
+static void heapify_up(MinHeap *heap, int index)
+{
+    int parent = (index - 1) / 2;
+    while (index > 0 && heap->nodes[parent].frequency > heap->nodes[index].frequency) {
+        swap_nodes(&heap->nodes[parent], &heap->nodes[index]);
+        index = parent;
+        parent = (index - 1) / 2;
+    }
+}
+
+static int heap_push(MinHeap *heap, int value, int frequency)
+{
+    if (heap->size >= heap->capacity)
+        return -1;
+    heap->nodes[heap->size].value = value;
+    heap->nodes[heap->size].frequency = frequency;
+    heapify_up(heap, heap->size);
+    heap->size++;
+    return 0;
+}
+
+static HeapNode heap_pop(MinHeap *heap)
+{
+    HeapNode root = heap->nodes[0];
+    heap->size--;
+    heap->nodes[0] = heap->nodes[heap->size];
+    heapify_down(heap, 0);
+    return root;
+}
+
+static int compare_frequencies(const void *a, const void *b)
+{
+    const HeapNode *na = (const HeapNode *)a;
+    const HeapNode *nb = (const HeapNode *)b;
+    return nb->frequency - na->frequency;
+}
+
+int *find_top_k_frequent(int **lists, int num_lists, const int *list_sizes, int k, int *result_size)
+{
+    if (lists == NULL || list_sizes == NULL || k <= 0 || num_lists <= 0 || result_size == NULL)
+        return NULL;
+
+    int *merged = NULL;
+    int total_elements = 0;
+    int i, j;
+
+    for (i = 0; i < num_lists; i++) {
+        if (lists[i] == NULL || list_sizes[i] <= 0)
+            return NULL;
+        total_elements += list_sizes[i];
+    }
+
+    merged = malloc((size_t)total_elements * sizeof(int));
+    if (merged == NULL)
+        return NULL;
+
+    int pos = 0;
+    for (i = 0; i < num_lists; i++) {
+        for (j = 0; j < list_sizes[i]; j++) {
+            merged[pos++] = lists[i][j];
+        }
+    }
+
+    MinHeap heap;
+    heap.capacity = k;
+    heap.size = 0;
+    heap.nodes = malloc((size_t)k * sizeof(HeapNode));
+    if (heap.nodes == NULL) {
+        free(merged);
+        return NULL;
+    }
+
+    i = 0;
+    while (i < total_elements) {
+        int current_value = merged[i];
+        int frequency = 1;
+        i++;
+        while (i < total_elements && merged[i] == current_value) {
+            frequency++;
+            i++;
+        }
+
+        if (heap.size < k) {
+            if (heap_push(&heap, current_value, frequency) != 0) {
+                free(heap.nodes);
+                free(merged);
+                return NULL;
+            }
+        } else if (frequency > heap.nodes[0].frequency) {
+            heap_pop(&heap);
+            if (heap_push(&heap, current_value, frequency) != 0) {
+                free(heap.nodes);
+                free(merged);
+                return NULL;
+            }
+        }
+    }
+
+    *result_size = heap.size;
+    int *result = malloc((size_t)heap.size * sizeof(int));
+    if (result == NULL) {
+        free(heap.nodes);
+        free(merged);
+        return NULL;
+    }
+
+    HeapNode *temp = malloc((size_t)heap.size * sizeof(HeapNode));
+    if (temp == NULL) {
+        free(result);
+        free(heap.nodes);
+        free(merged);
+        return NULL;
+    }
+
+    for (i = 0; i < heap.size; i++) {
+        temp[i] = heap_pop(&heap);
+    }
+
+    qsort(temp, (size_t)heap.size, sizeof(HeapNode), compare_frequencies);
+
+    for (i = 0; i < heap.size; i++) {
+        result[i] = temp[i].value;
+    }
+
+    free(temp);
+    free(heap.nodes);
+    free(merged);
+
+    return result;
+}
+
+int main(void)
+{
+    int list1[] = {1, 3, 5, 7, 9};
+    int list2[] = {1, 2, 3, 5, 8};
+    int list3[] = {1, 3, 4, 5, 9, 10};
+    
+    int *lists[] = {list1, list2, list3};
+    int sizes[] = {5, 5, 6};
+    int num_lists = 3;
+    int k = 3;
+    int result_size = 0;
+
+    int *result = find_top_k_frequent(lists, num_lists, sizes, k, &result_size);
+
+    if (result != NULL) {
+        printf("Top %d most frequent integers:\n", k);
+        for (int i = 0; i < result_size; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+    } else {
+        fprintf(stderr, "Error processing lists\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}

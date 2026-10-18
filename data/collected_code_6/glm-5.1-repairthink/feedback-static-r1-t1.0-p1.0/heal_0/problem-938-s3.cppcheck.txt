@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:8:9: style: The scope of the variable 'diff' can be reduced. [variableScope]
+    int diff, current_max, current_min;
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:8:15: style: The scope of the variable 'current_max' can be reduced. [variableScope]
+    int diff, current_max, current_min;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:8:28: style: The scope of the variable 'current_min' can be reduced. [variableScope]
+    int diff, current_max, current_min;
+                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:30: style: Parameter 'a' can be declared as pointer to const [constParameterPointer]
+void find_three_closest(int *a, int n1, int *b, int n2, int *c, int n3, int *res) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:46: style: Parameter 'b' can be declared as pointer to const [constParameterPointer]
+void find_three_closest(int *a, int n1, int *b, int n2, int *c, int n3, int *res) {
+                                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s3.c:5:62: style: Parameter 'c' can be declared as pointer to const [constParameterPointer]
+void find_three_closest(int *a, int n1, int *b, int n2, int *c, int n3, int *res) {
+                                                             ^

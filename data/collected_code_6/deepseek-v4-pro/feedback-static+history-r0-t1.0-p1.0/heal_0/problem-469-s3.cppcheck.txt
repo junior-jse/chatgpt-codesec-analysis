@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-469-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-469-s3.c:5:27: style: Parameter 'prices' can be declared as const array [constParameter]
+int max_profit(int k, int prices[], int n) {
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-469-s3.c:29:26: style: Variable 'prev_idx' is assigned a value that is never used. [unreadVariable]
+            int prev_idx = (t - 1) * n + d;
+                         ^

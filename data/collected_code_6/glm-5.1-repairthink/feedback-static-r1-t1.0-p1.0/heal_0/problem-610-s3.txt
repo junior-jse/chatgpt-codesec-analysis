@@ -1,0 +1,93 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node* create_node(int data) {
+    Node *new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* remove_kth(Node *head, int k) {
+    if (head == NULL || k < 0) {
+        return head;
+    }
+
+    if (k == 0) {
+        Node *new_head = head->next;
+        free(head);
+        return new_head;
+    }
+
+    Node *current = head;
+    int current_index = 0;
+
+    while (current != NULL && current_index < k - 1) {
+        current = current->next;
+        current_index++;
+    }
+
+    if (current == NULL || current->next == NULL) {
+        return head;
+    }
+
+    Node *node_to_remove = current->next;
+    current->next = node_to_remove->next;
+    free(node_to_remove);
+
+    return head;
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Node *head = create_node(1);
+    head->next = create_node(2);
+    head->next->next = create_node(3);
+    head->next->next->next = create_node(4);
+    head->next->next->next->next = create_node(5);
+
+    print_list(head);
+
+    head = remove_kth(head, 2);
+
+    print_list(head);
+
+    head = remove_kth(head, 0);
+
+    print_list(head);
+
+    head = remove_kth(head, 10);
+
+    print_list(head);
+
+    free_list(head);
+
+    return 0;
+}
+```

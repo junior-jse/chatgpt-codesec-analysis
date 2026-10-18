@@ -1,0 +1,9 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-391-s2.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-391-s2.c:116:42: error: passing argument 1 of 'convert_lists_to_dict' from incompatible pointer type [-Wincompatible-pointer-types]
+  116 |     Dict *result = convert_lists_to_dict(lists, 4, lengths);
+      |                                          ^~~~~
+      |                                          |
+      |                                          char ***
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-391-s2.c:57:51: note: expected 'char * const* const*' but argument is of type 'char ***'
+   57 | Dict *convert_lists_to_dict(char * const * const *lists, int num_lists, const int *list_lengths) {
+      |                             ~~~~~~~~~~~~~~~~~~~~~~^~~~~

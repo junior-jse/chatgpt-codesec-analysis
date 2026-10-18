@@ -1,0 +1,105 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int a;
+    int b;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    size_t count;
+} TupleFreq;
+
+static int compare_tuples(const void *a, const void *b)
+{
+    const Tuple *ta = (const Tuple *)a;
+    const Tuple *tb = (const Tuple *)b;
+
+    int min_a = (ta->a < ta->b) ? ta->a : ta->b;
+    int max_a = (ta->a < ta->b) ? ta->b : ta->a;
+    int min_b = (tb->a < tb->b) ? tb->a : tb->b;
+    int max_b = (tb->a < tb->b) ? tb->b : tb->a;
+
+    if (min_a != min_b) {
+        return (min_a < min_b) ? -1 : 1;
+    }
+    if (max_a != max_b) {
+        return (max_a < max_b) ? -1 : 1;
+    }
+    return 0;
+}
+
+TupleFreq *get_tuple_frequencies(const Tuple *tuples, size_t size, size_t *result_size)
+{
+    Tuple *sorted = NULL;
+    TupleFreq *frequencies = NULL;
+    size_t unique_count = 0;
+    size_t i = 0;
+
+    if (result_size == NULL) {
+        return NULL;
+    }
+    *result_size = 0;
+
+    if (tuples == NULL || size == 0) {
+        return NULL;
+    }
+
+    sorted = (Tuple *)malloc(size * sizeof(Tuple));
+    if (sorted == NULL) {
+        return NULL;
+    }
+
+    memcpy(sorted, tuples, size * sizeof(Tuple));
+    qsort(sorted, size, sizeof(Tuple), compare_tuples);
+
+    frequencies = (TupleFreq *)malloc(size * sizeof(TupleFreq));
+    if (frequencies == NULL) {
+        free(sorted);
+        return NULL;
+    }
+
+    for (i = 0; i < size; ++i) {
+        if (unique_count > 0 &&
+            compare_tuples(&sorted[i], &frequencies[unique_count - 1].tuple) == 0) {
+            frequencies[unique_count - 1].count++;
+        } else {
+            frequencies[unique_count].tuple = sorted[i];
+            frequencies[unique_count].count = 1;
+            unique_count++;
+        }
+    }
+
+    free(sorted);
+    *result_size = unique_count;
+    return frequencies;
+}
+
+int main(void)
+{
+    Tuple tuples[] = {{1, 2}, {2, 1}, {3, 4}, {1, 2}, {4, 3}, {5, 6}};
+    size_t size = sizeof(tuples) / sizeof(tuples[0]);
+    size_t result_size = 0;
+    TupleFreq *frequencies = NULL;
+    size_t i = 0;
+
+    frequencies = get_tuple_frequencies(tuples, size, &result_size);
+    if (frequencies == NULL) {
+        fprintf(stderr, "Failed to compute tuple frequencies\n");
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0; i < result_size; ++i) {
+        printf("(%d, %d): %zu\n",
+               frequencies[i].tuple.a,
+               frequencies[i].tuple.b,
+               frequencies[i].count);
+    }
+
+    free(frequencies);
+    return EXIT_SUCCESS;
+}
+```

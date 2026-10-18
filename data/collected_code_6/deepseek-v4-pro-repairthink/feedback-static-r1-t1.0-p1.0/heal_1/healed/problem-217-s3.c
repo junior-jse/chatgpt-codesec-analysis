@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define MAX_CHARS 256
+
+char firstRepeatedChar(const char *str, size_t max_len) {
+    if (str == NULL || max_len == 0) {
+        return '\0';
+    }
+
+    bool seen[MAX_CHARS] = {false};
+
+    for (size_t i = 0; i < max_len && str[i] != '\0'; i++) {
+        unsigned char ch = (unsigned char)str[i];
+        if (seen[ch]) {
+            return str[i];
+        }
+        seen[ch] = true;
+    }
+
+    return '\0';
+}
+
+int main(void) {
+    const char *testStrings[] = {
+        "abcdefgha",
+        "hello",
+        "abcabc",
+        "testing",
+        "unique"
+    };
+
+    for (size_t i = 0; i < sizeof(testStrings) / sizeof(testStrings[0]); i++) {
+        char result = firstRepeatedChar(testStrings[i], strlen(testStrings[i]));
+        printf("First repeated character in \"%s\": ", testStrings[i]);
+        if (result != '\0') {
+            printf("%c\n", result);
+        } else {
+            printf("None\n");
+        }
+    }
+
+    return 0;
+}

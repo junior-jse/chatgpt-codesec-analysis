@@ -1,0 +1,170 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef enum {
+    NODE_INTEGER,
+    NODE_LIST
+} NodeType;
+
+typedef struct Node {
+    NodeType type;
+    union {
+        int value;
+        struct {
+            struct Node **items;
+            size_t count;
+        } list;
+    } data;
+} Node;
+
+typedef struct {
+    int *values;
+    size_t count;
+    size_t capacity;
+} FlatList;
+
+static bool flat_list_append(FlatList *flat, int value)
+{
+    if (flat == NULL) {
+        return false;
+    }
+
+    if (flat->count == flat->capacity) {
+        size_t new_capacity;
+        int *new_values;
+
+        if (flat->capacity == 0U) {
+            new_capacity = 8U;
+        } else {
+            if (flat->capacity > SIZE_MAX / 2U) {
+                return false;
+            }
+            new_capacity = flat->capacity * 2U;
+        }
+
+        if (new_capacity > SIZE_MAX / sizeof(*flat->values)) {
+            return false;
+        }
+
+        new_values = realloc(flat->values,
+                             new_capacity * sizeof(*flat->values));
+        if (new_values == NULL) {
+            return false;
+        }
+
+        flat->values = new_values;
+        flat->capacity = new_capacity;
+    }
+
+    flat->values[flat->count++] = value;
+    return true;
+}
+
+static bool flatten_node(const Node *node, FlatList *flat)
+{
+    size_t i;
+
+    if (node == NULL || flat == NULL) {
+        return false;
+    }
+
+    switch (node->type) {
+        case NODE_INTEGER:
+            return flat_list_append(flat, node->data.value);
+
+        case NODE_LIST:
+            if (node->data.list.count > 0U &&
+                node->data.list.items == NULL) {
+                return false;
+            }
+
+            for (i = 0U; i < node->data.list.count; ++i) {
+                if (!flatten_node(node->data.list.items[i], flat)) {
+                    return false;
+                }
+            }
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+static bool flatten(const Node *root, int **values, size_t *count)
+{
+    FlatList flat = {NULL, 0U, 0U};
+
+    if (root == NULL || values == NULL || count == NULL) {
+        return false;
+    }
+
+    *values = NULL;
+    *count = 0U;
+
+    if (!flatten_node(root, &flat)) {
+        free(flat.values);
+        return false;
+    }
+
+    *values = flat.values;
+    *count = flat.count;
+    return true;
+}
+
+int main(void)
+{
+    Node one = {.type = NODE_INTEGER, .data.value = 1};
+    Node two = {.type = NODE_INTEGER, .data.value = 2};
+    Node three = {.type = NODE_INTEGER, .data.value = 3};
+    Node four = {.type = NODE_INTEGER, .data.value = 4};
+    Node five = {.type = NODE_INTEGER, .data.value = 5};
+
+    Node *inner_items[] = {&three, &four};
+    Node inner = {
+        .type = NODE_LIST,
+        .data.list = {inner_items, sizeof(inner_items) / sizeof(inner_items[0])}
+    };
+
+    Node *middle_items[] = {&two, &inner};
+    Node middle = {
+        .type = NODE_LIST,
+        .data.list = {
+            middle_items,
+            sizeof(middle_items) / sizeof(middle_items[0])
+        }
+    };
+
+    Node *root_items[] = {&one, &middle, &five};
+    Node root = {
+        .type = NODE_LIST,
+        .data.list = {root_items, sizeof(root_items) / sizeof(root_items[0])}
+    };
+
+    int *values = NULL;
+    size_t count = 0U;
+    size_t i;
+
+    if (!flatten(&root, &values, &count)) {
+        fputs("Failed to flatten the list\n", stderr);
+        return EXIT_FAILURE;
+    }
+
+    for (i = 0U; i < count; ++i) {
+        if (printf("%s%d", i == 0U ? "" : " ", values[i]) < 0) {
+            free(values);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (putchar('\n') == EOF) {
+        free(values);
+        return EXIT_FAILURE;
+    }
+
+    free(values);
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,5 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-500-s2.c: In function 'concatenate_list':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-500-s2.c:35:54: error: 'current_length' undeclared (first use in this function)
+   35 |             size_t len = strnlen(list[i], SIZE_MAX - current_length);
+      |                                                      ^~~~~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-500-s2.c:35:54: note: each undeclared identifier is reported only once for each function it appears in

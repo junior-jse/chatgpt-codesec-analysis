@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int longest_increasing_subsequence(const int *sequence, int length) {
+    if (sequence == NULL || length <= 0) {
+        return 0;
+    }
+
+    int *dp = (int *)malloc(sizeof(int) * length);
+    if (dp == NULL) {
+        return 0;
+    }
+
+    for (int i = 0; i < length; i++) {
+        dp[i] = 1;
+    }
+
+    int max_length = 1;
+
+    for (int i = 1; i < length; i++) {
+        for (int j = 0; j < i; j++) {
+            if (sequence[i] > sequence[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+            }
+        }
+        if (dp[i] > max_length) {
+            max_length = dp[i];
+        }
+    }
+
+    free(dp);
+    return max_length;
+}
+
+int main(void) {
+    int sequence[] = {10, 22, 9, 33, 21, 50, 41, 60, 80};
+    int length = sizeof(sequence) / sizeof(sequence[0]);
+
+    int result = longest_increasing_subsequence(sequence, length);
+    printf("Length of longest increasing subsequence: %d\n", result);
+
+    return 0;
+}

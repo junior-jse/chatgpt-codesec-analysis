@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:115:27: style: Condition 'dest_size>=src_size' is always true [knownConditionTrueFalse]
+            if (dest_size >= src_size) {
+                          ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:113:30: note: dest_size is assigned 'bytes_needed' here.
+            size_t dest_size = bytes_needed;
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:102:29: note: bytes_needed is assigned 'size*sizeof(int)' here.
+        size_t bytes_needed = size * sizeof(int);
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:108:53: note: Assuming condition is false
+        if (container->lists[container->count].data == NULL) {
+                                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:114:36: note: Assignment 'src_size=size*sizeof(int)', assigned value is symbolic=dest_size
+            size_t src_size = size * sizeof(int);
+                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-779.c:115:27: note: Condition 'dest_size>=src_size' is always true
+            if (dest_size >= src_size) {
+                          ^

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-971.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-971.c:26:23: style: Condition 'dp[i]==-1' is always true [knownConditionTrueFalse]
+            if (dp[i] == -1 || candidate > dp[i]) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-971.c:22:18: note: Assignment 'dp[i]=-1', assigned value is -1
+        dp[i] = -1;
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-971.c:26:23: note: Condition 'dp[i]==-1' is always true
+            if (dp[i] == -1 || candidate > dp[i]) {
+                      ^

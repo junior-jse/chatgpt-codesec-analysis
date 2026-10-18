@@ -1,0 +1,123 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char value;
+    int count;
+} Run;
+
+int rle_encode(const char *input, Run *output, size_t output_size) {
+    if (input == NULL || output == NULL || output_size == 0) {
+        return -1;
+    }
+    
+    size_t input_len = strlen(input);
+    if (input_len == 0) {
+        return 0;
+    }
+    
+    size_t output_count = 0;
+    size_t i = 0;
+    
+    while (i < input_len) {
+        if (output_count >= output_size) {
+            return -1;
+        }
+        
+        char current = input[i];
+        int count = 1;
+        
+        while (i + count < input_len && input[i + count] == current) {
+            count++;
+        }
+        
+        output[output_count].value = current;
+        output[output_count].count = count;
+        output_count++;
+        
+        i += count;
+    }
+    
+    return (int)output_count;
+}
+
+int rle_decode(const Run *input, size_t input_size, char *output, size_t output_size) {
+    if (input == NULL || output == NULL || output_size == 0) {
+        return -1;
+    }
+    
+    size_t output_index = 0;
+    
+    for (size_t i = 0; i < input_size; i++) {
+        if (input[i].count <= 0) {
+            return -1;
+        }
+        
+        for (int j = 0; j < input[i].count; j++) {
+            if (output_index >= output_size - 1) {
+                return -1;
+            }
+            output[output_index++] = input[i].value;
+        }
+    }
+    
+    output[output_index] = '\0';
+    return (int)output_index;
+}
+
+int main(void) {
+    const char *test_string = "AAABBBCCDDDDDDDDDDDD";
+    size_t input_len = strlen(test_string);
+    
+    Run *encoded = malloc(input_len * sizeof(Run));
+    if (encoded == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    int encoded_count = rle_encode(test_string, encoded, input_len);
+    if (encoded_count < 0) {
+        fprintf(stderr, "Encoding failed\n");
+        free(encoded);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Original: %s\n", test_string);
+    printf("Encoded: ");
+    for (int i = 0; i < encoded_count; i++) {
+        printf("%c%d", encoded[i].value, encoded[i].count);
+    }
+    printf("\n");
+    
+    size_t decode_buffer_size = input_len + 1;
+    char *decoded = malloc(decode_buffer_size);
+    if (decoded == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(encoded);
+        return EXIT_FAILURE;
+    }
+    
+    int decoded_len = rle_decode(encoded, (size_t)encoded_count, decoded, decode_buffer_size);
+    if (decoded_len < 0) {
+        fprintf(stderr, "Decoding failed\n");
+        free(encoded);
+        free(decoded);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Decoded: %s\n", decoded);
+    
+    if (strcmp(test_string, decoded) == 0) {
+        printf("Verification: SUCCESS\n");
+    } else {
+        printf("Verification: FAILED\n");
+    }
+    
+    free(encoded);
+    free(decoded);
+    
+    return EXIT_SUCCESS;
+}
+```

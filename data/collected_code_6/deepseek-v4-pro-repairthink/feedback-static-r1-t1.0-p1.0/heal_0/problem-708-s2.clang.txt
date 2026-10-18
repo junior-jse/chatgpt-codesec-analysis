@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708-s2.c:107:13: warning: Value stored to 'tail' is never read [deadcode.DeadStores]
+  107 |             tail = node;
+      |             ^      ~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708-s2.c:110:13: warning: Value stored to 'tail' is never read [deadcode.DeadStores]
+  110 |             tail = node;
+      |             ^      ~~~~
+2 warnings generated.

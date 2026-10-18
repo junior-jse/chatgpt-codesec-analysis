@@ -1,0 +1,95 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char **items;
+    size_t len;
+} Tuple;
+
+Tuple str_to_tuple(const char *str, const char *delim) {
+    Tuple t = {NULL, 0};
+    if (!str || !delim) return t;
+
+    size_t capacity = 8;
+    t.items = malloc(capacity * sizeof(char *));
+    if (!t.items) return t;
+
+    char *tmp = strdup(str);
+    if (!tmp) {
+        free(t.items);
+        t.items = NULL;
+        return t;
+    }
+
+    char *saveptr = NULL;
+    char *token = strtok_r(tmp, delim, &saveptr);
+
+    while (token) {
+        if (t.len >= capacity) {
+            capacity *= 2;
+            char **new_items = realloc(t.items, capacity * sizeof(char *));
+            if (!new_items) {
+                for (size_t i = 0; i < t.len; i++) free(t.items[i]);
+                free(t.items);
+                free(tmp);
+                t.items = NULL;
+                t.len = 0;
+                return t;
+            }
+            t.items = new_items;
+        }
+        t.items[t.len] = strdup(token);
+        if (!t.items[t.len]) {
+            for (size_t i = 0; i < t.len; i++) free(t.items[i]);
+            free(t.items);
+            free(tmp);
+            t.items = NULL;
+            t.len = 0;
+            return t;
+        }
+        t.len++;
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+
+    free(tmp);
+    
+    if (t.len > 0) {
+        char **shrunk = realloc(t.items, t.len * sizeof(char *));
+        if (shrunk) t.items = shrunk;
+    } else {
+        free(t.items);
+        t.items = NULL;
+    }
+
+    return t;
+}
+
+void free_tuple(Tuple *t) {
+    if (!t || !t->items) return;
+    for (size_t i = 0; i < t->len; i++) {
+        free(t->items[i]);
+    }
+    free(t->items);
+    t->items = NULL;
+    t->len = 0;
+}
+
+int main(void) {
+    const char *input = "apple,banana,cherry,date";
+    const char *delim = ",";
+
+    Tuple t = str_to_tuple(input, delim);
+
+    if (t.items) {
+        for (size_t i = 0; i < t.len; i++) {
+            printf("(%zu: %s)\n", i, t.items[i]);
+        }
+    }
+
+    free_tuple(&t);
+
+    return 0;
+}
+```

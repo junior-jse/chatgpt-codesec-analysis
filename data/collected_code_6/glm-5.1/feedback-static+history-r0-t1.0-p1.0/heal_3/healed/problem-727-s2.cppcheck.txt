@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-727-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-727-s2.c:93:33: style: Parameter 'argv' can be declared as const array [constParameter]
+int main(int argc, char * const argv[]) {
+                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-727-s2.c:38:26: style: Variable 'processed_len' is assigned a value that is never used. [unreadVariable]
+    size_t processed_len = 0;
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-727-s2.c:64:23: style: Variable 'processed_len' is assigned a value that is never used. [unreadVariable]
+        processed_len += (size_t)matches[0].rm_eo;
+                      ^

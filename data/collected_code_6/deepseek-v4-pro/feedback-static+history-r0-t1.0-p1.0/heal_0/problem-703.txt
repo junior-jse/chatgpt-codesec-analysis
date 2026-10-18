@@ -1,0 +1,129 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct dict_entry {
+    char *key;
+    int value;
+    struct dict_entry *next;
+} dict_entry;
+
+typedef struct {
+    dict_entry **buckets;
+    size_t bucket_count;
+} dictionary;
+
+static unsigned long hash_key(const char *key) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *key++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash;
+}
+
+dictionary *create_dictionary(size_t bucket_count) {
+    dictionary *dict = (dictionary *)malloc(sizeof(dictionary));
+    if (!dict) {
+        return NULL;
+    }
+    dict->buckets = (dict_entry **)calloc(bucket_count, sizeof(dict_entry *));
+    if (!dict->buckets) {
+        free(dict);
+        return NULL;
+    }
+    dict->bucket_count = bucket_count;
+    return dict;
+}
+
+int dictionary_put(dictionary *dict, const char *key, int value) {
+    if (!dict || !key) {
+        return 0;
+    }
+    unsigned long hash = hash_key(key);
+    size_t index = hash % dict->bucket_count;
+
+    dict_entry *entry = dict->buckets[index];
+    while (entry) {
+        if (strcmp(entry->key, key) == 0) {
+            entry->value = value;
+            return 1;
+        }
+        entry = entry->next;
+    }
+
+    dict_entry *new_entry = (dict_entry *)malloc(sizeof(dict_entry));
+    if (!new_entry) {
+        return 0;
+    }
+    new_entry->key = (char *)malloc(strlen(key) + 1);
+    if (!new_entry->key) {
+        free(new_entry);
+        return 0;
+    }
+    strcpy(new_entry->key, key);
+    new_entry->value = value;
+    new_entry->next = dict->buckets[index];
+    dict->buckets[index] = new_entry;
+    return 1;
+}
+
+int dictionary_contains_key(const dictionary *dict, const char *key) {
+    if (!dict || !key) {
+        return 0;
+    }
+    unsigned long hash = hash_key(key);
+    size_t index = hash % dict->bucket_count;
+
+    dict_entry *entry = dict->buckets[index];
+    while (entry) {
+        if (strcmp(entry->key, key) == 0) {
+            return 1;
+        }
+        entry = entry->next;
+    }
+    return 0;
+}
+
+void free_dictionary(dictionary *dict) {
+    if (!dict) {
+        return;
+    }
+    for (size_t i = 0; i < dict->bucket_count; i++) {
+        dict_entry *entry = dict->buckets[i];
+        while (entry) {
+            dict_entry *next = entry->next;
+            free(entry->key);
+            free(entry);
+            entry = next;
+        }
+    }
+    free(dict->buckets);
+    free(dict);
+}
+
+int main(void) {
+    dictionary *dict = create_dictionary(10);
+    if (!dict) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return 1;
+    }
+
+    dictionary_put(dict, "apple", 1);
+    dictionary_put(dict, "banana", 2);
+    dictionary_put(dict, "cherry", 3);
+
+    const char *keys_to_check[] = {"apple", "grape", "banana", "orange"};
+    for (size_t i = 0; i < sizeof(keys_to_check) / sizeof(keys_to_check[0]); i++) {
+        if (dictionary_contains_key(dict, keys_to_check[i])) {
+            printf("Key '%s' is present in the dictionary.\n", keys_to_check[i]);
+        } else {
+            printf("Key '%s' is not present in the dictionary.\n", keys_to_check[i]);
+        }
+    }
+
+    free_dictionary(dict);
+    return 0;
+}
+```

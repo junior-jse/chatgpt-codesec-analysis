@@ -1,0 +1,85 @@
+/* Repair history (previous round):
+ * - Flawfinder strcpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ * - Flawfinder strncpy was replaced by memcpy, which Flawfinder flags with the same CWE (CWE-120).
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char **split_at_lowercase(const char *str, int *count) {
+    if (str == NULL || count == NULL) {
+        return NULL;
+    }
+
+    size_t len = strnlen(str, SIZE_MAX);
+    size_t max_parts = len + 1;
+    char **parts = malloc(max_parts * sizeof(char *));
+    if (parts == NULL) {
+        return NULL;
+    }
+
+    int part_count = 0;
+    const char *start = str;
+    const char *p = str;
+
+    while (*p != '\0') {
+        if (islower((unsigned char)*p)) {
+            size_t part_len = (size_t)(p - start);
+            parts[part_count] = malloc(part_len + 1);
+            if (parts[part_count] == NULL) {
+                for (int i = 0; i < part_count; i++) {
+                    free(parts[i]);
+                }
+                free(parts);
+                return NULL;
+            }
+            /* Possible weaknesses found:
+             * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+             */
+            memcpy(parts[part_count], start, part_len);
+            parts[part_count][part_len] = '\0';
+            part_count++;
+            start = p + 1;
+        }
+        p++;
+    }
+
+    size_t remaining_len = (size_t)(p - start);
+    parts[part_count] = malloc(remaining_len + 1);
+    if (parts[part_count] == NULL) {
+        for (int i = 0; i < part_count; i++) {
+            free(parts[i]);
+        }
+        free(parts);
+        return NULL;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(parts[part_count], start, remaining_len);
+    parts[part_count][remaining_len] = '\0';
+    part_count++;
+
+    *count = part_count;
+    return parts;
+}
+
+int main(void) {
+    const char *test_string = "HelloWorld thisIsATest";
+    int count = 0;
+    char **result = split_at_lowercase(test_string, &count);
+
+    if (result == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        printf("[%s]\n", result[i]);
+        free(result[i]);
+    }
+    free(result);
+
+    return 0;
+}

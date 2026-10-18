@@ -1,0 +1,118 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct NestedNode {
+    int is_list;
+    int value;
+    struct NestedNode *child;
+    struct NestedNode *next;
+} NestedNode;
+
+NestedNode* create_list_node(NestedNode* child) {
+    NestedNode* node = (NestedNode*)malloc(sizeof(NestedNode));
+    if (node == NULL) return NULL;
+    node->is_list = 1;
+    node->value = 0;
+    node->child = child;
+    node->next = NULL;
+    return node;
+}
+
+NestedNode* create_int_node(int val) {
+    NestedNode* node = (NestedNode*)malloc(sizeof(NestedNode));
+    if (node == NULL) return NULL;
+    node->is_list = 0;
+    node->value = val;
+    node->child = NULL;
+    node->next = NULL;
+    return node;
+}
+
+void flatten_append(NestedNode** flat_tail, NestedNode* node) {
+    while (node != NULL) {
+        NestedNode* next = node->next;
+        node->next = NULL;
+        node->child = NULL;
+        node->is_list = 0;
+        *flat_tail = node;
+        flat_tail = &((*flat_tail)->next);
+        node = next;
+    }
+}
+
+NestedNode* flatten(NestedNode* head) {
+    if (head == NULL) return NULL;
+    
+    NestedNode* flat_head = NULL;
+    NestedNode* flat_tail = NULL;
+    NestedNode** current_ptr = &head;
+    
+    while (*current_ptr != NULL) {
+        NestedNode* current = *current_ptr;
+        *current_ptr = current->next;
+        current->next = NULL;
+        
+        if (current->is_list) {
+            NestedNode* flattened_child = flatten(current->child);
+            current->child = flattened_child;
+            flatten_append(&flat_tail, flattened_child);
+            free(current);
+        } else {
+            current->child = NULL;
+            if (flat_head == NULL) {
+                flat_head = current;
+                flat_tail = current;
+            } else {
+                flat_tail->next = current;
+                flat_tail = current;
+            }
+        }
+    }
+    
+    return flat_head;
+}
+
+void free_nested_list(NestedNode* head) {
+    NestedNode* current = head;
+    while (current != NULL) {
+        NestedNode* next = current->next;
+        if (current->child != NULL) {
+            free_nested_list(current->child);
+        }
+        free(current);
+        current = next;
+    }
+}
+
+void print_flat_list(NestedNode* head) {
+    NestedNode* current = head;
+    printf("[");
+    while (current != NULL) {
+        printf("%d", current->value);
+        if (current->next != NULL) {
+            printf(", ");
+        }
+        current = current->next;
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    NestedNode* list1 = create_list_node(create_int_node(1));
+    list1->child->next = create_int_node(2);
+    
+    NestedNode* nested = create_list_node(create_int_node(3));
+    nested->child->next = create_list_node(create_int_node(4));
+    
+    list1->next = nested;
+    list1->next->next = create_int_node(5);
+    
+    NestedNode* result = flatten(list1);
+    print_flat_list(result);
+    
+    free_nested_list(result);
+    
+    return 0;
+}
+```

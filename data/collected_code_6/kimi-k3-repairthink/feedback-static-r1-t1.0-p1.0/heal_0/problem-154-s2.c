@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int *extract_elements(int **array, size_t rows, size_t cols, size_t row_index, size_t col_index) {
+    if (array == NULL || rows == 0 || cols == 0 || row_index >= rows || col_index >= cols) {
+        return NULL;
+    }
+
+    int *result = (int *)malloc(rows * sizeof(int));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        result[i] = array[i][col_index];
+    }
+
+    return result;
+}
+
+int main() {
+    size_t rows = 3;
+    size_t cols = 3;
+    int **array = (int **)malloc(rows * sizeof(int *));
+    if (array == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        array[i] = (int *)malloc(cols * sizeof(int));
+        if (array[i] == NULL) {
+            for (size_t j = 0; j < i; ++j) {
+                free(array[j]);
+            }
+            free(array);
+            return EXIT_FAILURE;
+        }
+    }
+
+    int value = 1;
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            array[i][j] = value++;
+        }
+    }
+
+    size_t row_index = 0;
+    size_t col_index = 1;
+
+    int *extracted = extract_elements(array, rows, cols, row_index, col_index);
+    if (extracted == NULL) {
+        for (size_t i = 0; i < rows; ++i) {
+            free(array[i]);
+        }
+        free(array);
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        printf("%d ", extracted[i]);
+    }
+    printf("\n");
+
+    free(extracted);
+    for (size_t i = 0; i < rows; ++i) {
+        free(array[i]);
+    }
+    free(array);
+
+    return EXIT_SUCCESS;
+}

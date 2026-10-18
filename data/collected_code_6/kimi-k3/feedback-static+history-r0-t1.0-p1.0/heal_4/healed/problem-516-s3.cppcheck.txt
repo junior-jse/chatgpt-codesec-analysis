@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:62:32: style: Condition 'digit>9' is always false [knownConditionTrueFalse]
+        if (digit < 0 || digit > 9) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:61:17: note: Assignment 'digit=(int)(((unsigned int)arr[i]/exp)%10U)', assigned value is less than 10
+        digit = (int)(((unsigned int)arr[i] / exp) % 10U);
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:62:32: note: Condition 'digit>9' is always false
+        if (digit < 0 || digit > 9) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:74:32: style: Condition 'digit>9' is always false [knownConditionTrueFalse]
+        if (digit < 0 || digit > 9) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:73:17: note: Assignment 'digit=(int)(((unsigned int)arr[i-1]/exp)%10U)', assigned value is less than 10
+        digit = (int)(((unsigned int)arr[i - 1] / exp) % 10U);
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-516-s3.c:74:32: note: Condition 'digit>9' is always false
+        if (digit < 0 || digit > 9) {
+                               ^

@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int **data;
+    int rows;
+    int *cols;
+} Matrix;
+
+Matrix zip_lists_of_lists(Matrix list1, Matrix list2) {
+    if (list1.rows != list2.rows) {
+        Matrix empty = {NULL, 0, NULL};
+        return empty;
+    }
+
+    Matrix result;
+    result.rows = list1.rows;
+    result.data = (int **)malloc(result.rows * sizeof(int *));
+    result.cols = (int *)malloc(result.rows * sizeof(int));
+
+    if (!result.data || !result.cols) {
+        free(result.data);
+        free(result.cols);
+        Matrix empty = {NULL, 0, NULL};
+        return empty;
+    }
+
+    for (int i = 0; i < result.rows; i++) {
+        if (list1.cols[i] != list2.cols[i]) {
+            for (int j = 0; j < i; j++) {
+                free(result.data[j]);
+            }
+            free(result.data);
+            free(result.cols);
+            Matrix empty = {NULL, 0, NULL};
+            return empty;
+        }
+
+        result.cols[i] = list1.cols[i] + list2.cols[i];
+        result.data[i] = (int *)malloc(result.cols[i] * sizeof(int));
+
+        if (!result.data[i]) {
+            for (int j = 0; j < i; j++) {
+                free(result.data[j]);
+            }
+            free(result.data);
+            free(result.cols);
+            Matrix empty = {NULL, 0, NULL};
+            return empty;
+        }
+
+        for (int j = 0; j < list1.cols[i]; j++) {
+            result.data[i][j] = list1.data[i][j];
+        }
+
+        for (int j = 0; j < list2.cols[i]; j++) {
+            result.data[i][list1.cols[i] + j] = list2.data[i][j];
+        }
+    }
+
+    return result;
+}
+
+void free_matrix(Matrix m) {
+    if (m.data) {
+        for (int i = 0; i < m.rows; i++) {
+            free(m.data[i]);
+        }
+        free(m.data);
+    }
+    free(m.cols);
+}
+
+int main() {
+    int r1[] = {1, 2};
+    int r2[] = {3, 4};
+    int *d1[] = {r1, r2};
+    int c1[] = {2, 2};
+    Matrix m1 = {d1, 2, c1};
+
+    int r3[] = {5, 6};
+    int r4[] = {7, 8};
+    int *d2[] = {r3, r4};
+    int c2[] = {2, 2};
+    Matrix m2 = {d2, 2, c2};
+
+    Matrix zipped = zip_lists_of_lists(m1, m2);
+
+    for (int i = 0; i < zipped.rows; i++) {
+        for (int j = 0; j < zipped.cols[i]; j++) {
+            printf("%d ", zipped.data[i][j]);
+        }
+        printf("\n");
+    }
+
+    free_matrix(zipped);
+
+    return 0;
+}

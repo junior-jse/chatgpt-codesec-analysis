@@ -1,0 +1,143 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void appendNode(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (newNode == NULL) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+int listLength(Node* head) {
+    int length = 0;
+    while (head != NULL) {
+        length++;
+        head = head->next;
+    }
+    return length;
+}
+
+long long listToNumber(Node* head) {
+    long long number = 0;
+    while (head != NULL) {
+        number = number * 10 + head->data;
+        head = head->next;
+    }
+    return number;
+}
+
+Node* numberToList(long long number) {
+    if (number == 0) {
+        return createNode(0);
+    }
+    
+    Node* head = NULL;
+    int digits[32];
+    int count = 0;
+    
+    while (number > 0) {
+        digits[count++] = number % 10;
+        number /= 10;
+    }
+    
+    for (int i = count - 1; i >= 0; i--) {
+        appendNode(&head, digits[i]);
+    }
+    
+    return head;
+}
+
+Node* moduloDivision(Node* list1, Node* list2) {
+    if (list1 == NULL || list2 == NULL) {
+        return NULL;
+    }
+    
+    long long num1 = listToNumber(list1);
+    long long num2 = listToNumber(list2);
+    
+    if (num2 == 0) {
+        return NULL;
+    }
+    
+    long long result = num1 % num2;
+    
+    return numberToList(result);
+}
+
+void printList(Node* head) {
+    if (head == NULL) {
+        printf("NULL\n");
+        return;
+    }
+    while (head != NULL) {
+        printf("%d", head->data);
+        if (head->next != NULL) {
+            printf(" -> ");
+        }
+        head = head->next;
+    }
+    printf("\n");
+}
+
+void freeList(Node* head) {
+    Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node* list1 = NULL;
+    Node* list2 = NULL;
+    Node* result = NULL;
+    
+    appendNode(&list1, 1);
+    appendNode(&list1, 7);
+    appendNode(&list1, 3);
+    appendNode(&list1, 5);
+    
+    appendNode(&list2, 1);
+    appendNode(&list2, 2);
+    
+    printf("List 1: ");
+    printList(list1);
+    printf("List 2: ");
+    printList(list2);
+    
+    result = moduloDivision(list1, list2);
+    
+    printf("Result of modulo division: ");
+    printList(result);
+    
+    freeList(list1);
+    freeList(list2);
+    freeList(result);
+    
+    return 0;
+}

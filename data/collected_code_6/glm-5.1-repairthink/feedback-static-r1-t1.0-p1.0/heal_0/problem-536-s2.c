@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *select_nth_item(struct Node *head, size_t n) {
+    if (head == NULL) {
+        return NULL;
+    }
+
+    struct Node *current = head;
+    size_t count = 0;
+
+    while (current != NULL) {
+        if (count == n) {
+            return current;
+        }
+        count++;
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+struct Node *create_node(int data) {
+    struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(struct Node *head) {
+    struct Node *current = head;
+    struct Node *next_node;
+    while (current != NULL) {
+        next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+}
+
+int main(void) {
+    struct Node *head = create_node(10);
+    head->next = create_node(20);
+    head->next->next = create_node(30);
+    head->next->next->next = create_node(40);
+
+    size_t n = 2;
+    struct Node *result = select_nth_item(head, n);
+
+    if (result != NULL) {
+        printf("Item at index %zu is %d\n", n, result->data);
+    } else {
+        printf("Index %zu is out of bounds\n", n);
+    }
+
+    n = 5;
+    result = select_nth_item(head, n);
+
+    if (result != NULL) {
+        printf("Item at index %zu is %d\n", n, result->data);
+    } else {
+        printf("Index %zu is out of bounds\n", n);
+    }
+
+    free_list(head);
+
+    return 0;
+}

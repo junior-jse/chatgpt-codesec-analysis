@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-822-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-822-s3.c:61:9: style: Condition 'null_result' is always false [knownConditionTrueFalse]
+    if (null_result) {
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-822-s3.c:59:41: note: Calling function 'is_valid_password' returns 0
+    bool null_result = is_valid_password(null_password, 64);
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-822-s3.c:59:41: note: Assignment 'null_result=is_valid_password(null_password,64)', assigned value is 0
+    bool null_result = is_valid_password(null_password, 64);
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-822-s3.c:61:9: note: Condition 'null_result' is always false
+    if (null_result) {
+        ^

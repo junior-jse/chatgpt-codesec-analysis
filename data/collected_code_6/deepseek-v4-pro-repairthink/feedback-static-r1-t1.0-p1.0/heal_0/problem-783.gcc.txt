@@ -1,0 +1,8 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-783.c: In function 'rgb_to_hsv':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-783.c:33:33: error: implicit declaration of function 'fmodf' [-Wimplicit-function-declaration]
+   33 |                 hsv.h = 60.0f * fmodf((rgb.g - rgb.b) / delta, 6.0f);
+      |                                 ^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-783.c:2:1: note: include '<math.h>' or provide a declaration of 'fmodf'
+    1 | #include <stdio.h>
+  +++ |+#include <math.h>
+    2 | 

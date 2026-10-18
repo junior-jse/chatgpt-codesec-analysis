@@ -1,0 +1,143 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct list {
+    int data;
+    struct list *next;
+};
+
+struct list **split_nth(struct list *head, int n, int *count) {
+    struct list **result = NULL;
+    struct list *current = head;
+    struct list *prev = NULL;
+    int lists = 0;
+    int i = 0;
+
+    if (head == NULL || n <= 0) {
+        *count = 0;
+        return NULL;
+    }
+
+    result = malloc(sizeof(struct list *));
+    if (result == NULL) {
+        *count = 0;
+        return NULL;
+    }
+    result[0] = head;
+    lists = 1;
+
+    while (current != NULL) {
+        i++;
+        if (i % n == 0) {
+            prev = current;
+            current = current->next;
+            if (current != NULL) {
+                struct list **temp = realloc(result, (lists + 1) * sizeof(struct list *));
+                if (temp == NULL) {
+                    prev->next = NULL;
+                    *count = lists;
+                    return result;
+                }
+                result = temp;
+                result[lists] = current;
+                lists++;
+            }
+            prev->next = NULL;
+        } else {
+            current = current->next;
+        }
+    }
+
+    *count = lists;
+    return result;
+}
+
+struct list *create_node(int data) {
+    struct list *node = malloc(sizeof(struct list));
+    if (node == NULL) {
+        return NULL;
+    }
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+struct list *build_list(const int *arr, int size) {
+    struct list *head = NULL;
+    struct list *tail = NULL;
+    int i;
+
+    if (size == 0) {
+        return NULL;
+    }
+
+    head = create_node(arr[0]);
+    if (head == NULL) {
+        return NULL;
+    }
+    tail = head;
+
+    for (i = 1; i < size; i++) {
+        tail->next = create_node(arr[i]);
+        if (tail->next == NULL) {
+            struct list *current = head;
+            while (current != NULL) {
+                struct list *next = current->next;
+                free(current);
+                current = next;
+            }
+            return NULL;
+        }
+        tail = tail->next;
+    }
+
+    return head;
+}
+
+void free_list(struct list *head) {
+    struct list *current = head;
+    while (current != NULL) {
+        struct list *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void print_list(struct list *head) {
+    struct list *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     *  Variable 'arr' can be declared as const array [constVariable]
+     */
+    int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    struct list *head = build_list(arr, 10);
+    struct list **parts = NULL;
+    int count = 0;
+    int i;
+
+    if (head == NULL) {
+        return 1;
+    }
+
+    parts = split_nth(head, 3, &count);
+
+    if (parts == NULL) {
+        free_list(head);
+        return 1;
+    }
+
+    for (i = 0; i < count; i++) {
+        print_list(parts[i]);
+        free_list(parts[i]);
+    }
+    free(parts);
+
+    return 0;
+}

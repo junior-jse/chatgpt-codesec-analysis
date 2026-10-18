@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdint.h>
+
+#define INITIAL_CAPACITY 128
+
+int is_vowel(char c) {
+    c = (char)tolower((unsigned char)c);
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+}
+
+void reverse_vowels(char *str, size_t len) {
+    if (str == NULL || len == 0) {
+        return;
+    }
+
+    size_t left = 0;
+    size_t right = len - 1;
+
+    while (left < right) {
+        while (left < right && !is_vowel(str[left])) {
+            left++;
+        }
+        while (left < right && !is_vowel(str[right])) {
+            right--;
+        }
+
+        if (left < right) {
+            char temp = str[left];
+            str[left] = str[right];
+            str[right] = temp;
+            left++;
+            right--;
+        }
+    }
+}
+
+char *read_line(FILE *stream, size_t *out_len) {
+    if (stream == NULL || out_len == NULL) {
+        return NULL;
+    }
+
+    *out_len = 0;
+
+    size_t capacity = INITIAL_CAPACITY;
+    size_t len = 0;
+    char *buffer = malloc(capacity);
+    if (buffer == NULL) {
+        return NULL;
+    }
+
+    int ch;
+    while ((ch = fgetc(stream)) != EOF && ch != '\n') {
+        if (len >= capacity - 1) {
+            if (capacity > SIZE_MAX / 2) {
+                free(buffer);
+                return NULL;
+            }
+            size_t new_capacity = capacity * 2;
+            if (new_capacity <= capacity) {
+                free(buffer);
+                return NULL;
+            }
+            char *new_buffer = realloc(buffer, new_capacity);
+            if (new_buffer == NULL) {
+                free(buffer);
+                return NULL;
+            }
+            buffer = new_buffer;
+            capacity = new_capacity;
+        }
+        buffer[len++] = (char)ch;
+    }
+
+    if (ferror(stream)) {
+        free(buffer);
+        return NULL;
+    }
+
+    if (ch == EOF && len == 0) {
+        free(buffer);
+        return NULL;
+    }
+
+    if (len > 0 && buffer[len - 1] == '\r') {
+        len--;
+    }
+
+    buffer[len] = '\0';
+    *out_len = len;
+    return buffer;
+}
+
+int main(void) {
+    printf("Enter a string: ");
+    fflush(stdout);
+
+    size_t len = 0;
+    char *str = read_line(stdin, &len);
+    if (str == NULL) {
+        fprintf(stderr, "Error: failed to read input\n");
+        return EXIT_FAILURE;
+    }
+
+    reverse_vowels(str, len);
+
+    printf("String after reversing vowels: ");
+    fwrite(str, 1, len, stdout);
+    putchar('\n');
+
+    free(str);
+    return EXIT_SUCCESS;
+}

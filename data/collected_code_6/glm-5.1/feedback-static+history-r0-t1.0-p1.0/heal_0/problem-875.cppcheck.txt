@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c:4:26: style: Parameter 't1' can be declared as pointer to const [constParameterPointer]
+int min_diff_tuples(int *t1, int *t2, int n) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-875.c:4:35: style: Parameter 't2' can be declared as pointer to const [constParameterPointer]
+int min_diff_tuples(int *t1, int *t2, int n) {
+                                  ^

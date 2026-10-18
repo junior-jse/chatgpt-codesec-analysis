@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:41:21: style: Variable 'list_null' can be declared as pointer to const [constVariablePointer]
+    DictionaryList *list_null = NULL;
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:5:10: style: struct member 'Dictionary::keys' is never used. [unusedStructMember]
+    int *keys;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:6:10: style: struct member 'Dictionary::values' is never used. [unusedStructMember]
+    int *values;
+         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-115-s2.c:8:12: style: struct member 'Dictionary::capacity' is never used. [unusedStructMember]
+    size_t capacity;
+           ^

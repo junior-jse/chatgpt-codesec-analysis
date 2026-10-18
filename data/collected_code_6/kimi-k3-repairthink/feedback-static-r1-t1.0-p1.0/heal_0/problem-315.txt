@@ -1,0 +1,54 @@
+```c
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+int find_first_max_even_word_length(const char *str) {
+    if (str == NULL) {
+        return -1;
+    }
+    
+    int max_len = 0;
+    int current_len = 0;
+    bool in_word = false;
+    
+    for (size_t i = 0; str[i] != '\0'; i++) {
+        if (isalpha((unsigned char)str[i])) {
+            if (!in_word) {
+                in_word = true;
+                current_len = 1;
+            } else {
+                current_len++;
+            }
+        } else {
+            if (in_word) {
+                if (current_len % 2 == 0 && current_len > max_len) {
+                    max_len = current_len;
+                }
+                in_word = false;
+                current_len = 0;
+            }
+        }
+    }
+    
+    if (in_word && current_len % 2 == 0 && current_len > max_len) {
+        max_len = current_len;
+    }
+    
+    return max_len;
+}
+
+int main(void) {
+    const char *test_string = "This is a test string with some even length words like hello world";
+    int result = find_first_max_even_word_length(test_string);
+    
+    if (result >= 0) {
+        printf("Maximum even word length: %d\n", result);
+    } else {
+        printf("Invalid input\n");
+    }
+    
+    return 0;
+}
+```

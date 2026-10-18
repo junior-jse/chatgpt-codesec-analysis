@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-440.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-440.c:211:13: warning: Either the condition 'len>=4096' is redundant or the array 'sentence[4096]' is accessed at index 4096, which is out of bounds. [arrayIndexOutOfBoundsCond]
+    sentence[len] = '\0';
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-440.c:218:13: note: Assuming that condition 'len>=4096' is not redundant
+    if (len >= MAX_SENTENCE_LEN) {
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-440.c:211:13: note: Array index out of bounds
+    sentence[len] = '\0';
+            ^

@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int a;
+    int b;
+} Tuple;
+
+typedef struct {
+    Tuple key;
+    int count;
+} TupleMap;
+
+int compare_tuples(const void *p1, const void *p2) {
+    const Tuple *t1 = p1;
+    const Tuple *t2 = p2;
+    if (t1->a < t2->a) return -1;
+    if (t1->a > t2->a) return 1;
+    if (t1->b < t2->b) return -1;
+    if (t1->b > t2->b) return 1;
+    return 0;
+}
+
+int compare_map_entries(const void *p1, const void *p2) {
+    return compare_tuples(&((const TupleMap *)p1)->key, &((const TupleMap *)p2)->key);
+}
+
+TupleMap* get_unique_tuple_frequencies(const Tuple *tuples, size_t n, size_t *out_size) {
+    if (tuples == NULL || out_size == NULL || n == 0) {
+        if (out_size != NULL) *out_size = 0;
+        return NULL;
+    }
+
+    Tuple *sorted = malloc(n * sizeof *sorted);
+    if (sorted == NULL) {
+        *out_size = 0;
+        return NULL;
+    }
+
+    for (size_t i = 0; i < n; ++i) {
+        sorted[i] = tuples[i];
+    }
+
+    qsort(sorted, n, sizeof *sorted, compare_tuples);
+
+    size_t unique_count = 1;
+    for (size_t i = 1; i < n; ++i) {
+        if (compare_tuples(&sorted[i], &sorted[i - 1]) != 0) {
+            unique_count++;
+        }
+    }
+
+    TupleMap *map = malloc(unique_count * sizeof *map);
+    if (map == NULL) {
+        free(sorted);
+        *out_size = 0;
+        return NULL;
+    }
+
+    size_t idx = 0;
+    map[idx].key = sorted[0];
+    map[idx].count = 1;
+    for (size_t i = 1; i < n; ++i) {
+        if (compare_tuples(&sorted[i], &map[idx].key) == 0) {
+            map[idx].count++;
+        } else {
+            idx++;
+            map[idx].key = sorted[i];
+            map[idx].count = 1;
+        }
+    }
+
+    free(sorted);
+    *out_size = unique_count;
+    return map;
+}
+
+int main(void) {
+    Tuple data[] = {{3, 4}, {1, 2}, {3, 4}, {5, 6}, {1, 2}, {3, 4}};
+    size_t n = sizeof(data) / sizeof(data[0]);
+    size_t map_size = 0;
+
+    TupleMap *freq_map = get_unique_tuple_frequencies(data, n, &map_size);
+
+    if (freq_map != NULL) {
+        for (size_t i = 0; i < map_size; ++i) {
+            printf("(%d, %d): %d\n", freq_map[i].key.a, freq_map[i].key.b, freq_map[i].count);
+        }
+        free(freq_map);
+    }
+
+    return 0;
+}

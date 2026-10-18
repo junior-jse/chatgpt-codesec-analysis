@@ -1,0 +1,224 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct ListNode {
+    Node* inner_list;
+    struct ListNode* next;
+} ListNode;
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (!new_node) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+ListNode* create_list_node(Node* inner_list) {
+    ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
+    if (!new_node) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->inner_list = inner_list;
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* append_node(Node* head, int data) {
+    Node* new_node = create_node(data);
+    if (!head) {
+        return new_node;
+    }
+    Node* current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+ListNode* append_list_node(ListNode* head, Node* inner_list) {
+    ListNode* new_node = create_list_node(inner_list);
+    if (!head) {
+        return new_node;
+    }
+    ListNode* current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return head;
+}
+
+int list_length(Node* head) {
+    int count = 0;
+    Node* current = head;
+    while (current) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+int lists_count(ListNode* head) {
+    int count = 0;
+    ListNode* current = head;
+    while (current) {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+Node* zip_lists(Node* list1, Node* list2) {
+    Node* result = NULL;
+    Node* curr1 = list1;
+    Node* curr2 = list2;
+    
+    while (curr1 && curr2) {
+        result = append_node(result, curr1->data);
+        result = append_node(result, curr2->data);
+        curr1 = curr1->next;
+        curr2 = curr2->next;
+    }
+    
+    while (curr1) {
+        result = append_node(result, curr1->data);
+        curr1 = curr1->next;
+    }
+    
+    while (curr2) {
+        result = append_node(result, curr2->data);
+        curr2 = curr2->next;
+    }
+    
+    return result;
+}
+
+ListNode* zip_list_of_lists(ListNode* lists1, ListNode* lists2) {
+    ListNode* result = NULL;
+    ListNode* curr1 = lists1;
+    ListNode* curr2 = lists2;
+    
+    while (curr1 && curr2) {
+        result = append_list_node(result, zip_lists(curr1->inner_list, curr2->inner_list));
+        curr1 = curr1->next;
+        curr2 = curr2->next;
+    }
+    
+    while (curr1) {
+        result = append_list_node(result, zip_lists(curr1->inner_list, NULL));
+        curr1 = curr1->next;
+    }
+    
+    while (curr2) {
+        result = append_list_node(result, zip_lists(NULL, curr2->inner_list));
+        curr2 = curr2->next;
+    }
+    
+    return result;
+}
+
+void free_inner_list(Node* head) {
+    Node* current = head;
+    while (current) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void free_list_of_lists(ListNode* head) {
+    ListNode* current = head;
+    while (current) {
+        ListNode* temp = current;
+        free_inner_list(current->inner_list);
+        current = current->next;
+        free(temp);
+    }
+}
+
+void print_inner_list(Node* head) {
+    Node* current = head;
+    printf("[");
+    while (current) {
+        printf("%d", current->data);
+        current = current->next;
+        if (current) {
+            printf(", ");
+        }
+    }
+    printf("]");
+}
+
+void print_list_of_lists(ListNode* head) {
+    ListNode* current = head;
+    printf("[");
+    while (current) {
+        print_inner_list(current->inner_list);
+        current = current->next;
+        if (current) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main() {
+    Node* list1 = NULL;
+    list1 = append_node(list1, 1);
+    list1 = append_node(list1, 2);
+    list1 = append_node(list1, 3);
+    
+    Node* list2 = NULL;
+    list2 = append_node(list2, 4);
+    list2 = append_node(list2, 5);
+    
+    Node* list3 = NULL;
+    list3 = append_node(list3, 6);
+    list3 = append_node(list3, 7);
+    list3 = append_node(list3, 8);
+    list3 = append_node(list3, 9);
+    
+    Node* list4 = NULL;
+    list4 = append_node(list4, 10);
+    
+    Node* list5 = NULL;
+    list5 = append_node(list5, 11);
+    list5 = append_node(list5, 12);
+    
+    ListNode* lists1 = NULL;
+    lists1 = append_list_node(lists1, list1);
+    lists1 = append_list_node(lists1, list2);
+    lists1 = append_list_node(lists1, list3);
+    
+    ListNode* lists2 = NULL;
+    lists2 = append_list_node(lists2, list4);
+    lists2 = append_list_node(lists2, list5);
+    
+    printf("Lists 1: ");
+    print_list_of_lists(lists1);
+    printf("Lists 2: ");
+    print_list_of_lists(lists2);
+    
+    ListNode* zipped = zip_list_of_lists(lists1, lists2);
+    printf("Zipped: ");
+    print_list_of_lists(zipped);
+    
+    free_list_of_lists(zipped);
+    free_list_of_lists(lists1);
+    free_list_of_lists(lists2);
+    
+    return 0;
+}
+```

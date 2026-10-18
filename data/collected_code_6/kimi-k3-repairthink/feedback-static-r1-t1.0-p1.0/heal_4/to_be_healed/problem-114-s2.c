@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <limits.h>
+
+typedef struct {
+    int first;
+    int second;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    int frequency;
+} TupleFrequency;
+
+int compare_tuples(const void *a, const void *b) {
+    const Tuple *tuple_a = (const Tuple *)a;
+    const Tuple *tuple_b = (const Tuple *)b;
+
+    if (tuple_a->first < tuple_b->first) {
+        return -1;
+    }
+    if (tuple_a->first > tuple_b->first) {
+        return 1;
+    }
+    if (tuple_a->second < tuple_b->second) {
+        return -1;
+    }
+    if (tuple_a->second > tuple_b->second) {
+        return 1;
+    }
+    return 0;
+}
+
+TupleFrequency *assign_frequency(const Tuple *tuple_list, size_t list_size, size_t *result_size) {
+    if (tuple_list == NULL || result_size == NULL || list_size == 0) {
+        return NULL;
+    }
+
+    *result_size = 0;
+
+    if (list_size > SIZE_MAX / sizeof(Tuple)) {
+        return NULL;
+    }
+
+    size_t copy_size = list_size * sizeof(Tuple);
+    /* Possible weaknesses found:
+     *  sorted_tuples_capacity is assigned 'copy_size' here.
+     */
+    size_t sorted_tuples_capacity = copy_size;
+
+    Tuple *sorted_tuples = malloc(sorted_tuples_capacity);
+    /* Possible weaknesses found:
+     *  Assuming condition is false
+     */
+    if (sorted_tuples == NULL) {
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     *  Condition 'copy_size>sorted_tuples_capacity' is always false
+     *  Condition 'copy_size>sorted_tuples_capacity' is always false [knownConditionTrueFalse]
+     */
+    if (copy_size > sorted_tuples_capacity) {
+        free(sorted_tuples);
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(sorted_tuples, tuple_list, copy_size);
+    qsort(sorted_tuples, list_size, sizeof(Tuple), compare_tuples);
+
+    if (list_size > SIZE_MAX / sizeof(TupleFrequency)) {
+        free(sorted_tuples);
+        return NULL;
+    }
+
+    if (list_size > (size_t)INT_MAX) {
+        free(sorted_tuples);
+        return NULL;
+    }
+
+    TupleFrequency *result = malloc(list_size * sizeof(TupleFrequency));
+    if (result == NULL) {
+        free(sorted_tuples);
+        return NULL;
+    }
+
+    size_t unique_count = 0;
+    size_t i = 0;
+
+    while (i < list_size) {
+        int current_freq = 1;
+        size_t j = i + 1;
+
+        while (j < list_size &&
+               sorted_tuples[j].first == sorted_tuples[i].first &&
+               sorted_tuples[j].second == sorted_tuples[i].second) {
+            current_freq++;
+            j++;
+        }
+
+        result[unique_count].tuple = sorted_tuples[i];
+        result[unique_count].frequency = current_freq;
+        unique_count++;
+
+        i = j;
+    }
+
+    free(sorted_tuples);
+
+    if (unique_count == 0) {
+        free(result);
+        return NULL;
+    }
+
+    TupleFrequency *resized_result = realloc(result, unique_count * sizeof(TupleFrequency));
+    if (resized_result != NULL) {
+        result = resized_result;
+    }
+
+    *result_size = unique_count;
+    return result;
+}
+
+int main(void) {
+    Tuple tuple_list[] = {
+        {1, 2}, {3, 4}, {1, 2}, {5, 6}, {3, 4}, {1, 2}
+    };
+    size_t list_size = sizeof(tuple_list) / sizeof(tuple_list[0]);
+    size_t result_size = 0;
+
+    TupleFrequency *frequencies = assign_frequency(tuple_list, list_size, &result_size);
+
+    if (frequencies == NULL) {
+        fprintf(stderr, "Error: Failed to assign frequencies\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Tuple frequencies:\n");
+    for (size_t i = 0; i < result_size; i++) {
+        printf("(%d, %d): %d\n",
+               frequencies[i].tuple.first,
+               frequencies[i].tuple.second,
+               frequencies[i].frequency);
+    }
+
+    free(frequencies);
+    return EXIT_SUCCESS;
+}

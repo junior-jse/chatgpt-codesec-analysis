@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-921-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-921-s2.c:71:23: style: The comparison 'bytes_to_copy > dest_size' is always false because 'bytes_to_copy' and 'dest_size' represent the same value. [knownConditionTrueFalse]
+    if (bytes_to_copy > dest_size) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-921-s2.c:69:30: note: 'bytes_to_copy' is assigned value 'n*sizeof(int)' here.
+    size_t bytes_to_copy = n * sizeof(int);
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-921-s2.c:70:26: note: 'dest_size' is assigned value 'n*sizeof(int)' here.
+    size_t dest_size = n * sizeof(int);
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-921-s2.c:71:23: note: The comparison 'bytes_to_copy > dest_size' is always false because 'bytes_to_copy' and 'dest_size' represent the same value.
+    if (bytes_to_copy > dest_size) {
+                      ^

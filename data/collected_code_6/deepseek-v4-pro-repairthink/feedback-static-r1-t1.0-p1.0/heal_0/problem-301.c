@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef struct dict_entry {
+    char *key;
+    void *value;
+    int is_dict;
+    struct dict_entry *next;
+} dict_entry;
+
+typedef struct {
+    dict_entry *head;
+} dict;
+
+dict *dict_create(void) {
+    dict *d = malloc(sizeof(*d));
+    if (d == NULL) {
+        return NULL;
+    }
+    d->head = NULL;
+    return d;
+}
+
+static dict_entry *dict_find(dict *d, const char *key) {
+    dict_entry *entry;
+    if (d == NULL || key == NULL) {
+        return NULL;
+    }
+    entry = d->head;
+    while (entry != NULL) {
+        if (strcmp(entry->key, key) == 0) {
+            return entry;
+        }
+        entry = entry->next;
+    }
+    return NULL;
+}
+
+static int dict_add_entry(dict *d, const char *key, void *value, int is_dict) {
+    dict_entry *entry;
+    dict_entry *new_entry;
+    if (d == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+    entry = dict_find(d, key);
+    if (entry != NULL) {
+        return -1;
+    }
+    new_entry = malloc(sizeof(*new_entry));
+    if (new_entry == NULL) {
+        return -1;
+    }
+    new_entry->key = malloc(strlen(key) + 1);
+    if (new_entry->key == NULL) {
+        free(new_entry);
+        return -1;
+    }
+    strcpy(new_entry->key, key);
+    new_entry->value = value;
+    new_entry->is_dict = is_dict;
+    new_entry->next = d->head;
+    d->head = new_entry;
+    return 0;
+}
+
+int dict_set_value(dict *d, const char *key, void *value) {
+    if (value == NULL) {
+        return -1;
+    }
+    return dict_add_entry(d, key, value, 0);
+}
+
+int dict_set_dict(dict *d, const char *key, dict *value) {
+    if (value == NULL) {
+        return -1;
+    }
+    return dict_add_entry(d, key, value, 1);
+}
+
+static void dict_free_entries(dict_entry *entry) {
+    dict_entry *next;
+    while (entry != NULL) {
+        next = entry->next;
+        if (entry->is_dict) {
+            dict_free_entries(((dict *)entry->value)->head);
+            free(entry->value);
+        }
+        free(entry->key);
+        free(entry);
+        entry = next;
+    }
+}
+
+void dict_destroy(dict *d) {
+    if (d == NULL) {
+        return;
+    }
+    dict_free_entries(d->head);
+    free(d);
+}
+
+static int dict_depth_recursive(const dict_entry *entry) {
+    int max_depth = 0;
+    int child_depth;
+    if (entry == NULL) {
+        return 0;
+    }
+    while (entry != NULL) {
+        if (entry->is_dict) {
+            child_depth = dict_depth_recursive(((dict *)entry->value)->head);
+            if (child_depth > max_depth) {
+                max_depth = child_depth;
+            }
+        }
+        entry = entry->next;
+    }
+    return max_depth + 1;
+}
+
+int dict_depth(const dict *d) {
+    if (d == NULL || d->head == NULL) {
+        return 0;
+    }
+    return dict_depth_recursive(d->head);
+}
+
+int main(void) {
+    dict *root = dict_create();
+    dict *level1 = dict_create();
+    dict *level2 = dict_create();
+    dict *level3 = dict_create();
+    int value1 = 1;
+    int value2 = 2;
+    int value3 = 3;
+    int value4 = 4;
+
+    if (root == NULL || level1 == NULL || level2 == NULL || level3 == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        if (root != NULL) dict_destroy(root);
+        if (level1 != NULL) dict_destroy(level1);
+        if (level2 != NULL) dict_destroy(level2);
+        if (level3 != NULL) dict_destroy(level3);
+        return 1;
+    }
+
+    if (dict_set_value(level3, "value3", &value3) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_dict(level2, "level3", level3) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_value(level2, "value2", &value2) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_dict(level1, "level2", level2) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_value(level1, "value1", &value1) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_dict(root, "level1", level1) != 0) {
+        goto cleanup;
+    }
+    if (dict_set_value(root, "value0", &value4) != 0) {
+        goto cleanup;
+    }
+
+    printf("Depth: %d\n", dict_depth(root));
+
+    dict_destroy(root);
+    return 0;
+
+cleanup:
+    dict_destroy(root);
+    return 1;
+}

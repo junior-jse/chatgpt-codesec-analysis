@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:53:20: style: Condition 'strLen>0' is always true [knownConditionTrueFalse]
+        if (strLen > 0) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:40:20: note: Assuming that condition 'strLen==0' is not redundant
+        if (strLen == 0 || strLen >= MAX_WORD_LENGTH * MAX_WORDS) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:45:24: note: Assuming condition is false
+        if (tempString == NULL) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:53:20: note: Condition 'strLen>0' is always true
+        if (strLen > 0) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:84:38: style: Condition 'tokenLen>0' is always true [knownConditionTrueFalse]
+                        if (tokenLen > 0) {
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:68:26: note: Assuming condition 'tokenLen>0' is true
+            if (tokenLen > 0 && tokenLen < MAX_WORD_LENGTH) {
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:76:60: note: Assuming condition is false
+                        if (wordCounts[wordCountSize].word == NULL) {
+                                                           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-326-s3.c:84:38: note: Condition 'tokenLen>0' is always true
+                        if (tokenLen > 0) {
+                                     ^

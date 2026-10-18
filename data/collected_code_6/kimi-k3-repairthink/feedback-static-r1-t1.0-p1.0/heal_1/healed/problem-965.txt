@@ -1,0 +1,87 @@
+```c
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdint.h>
+
+#define MAX_INPUT_LENGTH 4096
+
+char *camel_to_snake(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t len = strnlen(input, MAX_INPUT_LENGTH + 1);
+    if (len > MAX_INPUT_LENGTH) {
+        return NULL;
+    }
+
+    if (len > (SIZE_MAX - 1) / 2) {
+        return NULL;
+    }
+
+    size_t max_len = len * 2 + 1;
+    char *output = malloc(max_len);
+    if (output == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (isupper((unsigned char)input[i])) {
+            if (i > 0) {
+                output[j++] = '_';
+            }
+            output[j++] = (char)tolower((unsigned char)input[i]);
+        } else {
+            output[j++] = input[i];
+        }
+    }
+    output[j] = '\0';
+
+    char *result = realloc(output, j + 1);
+    if (result == NULL) {
+        free(output);
+        return NULL;
+    }
+
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "camelCaseString",
+        "helloWorld",
+        "a",
+        "ABC",
+        "alreadySnakeCase",
+        NULL
+    };
+
+    for (int i = 0; test_cases[i] != NULL; i++) {
+        char *result = camel_to_snake(test_cases[i]);
+        if (result != NULL) {
+            printf("Input: %s\nOutput: %s\n\n", test_cases[i], result);
+            free(result);
+        } else {
+            fprintf(stderr, "Conversion failed\n");
+            return 1;
+        }
+    }
+
+    return 0;
+}
+```
+
+Key changes addressing the flagged CWE-126 weakness:
+
+1. **Bounded length calculation**: Replaced `strlen(input)` with `strnlen(input, MAX_INPUT_LENGTH + 1)`, which stops scanning after a fixed bound. This guarantees no over-read occurs if the caller passes a buffer that lacks a `\0` terminator within the expected range.
+
+2. **Terminator validation**: If `strnlen` returns a length greater than `MAX_INPUT_LENGTH`, the input is rejected (returns `NULL`), so untrusted or malformed data never propagates further.
+
+3. **Overflow guard**: Added a check (`len > (SIZE_MAX - 1) / 2`) before computing `len * 2 + 1`, eliminating any theoretical `size_t` overflow in the allocation size calculation.
+
+4. **Feature-test macro**: `#define _POSIX_C_SOURCE 200809L` ensures `strnlen` is properly declared on POSIX-compliant systems, and `<stdint.h>` provides `SIZE_MAX`.

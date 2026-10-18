@@ -1,0 +1,20 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:15:18: error: call to undeclared function 'safe_strlen'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   15 |     size_t len = safe_strlen(str, SIZE_MAX);
+      |                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:15:18: note: did you mean 'safe_strdup'?
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:11:14: note: 'safe_strdup' declared here
+   11 | static char *safe_strdup(const char *str) {
+      |              ^
+   12 |     if (str == NULL) {
+   13 |         return NULL;
+   14 |     }
+   15 |     size_t len = safe_strlen(str, SIZE_MAX);
+      |                  ~~~~~~~~~~~
+      |                  safe_strdup
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:24:15: error: static declaration of 'safe_strlen' follows non-static declaration
+   24 | static size_t safe_strlen(const char *str, size_t max_len) {
+      |               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:15:18: note: previous implicit declaration is here
+   15 |     size_t len = safe_strlen(str, SIZE_MAX);
+      |                  ^
+2 errors generated.

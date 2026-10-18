@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:144:32: style: Condition 'heap_init(&iter->heap)!=0' is always false [knownConditionTrueFalse]
+    if (heap_init(&iter->heap) != 0) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:144:18: note: Calling function 'heap_init' returns 0
+    if (heap_init(&iter->heap) != 0) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:144:32: note: Condition 'heap_init(&iter->heap)!=0' is always false
+    if (heap_init(&iter->heap) != 0) {
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:68:12: style: The scope of the variable 'parent' can be reduced. [variableScope]
+    size_t parent;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:84:12: style: The scope of the variable 'new_capacity' can be reduced. [variableScope]
+    size_t new_capacity;
+           ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-108.c:166:14: style: The scope of the variable 'new_node' can be reduced. [variableScope]
+    HeapNode new_node;
+             ^

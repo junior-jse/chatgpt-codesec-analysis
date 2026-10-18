@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct List {
+    Node *head;
+    int length;
+    struct List *next;
+} List;
+
+List *create_list(int *arr, int size) {
+    List *list = (List *)malloc(sizeof(List));
+    if (!list) return NULL;
+    list->head = NULL;
+    list->length = size;
+    list->next = NULL;
+    Node **current = &list->head;
+    for (int i = 0; i < size; i++) {
+        *current = (Node *)malloc(sizeof(Node));
+        if (!(*current)) {
+            Node *temp = list->head;
+            while (temp) {
+                Node *next = temp->next;
+                free(temp);
+                temp = next;
+            }
+            free(list);
+            return NULL;
+        }
+        (*current)->data = arr[i];
+        (*current)->next = NULL;
+        current = &(*current)->next;
+    }
+    return list;
+}
+
+void free_list(List *list) {
+    if (!list) return;
+    Node *current = list->head;
+    while (current) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+    free(list);
+}
+
+void free_lists(List *list) {
+    while (list) {
+        List *next = list->next;
+        free_list(list);
+        list = next;
+    }
+}
+
+List *find_min_length_lists(List *list) {
+    if (!list) return NULL;
+    int min_length = list->length;
+    List *result = NULL;
+    List **result_tail = &result;
+    List *current = list;
+    while (current) {
+        if (current->length < min_length) {
+            min_length = current->length;
+            free_lists(result);
+            result = NULL;
+            result_tail = &result;
+        }
+        if (current->length == min_length) {
+            List *copy = (List *)malloc(sizeof(List));
+            if (!copy) {
+                free_lists(result);
+                return NULL;
+            }
+            copy->head = current->head;
+            copy->length = current->length;
+            copy->next = NULL;
+            *result_tail = copy;
+            result_tail = &copy->next;
+        }
+        current = current->next;
+    }
+    return result;
+}
+
+int main() {
+    int arr1[] = {1, 2, 3};
+    int arr2[] = {4, 5};
+    int arr3[] = {6};
+    int arr4[] = {7, 8, 9, 10};
+    int arr5[] = {11, 12};
+    
+    List *list1 = create_list(arr1, 3);
+    List *list2 = create_list(arr2, 2);
+    List *list3 = create_list(arr3, 1);
+    List *list4 = create_list(arr4, 4);
+    List *list5 = create_list(arr5, 2);
+    
+    if (!list1 || !list2 || !list3 || !list4 || !list5) {
+        free_lists(list1);
+        free_lists(list2);
+        free_lists(list3);
+        free_lists(list4);
+        free_lists(list5);
+        return 1;
+    }
+    
+    list1->next = list2;
+    list2->next = list3;
+    list3->next = list4;
+    list4->next = list5;
+    
+    List *min_lists = find_min_length_lists(list1);
+    
+    List *current = min_lists;
+    while (current) {
+        printf("List length: %d, values: ", current->length);
+        Node *node = current->head;
+        while (node) {
+            printf("%d ", node->data);
+            node = node->next;
+        }
+        printf("\n");
+        current = current->next;
+    }
+    
+    free_lists(min_lists);
+    free_lists(list1);
+    
+    return 0;
+}

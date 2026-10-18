@@ -1,0 +1,99 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    void *data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    int is_list;
+} Element;
+
+long count_and_square_lists(Element *elements, size_t num_elements) {
+    if (elements == NULL) {
+        return 0;
+    }
+
+    long list_count = 0;
+    for (size_t i = 0; i < num_elements; i++) {
+        if (elements[i].is_list) {
+            list_count++;
+        }
+    }
+
+    return list_count * list_count;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp->data);
+        free(temp);
+    }
+}
+
+int main(void) {
+    Element *elements = malloc(4 * sizeof(Element));
+    if (elements == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    Node *list1 = malloc(sizeof(Node));
+    if (list1 == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(elements);
+        return EXIT_FAILURE;
+    }
+    list1->data = malloc(sizeof(int));
+    if (list1->data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(list1);
+        free(elements);
+        return EXIT_FAILURE;
+    }
+    *(int *)list1->data = 1;
+    list1->next = NULL;
+
+    Node *list2 = malloc(sizeof(Node));
+    if (list2 == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free_list(list1);
+        free(elements);
+        return EXIT_FAILURE;
+    }
+    list2->data = malloc(sizeof(int));
+    if (list2->data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(list2);
+        free_list(list1);
+        free(elements);
+        return EXIT_FAILURE;
+    }
+    *(int *)list2->data = 2;
+    list2->next = NULL;
+
+    elements[0].head = list1;
+    elements[0].is_list = 1;
+    elements[1].head = NULL;
+    elements[1].is_list = 0;
+    elements[2].head = list2;
+    elements[2].is_list = 1;
+    elements[3].head = NULL;
+    elements[3].is_list = 0;
+
+    long result = count_and_square_lists(elements, 4);
+    printf("Squared count of lists: %ld\n", result);
+
+    free_list(list1);
+    free_list(list2);
+    free(elements);
+
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,82 @@
+```c
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+Node *remove_consecutive_duplicates(Node *head) {
+    if (head == NULL) {
+        return NULL;
+    }
+
+    Node *current = head;
+    while (current->next != NULL) {
+        if (current->data == current->next->data) {
+            Node *duplicate = current->next;
+            current->next = duplicate->next;
+            free(duplicate);
+        } else {
+            current = current->next;
+        }
+    } 
+
+    return head;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    bool first = true;
+    while (current != NULL) {
+        if (!first) {
+            printf(" -> ");
+        }
+        printf("%d", current->data);
+        first = false;
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node *head = create_node(1);
+    head->next = create_node(1);
+    head->next->next = create_node(2);
+    head->next->next->next = create_node(3);
+    head->next->next->next->next = create_node(3);
+    head->next->next->next->next->next = create_node(3);
+    head->next->next->next->next->next->next = create_node(4);
+
+    print_list(head);
+
+    head = remove_consecutive_duplicates(head);
+
+    print_list(head);
+
+    free_list(head);
+
+    return 0;
+}
+```

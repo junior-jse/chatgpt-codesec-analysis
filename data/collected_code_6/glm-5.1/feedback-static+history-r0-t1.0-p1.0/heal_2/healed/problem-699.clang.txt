@@ -1,0 +1,10 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:10:22: error: use of undeclared identifier 's2'
+   10 |         if (s1[i] != s2[i]) {
+      |                      ^~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:58:51: error: too many arguments to function call, expected 2, have 3
+   58 |     int result = min_swaps_binary_strings(s1, s2, len1);
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~         ^~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-699.c:5:5: note: 'min_swaps_binary_strings' declared here
+    5 | int min_swaps_binary_strings(const char *s1, size_t len) {
+      |     ^                        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.

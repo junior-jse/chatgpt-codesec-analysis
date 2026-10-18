@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_INPUT_SIZE 4096
+
+int remove_non_alnum(const char *input, size_t input_len, char *output, size_t output_size) {
+    size_t i;
+    size_t out_idx = 0;
+
+    if (input == NULL || output == NULL || output_size == 0) {
+        return -1;
+    }
+
+    for (i = 0; i < input_len; i++) {
+        unsigned char c = (unsigned char)input[i];
+        if (isalnum(c)) {
+            if (out_idx + 1 >= output_size) {
+                return -1;
+            }
+            output[out_idx++] = (char)c;
+        }
+    }
+
+    output[out_idx] = '\0';
+    return 0;
+}
+
+int main(void) {
+    const char *input = "Hello, World! 123 @#$";
+    size_t input_len = strnlen(input, MAX_INPUT_SIZE);
+    char *output = malloc(input_len + 1);
+
+    if (output == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    if (remove_non_alnum(input, input_len, output, input_len + 1) == 0) {
+        printf("Original: %.*s\n", (int)input_len, input);
+        printf("Filtered: %s\n", output);
+    } else {
+        fprintf(stderr, "Error processing string\n");
+        free(output);
+        return EXIT_FAILURE;
+    }
+
+    free(output);
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+void reverse_substring(char *start, char *end) {
+    while (start < end) {
+        char temp = *start;
+        *start = *end;
+        *end = temp;
+        start++;
+        end--;
+    }
+}
+
+void reverse_words(char *str) {
+    char *word_start = NULL;
+    char *current = str;
+    
+    if (str == NULL || *str == '\0') {
+        return;
+    }
+    
+    while (*current) {
+        if (word_start == NULL && !isspace((unsigned char)*current)) {
+            word_start = current;
+        }
+        if (word_start && (isspace((unsigned char)*(current + 1)) || *(current + 1) == '\0')) {
+            reverse_substring(word_start, current);
+            word_start = NULL;
+        }
+        current++;
+    }
+    
+    reverse_substring(str, current - 1);
+    
+    current = str;
+    char *write_ptr = str;
+    int space_found = 0;
+    
+    while (*current && isspace((unsigned char)*current)) {
+        current++;
+    }
+    
+    while (*current) {
+        if (isspace((unsigned char)*current)) {
+            space_found = 1;
+        } else {
+            if (space_found && write_ptr != str) {
+                *write_ptr++ = ' ';
+            }
+            space_found = 0;
+            *write_ptr++ = *current;
+        }
+        current++;
+    }
+    *write_ptr = '\0';
+}
+
+int main(void) {
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char buffer[1024];
+    
+    printf("Enter a string: ");
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        fprintf(stderr, "Error reading input\n");
+        return EXIT_FAILURE;
+    }
+    
+    size_t len = strnlen(buffer, sizeof(buffer));
+    if (len > 0 && buffer[len - 1] == '\n') {
+        buffer[len - 1] = '\0';
+    } else if (len == sizeof(buffer) - 1 && buffer[len - 1] != '\n') {
+        int c;
+        /* Possible weaknesses found:
+         * Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+         */
+        while ((c = getchar()) != '\n' && c != EOF);
+        fprintf(stderr, "Input too long\n");
+        return EXIT_FAILURE;
+    }
+    
+    if (buffer[0] == '\0') {
+        printf("Empty string provided\n");
+        return EXIT_SUCCESS;
+    }
+    
+    printf("Original: \"%s\"\n", buffer);
+    reverse_words(buffer);
+    printf("Reversed: \"%s\"\n", buffer);
+    
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    char name[50];
+    double price;
+} Item;
+
+void swap(Item *a, Item *b) {
+    Item temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void min_heapify(Item *heap, int heap_size, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < heap_size && heap[left].price < heap[smallest].price) {
+        smallest = left;
+    }
+
+    if (right < heap_size && heap[right].price < heap[smallest].price) {
+        smallest = right;
+    }
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        min_heapify(heap, heap_size, smallest);
+    }
+}
+
+void build_min_heap(Item *heap, int heap_size) {
+    for (int i = (heap_size / 2) - 1; i >= 0; i--) {
+        min_heapify(heap, heap_size, i);
+    }
+}
+
+Item* find_n_expensive(Item *dataset, int dataset_size, int n, int *result_size) {
+    if (dataset == NULL || dataset_size <= 0 || n <= 0) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    int k = (n < dataset_size) ? n : dataset_size;
+    Item *heap = (Item*)malloc(k * sizeof(Item));
+    if (heap == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < k; i++) {
+        heap[i] = dataset[i];
+    }
+
+    build_min_heap(heap, k);
+
+    for (int i = k; i < dataset_size; i++) {
+        if (dataset[i].price > heap[0].price) {
+            heap[0] = dataset[i];
+            min_heapify(heap, k, 0);
+        }
+    }
+
+    *result_size = k;
+    return heap;
+}
+
+int main(void) {
+    Item dataset[] = {
+        {"Item A", 10.50},
+        {"Item B", 150.00},
+        {"Item C", 25.75},
+        {"Item D", 99.99},
+        {"Item E", 200.00},
+        {"Item F", 5.00},
+        {"Item G", 85.00}
+    };
+    int dataset_size = sizeof(dataset) / sizeof(dataset[0]);
+    int n = 3;
+    int result_size = 0;
+
+    Item *result = find_n_expensive(dataset, dataset_size, n, &result_size);
+
+    if (result != NULL) {
+        for (int i = 0; i < result_size; i++) {
+            printf("%s: %.2f\n", result[i].name, result[i].price);
+        }
+        free(result);
+    }
+
+    return 0;
+}

@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *str;
+    int count;
+} Entry;
+
+char* findSecondMostRepeated(char *arr[], int n) {
+    if (n < 2) {
+        return NULL;
+    }
+
+    Entry *entries = (Entry *)malloc(n * sizeof(Entry));
+    if (!entries) {
+        return NULL;
+    }
+
+    int size = 0;
+    for (int i = 0; i < n; ++i) {
+        int found = 0;
+        for (int j = 0; j < size; ++j) {
+            if (strcmp(arr[i], entries[j].str) == 0) {
+                entries[j].count++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            entries[size].str = arr[i];
+            entries[size].count = 1;
+            size++;
+        }
+    }
+
+    if (size < 2) {
+        free(entries);
+        return NULL;
+    }
+
+    int first = 0, second = -1;
+    for (int i = 1; i < size; ++i) {
+        if (entries[i].count > entries[first].count) {
+            second = first;
+            first = i;
+        } else if (entries[i].count < entries[first].count) {
+            if (second == -1 || entries[i].count > entries[second].count) {
+                second = i;
+            }
+        }
+    }
+
+    char *result = NULL;
+    if (second != -1) {
+        result = entries[second].str;
+    }
+
+    free(entries);
+
+    return result;
+}
+
+int main() {
+    char *arr[] = {"apple", "banana", "apple", "orange", "banana", "apple", "banana"};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    char *result = findSecondMostRepeated(arr, n);
+
+    if (result != NULL) {
+        printf("%s\n", result);
+    } else {
+        printf("No second most repeated string found.\n");
+    }
+
+    return 0;
+}

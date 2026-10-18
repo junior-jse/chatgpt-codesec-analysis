@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int* find_max_sum_list(int **lists, int num_lists, const int *list_sizes) {
+    if (lists == NULL || num_lists <= 0 || list_sizes == NULL) {
+        return NULL;
+    }
+
+    int max_sum = INT_MIN;
+    int *max_list = NULL;
+
+    for (int i = 0; i < num_lists; i++) {
+        if (lists[i] == NULL || list_sizes[i] <= 0) {
+            continue;
+        }
+
+        int current_sum = 0;
+        for (int j = 0; j < list_sizes[i]; j++) {
+            current_sum += lists[i][j];
+        }
+
+        if (current_sum > max_sum) {
+            max_sum = current_sum;
+            max_list = lists[i];
+        }
+    }
+
+    return max_list;
+}
+
+int main(void) {
+    int list1[] = {1, 2, 3};
+    int list2[] = {10, 20, 30};
+    int list3[] = {5, 5, 5};
+    int *lists[] = {list1, list2, list3};
+    /* Possible weaknesses found:
+     *  Variable 'list_sizes' can be declared as const array [constVariable]
+     */
+    int list_sizes[] = {3, 3, 3};
+    int num_lists = 3;
+
+    const int *max_list = find_max_sum_list(lists, num_lists, list_sizes);
+
+    if (max_list != NULL) {
+        printf("List with highest sum: ");
+        for (int i = 0; i < 3; i++) {
+            printf("%d ", max_list[i]);
+        }
+        printf("\n");
+    } else {
+        printf("No valid list found\n");
+    }
+
+    return 0;
+}

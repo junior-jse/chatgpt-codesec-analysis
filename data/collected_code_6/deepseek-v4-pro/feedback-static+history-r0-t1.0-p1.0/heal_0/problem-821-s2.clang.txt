@@ -1,0 +1,16 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-821-s2.c:77:13: error: call to undeclared function 'dict_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   77 |             dict_free(merged);
+      |             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-821-s2.c:89:25: error: call to undeclared function 'dict_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   89 |                         dict_free(merged);
+      |                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-821-s2.c:99:17: error: call to undeclared function 'dict_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   99 |                 dict_free(merged);
+      |                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-821-s2.c:108:6: error: conflicting types for 'dict_free'
+  108 | void dict_free(Dictionary *dict) {
+      |      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-821-s2.c:77:13: note: previous implicit declaration is here
+   77 |             dict_free(merged);
+      |             ^
+4 errors generated.

@@ -1,0 +1,43 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:84:19: error: passing 'LinkedList' to parameter of incompatible type 'LinkedList *'; take the address with &
+   84 |         free_list(list_of_lists->lists[i]);
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~
+      |                   &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:63:28: note: passing argument to parameter 'list' here
+   63 | void free_list(LinkedList* list) {
+      |                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:130:33: error: assigning to 'LinkedList' from incompatible type 'LinkedList *'; dereference with *
+  130 |         list_of_lists->lists[i] = create_list();
+      |                                 ^ ~~~~~~~~~~~~~
+      |                                   *
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:131:37: error: invalid operands to binary expression ('LinkedList' and 'void *')
+  131 |         if (list_of_lists->lists[i] == NULL) {
+      |             ~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:133:27: error: passing 'LinkedList' to parameter of incompatible type 'LinkedList *'; take the address with &
+  133 |                 free_list(list_of_lists->lists[j]);
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~
+      |                           &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:63:28: note: passing argument to parameter 'list' here
+   63 | void free_list(LinkedList* list) {
+      |                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:146:27: error: passing 'LinkedList' to parameter of incompatible type 'LinkedList *'; take the address with &
+  146 |         if (insert_at_end(list_of_lists->lists[0], elements1[i]) != 0) {
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~
+      |                           &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: passing argument to parameter 'list' here
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:153:27: error: passing 'LinkedList' to parameter of incompatible type 'LinkedList *'; take the address with &
+  153 |         if (insert_at_end(list_of_lists->lists[1], elements2[i]) != 0) {
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~
+      |                           &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: passing argument to parameter 'list' here
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:160:27: error: passing 'LinkedList' to parameter of incompatible type 'LinkedList *'; take the address with &
+  160 |         if (insert_at_end(list_of_lists->lists[2], elements3[i]) != 0) {
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~
+      |                           &
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-425-s2.c:39:31: note: passing argument to parameter 'list' here
+   39 | int insert_at_end(LinkedList* list, int data) {
+      |                               ^
+7 errors generated.

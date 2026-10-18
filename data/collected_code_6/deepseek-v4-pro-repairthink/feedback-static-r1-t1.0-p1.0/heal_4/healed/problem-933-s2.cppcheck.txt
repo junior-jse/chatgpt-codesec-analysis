@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-933-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-933-s2.c:21:17: style: Condition 'out_len==0' is always false [knownConditionTrueFalse]
+    if (out_len == 0) {
+                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-933-s2.c:20:40: note: Assignment 'out_len=len+underscores+1', assigned value is greater than 0
+    size_t out_len = len + underscores + 1;
+                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_4/healed/problem-933-s2.c:21:17: note: Condition 'out_len==0' is always false
+    if (out_len == 0) {
+                ^

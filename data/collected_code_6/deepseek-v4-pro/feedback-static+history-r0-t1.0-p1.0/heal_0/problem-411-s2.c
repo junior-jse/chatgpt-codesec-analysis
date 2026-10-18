@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *snake_to_camel(const char *snake_str) {
+    if (snake_str == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    regmatch_t match[1];
+    const char *pattern = "_[a-z]";
+    
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return NULL;
+    }
+
+    size_t len = strlen(snake_str);
+    char *result = (char *)malloc(len + 1);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    size_t src_pos = 0;
+    size_t dst_pos = 0;
+    
+    while (src_pos < len) {
+        if (regexec(&regex, snake_str + src_pos, 1, match, 0) == 0 && match[0].rm_so == 0) {
+            char upper_char = snake_str[src_pos + 1];
+            if (upper_char >= 'a' && upper_char <= 'z') {
+                upper_char = upper_char - 'a' + 'A';
+            }
+            result[dst_pos++] = upper_char;
+            src_pos += 2;
+        } else {
+            result[dst_pos++] = snake_str[src_pos++];
+        }
+    }
+    
+    result[dst_pos] = '\0';
+    regfree(&regex);
+    return result;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <snake_case_string>\n", argv[0]);
+        return 1;
+    }
+
+    char *camel_str = snake_to_camel(argv[1]);
+    if (camel_str == NULL) {
+        fprintf(stderr, "Error converting string\n");
+        return 1;
+    }
+
+    printf("%s\n", camel_str);
+    free(camel_str);
+    return 0;
+}

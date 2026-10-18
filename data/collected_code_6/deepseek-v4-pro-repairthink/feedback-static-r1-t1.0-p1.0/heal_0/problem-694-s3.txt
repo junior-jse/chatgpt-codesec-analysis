@@ -1,0 +1,115 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int key;
+    int *values;
+    int count;
+} DictEntry;
+
+typedef struct {
+    DictEntry *entries;
+    int size;
+} Dictionary;
+
+int compare_ints(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int *extract_unique_values(Dictionary *dict, int *result_size) {
+    if (dict == NULL || result_size == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    int total_values = 0;
+    for (int i = 0; i < dict->size; i++) {
+        total_values += dict->entries[i].count;
+    }
+
+    if (total_values == 0) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    int *temp = (int*)malloc(total_values * sizeof(int));
+    if (temp == NULL) {
+        *result_size = 0;
+        return NULL;
+    }
+
+    int index = 0;
+    for (int i = 0; i < dict->size; i++) {
+        for (int j = 0; j < dict->entries[i].count; j++) {
+            temp[index++] = dict->entries[i].values[j];
+        }
+    }
+
+    qsort(temp, total_values, sizeof(int), compare_ints);
+
+    int unique_count = 1;
+    for (int i = 1; i < total_values; i++) {
+        if (temp[i] != temp[i-1]) {
+            unique_count++;
+        }
+    }
+
+    int *result = (int*)malloc(unique_count * sizeof(int));
+    if (result == NULL) {
+        free(temp);
+        *result_size = 0;
+        return NULL;
+    }
+
+    result[0] = temp[0];
+    int result_index = 1;
+    for (int i = 1; i < total_values; i++) {
+        if (temp[i] != temp[i-1]) {
+            result[result_index++] = temp[i];
+        }
+    }
+
+    free(temp);
+    *result_size = unique_count;
+    return result;
+}
+
+int main() {
+    int values1[] = {1, 2, 3, 2, 1};
+    int values2[] = {4, 5, 6, 4};
+    int values3[] = {7, 8, 7, 9, 10, 8};
+
+    DictEntry entries[3];
+    entries[0].key = 1;
+    entries[0].values = values1;
+    entries[0].count = 5;
+    entries[1].key = 2;
+    entries[1].values = values2;
+    entries[1].count = 4;
+    entries[2].key = 3;
+    entries[2].values = values3;
+    entries[2].count = 6;
+
+    Dictionary dict;
+    dict.entries = entries;
+    dict.size = 3;
+
+    int result_size = 0;
+    int *unique_values = extract_unique_values(&dict, &result_size);
+
+    if (unique_values != NULL) {
+        printf("Unique values: ");
+        for (int i = 0; i < result_size; i++) {
+            printf("%d ", unique_values[i]);
+        }
+        printf("\n");
+        free(unique_values);
+    } else {
+        printf("No unique values found\n");
+    }
+
+    return 0;
+}
+```

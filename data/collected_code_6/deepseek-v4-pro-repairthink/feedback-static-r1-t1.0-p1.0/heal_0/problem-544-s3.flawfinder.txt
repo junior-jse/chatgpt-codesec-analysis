@@ -1,0 +1,2 @@
+problem-544-s3.c:32:0:high:Flawfinder sprintf: Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or vsnprintf. (risk 4, buffer)
+problem-544-s3.c:19:0:low:Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)

@@ -1,0 +1,61 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+struct Node *newNode(int data) {
+    struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    if (node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int height(struct Node *root) {
+    if (root == NULL) {
+        return -1;
+    }
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+    return max(leftHeight, rightHeight) + 1;
+}
+
+void freeTree(struct Node *root) {
+    if (root == NULL) {
+        return;
+    }
+    freeTree(root->left);
+    freeTree(root->right);
+    free(root);
+}
+
+int main(void) {
+    struct Node *root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->right->left = newNode(6);
+    root->right->right = newNode(7);
+    root->left->left->left = newNode(8);
+
+    int treeHeight = height(root);
+    printf("Height of the tree: %d\n", treeHeight);
+
+    freeTree(root);
+    return 0;
+}
+```

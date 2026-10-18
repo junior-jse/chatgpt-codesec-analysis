@@ -1,0 +1,101 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *remove_non_alphanumeric(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    int ret;
+    char *result;
+    size_t input_len = strlen(input);
+    size_t result_len = 0;
+    size_t result_capacity = input_len + 1;
+    
+    result = (char *)malloc(result_capacity);
+    if (result == NULL) {
+        return NULL;
+    }
+    result[0] = '\0';
+
+    ret = regcomp(&regex, "[^a-zA-Z0-9]", REG_EXTENDED);
+    if (ret != 0) {
+        free(result);
+        return NULL;
+    }
+
+    const char *cursor = input;
+    regmatch_t match;
+    
+    while (regexec(&regex, cursor, 1, &match, 0) == 0) {
+        if (match.rm_so > 0) {
+            size_t copy_len = (size_t)match.rm_so;
+            if (result_len + copy_len + 1 > result_capacity) {
+                result_capacity = result_len + copy_len + 1;
+                char *new_result = (char *)realloc(result, result_capacity);
+                if (new_result == NULL) {
+                    regfree(&regex);
+                    free(result);
+                    return NULL;
+                }
+                result = new_result;
+            }
+            memcpy(result + result_len, cursor, copy_len);
+            result_len += copy_len;
+            result[result_len] = '\0';
+        }
+        cursor += match.rm_eo;
+        if (*cursor == '\0') {
+            break;
+        }
+    }
+
+    if (*cursor != '\0') {
+        size_t remaining_len = strlen(cursor);
+        if (result_len + remaining_len + 1 > result_capacity) {
+            result_capacity = result_len + remaining_len + 1;
+            char *new_result = (char *)realloc(result, result_capacity);
+            if (new_result == NULL) {
+                regfree(&regex);
+                free(result);
+                return NULL;
+            }
+            result = new_result;
+        }
+        memcpy(result + result_len, cursor, remaining_len);
+        result_len += remaining_len;
+        result[result_len] = '\0';
+    }
+
+    regfree(&regex);
+    return result;
+}
+
+int main(void) {
+    const char *test_strings[] = {
+        "Hello, World! 123",
+        "Test@#$%^&*()String",
+        "abc123XYZ",
+        "   spaces   and---symbols!!!",
+        "",
+        NULL
+    };
+
+    for (int i = 0; test_strings[i] != NULL; i++) {
+        char *cleaned = remove_non_alphanumeric(test_strings[i]);
+        if (cleaned != NULL) {
+            printf("Original: %s\n", test_strings[i]);
+            printf("Cleaned:  %s\n\n", cleaned);
+            free(cleaned);
+        } else {
+            printf("Failed to process string: %s\n\n", test_strings[i]);
+        }
+    }
+
+    return 0;
+}
+```

@@ -1,0 +1,113 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Entry {
+    char *key;
+    int value;
+    struct Entry *next;
+} Entry;
+
+typedef struct Dictionary {
+    Entry **buckets;
+    int size;
+} Dictionary;
+
+unsigned int hash(const char *key, int size) {
+    unsigned int hash = 5381;
+    int c;
+    while ((c = *key++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash % size;
+}
+
+Dictionary *create_dictionary(int size) {
+    Dictionary *dict = malloc(sizeof(Dictionary));
+    if (!dict) return NULL;
+    dict->size = size;
+    dict->buckets = calloc(size, sizeof(Entry *));
+    if (!dict->buckets) {
+        free(dict);
+        return NULL;
+    }
+    return dict;
+}
+
+void destroy_dictionary(Dictionary *dict) {
+    if (!dict) return;
+    for (int i = 0; i < dict->size; i++) {
+        Entry *entry = dict->buckets[i];
+        while (entry) {
+            Entry *next = entry->next;
+            free(entry->key);
+            free(entry);
+            entry = next;
+        }
+    }
+    free(dict->buckets);
+    free(dict);
+}
+
+int dictionary_insert(Dictionary *dict, const char *key, int value) {
+    if (!dict || !key) return -1;
+    unsigned int index = hash(key, dict->size);
+    Entry *current = dict->buckets[index];
+    while (current) {
+        if (strcmp(current->key, key) == 0) {
+            current->value = value;
+            return 0;
+        }
+        current = current->next;
+    }
+    Entry *new_entry = malloc(sizeof(Entry));
+    if (!new_entry) return -1;
+    new_entry->key = strdup(key);
+    if (!new_entry->key) {
+        free(new_entry);
+        return -1;
+    }
+    new_entry->value = value;
+    new_entry->next = dict->buckets[index];
+    dict->buckets[index] = new_entry;
+    return 0;
+}
+
+int dictionary_contains_key(const Dictionary *dict, const char *key) {
+    if (!dict || !key) return 0;
+    unsigned int index = hash(key, dict->size);
+    Entry *current = dict->buckets[index];
+    while (current) {
+        if (strcmp(current->key, key) == 0) {
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+int main(void) {
+    Dictionary *dict = create_dictionary(16);
+    if (!dict) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return EXIT_FAILURE;
+    }
+
+    dictionary_insert(dict, "apple", 1);
+    dictionary_insert(dict, "banana", 2);
+    dictionary_insert(dict, "cherry", 3);
+
+    const char *test_keys[] = {"apple", "banana", "grape", "cherry"};
+    for (int i = 0; i < 4; i++) {
+        if (dictionary_contains_key(dict, test_keys[i])) {
+            printf("Key '%s' is present.\n", test_keys[i]);
+        } else {
+            printf("Key '%s' is NOT present.\n", test_keys[i]);
+        }
+    }
+
+    destroy_dictionary(dict);
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708.c: In function 'string_to_list':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-708.c:74:13: error: implicit declaration of function 'list_free' [-Wimplicit-function-declaration]
+   74 |             list_free(list);
+      |             ^~~~~~~~~

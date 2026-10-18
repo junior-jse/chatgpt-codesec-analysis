@@ -1,0 +1,122 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+    size_t length;
+} List;
+
+List *list_create(void) {
+    List *list = malloc(sizeof(List));
+    if (!list) return NULL;
+    list->head = NULL;
+    list->length = 0;
+    return list;
+}
+
+bool list_insert(List *list, int data) {
+    if (!list) return false;
+    Node *node = malloc(sizeof(Node));
+    if (!node) return false;
+    node->data = data;
+    node->next = list->head;
+    list->head = node;
+    list->length++;
+    return true;
+}
+
+bool list_contains(const List *list, int data) {
+    if (!list) return false;
+    Node *current = list->head;
+    while (current) {
+        if (current->data == data) return true;
+        current = current->next;
+    }
+    return false;
+}
+
+List *list_subtract(const List *a, const List *b) {
+    if (!a || !b) return NULL;
+    List *result = list_create();
+    if (!result) return NULL;
+    Node *current = a->head;
+    while (current) {
+        if (!list_contains(b, current->data)) {
+            if (!list_insert(result, current->data)) {
+                Node *tmp = result->head;
+                while (tmp) {
+                    Node *next = tmp->next;
+                    free(tmp);
+                    tmp = next;
+                }
+                free(result);
+                return NULL;
+            }
+        }
+        current = current->next;
+    }
+    return result;
+}
+
+void list_destroy(List *list) {
+    if (!list) return;
+    Node *current = list->head;
+    while (current) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+    free(list);
+}
+
+void list_print(const List *list) {
+    if (!list) return;
+    Node *current = list->head;
+    while (current) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    List *a = list_create();
+    List *b = list_create();
+    if (!a || !b) {
+        list_destroy(a);
+        list_destroy(b);
+        return EXIT_FAILURE;
+    }
+
+    list_insert(a, 5);
+    list_insert(a, 4);
+    list_insert(a, 3);
+    list_insert(a, 2);
+    list_insert(a, 1);
+
+    list_insert(b, 2);
+    list_insert(b, 4);
+
+    List *c = list_subtract(a, b);
+    if (!c) {
+        list_destroy(a);
+        list_destroy(b);
+        return EXIT_FAILURE;
+    }
+
+    list_print(c);
+
+    list_destroy(a);
+    list_destroy(b);
+    list_destroy(c);
+
+    return EXIT_SUCCESS;
+}
+```

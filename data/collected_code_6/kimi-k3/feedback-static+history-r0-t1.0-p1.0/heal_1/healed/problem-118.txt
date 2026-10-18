@@ -1,0 +1,108 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *data;
+    struct Node *next;
+} Node;
+
+Node* string_to_list(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    Node *head = NULL;
+    Node *tail = NULL;
+    const char *start = str;
+    const char *end;
+
+    while (*start != '\0') {
+        while (*start == ' ' || *start == '\t' || *start == '\n') {
+            start++;
+        }
+        
+        if (*start == '\0') {
+            break;
+        }
+
+        end = start;
+        while (*end != '\0' && *end != ' ' && *end != '\t' && *end != '\n') {
+            end++;
+        }
+
+        size_t len = end - start;
+        Node *new_node = malloc(sizeof(Node));
+        if (new_node == NULL) {
+            while (head != NULL) {
+                Node *temp = head;
+                head = head->next;
+                free(temp->data);
+                free(temp);
+            }
+            return NULL;
+        }
+
+        new_node->data = malloc(len + 1);
+        if (new_node->data == NULL) {
+            free(new_node);
+            while (head != NULL) {
+                Node *temp = head;
+                head = head->next;
+                free(temp->data);
+                free(temp);
+            }
+            return NULL;
+        }
+
+        memcpy(new_node->data, start, len);
+        new_node->data[len] = '\0';
+        new_node->next = NULL;
+
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+
+        start = end;
+    }
+
+    return head;
+}
+
+void free_list(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp->data);
+        free(temp);
+    }
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%s\n", current->data);
+        current = current->next;
+    }
+}
+
+int main(void) {
+    const char *input = "hello world this is a test";
+    Node *list = string_to_list(input);
+    
+    if (list == NULL) {
+        fprintf(stderr, "Failed to create list\n");
+        return EXIT_FAILURE;
+    }
+
+    print_list(list);
+    free_list(list);
+    
+    return EXIT_SUCCESS;
+}
+```

@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-440-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-440-s2.c:137:23: warning: Either the condition 'copy_len>=64' is redundant or the array 'clean_word[64]' is accessed at index 64, which is out of bounds. [arrayIndexOutOfBoundsCond]
+            clean_word[clean_len] = '\0';
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-440-s2.c:143:30: note: Assuming that condition 'copy_len>=64' is not redundant
+                if (copy_len >= MAX_WORD_LEN) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-440-s2.c:141:35: note: Assignment to 'copy_len=clean_len'
+                size_t copy_len = clean_len;
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-440-s2.c:137:23: note: Array index out of bounds
+            clean_word[clean_len] = '\0';
+                      ^

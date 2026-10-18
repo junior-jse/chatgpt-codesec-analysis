@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int count_in_range(const int *list, size_t size, int lower, int upper) {
+    int count = 0;
+    size_t i;
+    
+    for (i = 0; i < size; i++) {
+        if (list[i] >= lower && list[i] <= upper) {
+            count++;
+        }
+    }
+    
+    return count;
+}
+
+int main(void) {
+    int numbers[] = {1, 5, 10, 15, 20, 25, 30, 35, 40};
+    size_t size = sizeof(numbers) / sizeof(numbers[0]);
+    int lower = 10;
+    int upper = 30;
+    int result;
+    
+    result = count_in_range(numbers, size, lower, upper);
+    printf("Count of elements in range [%d, %d]: %d\n", lower, upper, result);
+    
+    return 0;
+}

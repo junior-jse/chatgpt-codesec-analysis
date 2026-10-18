@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+static struct Node *create_node(int value)
+{
+    struct Node *new_node = malloc(sizeof(*new_node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = value;
+    new_node->next = NULL;
+    return new_node;
+}
+
+static void free_list(struct Node *head)
+{
+    struct Node *current = head;
+    while (current != NULL) {
+        struct Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+static int remove_kth_element(struct Node **head, size_t k)
+{
+    struct Node *current;
+    struct Node *previous;
+    size_t index;
+
+    if (head == NULL || *head == NULL) {
+        return -1;
+    }
+
+    if (k == 0) {
+        current = *head;
+        *head = current->next;
+        free(current);
+        return 0;
+    }
+
+    previous = *head;
+    current = (*head)->next;
+    index = 1;
+
+    while (current != NULL && index < k) {
+        previous = current;
+        current = current->next;
+        index++;
+    }
+
+    if (current == NULL) {
+        return -1;
+    }
+
+    previous->next = current->next;
+    free(current);
+    return 0;
+}
+
+static void print_list(const struct Node *head)
+{
+    const struct Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    struct Node *head = NULL;
+    struct Node *tail = NULL;
+    int values[] = {10, 20, 30, 40, 50};
+    size_t count = sizeof(values) / sizeof(values[0]);
+    size_t i;
+    size_t k = 2;
+
+    for (i = 0; i < count; i++) {
+        struct Node *new_node = create_node(values[i]);
+        if (new_node == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            free_list(head);
+            return EXIT_FAILURE;
+        }
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    if (remove_kth_element(&head, k) != 0) {
+        fprintf(stderr, "Invalid index: %zu\n", k);
+        free_list(head);
+        return EXIT_FAILURE;
+    }
+
+    printf("List after removing element at index %zu: ", k);
+    print_list(head);
+
+    free_list(head);
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-715.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-715.c:68:19: style: Condition 'copy_size<=length' is always false [knownConditionTrueFalse]
+    if (copy_size <= length) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-715.c:66:15: note: copy_size is assigned 'length+1' here.
+    copy_size = length + 1;
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-715.c:68:19: note: Condition 'copy_size<=length' is always false
+    if (copy_size <= length) {
+                  ^

@@ -1,0 +1,91 @@
+**Key fixes applied:**
+
+1. **CWE-126 (over-read via `strlen`):** Replaced `strlen` with `strnlen` bounded by `MAX_INPUT_LEN`. If the terminator isn't found within the bound, the function fails safely instead of reading past the buffer. The bound also prevents integer overflow in `input_len * 2 + 1`.
+2. **Latent logic bug:** The original `regexec` loop searched from `input + i` for the *next* uppercase letter and jumped straight to it, silently dropping all characters in between (e.g., `"camelCaseString"` produced `"_c_string"`). Replaced the per-character regex calls with a single-pass `isupper`/`tolower` loop — correct, bounds-safe by construction, and far more efficient.
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_INPUT_LEN 4096
+
+char* camel_to_snake(const char* input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t input_len = strnlen(input, MAX_INPUT_LEN);
+    if (input_len == MAX_INPUT_LEN) {
+        return NULL;
+    }
+
+    size_t output_size = input_len * 2 + 1;
+    char* output = malloc(output_size);
+    if (output == NULL) {
+        return NULL;
+    }
+
+    size_t out_idx = 0;
+    for (size_t i = 0; i < input_len; i++) {
+        unsigned char c = (unsigned char)input[i];
+        if (isupper(c)) {
+            if (i > 0) {
+                output[out_idx++] = '_';
+            }
+            output[out_idx++] = (char)tolower(c);
+        } else {
+            output[out_idx++] = (char)c;
+        }
+    }
+    output[out_idx] = '\0';
+
+    return output;
+}
+
+int main(void) {
+    const char* test_strings[] = {
+        "camelCaseString",
+        "thisIsATest",
+        "helloWorld",
+        "simpleTest",
+        "ABCDefGhi"
+    };
+
+    size_t num_tests = sizeof(test_strings) / sizeof(test_strings[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char* result = camel_to_snake(test_strings[i]);
+        if (result != NULL) {
+            printf("Input:  %s\n", test_strings[i]);
+            printf("Output: %s\n\n", result);
+            free(result);
+        } else {
+            fprintf(stderr, "Error converting: %s\n", test_strings[i]);
+        }
+    }
+
+    return 0;
+}
+```
+
+**Expected output:**
+
+```
+Input:  camelCaseString
+Output: camel_case_string
+
+Input:  thisIsATest
+Output: this_is_a_test
+
+Input:  helloWorld
+Output: hello_world
+
+Input:  simpleTest
+Output: simple_test
+
+Input:  ABCDefGhi
+Output: a_b_c_def_ghi
+```

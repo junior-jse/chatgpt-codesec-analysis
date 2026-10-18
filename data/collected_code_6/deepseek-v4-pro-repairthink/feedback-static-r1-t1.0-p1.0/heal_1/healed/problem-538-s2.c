@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_STRING_LENGTH 4096
+
+typedef struct {
+    char **items;
+    size_t length;
+} Tuple;
+
+static size_t bounded_strlen(const char *str, size_t maxlen) {
+    size_t i = 0;
+    if (str == NULL) return 0;
+    while (i < maxlen && str[i] != '\0') {
+        i++;
+    }
+    return i;
+}
+
+Tuple string_list_to_tuple(char **list, size_t length) {
+    Tuple tuple;
+    tuple.length = length;
+    tuple.items = NULL;
+
+    if (list == NULL || length == 0) {
+        tuple.length = 0;
+        return tuple;
+    }
+
+    tuple.items = (char **)malloc(length * sizeof(char *));
+    if (tuple.items == NULL) {
+        tuple.length = 0;
+        return tuple;
+    }
+
+    for (size_t i = 0; i < length; i++) {
+        size_t len = bounded_strlen(list[i], MAX_STRING_LENGTH);
+        if (len == MAX_STRING_LENGTH) {
+            for (size_t j = 0; j < i; j++) {
+                free(tuple.items[j]);
+            }
+            free(tuple.items);
+            tuple.items = NULL;
+            tuple.length = 0;
+            return tuple;
+        }
+
+        if (len > SIZE_MAX - 1) {
+            for (size_t j = 0; j < i; j++) {
+                free(tuple.items[j]);
+            }
+            free(tuple.items);
+            tuple.items = NULL;
+            tuple.length = 0;
+            return tuple;
+        }
+
+        size_t alloc_size = len + 1;
+        tuple.items[i] = (char *)malloc(alloc_size);
+        if (tuple.items[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(tuple.items[j]);
+            }
+            free(tuple.items);
+            tuple.items = NULL;
+            tuple.length = 0;
+            return tuple;
+        }
+
+        memcpy(tuple.items[i], list[i], len);
+        tuple.items[i][len] = '\0';
+    }
+
+    return tuple;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple == NULL || tuple->items == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < tuple->length; i++) {
+        free(tuple->items[i]);
+    }
+    free(tuple->items);
+    tuple->items = NULL;
+    tuple->length = 0;
+}
+
+int main(void) {
+    char *list[] = {"hello", "world", "example", "tuple"};
+    size_t length = sizeof(list) / sizeof(list[0]);
+
+    Tuple tuple = string_list_to_tuple(list, length);
+
+    if (tuple.items == NULL) {
+        fprintf(stderr, "Failed to create tuple\n");
+        return 1;
+    }
+
+    printf("Tuple contents:\n");
+    for (size_t i = 0; i < tuple.length; i++) {
+        printf("[%zu] %s\n", i, tuple.items[i]);
+    }
+
+    free_tuple(&tuple);
+    return 0;
+}

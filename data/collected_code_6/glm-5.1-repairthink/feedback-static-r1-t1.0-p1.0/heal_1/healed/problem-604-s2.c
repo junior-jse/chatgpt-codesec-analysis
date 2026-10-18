@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void reverse_characters(char *start, char *end) {
+    if (start == NULL || end == NULL || start > end) {
+        return;
+    }
+    while (start < end) {
+        char temp = *start;
+        *start = *end;
+        *end = temp;
+        start++;
+        end--;
+    }
+}
+
+void reverse_words(char *str) {
+    if (str == NULL) {
+        return;
+    }
+    char *end = str;
+    while (*end != '\0') {
+        end++;
+    }
+    if (end == str) {
+        return;
+    }
+    reverse_characters(str, end - 1);
+    char *word_start = str;
+    char *word_end = str;
+    while (*word_end != '\0') {
+        if (*word_end == ' ') {
+            if (word_start < word_end) {
+                reverse_characters(word_start, word_end - 1);
+            }
+            word_end++;
+            word_start = word_end;
+        } else {
+            word_end++;
+        }
+    }
+    if (word_start < word_end) {
+        reverse_characters(word_start, word_end - 1);
+    }
+}
+
+int main(void) {
+    size_t buffer_size = 256;
+    char *buffer = malloc(buffer_size);
+    if (buffer == NULL) {
+        return EXIT_FAILURE;
+    }
+    if (fgets(buffer, buffer_size, stdin) == NULL) {
+        free(buffer);
+        return EXIT_FAILURE;
+    }
+    buffer[strcspn(buffer, "\n")] = '\0';
+    reverse_words(buffer);
+    printf("%s\n", buffer);
+    free(buffer);
+    return EXIT_SUCCESS;
+}

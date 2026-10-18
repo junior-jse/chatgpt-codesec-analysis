@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-154-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-154-s3.c:58:9: style: Variable 'row_indices' can be declared as const array [constVariable]
+    int row_indices[] = {0, 1, 2, 0, 5};
+        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-154-s3.c:59:9: style: Variable 'col_indices' can be declared as const array [constVariable]
+    int col_indices[] = {1, 2, 3, 0, 1};
+        ^

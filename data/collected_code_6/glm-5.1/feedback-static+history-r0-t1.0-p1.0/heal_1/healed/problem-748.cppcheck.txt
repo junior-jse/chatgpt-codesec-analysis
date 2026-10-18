@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c:138:14: style: Condition 'res4==NULL' is always true [knownConditionTrueFalse]
+    if (res4 == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c:137:49: note: Calling function 'space_out_capitals' returns 0
+    const char * const res4 = space_out_capitals(NULL);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c:137:49: note: Assignment 'res4=space_out_capitals(NULL)', assigned value is 0
+    const char * const res4 = space_out_capitals(NULL);
+                                                ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c:138:14: note: Condition 'res4==NULL' is always true
+    if (res4 == NULL) {
+             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-748.c:31:11: style: Variable 'out_end' can be declared as pointer to const [constVariablePointer]
+    char *out_end = result + max_len;
+          ^

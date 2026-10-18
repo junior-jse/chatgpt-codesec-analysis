@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define RADIX 256
+#define BITS_PER_BYTE 8
+
+int radix_sort(int *arr, size_t n)
+{
+    int *output = NULL;
+    int *count = NULL;
+    size_t i;
+    int max_val;
+    int passes;
+    int p;
+    
+    if (arr == NULL || n == 0) {
+        return -1;
+    }
+    
+    output = (int *)malloc(n * sizeof(int));
+    if (output == NULL) {
+        return -1;
+    }
+    
+    count = (int *)calloc(RADIX, sizeof(int));
+    if (count == NULL) {
+        free(output);
+        return -1;
+    }
+    
+    max_val = arr[0];
+    for (i = 1; i < n; i++) {
+        if (arr[i] > max_val) {
+            max_val = arr[i];
+        }
+    }
+    
+    passes = 0;
+    while (max_val > 0) {
+        passes++;
+        max_val >>= BITS_PER_BYTE;
+    }
+    
+    if (passes == 0) {
+        passes = 1;
+    }
+    
+    for (p = 0; p < passes; p++) {
+        int shift = p * BITS_PER_BYTE;
+        
+        memset(count, 0, RADIX * sizeof(int));
+        
+        for (i = 0; i < n; i++) {
+            count[(arr[i] >> shift) & (RADIX - 1)]++;
+        }
+        
+        for (i = 1; i < RADIX; i++) {
+            count[i] += count[i - 1];
+        }
+        
+        for (i = n; i > 0; i--) {
+            output[count[(arr[i - 1] >> shift) & (RADIX - 1)] - 1] = arr[i - 1];
+            count[(arr[i - 1] >> shift) & (RADIX - 1)]--;
+        }
+        
+        memcpy(arr, output, n * sizeof(int));
+    }
+    
+    free(output);
+    free(count);
+    
+    return 0;
+}
+
+int main(void)
+{
+    int arr[] = {170, 45, 75, 90, 802, 24, 2, 66};
+    size_t n = sizeof(arr) / sizeof(arr[0]);
+    size_t i;
+    int result;
+    
+    printf("Original array: ");
+    for (i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    
+    result = radix_sort(arr, n);
+    if (result != 0) {
+        fprintf(stderr, "Error: radix_sort failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Sorted array: ");
+    for (i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+    
+    return EXIT_SUCCESS;
+}

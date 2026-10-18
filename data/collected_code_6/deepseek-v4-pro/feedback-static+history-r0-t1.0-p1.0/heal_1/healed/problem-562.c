@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int max_sublist_length(const int *arr, int n) {
+    if (arr == NULL || n <= 0) {
+        return 0;
+    }
+
+    int max_len = 1;
+    int curr_len = 1;
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] == arr[i - 1]) {
+            curr_len++;
+        } else {
+            if (curr_len > max_len) {
+                max_len = curr_len;
+            }
+            curr_len = 1;
+        }
+    }
+
+    if (curr_len > max_len) {
+        max_len = curr_len;
+    }
+
+    return max_len;
+}
+
+int main(void) {
+    int arr1[] = {1, 1, 2, 2, 2, 3, 3, 3, 3};
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+
+    int arr2[] = {1, 2, 3, 4, 5};
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+
+    int arr3[] = {5, 5, 5, 5, 5};
+    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+
+    int arr4[] = {2};
+    int n4 = sizeof(arr4) / sizeof(arr4[0]);
+
+    printf("Max sublist length: %d\n", max_sublist_length(arr1, n1));
+    printf("Max sublist length: %d\n", max_sublist_length(arr2, n2));
+    printf("Max sublist length: %d\n", max_sublist_length(arr3, n3));
+    printf("Max sublist length: %d\n", max_sublist_length(arr4, n4));
+    printf("Max sublist length: %d\n", max_sublist_length(NULL, 5));
+    printf("Max sublist length: %d\n", max_sublist_length(arr1, 0));
+
+    return 0;
+}

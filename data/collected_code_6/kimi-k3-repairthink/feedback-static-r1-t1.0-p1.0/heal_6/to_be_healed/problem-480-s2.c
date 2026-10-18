@@ -1,0 +1,199 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <limits.h>
+#include <ctype.h>
+
+#define INITIAL_CAPACITY ((size_t)128)
+#define MAX_INPUT_LENGTH ((size_t)16 * 1024 * 1024)
+
+#define READ_OK 0
+#define READ_ERR_TOO_LARGE 1
+#define READ_ERR_ALLOC 2
+#define READ_ERR_IO 3
+#define READ_ERR_INVALID 4
+
+char findMaxOccurringChar(const char *str, int *maxCount)
+{
+    int freq[256] = {0};
+    size_t i;
+    int max = 0;
+    int resultIndex = -1;
+
+    if (str == NULL || maxCount == NULL) {
+        if (maxCount != NULL) {
+            *maxCount = 0;
+        }
+        return '\0';
+    }
+
+    for (i = 0; str[i] != '\0'; i++) {
+        unsigned char c = (unsigned char)str[i];
+        if (freq[c] < INT_MAX) {
+            freq[c]++;
+        }
+    }
+
+    for (i = 0; i < 256; i++) {
+        if (freq[i] > max) {
+            max = freq[i];
+            resultIndex = (int)i;
+        }
+    }
+
+    *maxCount = max;
+
+    if (resultIndex < 0) {
+        return '\0';
+    }
+
+    return (char)(unsigned char)resultIndex;
+}
+
+static int grow_buffer(char **buffer, size_t *capacity)
+{
+    size_t newCapacity;
+    char *resized;
+
+    if (buffer == NULL || *buffer == NULL || capacity == NULL) {
+        return READ_ERR_ALLOC;
+    }
+
+    if (*capacity >= MAX_INPUT_LENGTH) {
+        return READ_ERR_TOO_LARGE;
+    }
+
+    if (*capacity > MAX_INPUT_LENGTH / 2) {
+        newCapacity = MAX_INPUT_LENGTH;
+    } else {
+        newCapacity = *capacity * 2;
+    }
+
+    if (newCapacity <= *capacity || newCapacity > MAX_INPUT_LENGTH) {
+        return READ_ERR_TOO_LARGE;
+    }
+
+    resized = realloc(*buffer, newCapacity);
+    if (resized == NULL) {
+        return READ_ERR_ALLOC;
+    }
+
+    *buffer = resized;
+    *capacity = newCapacity;
+    return READ_OK;
+}
+
+static int read_input(char **buffer, size_t *length, size_t *capacity)
+{
+    int ch;
+    size_t len = 0;
+    size_t cap;
+
+    if (buffer == NULL || *buffer == NULL || length == NULL ||
+        capacity == NULL || *capacity < 2) {
+        return READ_ERR_INVALID;
+    }
+
+    cap = *capacity;
+
+    /* Possible weaknesses found:
+     * Flawfinder getchar: Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20). (risk 1, buffer)
+     */
+    while ((ch = getchar()) != EOF && ch != '\n') {
+        if (ch == '\0') {
+            (*buffer)[0] = '\0';
+            *capacity = cap;
+            *length = 0;
+            return READ_ERR_INVALID;
+        }
+
+        if (len + 1 >= cap) {
+            int rc = grow_buffer(buffer, &cap);
+            if (rc != READ_OK) {
+                *capacity = cap;
+                *length = 0;
+                return rc;
+            }
+        }
+
+        (*buffer)[len] = (char)(unsigned char)ch;
+        len++;
+    }
+
+    if (ferror(stdin)) {
+        (*buffer)[0] = '\0';
+        *capacity = cap;
+        *length = 0;
+        return READ_ERR_IO;
+    }
+
+    (*buffer)[len] = '\0';
+    *capacity = cap;
+    *length = len;
+    return READ_OK;
+}
+
+int main(void)
+{
+    size_t capacity = INITIAL_CAPACITY;
+    size_t length = 0;
+    char *buffer;
+    int maxCount = 0;
+    char maxChar;
+    int rc;
+
+    buffer = malloc(capacity);
+    if (buffer == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Enter a string: ");
+    fflush(stdout);
+
+    rc = read_input(&buffer, &length, &capacity);
+    if (rc == READ_ERR_TOO_LARGE) {
+        fprintf(stderr, "Input too large\n");
+        free(buffer);
+        return EXIT_FAILURE;
+    }
+    if (rc == READ_ERR_ALLOC) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(buffer);
+        return EXIT_FAILURE;
+    }
+    if (rc == READ_ERR_IO) {
+        fprintf(stderr, "Error reading input\n");
+        free(buffer);
+        return EXIT_FAILURE;
+    }
+    if (rc == READ_ERR_INVALID) {
+        fprintf(stderr, "Invalid input\n");
+        free(buffer);
+        return EXIT_FAILURE;
+    }
+
+    if (length == 0) {
+        printf("Empty string provided\n");
+        free(buffer);
+        return EXIT_SUCCESS;
+    }
+
+    maxChar = findMaxOccurringChar(buffer, &maxCount);
+
+    if (maxCount > 0) {
+        unsigned char outChar = (unsigned char)maxChar;
+        if (isprint(outChar)) {
+            printf("Maximum occurring character: '%c' (appears %d times)\n",
+                   outChar, maxCount);
+        } else {
+            printf("Maximum occurring character: '\\x%02X' (appears %d times)\n",
+                   outChar, maxCount);
+        }
+    } else {
+        printf("No characters found\n");
+    }
+
+    free(buffer);
+    return EXIT_SUCCESS;
+}

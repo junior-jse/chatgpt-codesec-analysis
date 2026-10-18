@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int value;
+    int count;
+    struct Node *next;
+} Node;
+
+Node *create_node(int value, int count) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        return NULL;
+    }
+    node->value = value;
+    node->count = count;
+    node->next = NULL;
+    return node;
+}
+
+void append_node(Node **head, int value, int count) {
+    Node *node = create_node(value, count);
+    if (node == NULL) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = node;
+        return;
+    }
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = node;
+}
+
+Node *run_length_encode(const int *data, size_t length) {
+    if (data == NULL || length == 0) {
+        return NULL;
+    }
+    Node *head = NULL;
+    size_t i = 0;
+    while (i < length) {
+        int current_value = data[i];
+        int count = 1;
+        while (i + count < length && data[i + count] == current_value) {
+            count++;
+        }
+        append_node(&head, current_value, count);
+        i += count;
+    }
+    return head;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void print_list(const Node *head) {
+    const Node *current = head;
+    while (current != NULL) {
+        printf("(%d,%d) ", current->value, current->count);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int data[] = {1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 1, 1};
+    size_t length = sizeof(data) / sizeof(data[0]);
+    
+    Node *encoded = run_length_encode(data, length);
+    if (encoded != NULL) {
+        print_list(encoded);
+        free_list(encoded);
+    }
+    
+    return 0;
+}

@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int modulo_division(const int *dividend, const int *divisor, int *result, size_t length)
+{
+    size_t i;
+    
+    if (dividend == NULL || divisor == NULL || result == NULL || length == 0)
+    {
+        return -1;
+    }
+    
+    for (i = 0; i < length; i++)
+    {
+        if (divisor[i] == 0)
+        {
+            return -1;
+        }
+        result[i] = dividend[i] % divisor[i];
+    }
+    
+    return 0;
+}
+
+int main(void)
+{
+    int dividend[] = {10, 20, 30, 40, 50};
+    const int divisor[] = {3, 4, 5, 6, 7};
+    int result[5];
+    size_t length = sizeof(dividend) / sizeof(dividend[0]);
+    int status;
+    
+    status = modulo_division(dividend, divisor, result, length);
+    
+    if (status == 0)
+    {
+        printf("Modulo division results:\n");
+        for (size_t i = 0; i < length; i++)
+        {
+            printf("%d %% %d = %d\n", dividend[i], divisor[i], result[i]);
+        }
+    }
+    else
+    {
+        printf("Error: Invalid input or division by zero\n");
+        return 1;
+    }
+    
+    return 0;
+}

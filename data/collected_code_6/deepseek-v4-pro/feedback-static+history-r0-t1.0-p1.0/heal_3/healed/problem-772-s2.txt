@@ -1,0 +1,111 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_INPUT_LENGTH 1000000
+#define MAX_LINE_LENGTH 1000
+
+char* remove_words_with_length(const char* input, int k) {
+    if (input == NULL || k <= 0) {
+        return NULL;
+    }
+    
+    size_t len = strnlen(input, MAX_INPUT_LENGTH);
+    if (len == MAX_INPUT_LENGTH) {
+        return NULL;
+    }
+    
+    char* result = (char*)malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+    
+    size_t i = 0;
+    size_t j = 0;
+    size_t word_start = 0;
+    size_t word_length = 0;
+    int in_word = 0;
+    
+    while (i <= len) {
+        if (i == len || isspace((unsigned char)input[i])) {
+            if (in_word) {
+                if (word_length != (size_t)k) {
+                    if (j > 0) {
+                        if (j < len) {
+                            result[j++] = ' ';
+                        } else {
+                            free(result);
+                            return NULL;
+                        }
+                    }
+                    if (j + word_length <= len) {
+                        memcpy(result + j, input + word_start, word_length);
+                        j += word_length;
+                    } else {
+                        free(result);
+                        return NULL;
+                    }
+                }
+                in_word = 0;
+                word_length = 0;
+            }
+        } else {
+            if (!in_word) {
+                word_start = i;
+                in_word = 1;
+            }
+            word_length++;
+        }
+        i++;
+    }
+    
+    while (j > 0 && result[j-1] == ' ') {
+        j--;
+    }
+    result[j] = '\0';
+    
+    char* final_result = (char*)realloc(result, j + 1);
+    if (final_result == NULL) {
+        free(result);
+        return NULL;
+    }
+    
+    return final_result;
+}
+
+int main(void) {
+    char input[MAX_LINE_LENGTH];
+    int k;
+    
+    printf("Enter a string: ");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        return 1;
+    }
+    
+    size_t input_len = strlen(input);
+    if (input_len > 0 && input[input_len - 1] == '\n') {
+        input[input_len - 1] = '\0';
+    }
+    
+    printf("Enter length k: ");
+    if (scanf("%d", &k) != 1) {
+        return 1;
+    }
+    
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    
+    char* result = remove_words_with_length(input, k);
+    if (result == NULL) {
+        printf("Error processing string\n");
+        return 1;
+    }
+    
+    printf("Result: %s\n", result);
+    
+    free(result);
+    return 0;
+}
+```

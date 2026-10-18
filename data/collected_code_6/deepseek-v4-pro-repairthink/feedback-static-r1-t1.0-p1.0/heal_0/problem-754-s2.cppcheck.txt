@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s2.c:4:29: style: Parameter 'list1' can be declared as pointer to const [constParameterPointer]
+int* findCommonIndices(int *list1, int size1, int *list2, int size2, int *list3, int size3, int *resultSize) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s2.c:4:52: style: Parameter 'list2' can be declared as pointer to const [constParameterPointer]
+int* findCommonIndices(int *list1, int size1, int *list2, int size2, int *list3, int size3, int *resultSize) {
+                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s2.c:4:75: style: Parameter 'list3' can be declared as pointer to const [constParameterPointer]
+int* findCommonIndices(int *list1, int size1, int *list2, int size2, int *list3, int size3, int *resultSize) {
+                                                                          ^

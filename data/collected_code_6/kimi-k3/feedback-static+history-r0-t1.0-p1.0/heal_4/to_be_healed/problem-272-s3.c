@@ -1,0 +1,192 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define NAME_MAX_LEN 49
+
+typedef struct {
+    int id;
+    /* Possible weaknesses found:
+     * Flawfinder char: Statically-sized arrays can be improperly restricted, leading to potential overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use functions that limit length, or ensure that the size is larger than the maximum possible length. (risk 2, buffer)
+     */
+    char name[NAME_MAX_LEN + 1];
+    float value;
+} Tuple;
+
+typedef struct Node {
+    Tuple data;
+    struct Node* next;
+} Node;
+
+static int tuple_init(Tuple* t, int id, const char* name, float value) {
+    size_t name_len;
+    
+    if (t == NULL || name == NULL) {
+        return 0;
+    }
+    
+    name_len = strnlen(name, NAME_MAX_LEN + 1);
+    if (name_len > NAME_MAX_LEN) {
+        return 0;
+    }
+    
+    t->id = id;
+    snprintf(t->name, sizeof(t->name), "%s", name);
+    t->value = value;
+    return 1;
+}
+
+Node* create_node(const Tuple* data) {
+    Node* new_node;
+    
+    if (data == NULL) {
+        return NULL;
+    }
+    
+    new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    
+    new_node->data = *data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int append(Node** head, const Tuple* data) {
+    Node* new_node;
+    Node* current;
+    
+    if (head == NULL || data == NULL) {
+        return 0;
+    }
+    
+    new_node = create_node(data);
+    if (new_node == NULL) {
+        return 0;
+    }
+    
+    if (*head == NULL) {
+        *head = new_node;
+        return 1;
+    }
+    
+    current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+    return 1;
+}
+
+int extract_rear(Node** head, Tuple* result) {
+    Node* current;
+    Node* prev;
+    
+    if (head == NULL || *head == NULL || result == NULL) {
+        return 0;
+    }
+    
+    current = *head;
+    prev = NULL;
+    
+    while (current->next != NULL) {
+        prev = current;
+        current = current->next;
+    }
+    
+    *result = current->data;
+    
+    if (prev == NULL) {
+        *head = NULL;
+    } else {
+        prev->next = NULL;
+    }
+    
+    free(current);
+    return 1;
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+void print_list(const Node* head) {
+    const Node* current = head;
+    
+    while (current != NULL) {
+        printf("ID: %d, Name: %s, Value: %.2f\n",
+               current->data.id, current->data.name, current->data.value);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    Node* list = NULL;
+    Tuple t1;
+    Tuple t2;
+    Tuple t3;
+    Tuple extracted;
+    
+    if (!tuple_init(&t1, 1, "First", 10.5f)) {
+        fprintf(stderr, "Failed to initialize t1\n");
+        return EXIT_FAILURE;
+    }
+    if (!tuple_init(&t2, 2, "Second", 20.3f)) {
+        fprintf(stderr, "Failed to initialize t2\n");
+        return EXIT_FAILURE;
+    }
+    if (!tuple_init(&t3, 3, "Third", 30.7f)) {
+        fprintf(stderr, "Failed to initialize t3\n");
+        return EXIT_FAILURE;
+    }
+    
+    if (!append(&list, &t1)) {
+        fprintf(stderr, "Failed to append t1\n");
+        free_list(list);
+        return EXIT_FAILURE;
+    }
+    if (!append(&list, &t2)) {
+        fprintf(stderr, "Failed to append t2\n");
+        free_list(list);
+        return EXIT_FAILURE;
+    }
+    if (!append(&list, &t3)) {
+        fprintf(stderr, "Failed to append t3\n");
+        free_list(list);
+        return EXIT_FAILURE;
+    }
+    
+    printf("Original list:\n");
+    print_list(list);
+    
+    if (extract_rear(&list, &extracted)) {
+        printf("Extracted rear element:\n");
+        printf("ID: %d, Name: %s, Value: %.2f\n\n",
+               extracted.id, extracted.name, extracted.value);
+        
+        printf("List after extraction:\n");
+        print_list(list);
+    } else {
+        printf("Failed to extract rear element\n");
+    }
+    
+    if (extract_rear(&list, &extracted)) {
+        printf("Extracted rear element:\n");
+        printf("ID: %d, Name: %s, Value: %.2f\n\n",
+               extracted.id, extracted.name, extracted.value);
+        
+        printf("List after extraction:\n");
+        print_list(list);
+    }
+    
+    free_list(list);
+    return EXIT_SUCCESS;
+}

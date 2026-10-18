@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+
+char find_max_occurring_char(const char *str) {
+    int count[UCHAR_MAX + 1] = {0};
+    char max_char = '\0';
+    int max_count = 0;
+    int i;
+
+    if (str == NULL) {
+        return '\0';
+    }
+
+    while (*str != '\0') {
+        unsigned char ch = (unsigned char)(*str);
+        count[ch]++;
+        str++;
+    }
+
+    for (i = 0; i <= UCHAR_MAX; i++) {
+        if (count[i] > max_count) {
+            max_count = count[i];
+            max_char = (char)i;
+        }
+    }
+
+    return max_char;
+}
+
+int main(void) {
+    const char str[] = "sample string with some characters";
+    char result;
+
+    result = find_max_occurring_char(str);
+    printf("Max occurring character: %c\n", result);
+
+    return 0;
+}

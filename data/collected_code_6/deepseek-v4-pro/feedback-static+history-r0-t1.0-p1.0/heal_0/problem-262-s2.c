@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *next;
+};
+
+void split_list(struct node *source, struct node **front, struct node **back, int length) {
+    struct node *current = source;
+    int count = 0;
+
+    *front = NULL;
+    *back = NULL;
+
+    if (source == NULL || length <= 0) {
+        *back = source;
+        return;
+    }
+
+    while (current != NULL && count < length - 1) {
+        current = current->next;
+        count++;
+    }
+
+    if (current == NULL) {
+        *front = source;
+        return;
+    }
+
+    *front = source;
+    *back = current->next;
+    current->next = NULL;
+}
+
+struct node *create_node(int data) {
+    struct node *new_node = (struct node *)malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void print_list(struct node *head) {
+    struct node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(struct node *head) {
+    struct node *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main(void) {
+    struct node *head = NULL;
+    struct node *front = NULL;
+    struct node *back = NULL;
+    int split_length = 3;
+
+    for (int i = 1; i <= 5; i++) {
+        struct node *new_node = create_node(i * 10);
+        if (head == NULL) {
+            head = new_node;
+        } else {
+            struct node *temp = head;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = new_node;
+        }
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    split_list(head, &front, &back, split_length);
+
+    printf("Front part (length %d): ", split_length);
+    print_list(front);
+
+    printf("Back part: ");
+    print_list(back);
+
+    free_list(front);
+    free_list(back);
+
+    return 0;
+}

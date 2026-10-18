@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int countRotations(const int *arr, size_t n) {
+    if (arr == NULL || n == 0) {
+        return -1;
+    }
+    if (n == 1) {
+        return 0;
+    }
+    
+    size_t min_index = 0;
+    for (size_t i = 1; i < n; i++) {
+        if (arr[i] < arr[min_index]) {
+            min_index = i;
+        }
+    }
+    
+    return (int)min_index;
+}
+
+int main(void) {
+    int arr[] = {15, 18, 2, 3, 6, 12};
+    size_t n = sizeof(arr) / sizeof(arr[0]);
+    
+    int rotations = countRotations(arr, n);
+    
+    if (rotations >= 0) {
+        printf("Number of rotations: %d\n", rotations);
+    } else {
+        fprintf(stderr, "Error: Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}

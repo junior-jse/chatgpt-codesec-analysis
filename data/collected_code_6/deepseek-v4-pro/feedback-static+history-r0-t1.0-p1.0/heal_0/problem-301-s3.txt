@@ -1,0 +1,169 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct DictEntry {
+    char *key;
+    void *value;
+    int is_dict;
+    struct DictEntry **dict_entries;
+    int dict_count;
+} DictEntry;
+
+typedef struct {
+    DictEntry *root;
+} Dictionary;
+
+int find_depth(DictEntry *entry) {
+    if (entry == NULL) {
+        return 0;
+    }
+    
+    if (!entry->is_dict) {
+        return 1;
+    }
+    
+    int max_depth = 1;
+    
+    for (int i = 0; i < entry->dict_count; i++) {
+        if (entry->dict_entries[i] != NULL) {
+            int child_depth = find_depth(entry->dict_entries[i]);
+            if (child_depth + 1 > max_depth) {
+                max_depth = child_depth + 1;
+            }
+        }
+    }
+    
+    return max_depth;
+}
+
+int dictionary_depth(Dictionary *dict) {
+    if (dict == NULL || dict->root == NULL) {
+        return 0;
+    }
+    
+    return find_depth(dict->root);
+}
+
+DictEntry *create_dict_entry(const char *key, int is_dict) {
+    DictEntry *entry = (DictEntry *)malloc(sizeof(DictEntry));
+    if (entry == NULL) {
+        return NULL;
+    }
+    
+    entry->key = (char *)malloc(strlen(key) + 1);
+    if (entry->key == NULL) {
+        free(entry);
+        return NULL;
+    }
+    strcpy(entry->key, key);
+    
+    entry->value = NULL;
+    entry->is_dict = is_dict;
+    entry->dict_entries = NULL;
+    entry->dict_count = 0;
+    
+    return entry;
+}
+
+int add_entry_to_dict(DictEntry *parent, DictEntry *child) {
+    if (parent == NULL || child == NULL || !parent->is_dict) {
+        return -1;
+    }
+    
+    DictEntry **new_entries = (DictEntry **)realloc(parent->dict_entries, 
+                                                     sizeof(DictEntry *) * (parent->dict_count + 1));
+    if (new_entries == NULL) {
+        return -1;
+    }
+    
+    parent->dict_entries = new_entries;
+    parent->dict_entries[parent->dict_count] = child;
+    parent->dict_count++;
+    
+    return 0;
+}
+
+void free_dict_entry(DictEntry *entry) {
+    if (entry == NULL) {
+        return;
+    }
+    
+    if (entry->is_dict && entry->dict_entries != NULL) {
+        for (int i = 0; i < entry->dict_count; i++) {
+            free_dict_entry(entry->dict_entries[i]);
+        }
+        free(entry->dict_entries);
+    }
+    
+    free(entry->key);
+    free(entry);
+}
+
+void free_dictionary(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    free_dict_entry(dict->root);
+    free(dict);
+}
+
+int main(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (dict == NULL) {
+        return 1;
+    }
+    
+    dict->root = create_dict_entry("root", 1);
+    if (dict->root == NULL) {
+        free(dict);
+        return 1;
+    }
+    
+    DictEntry *level1_a = create_dict_entry("level1_a", 0);
+    DictEntry *level1_b = create_dict_entry("level1_b", 1);
+    DictEntry *level1_c = create_dict_entry("level1_c", 1);
+    
+    if (level1_a == NULL || level1_b == NULL || level1_c == NULL) {
+        free_dict_entry(level1_a);
+        free_dict_entry(level1_b);
+        free_dict_entry(level1_c);
+        free_dictionary(dict);
+        return 1;
+    }
+    
+    add_entry_to_dict(dict->root, level1_a);
+    add_entry_to_dict(dict->root, level1_b);
+    add_entry_to_dict(dict->root, level1_c);
+    
+    DictEntry *level2_a = create_dict_entry("level2_a", 0);
+    DictEntry *level2_b = create_dict_entry("level2_b", 1);
+    
+    if (level2_a == NULL || level2_b == NULL) {
+        free_dict_entry(level2_a);
+        free_dict_entry(level2_b);
+        free_dictionary(dict);
+        return 1;
+    }
+    
+    add_entry_to_dict(level1_b, level2_a);
+    add_entry_to_dict(level1_b, level2_b);
+    
+    DictEntry *level3_a = create_dict_entry("level3_a", 0);
+    
+    if (level3_a == NULL) {
+        free_dictionary(dict);
+        return 1;
+    }
+    
+    add_entry_to_dict(level2_b, level3_a);
+    
+    printf("Depth of dictionary: %d\n", dictionary_depth(dict));
+    
+    free_dictionary(dict);
+    
+    return 0;
+}
+```

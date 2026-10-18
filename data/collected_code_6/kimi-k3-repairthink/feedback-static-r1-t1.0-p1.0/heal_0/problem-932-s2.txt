@@ -1,0 +1,67 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+size_t remove_duplicate_words(char *words[], size_t count)
+{
+    if (words == NULL || count == 0) {
+        return 0;
+    }
+
+    size_t unique_count = 0;
+
+    for (size_t i = 0; i < count; i++) {
+        if (words[i] == NULL) {
+            continue;
+        }
+
+        int is_duplicate = 0;
+
+        for (size_t j = 0; j < unique_count; j++) {
+            if (strcmp(words[i], words[j]) == 0) {
+                is_duplicate = 1;
+                break;
+            }
+        }
+
+        if (!is_duplicate) {
+            words[unique_count] = words[i];
+            unique_count++;
+        }
+    }
+
+    return unique_count;
+}
+
+int main(void)
+{
+    char *words[] = {
+        "apple",
+        "banana",
+        "orange",
+        "apple",
+        "grape",
+        "banana",
+        "kiwi"
+    };
+
+    size_t word_count = sizeof(words) / sizeof(words[0]);
+
+    size_t unique_count = remove_duplicate_words(words, word_count);
+
+    if (unique_count > word_count) {
+        fprintf(stderr, "Error: Invalid unique word count\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Unique words:\n");
+    for (size_t i = 0; i < unique_count; i++) {
+        if (words[i] != NULL) {
+            printf("%s\n", words[i]);
+        }
+    }
+
+    return EXIT_SUCCESS;
+}
+```

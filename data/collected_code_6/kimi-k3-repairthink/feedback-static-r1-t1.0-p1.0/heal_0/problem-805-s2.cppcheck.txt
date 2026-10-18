@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-805-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-805-s2.c:5:57: style: Parameter 'list_sizes' can be declared as pointer to const [constParameterPointer]
+int* find_max_sum_list(int **lists, int num_lists, int *list_sizes) {
+                                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-805-s2.c:40:10: style: Variable 'max_list' can be declared as pointer to const [constVariablePointer]
+    int *max_list = find_max_sum_list(lists, num_lists, list_sizes);
+         ^

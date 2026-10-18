@@ -1,0 +1,193 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_KEY_LENGTH 256
+#define MAX_KEYS 100
+
+typedef struct {
+    char **keys;
+    size_t count;
+    size_t capacity;
+} KeyList;
+
+static size_t bounded_strlen(const char *s, size_t max_len)
+{
+    const char *end;
+
+    if (s == NULL) {
+        return 0;
+    }
+    end = memchr(s, '\0', max_len);
+    if (end == NULL) {
+        return max_len;
+    }
+    return (size_t)(end - s);
+}
+
+static int safe_copy(char *dst, size_t dst_size, const char *src, size_t src_len)
+{
+    if (dst == NULL || src == NULL || dst_size == 0) {
+        return -1;
+    }
+    if (src_len >= dst_size) {
+        return -1;
+    }
+    if (src_len > 0) {
+        memcpy(dst, src, src_len);
+    }
+    dst[src_len] = '\0';
+    return 0;
+}
+
+int init_key_list(KeyList *list)
+{
+    if (list == NULL) {
+        return -1;
+    }
+    list->keys = calloc(MAX_KEYS, sizeof(*list->keys));
+    if (list->keys == NULL) {
+        return -1;
+    }
+    list->count = 0;
+    list->capacity = MAX_KEYS;
+    return 0;
+}
+
+int add_key(KeyList *list, const char *key)
+{
+    size_t key_len;
+    char *new_key;
+
+    if (list == NULL || key == NULL) {
+        return -1;
+    }
+    if (list->keys == NULL || list->count >= list->capacity) {
+        return -1;
+    }
+    key_len = bounded_strlen(key, MAX_KEY_LENGTH);
+    if (key_len >= MAX_KEY_LENGTH) {
+        return -1;
+    }
+    new_key = malloc(key_len + 1);
+    if (new_key == NULL) {
+        return -1;
+    }
+    if (safe_copy(new_key, key_len + 1, key, key_len) != 0) {
+        free(new_key);
+        return -1;
+    }
+    list->keys[list->count] = new_key;
+    list->count++;
+    return 0;
+}
+
+char **get_dictionary_keys(const KeyList *list, size_t *num_keys)
+{
+    char **keys;
+
+    if (list == NULL || num_keys == NULL) {
+        return NULL;
+    }
+    *num_keys = 0;
+    if (list->keys == NULL || list->count == 0) {
+        return NULL;
+    }
+    if (list->count > list->capacity) {
+        return NULL;
+    }
+    if (list->count > SIZE_MAX / sizeof(*keys)) {
+        return NULL;
+    }
+    keys = malloc(list->count * sizeof(*keys));
+    if (keys == NULL) {
+        return NULL;
+    }
+    for (size_t i = 0; i < list->count; i++) {
+        size_t key_len = bounded_strlen(list->keys[i], MAX_KEY_LENGTH);
+        keys[i] = malloc(key_len + 1);
+        if (keys[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(keys[j]);
+            }
+            free(keys);
+            return NULL;
+        }
+        if (safe_copy(keys[i], key_len + 1, list->keys[i], key_len) != 0) {
+            free(keys[i]);
+            for (size_t j = 0; j < i; j++) {
+                free(keys[j]);
+            }
+            free(keys);
+            return NULL;
+        }
+    }
+    *num_keys = list->count;
+    return keys;
+}
+
+void free_keys(char **keys, size_t num_keys)
+{
+    if (keys == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < num_keys; i++) {
+        free(keys[i]);
+    }
+    free(keys);
+}
+
+void free_key_list(KeyList *list)
+{
+    if (list == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < list->count; i++) {
+        free(list->keys[i]);
+    }
+    free(list->keys);
+    list->keys = NULL;
+    list->count = 0;
+    list->capacity = 0;
+}
+
+int main(void)
+{
+    KeyList dict;
+
+    if (init_key_list(&dict) != 0) {
+        fprintf(stderr, "Failed to initialize key list\n");
+        return EXIT_FAILURE;
+    }
+    if (add_key(&dict, "name") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        free_key_list(&dict);
+        return EXIT_FAILURE;
+    }
+    if (add_key(&dict, "age") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        free_key_list(&dict);
+        return EXIT_FAILURE;
+    }
+    if (add_key(&dict, "city") != 0) {
+        fprintf(stderr, "Failed to add key\n");
+        free_key_list(&dict);
+        return EXIT_FAILURE;
+    }
+    size_t num_keys = 0;
+    char **keys = get_dictionary_keys(&dict, &num_keys);
+    if (keys == NULL && num_keys > 0) {
+        fprintf(stderr, "Failed to retrieve keys\n");
+        free_key_list(&dict);
+        return EXIT_FAILURE;
+    }
+    for (size_t i = 0; i < num_keys; i++) {
+        printf("%s\n", keys[i]);
+    }
+    free_keys(keys, num_keys);
+    free_key_list(&dict);
+    return EXIT_SUCCESS;
+}
+```

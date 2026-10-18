@@ -1,0 +1,7 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-326-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-326-s2.c:19:19: style: Variable 'null_pos' can be declared as pointer to const [constVariablePointer]
+            char *null_pos = memchr(token, '\0', MAX_TOKEN_LEN);
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-326-s2.c:78:11: style: Variable 'null_final' can be declared as pointer to const [constVariablePointer]
+    char *null_final = memchr(result_word, '\0', MAX_TOKEN_LEN);
+          ^

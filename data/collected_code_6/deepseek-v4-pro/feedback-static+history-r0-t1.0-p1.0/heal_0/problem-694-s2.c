@@ -1,0 +1,375 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define INITIAL_CAPACITY 16
+#define LOAD_FACTOR 0.75
+
+typedef struct KeyValue {
+    char *key;
+    int *values;
+    int value_count;
+    struct KeyValue *next;
+} KeyValue;
+
+typedef struct {
+    KeyValue **buckets;
+    int capacity;
+    int size;
+} Dictionary;
+
+typedef struct {
+    int *data;
+    int size;
+    int capacity;
+} IntArray;
+
+typedef struct HashSetNode {
+    int value;
+    struct HashSetNode *next;
+} HashSetNode;
+
+typedef struct {
+    HashSetNode **buckets;
+    int capacity;
+    int size;
+} HashSet;
+
+unsigned long hash_string(const char *str) {
+    unsigned long hash = 5381;
+    int c;
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c;
+    }
+    return hash;
+}
+
+unsigned long hash_int(int value) {
+    unsigned long x = (unsigned long)value;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+    return x;
+}
+
+Dictionary *dictionary_create(void) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (!dict) return NULL;
+    dict->capacity = INITIAL_CAPACITY;
+    dict->size = 0;
+    dict->buckets = (KeyValue **)calloc(dict->capacity, sizeof(KeyValue *));
+    if (!dict->buckets) {
+        free(dict);
+        return NULL;
+    }
+    return dict;
+}
+
+void dictionary_free(Dictionary *dict) {
+    if (!dict) return;
+    for (int i = 0; i < dict->capacity; i++) {
+        KeyValue *entry = dict->buckets[i];
+        while (entry) {
+            KeyValue *next = entry->next;
+            free(entry->key);
+            free(entry->values);
+            free(entry);
+            entry = next;
+        }
+    }
+    free(dict->buckets);
+    free(dict);
+}
+
+int dictionary_resize(Dictionary *dict, int new_capacity) {
+    KeyValue **new_buckets = (KeyValue **)calloc(new_capacity, sizeof(KeyValue *));
+    if (!new_buckets) return 0;
+    
+    for (int i = 0; i < dict->capacity; i++) {
+        KeyValue *entry = dict->buckets[i];
+        while (entry) {
+            KeyValue *next = entry->next;
+            unsigned long hash = hash_string(entry->key);
+            int index = hash % new_capacity;
+            entry->next = new_buckets[index];
+            new_buckets[index] = entry;
+            entry = next;
+        }
+    }
+    
+    free(dict->buckets);
+    dict->buckets = new_buckets;
+    dict->capacity = new_capacity;
+    return 1;
+}
+
+int dictionary_set(Dictionary *dict, const char *key, int *values, int value_count) {
+    if (!dict || !key || !values || value_count <= 0) return 0;
+    
+    if ((float)(dict->size + 1) / dict->capacity > LOAD_FACTOR) {
+        if (!dictionary_resize(dict, dict->capacity * 2)) return 0;
+    }
+    
+    unsigned long hash = hash_string(key);
+    int index = hash % dict->capacity;
+    
+    KeyValue *entry = dict->buckets[index];
+    while (entry) {
+        if (strcmp(entry->key, key) == 0) {
+            int *new_values = (int *)malloc(sizeof(int) * value_count);
+            if (!new_values) return 0;
+            memcpy(new_values, values, sizeof(int) * value_count);
+            free(entry->values);
+            entry->values = new_values;
+            entry->value_count = value_count;
+            return 1;
+        }
+        entry = entry->next;
+    }
+    
+    KeyValue *new_entry = (KeyValue *)malloc(sizeof(KeyValue));
+    if (!new_entry) return 0;
+    
+    new_entry->key = (char *)malloc(strlen(key) + 1);
+    if (!new_entry->key) {
+        free(new_entry);
+        return 0;
+    }
+    strcpy(new_entry->key, key);
+    
+    new_entry->values = (int *)malloc(sizeof(int) * value_count);
+    if (!new_entry->values) {
+        free(new_entry->key);
+        free(new_entry);
+        return 0;
+    }
+    memcpy(new_entry->values, values, sizeof(int) * value_count);
+    
+    new_entry->value_count = value_count;
+    new_entry->next = dict->buckets[index];
+    dict->buckets[index] = new_entry;
+    dict->size++;
+    return 1;
+}
+
+HashSet *hashset_create(void) {
+    HashSet *set = (HashSet *)malloc(sizeof(HashSet));
+    if (!set) return NULL;
+    set->capacity = INITIAL_CAPACITY;
+    set->size = 0;
+    set->buckets = (HashSetNode **)calloc(set->capacity, sizeof(HashSetNode *));
+    if (!set->buckets) {
+        free(set);
+        return NULL;
+    }
+    return set;
+}
+
+void hashset_free(HashSet *set) {
+    if (!set) return;
+    for (int i = 0; i < set->capacity; i++) {
+        HashSetNode *node = set->buckets[i];
+        while (node) {
+            HashSetNode *next = node->next;
+            free(node);
+            node = next;
+        }
+    }
+    free(set->buckets);
+    free(set);
+}
+
+int hashset_resize(HashSet *set, int new_capacity) {
+    HashSetNode **new_buckets = (HashSetNode **)calloc(new_capacity, sizeof(HashSetNode *));
+    if (!new_buckets) return 0;
+    
+    for (int i = 0; i < set->capacity; i++) {
+        HashSetNode *node = set->buckets[i];
+        while (node) {
+            HashSetNode *next = node->next;
+            unsigned long hash = hash_int(node->value);
+            int index = hash % new_capacity;
+            node->next = new_buckets[index];
+            new_buckets[index] = node;
+            node = next;
+        }
+    }
+    
+    free(set->buckets);
+    set->buckets = new_buckets;
+    set->capacity = new_capacity;
+    return 1;
+}
+
+int hashset_contains(HashSet *set, int value) {
+    if (!set) return 0;
+    unsigned long hash = hash_int(value);
+    int index = hash % set->capacity;
+    HashSetNode *node = set->buckets[index];
+    while (node) {
+        if (node->value == value) return 1;
+        node = node->next;
+    }
+    return 0;
+}
+
+int hashset_add(HashSet *set, int value) {
+    if (!set) return 0;
+    
+    if (hashset_contains(set, value)) return 1;
+    
+    if ((float)(set->size + 1) / set->capacity > LOAD_FACTOR) {
+        if (!hashset_resize(set, set->capacity * 2)) return 0;
+    }
+    
+    unsigned long hash = hash_int(value);
+    int index = hash % set->capacity;
+    
+    HashSetNode *node = (HashSetNode *)malloc(sizeof(HashSetNode));
+    if (!node) return 0;
+    
+    node->value = value;
+    node->next = set->buckets[index];
+    set->buckets[index] = node;
+    set->size++;
+    return 1;
+}
+
+IntArray *int_array_create(void) {
+    IntArray *arr = (IntArray *)malloc(sizeof(IntArray));
+    if (!arr) return NULL;
+    arr->capacity = INITIAL_CAPACITY;
+    arr->size = 0;
+    arr->data = (int *)malloc(sizeof(int) * arr->capacity);
+    if (!arr->data) {
+        free(arr);
+        return NULL;
+    }
+    return arr;
+}
+
+void int_array_free(IntArray *arr) {
+    if (!arr) return;
+    free(arr->data);
+    free(arr);
+}
+
+int int_array_push(IntArray *arr, int value) {
+    if (!arr) return 0;
+    
+    if (arr->size >= arr->capacity) {
+        int new_capacity = arr->capacity * 2;
+        int *new_data = (int *)realloc(arr->data, sizeof(int) * new_capacity);
+        if (!new_data) return 0;
+        arr->data = new_data;
+        arr->capacity = new_capacity;
+    }
+    
+    arr->data[arr->size++] = value;
+    return 1;
+}
+
+int *extract_unique_values(Dictionary *dict, int *output_size) {
+    if (!dict || !output_size) return NULL;
+    
+    HashSet *seen = hashset_create();
+    if (!seen) return NULL;
+    
+    IntArray *unique_values = int_array_create();
+    if (!unique_values) {
+        hashset_free(seen);
+        return NULL;
+    }
+    
+    for (int i = 0; i < dict->capacity; i++) {
+        KeyValue *entry = dict->buckets[i];
+        while (entry) {
+            for (int j = 0; j < entry->value_count; j++) {
+                int value = entry->values[j];
+                if (!hashset_contains(seen, value)) {
+                    if (!hashset_add(seen, value)) {
+                        hashset_free(seen);
+                        int_array_free(unique_values);
+                        return NULL;
+                    }
+                    if (!int_array_push(unique_values, value)) {
+                        hashset_free(seen);
+                        int_array_free(unique_values);
+                        return NULL;
+                    }
+                }
+            }
+            entry = entry->next;
+        }
+    }
+    
+    int *result = (int *)malloc(sizeof(int) * unique_values->size);
+    if (!result) {
+        hashset_free(seen);
+        int_array_free(unique_values);
+        return NULL;
+    }
+    
+    memcpy(result, unique_values->data, sizeof(int) * unique_values->size);
+    *output_size = unique_values->size;
+    
+    hashset_free(seen);
+    int_array_free(unique_values);
+    
+    return result;
+}
+
+int main(void) {
+    Dictionary *dict = dictionary_create();
+    if (!dict) {
+        fprintf(stderr, "Failed to create dictionary\n");
+        return 1;
+    }
+    
+    int values1[] = {1, 2, 3, 4};
+    int values2[] = {3, 4, 5, 6};
+    int values3[] = {7, 8, 2, 9};
+    
+    if (!dictionary_set(dict, "key1", values1, 4)) {
+        fprintf(stderr, "Failed to set key1\n");
+        dictionary_free(dict);
+        return 1;
+    }
+    
+    if (!dictionary_set(dict, "key2", values2, 4)) {
+        fprintf(stderr, "Failed to set key2\n");
+        dictionary_free(dict);
+        return 1;
+    }
+    
+    if (!dictionary_set(dict, "key3", values3, 4)) {
+        fprintf(stderr, "Failed to set key3\n");
+        dictionary_free(dict);
+        return 1;
+    }
+    
+    int output_size = 0;
+    int *unique_values = extract_unique_values(dict, &output_size);
+    
+    if (!unique_values) {
+        fprintf(stderr, "Failed to extract unique values\n");
+        dictionary_free(dict);
+        return 1;
+    }
+    
+    printf("Unique values (");
+    printf("%d", output_size);
+    printf("): ");
+    for (int i = 0; i < output_size; i++) {
+        printf("%d", unique_values[i]);
+        if (i < output_size - 1) {
+            printf(", ");
+        }
+    }
+    printf("\n");
+    
+    free(unique_values);
+    dictionary_free(dict);
+    
+    return 0;
+}

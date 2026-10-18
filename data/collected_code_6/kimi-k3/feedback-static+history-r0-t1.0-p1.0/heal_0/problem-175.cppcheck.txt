@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-175.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-175.c:44:56: style: Condition 'is_valid_parentheses(test8)' is always false [knownConditionTrueFalse]
+    printf("Test 8: NULL -> %s\n", is_valid_parentheses(test8) ? "Valid" : "Invalid");
+                                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-175.c:44:56: note: Calling function 'is_valid_parentheses' returns 0
+    printf("Test 8: NULL -> %s\n", is_valid_parentheses(test8) ? "Valid" : "Invalid");
+                                                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-175.c:44:56: note: Condition 'is_valid_parentheses(test8)' is always false
+    printf("Test 8: NULL -> %s\n", is_valid_parentheses(test8) ? "Valid" : "Invalid");
+                                                       ^

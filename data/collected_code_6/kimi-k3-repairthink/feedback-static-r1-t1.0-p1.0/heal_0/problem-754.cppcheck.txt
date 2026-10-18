@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754.c:5:38: style: Parameter 'list1' can be declared as pointer to const [constParameterPointer]
+int* find_common_index_elements(int* list1, int size1, int* list2, int size2, int* list3, int size3, int* result_size) {
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754.c:5:61: style: Parameter 'list2' can be declared as pointer to const [constParameterPointer]
+int* find_common_index_elements(int* list1, int size1, int* list2, int size2, int* list3, int size3, int* result_size) {
+                                                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/kimi-k3/feedback-static-r0-t1.0-p1.0/heal_0/problem-754.c:5:84: style: Parameter 'list3' can be declared as pointer to const [constParameterPointer]
+int* find_common_index_elements(int* list1, int size1, int* list2, int size2, int* list3, int size3, int* result_size) {
+                                                                                   ^

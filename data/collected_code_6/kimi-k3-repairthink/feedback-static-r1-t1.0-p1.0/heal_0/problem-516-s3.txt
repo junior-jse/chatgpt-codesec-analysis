@@ -1,0 +1,137 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+static int get_max(const int *arr, size_t n)
+{
+    int max = arr[0];
+    size_t i;
+    for (i = 1; i < n; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+static int get_min(const int *arr, size_t n)
+{
+    int min = arr[0];
+    size_t i;
+    for (i = 1; i < n; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
+static int counting_sort_by_digit(int *arr, size_t n, unsigned int exp, int *output)
+{
+    int count[10] = {0};
+    size_t i;
+    int digit;
+
+    for (i = 0; i < n; i++) {
+        digit = (int)(((unsigned int)arr[i] / exp) % 10U);
+        count[digit]++;
+    }
+
+    for (i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (i = n; i > 0; i--) {
+        digit = (int)(((unsigned int)arr[i - 1] / exp) % 10U);
+        output[count[digit] - 1] = arr[i - 1];
+        count[digit]--;
+    }
+
+    memcpy(arr, output, n * sizeof(int));
+    return 0;
+}
+
+int radix_sort(int *arr, size_t n)
+{
+    int *output;
+    int min_val;
+    int max_val;
+    unsigned int exp;
+    unsigned int range;
+    size_t i;
+
+    if (arr == NULL || n == 0) {
+        return -1;
+    }
+
+    if (n == 1) {
+        return 0;
+    }
+
+    output = (int *)malloc(n * sizeof(int));
+    if (output == NULL) {
+        return -1;
+    }
+
+    min_val = get_min(arr, n);
+    max_val = get_max(arr, n);
+
+    if (min_val < 0) {
+        for (i = 0; i < n; i++) {
+            if (arr[i] > INT_MAX + min_val) {
+                free(output);
+                return -1;
+            }
+            arr[i] -= min_val;
+        }
+        max_val -= min_val;
+    }
+
+    range = (unsigned int)max_val;
+
+    for (exp = 1; range / exp > 0; exp *= 10) {
+        counting_sort_by_digit(arr, n, exp, output);
+    }
+
+    if (min_val < 0) {
+        for (i = 0; i < n; i++) {
+            arr[i] += min_val;
+        }
+    }
+
+    free(output);
+    return 0;
+}
+
+static void print_array(const int *arr, size_t n)
+{
+    size_t i;
+    for (i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    int arr[] = {170, 45, 75, -90, 802, 24, -2, 66, 0, -45, 1000};
+    size_t n = sizeof(arr) / sizeof(arr[0]);
+    int result;
+
+    printf("Original array: ");
+    print_array(arr, n);
+
+    result = radix_sort(arr, n);
+    if (result != 0) {
+        fprintf(stderr, "Radix sort failed\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Sorted array: ");
+    print_array(arr, n);
+
+    return EXIT_SUCCESS;
+}
+```

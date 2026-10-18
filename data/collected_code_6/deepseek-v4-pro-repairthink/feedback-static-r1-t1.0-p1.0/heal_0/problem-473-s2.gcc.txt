@@ -1,0 +1,17 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-473-s2.c: In function 'main':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-473-s2.c:132:51: error: passing argument 1 of 'find_tuple_intersection' from incompatible pointer type [-Wincompatible-pointer-types]
+  132 |     Tuple *intersection = find_tuple_intersection(list1, 3, list2, 3, &result_size);
+      |                                                   ^~~~~
+      |                                                   |
+      |                                                   Tuple **
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-473-s2.c:75:39: note: expected 'Tuple *' but argument is of type 'Tuple **'
+   75 | Tuple *find_tuple_intersection(Tuple *list1, int size1, Tuple *list2, int size2, int *result_size) {
+      |                                ~~~~~~~^~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-473-s2.c:132:61: error: passing argument 3 of 'find_tuple_intersection' from incompatible pointer type [-Wincompatible-pointer-types]
+  132 |     Tuple *intersection = find_tuple_intersection(list1, 3, list2, 3, &result_size);
+      |                                                             ^~~~~
+      |                                                             |
+      |                                                             Tuple **
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-473-s2.c:75:64: note: expected 'Tuple *' but argument is of type 'Tuple **'
+   75 | Tuple *find_tuple_intersection(Tuple *list1, int size1, Tuple *list2, int size2, int *result_size) {
+      |                                                         ~~~~~~~^~~~~

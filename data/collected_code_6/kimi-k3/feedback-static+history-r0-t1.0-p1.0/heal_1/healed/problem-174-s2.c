@@ -1,0 +1,239 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} KeyValuePair;
+
+typedef struct {
+    char *key;
+    char **values;
+    size_t count;
+    size_t capacity;
+} DictEntry;
+
+typedef struct {
+    DictEntry *entries;
+    size_t count;
+    size_t capacity;
+} Dictionary;
+
+static void dict_init(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    dict->entries = NULL;
+    dict->count = 0;
+    dict->capacity = 0;
+}
+
+static void dict_free(Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    if (dict->entries != NULL) {
+        for (size_t i = 0; i < dict->count; i++) {
+            free(dict->entries[i].key);
+            if (dict->entries[i].values != NULL) {
+                for (size_t j = 0; j < dict->entries[i].count; j++) {
+                    free(dict->entries[i].values[j]);
+                }
+                free(dict->entries[i].values);
+            }
+        }
+        free(dict->entries);
+    }
+    
+    dict->entries = NULL;
+    dict->count = 0;
+    dict->capacity = 0;
+}
+
+static char *string_duplicate(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+    
+    size_t len = strlen(str);
+    if (len == SIZE_MAX) {
+        return NULL;
+    }
+    
+    char *copy = malloc(len + 1);
+    if (copy == NULL) {
+        return NULL;
+    }
+    
+    memcpy(copy, str, len + 1);
+    return copy;
+}
+
+static int entry_add_value(DictEntry *entry, const char *value) {
+    if (entry == NULL || value == NULL) {
+        return -1;
+    }
+    
+    if (entry->count >= entry->capacity) {
+        size_t new_capacity = (entry->capacity == 0) ? 4 : entry->capacity * 2;
+        
+        if (new_capacity < entry->capacity) {
+            return -1;
+        }
+        
+        char **new_values = realloc(entry->values, new_capacity * sizeof(char *));
+        if (new_values == NULL) {
+            return -1;
+        }
+        
+        entry->values = new_values;
+        entry->capacity = new_capacity;
+    }
+    
+    char *value_copy = string_duplicate(value);
+    if (value_copy == NULL) {
+        return -1;
+    }
+    
+    entry->values[entry->count] = value_copy;
+    entry->count++;
+    
+    return 0;
+}
+
+static DictEntry *dict_find_entry(Dictionary *dict, const char *key) {
+    if (dict == NULL || key == NULL) {
+        return NULL;
+    }
+    
+    for (size_t i = 0; i < dict->count; i++) {
+        if (dict->entries[i].key != NULL && strcmp(dict->entries[i].key, key) == 0) {
+            return &dict->entries[i];
+        }
+    }
+    
+    return NULL;
+}
+
+static int dict_add_entry(Dictionary *dict, const char *key, const char *value) {
+    if (dict == NULL || key == NULL || value == NULL) {
+        return -1;
+    }
+    
+    if (dict->count >= dict->capacity) {
+        size_t new_capacity = (dict->capacity == 0) ? 8 : dict->capacity * 2;
+        
+        if (new_capacity < dict->capacity) {
+            return -1;
+        }
+        
+        DictEntry *new_entries = realloc(dict->entries, new_capacity * sizeof(DictEntry));
+        if (new_entries == NULL) {
+            return -1;
+        }
+        
+        dict->entries = new_entries;
+        dict->capacity = new_capacity;
+    }
+    
+    char *key_copy = string_duplicate(key);
+    if (key_copy == NULL) {
+        return -1;
+    }
+    
+    DictEntry *entry = &dict->entries[dict->count];
+    entry->key = key_copy;
+    entry->values = NULL;
+    entry->count = 0;
+    entry->capacity = 0;
+    
+    if (entry_add_value(entry, value) != 0) {
+        free(entry->key);
+        entry->key = NULL;
+        return -1;
+    }
+    
+    dict->count++;
+    
+    return 0;
+}
+
+int group_pairs(Dictionary *dict, const KeyValuePair *pairs, size_t pair_count) {
+    if (dict == NULL) {
+        return -1;
+    }
+    
+    if (pairs == NULL && pair_count > 0) {
+        return -1;
+    }
+    
+    dict_init(dict);
+    
+    for (size_t i = 0; i < pair_count; i++) {
+        if (pairs[i].key == NULL || pairs[i].value == NULL) {
+            dict_free(dict);
+            return -1;
+        }
+        
+        DictEntry *entry = dict_find_entry(dict, pairs[i].key);
+        
+        if (entry != NULL) {
+            if (entry_add_value(entry, pairs[i].value) != 0) {
+                dict_free(dict);
+                return -1;
+            }
+        } else {
+            if (dict_add_entry(dict, pairs[i].key, pairs[i].value) != 0) {
+                dict_free(dict);
+                return -1;
+            }
+        }
+    }
+    
+    return 0;
+}
+
+static void dict_print(const Dictionary *dict) {
+    if (dict == NULL) {
+        return;
+    }
+    
+    printf("{\n");
+    for (size_t i = 0; i < dict->count; i++) {
+        printf("  \"%s\": [", dict->entries[i].key);
+        for (size_t j = 0; j < dict->entries[i].count; j++) {
+            printf("\"%s\"", dict->entries[i].values[j]);
+            if (j + 1 < dict->entries[i].count) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+    printf("}\n");
+}
+
+int main(void) {
+    Dictionary dict;
+    KeyValuePair pairs[] = {
+        {"fruit", "apple"},
+        {"vegetable", "carrot"},
+        {"fruit", "banana"},
+        {"vegetable", "broccoli"},
+        {"fruit", "cherry"},
+        {"grain", "rice"}
+    };
+    size_t pair_count = sizeof(pairs) / sizeof(pairs[0]);
+    
+    if (group_pairs(&dict, pairs, pair_count) != 0) {
+        fprintf(stderr, "Error: Failed to group pairs\n");
+        return EXIT_FAILURE;
+    }
+    
+    dict_print(&dict);
+    dict_free(&dict);
+    
+    return EXIT_SUCCESS;
+}

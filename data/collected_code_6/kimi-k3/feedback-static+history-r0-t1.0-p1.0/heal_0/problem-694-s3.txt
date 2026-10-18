@@ -1,0 +1,102 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} KeyValuePair;
+
+typedef struct {
+    KeyValuePair *pairs;
+    size_t count;
+} Dictionary;
+
+char **get_unique_values(const Dictionary *dict, size_t *unique_count) {
+    if (dict == NULL || dict->pairs == NULL || unique_count == NULL) {
+        return NULL;
+    }
+    
+    *unique_count = 0;
+    
+    if (dict->count == 0) {
+        return NULL;
+    }
+    
+    char **unique_values = malloc(dict->count * sizeof(char *));
+    if (unique_values == NULL) {
+        return NULL;
+    }
+    
+    size_t found = 0;
+    
+    for (size_t i = 0; i < dict->count; i++) {
+        int is_duplicate = 0;
+        
+        for (size_t j = 0; j < found; j++) {
+            if (strcmp(unique_values[j], dict->pairs[i].value) == 0) {
+                is_duplicate = 1;
+                break;
+            }
+        }
+        
+        if (!is_duplicate) {
+            unique_values[found] = malloc(strlen(dict->pairs[i].value) + 1);
+            if (unique_values[found] == NULL) {
+                for (size_t k = 0; k < found; k++) {
+                    free(unique_values[k]);
+                }
+                free(unique_values);
+                return NULL;
+            }
+            strcpy(unique_values[found], dict->pairs[i].value);
+            found++;
+        }
+    }
+    
+    *unique_count = found;
+    return unique_values;
+}
+
+void free_unique_values(char **values, size_t count) {
+    if (values == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < count; i++) {
+        free(values[i]);
+    }
+    free(values);
+}
+
+int main(void) {
+    KeyValuePair pairs[] = {
+        {"a", "apple"},
+        {"b", "banana"},
+        {"c", "apple"},
+        {"d", "cherry"},
+        {"e", "banana"},
+        {"f", "date"}
+    };
+    
+    Dictionary dict = {pairs, 6};
+    size_t unique_count = 0;
+    
+    char **unique = get_unique_values(&dict, &unique_count);
+    
+    if (unique == NULL && unique_count == 0) {
+        fprintf(stderr, "Error: Failed to extract unique values\n");
+        return 1;
+    }
+    
+    printf("Unique values (%zu):\n", unique_count);
+    for (size_t i = 0; i < unique_count; i++) {
+        printf("%s\n", unique[i]);
+    }
+    
+    free_unique_values(unique, unique_count);
+    
+    return 0;
+}
+```

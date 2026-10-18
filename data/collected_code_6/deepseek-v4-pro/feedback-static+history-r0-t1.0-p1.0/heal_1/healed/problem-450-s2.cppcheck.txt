@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-450-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-450-s2.c:31:45: style: Condition 'extract_sizes[i]<0' is always false [knownConditionTrueFalse]
+        size_t copy_len = (extract_sizes[i] < 0) ? 0 : (size_t)extract_sizes[i];
+                                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-450-s2.c:22:55: note: Assuming condition 'extract_sizes[i]<0' is false
+        if (input_list[i] == NULL || extract_sizes[i] < 0) {
+                                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_1/healed/problem-450-s2.c:31:45: note: Condition 'extract_sizes[i]<0' is always false
+        size_t copy_len = (extract_sizes[i] < 0) ? 0 : (size_t)extract_sizes[i];
+                                            ^

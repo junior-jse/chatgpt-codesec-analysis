@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define MAX_NAME_LEN 1024
+
+typedef struct {
+    int id;
+    char *name;
+} Tuple;
+
+static void init_tuple(Tuple *tuple, int id, const char *name) {
+    if (tuple == NULL) {
+        return;
+    }
+    tuple->id = id;
+    tuple->name = NULL;
+    if (name == NULL) {
+        return;
+    }
+    size_t name_len = strnlen(name, MAX_NAME_LEN);
+    if (name_len == MAX_NAME_LEN) {
+        return;
+    }
+    name_len++;
+    tuple->name = malloc(name_len);
+    if (tuple->name == NULL) {
+        return;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(tuple->name, name, name_len);
+    tuple->name[name_len - 1] = '\0';
+}
+
+static void free_tuple(Tuple *tuple) {
+    if (tuple == NULL) {
+        return;
+    }
+    free(tuple->name);
+    tuple->name = NULL;
+}
+
+static int copy_tuple(Tuple *dest, const Tuple *src) {
+    if (dest == NULL || src == NULL) {
+        return -1;
+    }
+    dest->id = src->id;
+    dest->name = NULL;
+    if (src->name == NULL) {
+        return 0;
+    }
+    size_t name_len = strnlen(src->name, MAX_NAME_LEN);
+    if (name_len == MAX_NAME_LEN) {
+        return -1;
+    }
+    name_len++;
+    dest->name = malloc(name_len);
+    if (dest->name == NULL) {
+        return -1;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(dest->name, src->name, name_len);
+    dest->name[name_len - 1] = '\0';
+    return 0;
+}
+
+void rearrange_tuples(Tuple *tuples, size_t tuple_count, const int *order, size_t order_count) {
+    if (tuples == NULL || order == NULL || tuple_count == 0 || order_count == 0) {
+        return;
+    }
+
+    if (order_count > tuple_count) {
+        return;
+    }
+
+    if (tuple_count > SIZE_MAX / sizeof(Tuple)) {
+        return;
+    }
+
+    Tuple *temp = malloc(tuple_count * sizeof(Tuple));
+    if (temp == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < order_count; i++) {
+        if (order[i] < 0 || (size_t)order[i] >= tuple_count) {
+            free(temp);
+            return;
+        }
+    }
+
+    size_t copied = 0;
+    for (size_t i = 0; i < order_count; i++) {
+        if (copy_tuple(&temp[i], &tuples[order[i]]) != 0) {
+            goto cleanup;
+        }
+        copied++;
+    }
+
+    for (size_t i = order_count; i < tuple_count; i++) {
+        if (copy_tuple(&temp[i], &tuples[i]) != 0) {
+            goto cleanup;
+        }
+        copied++;
+    }
+
+    for (size_t i = 0; i < tuple_count; i++) {
+        free_tuple(&tuples[i]);
+    }
+
+    for (size_t i = 0; i < tuple_count; i++) {
+        tuples[i] = temp[i];
+    }
+
+    free(temp);
+    return;
+
+cleanup:
+    for (size_t i = 0; i < copied; i++) {
+        free_tuple(&temp[i]);
+    }
+    free(temp);
+}
+
+int main(void) {
+    Tuple tuples[4];
+    init_tuple(&tuples[0], 1, "Apple");
+    init_tuple(&tuples[1], 2, "Banana");
+    init_tuple(&tuples[2], 3, "Cherry");
+    init_tuple(&tuples[3], 4, "Date");
+
+    int order[] = {2, 0, 3, 1};
+    size_t tuple_count = sizeof(tuples) / sizeof(tuples[0]);
+    size_t order_count = sizeof(order) / sizeof(order[0]);
+
+    printf("Original tuples:\n");
+    for (size_t i = 0; i < tuple_count; i++) {
+        printf("ID: %d, Name: %s\n", tuples[i].id,
+               tuples[i].name != NULL ? tuples[i].name : "(null)");
+    }
+
+    rearrange_tuples(tuples, tuple_count, order, order_count);
+
+    printf("\nRearranged tuples:\n");
+    for (size_t i = 0; i < tuple_count; i++) {
+        printf("ID: %d, Name: %s\n", tuples[i].id,
+               tuples[i].name != NULL ? tuples[i].name : "(null)");
+    }
+
+    for (size_t i = 0; i < tuple_count; i++) {
+        free_tuple(&tuples[i]);
+    }
+
+    return 0;
+}

@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+void swap_first_last(Node **head) {
+    if (*head == NULL || (*head)->next == NULL) {
+        return;
+    }
+
+    if ((*head)->next->next == NULL) {
+        int temp = (*head)->data;
+        (*head)->data = (*head)->next->data;
+        (*head)->next->data = temp;
+        return;
+    }
+
+    Node *prev = *head;
+    while (prev->next->next != NULL) {
+        prev = prev->next;
+    }
+
+    Node *last = prev->next;
+    int temp = (*head)->data;
+    (*head)->data = last->data;
+    last->data = temp;
+}
+
+void append(Node **head, int value) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = value;
+    new_node->next = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Node *list = NULL;
+
+    append(&list, 10);
+    append(&list, 20);
+    append(&list, 30);
+    append(&list, 40);
+
+    printf("Original list: ");
+    print_list(list);
+
+    swap_first_last(&list);
+
+    printf("After swapping first and last: ");
+    print_list(list);
+
+    free_list(list);
+    return 0;
+}

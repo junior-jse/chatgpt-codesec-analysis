@@ -1,0 +1,106 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int max_path_sum(int **triangle, int rows) {
+    if (triangle == NULL || rows <= 0) {
+        return 0;
+    }
+
+    int **dp = (int **)malloc(rows * sizeof(int *));
+    if (dp == NULL) {
+        return 0;
+    }
+
+    for (int i = 0; i < rows; i++) {
+        dp[i] = (int *)malloc((i + 1) * sizeof(int));
+        if (dp[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return 0;
+        }
+    }
+
+    dp[0][0] = triangle[0][0];
+
+    for (int i = 1; i < rows; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (j == 0) {
+                dp[i][j] = dp[i - 1][j] + triangle[i][j];
+            } else if (j == i) {
+                dp[i][j] = dp[i - 1][j - 1] + triangle[i][j];
+            } else {
+                dp[i][j] = triangle[i][j] + 
+                           (dp[i - 1][j] > dp[i - 1][j - 1] ? dp[i - 1][j] : dp[i - 1][j - 1]);
+            }
+        }
+    }
+
+    int max_sum = dp[rows - 1][0];
+    for (int j = 1; j < rows; j++) {
+        if (dp[rows - 1][j] > max_sum) {
+            max_sum = dp[rows - 1][j];
+        }
+    }
+
+    for (int i = 0; i < rows; i++) {
+        free(dp[i]);
+    }
+    free(dp);
+
+    return max_sum;
+}
+
+int main() {
+    int rows;
+    printf("Enter number of rows: ");
+    if (scanf("%d", &rows) != 1 || rows <= 0) {
+        fprintf(stderr, "Invalid input\n");
+        return 1;
+    }
+
+    int **triangle = (int **)malloc(rows * sizeof(int *));
+    if (triangle == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+
+    for (int i = 0; i < rows; i++) {
+        triangle[i] = (int *)malloc((i + 1) * sizeof(int));
+        if (triangle[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(triangle[j]);
+            }
+            free(triangle);
+            fprintf(stderr, "Memory allocation failed\n");
+            return 1;
+        }
+    }
+
+    printf("Enter the triangle values:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (scanf("%d", &triangle[i][j]) != 1) {
+                fprintf(stderr, "Invalid input\n");
+                for (int k = 0; k < rows; k++) {
+                    free(triangle[k]);
+                }
+                free(triangle);
+                return 1;
+            }
+        }
+    }
+
+    int result = max_path_sum(triangle, rows);
+    printf("Maximum path sum: %d\n", result);
+
+    for (int i = 0; i < rows; i++) {
+        free(triangle[i]);
+    }
+    free(triangle);
+
+    return 0;
+}
+```

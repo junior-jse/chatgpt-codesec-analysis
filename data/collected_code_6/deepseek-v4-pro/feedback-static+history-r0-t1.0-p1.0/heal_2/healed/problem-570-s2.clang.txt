@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-570-s2.c:33:33: error: use of undeclared identifier 'INT_MAX'
+   33 |             if (len >= (size_t)(INT_MAX - 1)) {
+      |                                 ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-570-s2.c:97:29: error: use of undeclared identifier 'INT_MAX'
+   97 |         if (len >= (size_t)(INT_MAX - 1)) {
+      |                             ^~~~~~~
+2 errors generated.

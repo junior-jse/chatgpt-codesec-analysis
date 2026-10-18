@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    int *data;
+    size_t length;
+} Tuple;
+
+bool all_tuples_equal_length(const Tuple *tuples, size_t num_tuples) {
+    if (tuples == NULL || num_tuples == 0) {
+        return false;
+    }
+    
+    size_t expected_length = tuples[0].length;
+    
+    for (size_t i = 1; i < num_tuples; i++) {
+        if (tuples[i].length != expected_length) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void cleanup_tuples(Tuple *tuples, size_t num_tuples) {
+    if (tuples == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < num_tuples; i++) {
+        free(tuples[i].data);
+        tuples[i].data = NULL;
+    }
+    free(tuples);
+}
+
+int main(void) {
+    size_t num_tuples = 3;
+    Tuple *tuples = malloc(num_tuples * sizeof(Tuple));
+    
+    if (tuples == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    for (size_t i = 0; i < num_tuples; i++) {
+        tuples[i].data = NULL;
+        tuples[i].length = 0;
+    }
+    
+    tuples[0].length = 3;
+    tuples[0].data = malloc(tuples[0].length * sizeof(int));
+    if (tuples[0].data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        cleanup_tuples(tuples, num_tuples);
+        return EXIT_FAILURE;
+    }
+    tuples[0].data[0] = 1;
+    tuples[0].data[1] = 2;
+    tuples[0].data[2] = 3;
+    
+    tuples[1].length = 3;
+    tuples[1].data = malloc(tuples[1].length * sizeof(int));
+    if (tuples[1].data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        cleanup_tuples(tuples, num_tuples);
+        return EXIT_FAILURE;
+    }
+    tuples[1].data[0] = 4;
+    tuples[1].data[1] = 5;
+    tuples[1].data[2] = 6;
+    
+    tuples[2].length = 3;
+    tuples[2].data = malloc(tuples[2].length * sizeof(int));
+    if (tuples[2].data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        cleanup_tuples(tuples, num_tuples);
+        return EXIT_FAILURE;
+    }
+    tuples[2].data[0] = 7;
+    tuples[2].data[1] = 8;
+    tuples[2].data[2] = 9;
+    
+    if (all_tuples_equal_length(tuples, num_tuples)) {
+        printf("All tuples have equal length\n");
+    } else {
+        printf("Tuples have different lengths\n");
+    }
+    
+    cleanup_tuples(tuples, num_tuples);
+    
+    return EXIT_SUCCESS;
+}

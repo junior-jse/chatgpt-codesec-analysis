@@ -1,0 +1,118 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <limits.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} IntTuple;
+
+void free_tuple(IntTuple *t) {
+    if (t != NULL) {
+        free(t->data);
+        t->data = NULL;
+        t->size = 0;
+    }
+}
+
+int parse_int(const char *str, int *out) {
+    char *endptr;
+    long val;
+    
+    if (str == NULL || out == NULL) {
+        return -1;
+    }
+    
+    errno = 0;
+    val = strtol(str, &endptr, 10);
+    
+    if (errno == ERANGE || val > INT_MAX || val < INT_MIN) {
+        return -1;
+    }
+    
+    if (endptr == str || *endptr != '\0') {
+        return -1;
+    }
+    
+    *out = (int)val;
+    return 0;
+}
+
+IntTuple string_to_tuple(const char *input) {
+    IntTuple result = {NULL, 0};
+    char *copy = NULL;
+    char *token;
+    char *saveptr = NULL;
+    size_t capacity = 0;
+    size_t count = 0;
+    
+    if (input == NULL) {
+        return result;
+    }
+    
+    copy = malloc(strlen(input) + 1);
+    if (copy == NULL) {
+        return result;
+    }
+    strcpy(copy, input);
+    
+    token = strtok_r(copy, " \t\n,", &saveptr);
+    while (token != NULL) {
+        int value;
+        
+        if (parse_int(token, &value) != 0) {
+            free(copy);
+            free_tuple(&result);
+            return result;
+        }
+        
+        if (count >= capacity) {
+            size_t new_capacity = (capacity == 0) ? 8 : capacity * 2;
+            int *new_data = realloc(result.data, new_capacity * sizeof(int));
+            
+            if (new_data == NULL) {
+                free(copy);
+                free_tuple(&result);
+                return result;
+            }
+            
+            result.data = new_data;
+            capacity = new_capacity;
+        }
+        
+        result.data[count] = value;
+        count++;
+        token = strtok_r(NULL, " \t\n,", &saveptr);
+    }
+    
+    result.size = count;
+    free(copy);
+    return result;
+}
+
+int main(void) {
+    const char *input = "1 2 3 4 5";
+    IntTuple tuple = string_to_tuple(input);
+    size_t i;
+    
+    if (tuple.data == NULL && tuple.size == 0) {
+        fprintf(stderr, "Error: Failed to parse input string\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Tuple: (");
+    for (i = 0; i < tuple.size; i++) {
+        printf("%d", tuple.data[i]);
+        if (i < tuple.size - 1) {
+            printf(", ");
+        }
+    }
+    printf(")\n");
+    
+    free_tuple(&tuple);
+    return EXIT_SUCCESS;
+}
+```

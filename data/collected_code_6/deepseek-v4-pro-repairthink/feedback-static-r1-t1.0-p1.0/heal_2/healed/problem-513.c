@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STR_LEN 4096
+
+static size_t safe_strlen(const char *s, size_t max_len) {
+    if (!s) return 0;
+    size_t len = 0;
+    while (len < max_len && s[len] != '\0') len++;
+    if (len == max_len) return (size_t)-1;
+    return len;
+}
+
+char *convert_tuple_to_list(const char *tuple_str, const char *suffix, int *out_len) {
+    if (!out_len) return NULL;
+    if (!tuple_str || !suffix) {
+        *out_len = 0;
+        return NULL;
+    }
+
+    size_t tuple_len = safe_strlen(tuple_str, MAX_STR_LEN);
+    if (tuple_len == (size_t)-1 || tuple_len < 2 || tuple_str[0] != '(' || tuple_str[tuple_len - 1] != ')') {
+        *out_len = 0;
+        return NULL;
+    }
+
+    size_t content_len = tuple_len - 2;
+    char *content = (char *)malloc(content_len + 1);
+    if (!content) {
+        *out_len = 0;
+        return NULL;
+    }
+    memcpy(content, tuple_str + 1, content_len);
+    content[content_len] = '\0';
+
+    size_t suffix_len = safe_strlen(suffix, MAX_STR_LEN);
+    if (suffix_len == (size_t)-1) {
+        free(content);
+        *out_len = 0;
+        return NULL;
+    }
+
+    size_t capacity = 64;
+    size_t length = 0;
+    char *result = (char *)malloc(capacity);
+    if (!result) {
+        free(content);
+        *out_len = 0;
+        return NULL;
+    }
+    result[0] = '\0';
+
+    char *token = strtok(content, ",");
+    int first = 1;
+
+    while (token) {
+        while (*token == ' ') token++;
+        size_t token_len = safe_strlen(token, MAX_STR_LEN);
+        if (token_len == (size_t)-1) {
+            free(result);
+            free(content);
+            *out_len = 0;
+            return NULL;
+        }
+        while (token_len > 0 && token[token_len - 1] == ' ') {
+            token[--token_len] = '\0';
+        }
+
+        size_t needed = length + (first ? 0 : 1) + token_len + suffix_len + 1;
+        if (needed > capacity) {
+            size_t new_cap = capacity;
+            while (new_cap < needed) new_cap *= 2;
+            char *temp = (char *)realloc(result, new_cap);
+            if (!temp) {
+                free(result);
+                free(content);
+                *out_len = 0;
+                return NULL;
+            }
+            result = temp;
+            capacity = new_cap;
+        }
+
+        int written;
+        if (first) {
+            written = snprintf(result + length, capacity - length, "%s%s", token, suffix);
+        } else {
+            written = snprintf(result + length, capacity - length, " %s%s", token, suffix);
+        }
+        if (written < 0 || (size_t)written >= capacity - length) {
+            free(result);
+            free(content);
+            *out_len = 0;
+            return NULL;
+        }
+        length += written;
+        first = 0;
+
+        token = strtok(NULL, ",");
+    }
+
+    free(content);
+    *out_len = (int)length;
+    return result;
+}
+
+int main(void) {
+    const char *tuple_str = "(apple, banana, cherry)";
+    const char *suffix = "!";
+    int len = 0;
+    char *list = convert_tuple_to_list(tuple_str, suffix, &len);
+    if (list) {
+        printf("[%s]\n", list);
+        printf("Length: %d\n", len);
+        free(list);
+    } else {
+        printf("Invalid input or memory allocation failed.\n");
+    }
+    return 0;
+}

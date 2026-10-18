@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+Node *create_node(int data)
+{
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void shift_first_to_end(Node **head)
+{
+    if (head == NULL || *head == NULL || (*head)->next == NULL) {
+        return;
+    }
+
+    Node *first = *head;
+    Node *current = *head;
+
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    *head = first->next;
+    current->next = first;
+    first->next = NULL;
+}
+
+void print_list(const Node *head)
+{
+    const Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node **head)
+{
+    if (head == NULL) {
+        return;
+    }
+
+    Node *current = *head;
+    Node *next_node;
+
+    while (current != NULL) {
+        next_node = current->next;
+        free(current);
+        current = next_node;
+    }
+
+    *head = NULL;
+}
+
+int main(void)
+{
+    Node *head = NULL;
+    Node *tail = NULL;
+    int values[] = {1, 2, 3, 4, 5};
+    size_t num_elements = sizeof(values) / sizeof(values[0]);
+    size_t i;
+
+    for (i = 0; i < num_elements; i++) {
+        Node *new_node = create_node(values[i]);
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    shift_first_to_end(&head);
+
+    printf("List after shifting first element to end: ");
+    print_list(head);
+
+    free_list(&head);
+
+    return 0;
+}

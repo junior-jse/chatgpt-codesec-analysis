@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node **lists;
+    size_t count;
+} SplitResult;
+
+Node *create_node(int data)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append_node(Node **head, int data)
+{
+    Node *new_node = create_node(data);
+    if (new_node == NULL) {
+        return;
+    }
+
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+
+    Node *current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+SplitResult split_list_every_nth(Node *head, size_t n)
+{
+    SplitResult result = {NULL, 0};
+
+    if (head == NULL || n == 0) {
+        return result;
+    }
+
+    size_t total = 0;
+    Node *current = head;
+    while (current != NULL) {
+        total++;
+        current = current->next;
+    }
+
+    size_t num_lists = (total + n - 1) / n;
+    result.lists = calloc(num_lists, sizeof(Node *));
+    if (result.lists == NULL) {
+        return result;
+    }
+    result.count = num_lists;
+
+    current = head;
+    size_t list_index = 0;
+    size_t element_count = 0;
+    Node *tail = NULL;
+
+    while (current != NULL) {
+        if (element_count == 0) {
+            result.lists[list_index] = current;
+            tail = current;
+        } else {
+            tail->next = current;
+            tail = current;
+        }
+
+        element_count++;
+        Node *next_node = current->next;
+
+        if (element_count == n) {
+            tail->next = NULL;
+            element_count = 0;
+            list_index++;
+            tail = NULL;
+        }
+
+        current = next_node;
+    }
+
+    return result;
+}
+
+void free_split_result(SplitResult *result)
+{
+    if (result == NULL || result->lists == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < result->count; i++) {
+        Node *current = result->lists[i];
+        while (current != NULL) {
+            Node *temp = current;
+            current = current->next;
+            free(temp);
+        }
+    }
+
+    free(result->lists);
+    result->lists = NULL;
+    result->count = 0;
+}
+
+void print_list(Node *head)
+{
+    Node *current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void)
+{
+    Node *head = NULL;
+
+    for (int i = 1; i <= 10; i++) {
+        append_node(&head, i);
+    }
+
+    printf("Original list:\n");
+    print_list(head);
+
+    size_t n = 3;
+    SplitResult result = split_list_every_nth(head, n);
+
+    if (result.lists == NULL) {
+        fprintf(stderr, "Failed to split list\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("\nSplit lists (every %zu elements):\n", n);
+    for (size_t i = 0; i < result.count; i++) {
+        printf("List %zu: ", i + 1);
+        print_list(result.lists[i]);
+    }
+
+    free_split_result(&result);
+
+    return EXIT_SUCCESS;
+}

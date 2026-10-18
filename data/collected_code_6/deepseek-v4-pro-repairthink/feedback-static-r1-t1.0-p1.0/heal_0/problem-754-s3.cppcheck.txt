@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:30: style: Parameter 'arr1' can be declared as pointer to const [constParameterPointer]
+int find_common_indices(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result) {
+                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:52: style: Parameter 'arr2' can be declared as pointer to const [constParameterPointer]
+int find_common_indices(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result) {
+                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-754-s3.c:4:74: style: Parameter 'arr3' can be declared as pointer to const [constParameterPointer]
+int find_common_indices(int *arr1, int size1, int *arr2, int size2, int *arr3, int size3, int *result) {
+                                                                         ^

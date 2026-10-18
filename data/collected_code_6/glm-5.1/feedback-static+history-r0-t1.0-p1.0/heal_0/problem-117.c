@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <float.h>
+
+typedef struct {
+    int success;
+    float value;
+} FloatResult;
+
+FloatResult convert_to_float(const char *str) {
+    FloatResult result = {0, 0.0f};
+    if (str == NULL) {
+        return result;
+    }
+
+    size_t len = strlen(str);
+    if (len == 0) {
+        return result;
+    }
+
+    char *endptr;
+    errno = 0;
+    double d = strtod(str, &endptr);
+
+    if (errno == ERANGE) {
+        return result;
+    }
+
+    if (endptr == str) {
+        return result;
+    }
+
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\r' || str[i] == '\v' || str[i] == '\f') {
+            continue;
+        }
+        break;
+    }
+
+    size_t remaining_len = len - (endptr - str);
+    for (size_t i = 0; i < remaining_len; i++) {
+        if (endptr[i] != ' ' && endptr[i] != '\t' && endptr[i] != '\n' && endptr[i] != '\r' && endptr[i] != '\v' && endptr[i] != '\f') {
+            return result;
+        }
+    }
+
+    if (d > FLT_MAX || d < -FLT_MAX) {
+        return result;
+    }
+
+    result.success = 1;
+    result.value = (float)d;
+    return result;
+}
+
+int main(void) {
+    const char *list[] = {
+        "123.45",
+        "-42",
+        "1.0e5",
+        "not_a_float",
+        "  3.14  ",
+        "123abc",
+        "",
+        NULL,
+        "1e999",
+        "0.0"
+    };
+
+    size_t count = sizeof(list) / sizeof(list[0]);
+
+    for (size_t i = 0; i < count; i++) {
+        FloatResult res = convert_to_float(list[i]);
+        if (res.success) {
+            printf("String: '%s' -> Float: %f\n", list[i] ? list[i] : "NULL", res.value);
+        } else {
+            printf("String: '%s' -> Conversion failed\n", list[i] ? list[i] : "NULL");
+        }
+    }
+
+    return 0;
+}

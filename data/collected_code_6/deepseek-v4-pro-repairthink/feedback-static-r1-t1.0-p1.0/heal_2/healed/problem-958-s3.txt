@@ -1,0 +1,48 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void int_to_roman(int num, char *result, size_t size) {
+    if (result == NULL || size == 0) {
+        return;
+    }
+    if (num <= 0 || num > 3999) {
+        result[0] = '\0';
+        return;
+    }
+    const int values[] = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    const char *symbols[] = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+    const size_t lengths[] = {1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1};
+    result[0] = '\0';
+    size_t offset = 0;
+    int remaining = num;
+    for (int i = 0; i < 13; i++) {
+        while (remaining >= values[i]) {
+            size_t len = lengths[i];
+            if (offset + len >= size) {
+                result[offset] = '\0';
+                return;
+            }
+            for (size_t j = 0; j < len; j++) {
+                result[offset + j] = symbols[i][j];
+            }
+            offset += len;
+            result[offset] = '\0';
+            remaining -= values[i];
+        }
+    }
+}
+
+#define MAX_ROMAN_LENGTH 16
+
+int main(void) {
+    int test_numbers[] = {1, 3, 4, 9, 58, 1994, 3999};
+    int num_tests = sizeof(test_numbers) / sizeof(test_numbers[0]);
+    for (int i = 0; i < num_tests; i++) {
+        char roman[MAX_ROMAN_LENGTH];
+        int_to_roman(test_numbers[i], roman, sizeof(roman));
+        printf("%d = %s\n", test_numbers[i], roman);
+    }
+    return 0;
+}
+```

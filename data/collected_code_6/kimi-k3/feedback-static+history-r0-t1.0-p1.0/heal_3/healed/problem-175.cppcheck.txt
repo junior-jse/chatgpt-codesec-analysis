@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-175.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-175.c:49:15: style: Condition 'test8!=NULL' is always false [knownConditionTrueFalse]
+    if (test8 != NULL) {
+              ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-175.c:39:25: note: Assignment 'test8=NULL', assigned value is 0
+    const char *test8 = NULL;
+                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-175.c:49:15: note: Condition 'test8!=NULL' is always false
+    if (test8 != NULL) {
+              ^

@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int find_max_frequency(const int *arr, size_t size, int *max_item) {
+    if (arr == NULL || max_item == NULL || size == 0) {
+        return -1;
+    }
+
+    int *unique_items = NULL;
+    size_t *frequencies = NULL;
+    size_t unique_count = 0;
+
+    unique_items = malloc(size * sizeof(int));
+    if (unique_items == NULL) {
+        return -1;
+    }
+
+    frequencies = calloc(size, sizeof(size_t));
+    if (frequencies == NULL) {
+        free(unique_items);
+        return -1;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        int found = 0;
+        for (size_t j = 0; j < unique_count; j++) {
+            if (unique_items[j] == arr[i]) {
+                frequencies[j]++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            unique_items[unique_count] = arr[i];
+            frequencies[unique_count] = 1;
+            unique_count++;
+        }
+    }
+
+    size_t max_freq = 0;
+    int result = arr[0];
+    for (size_t i = 0; i < unique_count; i++) {
+        if (frequencies[i] > max_freq) {
+            max_freq = frequencies[i];
+            result = unique_items[i];
+        }
+    }
+
+    *max_item = result;
+
+    free(unique_items);
+    free(frequencies);
+
+    return 0;
+}
+
+int main(void) {
+    int arr[] = {1, 3, 2, 3, 4, 3, 2, 1, 3, 2, 2};
+    size_t size = sizeof(arr) / sizeof(arr[0]);
+    int max_item = 0;
+
+    if (find_max_frequency(arr, size, &max_item) == 0) {
+        printf("Item with maximum frequency: %d\n", max_item);
+    } else {
+        fprintf(stderr, "Error occurred\n");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}

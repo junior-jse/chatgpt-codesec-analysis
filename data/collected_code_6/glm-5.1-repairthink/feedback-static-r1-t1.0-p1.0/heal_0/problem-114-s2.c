@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int a;
+    int b;
+    int freq;
+} Tuple;
+
+int compare_tuples(const void *p1, const void *p2) {
+    const Tuple *t1 = (const Tuple *)p1;
+    const Tuple *t2 = (const Tuple *)p2;
+    if (t1->a != t2->a) {
+        return t1->a - t2->a;
+    }
+    return t1->b - t2->b;
+}
+
+void assign_frequencies(Tuple *tuples, size_t size) {
+    if (size == 0) {
+        return;
+    }
+    qsort(tuples, size, sizeof(Tuple), compare_tuples);
+    size_t current_count = 1;
+    for (size_t i = 1; i < size; i++) {
+        if (tuples[i].a == tuples[i - 1].a && tuples[i].b == tuples[i - 1].b) {
+            current_count++;
+        } else {
+            for (size_t j = i - current_count; j < i; j++) {
+                tuples[j].freq = current_count;
+            }
+            current_count = 1;
+        }
+    }
+    for (size_t j = size - current_count; j < size; j++) {
+        tuples[j].freq = current_count;
+    }
+}
+
+int main(void) {
+    Tuple tuples[] = {
+        {1, 2, 0},
+        {3, 4, 0},
+        {1, 2, 0},
+        {5, 6, 0},
+        {1, 2, 0},
+        {3, 4, 0}
+    };
+    size_t size = sizeof(tuples) / sizeof(tuples[0]);
+    assign_frequencies(tuples, size);
+    for (size_t i = 0; i < size; i++) {
+        printf("(%d, %d) -> %d\n", tuples[i].a, tuples[i].b, tuples[i].freq);
+    }
+    return 0;
+}

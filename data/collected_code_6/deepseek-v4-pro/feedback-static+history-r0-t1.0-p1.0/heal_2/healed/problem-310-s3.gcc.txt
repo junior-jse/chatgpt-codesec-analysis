@@ -1,0 +1,12 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c: In function 'safe_strdup':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:15:18: error: implicit declaration of function 'safe_strlen'; did you mean 'safe_strdup'? [-Wimplicit-function-declaration]
+   15 |     size_t len = safe_strlen(str, SIZE_MAX);
+      |                  ^~~~~~~~~~~
+      |                  safe_strdup
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c: At top level:
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:24:15: error: conflicting types for 'safe_strlen'; have 'size_t(const char *, size_t)' {aka 'long unsigned int(const char *, long unsigned int)'}
+   24 | static size_t safe_strlen(const char *str, size_t max_len) {
+      |               ^~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_2/healed/problem-310-s3.c:15:18: note: previous implicit declaration of 'safe_strlen' with type 'int()'
+   15 |     size_t len = safe_strlen(str, SIZE_MAX);
+      |                  ^~~~~~~~~~~

@@ -1,0 +1,53 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef struct {
+    int *elements;
+    size_t size;
+} IntTuple;
+
+double tuple_to_float(const IntTuple *tuple) {
+    if (tuple == NULL || tuple->elements == NULL || tuple->size == 0) {
+        return 0.0;
+    }
+    
+    double result = 0.0;
+    double sign = 1.0;
+    size_t i = 0;
+    
+    if (tuple->elements[0] < 0) {
+        sign = -1.0;
+    }
+    
+    for (i = 0; i < tuple->size; i++) {
+        double digit = (double)abs(tuple->elements[i]);
+        if (i == 0) {
+            result = digit;
+        } else {
+            result = result * 10.0 + digit;
+        }
+    }
+    
+    return result * sign;
+}
+
+int main(void) {
+    int data1[] = {1, 2, 3};
+    int data2[] = {-4, 5, 6};
+    int data3[] = {7};
+    
+    IntTuple t1 = {data1, 3};
+    IntTuple t2 = {data2, 3};
+    IntTuple t3 = {data3, 1};
+    IntTuple t4 = {NULL, 0};
+    
+    printf("%.1f\n", tuple_to_float(&t1));
+    printf("%.1f\n", tuple_to_float(&t2));
+    printf("%.1f\n", tuple_to_float(&t3));
+    printf("%.1f\n", tuple_to_float(&t4));
+    
+    return 0;
+}
+```

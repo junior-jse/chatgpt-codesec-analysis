@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:100:51: error: use of undeclared identifier 'LLONG_MAX'
+  100 |             if (ugly[indices[dup.prime_index]] <= LLONG_MAX / primes[dup.prime_index]) {
+      |                                                   ^~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-843-s2.c:107:37: error: use of undeclared identifier 'LLONG_MAX'
+  107 |         if (ugly[indices[p_idx]] <= LLONG_MAX / primes[p_idx]) {
+      |                                     ^~~~~~~~~
+2 errors generated.

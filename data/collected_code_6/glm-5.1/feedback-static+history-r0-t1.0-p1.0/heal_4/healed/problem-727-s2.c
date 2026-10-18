@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *remove_non_alnum(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    int ret = regcomp(&regex, "[^a-zA-Z0-9]", REG_EXTENDED);
+    if (ret != 0) {
+        return NULL;
+    }
+
+    size_t len = strlen(str);
+
+    char *result = malloc(len + 1);
+    if (result == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    size_t dest_idx = 0;
+    const char *current_ptr = str;
+
+    while (1) {
+        regmatch_t match;
+        ret = regexec(&regex, current_ptr, 1, &match, 0);
+        if (ret == REG_NOMATCH) {
+            break;
+        }
+        if (ret != 0) {
+            free(result);
+            regfree(&regex);
+            return NULL;
+        }
+
+        if (match.rm_so == -1) {
+            break;
+        }
+
+        size_t copy_len = (size_t)match.rm_so;
+        if (copy_len > 0) {
+            memcpy(result + dest_idx, current_ptr, copy_len);
+            dest_idx += copy_len;
+        }
+
+        current_ptr += match.rm_eo;
+    }
+
+    size_t remaining_len = strlen(current_ptr);
+    if (remaining_len > 0) {
+        memcpy(result + dest_idx, current_ptr, remaining_len);
+        dest_idx += remaining_len;
+    }
+
+    result[dest_idx] = '\0';
+
+    regfree(&regex);
+
+    char *shrunk_result = realloc(result, dest_idx + 1);
+    if (shrunk_result == NULL) {
+        return result;
+    }
+
+    return shrunk_result;
+}
+
+int main(int argc, char * const argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
+        return 1;
+    }
+
+    char *filtered = remove_non_alnum(argv[1]);
+    if (filtered == NULL) {
+        fprintf(stderr, "Memory allocation or regex error\n");
+        return 1;
+    }
+
+    printf("%s\n", filtered);
+    free(filtered);
+
+    return 0;
+}

@@ -1,0 +1,13 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-460-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-460-s2.c:6:18: style: struct member 'Node::next' is never used. [unusedStructMember]
+    struct Node* next;
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-460-s2.c:41:13: style: Variable 'n2' is assigned a value that is never used. [unreadVariable]
+    Node n2 = {2, NULL};
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-460-s2.c:43:13: style: Variable 'n4' is assigned a value that is never used. [unreadVariable]
+    Node n4 = {4, NULL};
+            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-460-s2.c:44:13: style: Variable 'n5' is assigned a value that is never used. [unreadVariable]
+    Node n5 = {5, NULL};
+            ^

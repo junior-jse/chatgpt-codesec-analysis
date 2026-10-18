@@ -1,0 +1,147 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *values;
+    size_t count;
+} Tuple;
+
+static int is_all_none(const Tuple *tuple) {
+    if (tuple == NULL || tuple->values == NULL || tuple->count == 0) {
+        return 1;
+    }
+    for (size_t i = 0; i < tuple->count; i++) {
+        if (tuple->values[i] != 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static void free_tuple(Tuple *tuple) {
+    if (tuple != NULL) {
+        free(tuple->values);
+        tuple->values = NULL;
+        tuple->count = 0;
+    }
+}
+
+static int remove_all_none_tuples(Tuple **tuples, size_t *size) {
+    if (tuples == NULL || *tuples == NULL || size == NULL) {
+        return -1;
+    }
+
+    size_t write_index = 0;
+    for (size_t read_index = 0; read_index < *size; read_index++) {
+        if (is_all_none(&(*tuples)[read_index])) {
+            free_tuple(&(*tuples)[read_index]);
+        } else {
+            if (write_index != read_index) {
+                (*tuples)[write_index] = (*tuples)[read_index];
+                (*tuples)[read_index].values = NULL;
+                (*tuples)[read_index].count = 0;
+            }
+            write_index++;
+        }
+    }
+
+    if (write_index == 0) {
+        free(*tuples);
+        *tuples = NULL;
+    } else if (write_index < *size) {
+        Tuple *resized = realloc(*tuples, write_index * sizeof(Tuple));
+        if (resized == NULL) {
+            *size = write_index;
+            return 0;
+        }
+        *tuples = resized;
+    }
+
+    *size = write_index;
+    return 0;
+}
+
+static Tuple create_tuple(const int *values, size_t count) {
+    Tuple tuple;
+    tuple.count = count;
+    tuple.values = NULL;
+
+    if (count > 0 && values != NULL) {
+        tuple.values = malloc(count * sizeof(int));
+        if (tuple.values != NULL) {
+            for (size_t i = 0; i < count; i++) {
+                tuple.values[i] = values[i];
+            }
+        } else {
+            tuple.count = 0;
+        }
+    }
+
+    return tuple;
+}
+
+static void print_tuples(const Tuple *tuples, size_t size) {
+    if (tuples == NULL) {
+        printf("[]\n");
+        return;
+    }
+
+    printf("[");
+    for (size_t i = 0; i < size; i++) {
+        printf("(");
+        for (size_t j = 0; j < tuples[i].count; j++) {
+            printf("%d", tuples[i].values[j]);
+            if (j < tuples[i].count - 1) {
+                printf(", ");
+            }
+        }
+        printf(")");
+        if (i < size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main(void) {
+    Tuple *tuples = malloc(5 * sizeof(Tuple));
+    if (tuples == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+
+    size_t size = 5;
+
+    int vals1[] = {1, 2, 3};
+    int vals2[] = {0, 0, 0};
+    int vals3[] = {4, 5};
+    int vals4[] = {0, 0};
+    int vals5[] = {6, 7, 8, 9};
+
+    tuples[0] = create_tuple(vals1, 3);
+    tuples[1] = create_tuple(vals2, 3);
+    tuples[2] = create_tuple(vals3, 2);
+    tuples[3] = create_tuple(vals4, 2);
+    tuples[4] = create_tuple(vals5, 4);
+
+    printf("Original tuples: ");
+    print_tuples(tuples, size);
+
+    if (remove_all_none_tuples(&tuples, &size) != 0) {
+        fprintf(stderr, "Error removing tuples\n");
+        free(tuples);
+        return EXIT_FAILURE;
+    }
+
+    printf("After removal: ");
+    print_tuples(tuples, size);
+
+    for (size_t i = 0; i < size; i++) {
+        free_tuple(&tuples[i]);
+    }
+    free(tuples);
+
+    return EXIT_SUCCESS;
+}
+```

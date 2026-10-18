@@ -1,0 +1,281 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return NULL;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void append_node(Node** head, int data) {
+    Node* new_node = create_node(data);
+    if (new_node == NULL) {
+        return;
+    }
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = new_node;
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int list_length(Node* head) {
+    int length = 0;
+    Node* current = head;
+    while (current != NULL) {
+        length++;
+        current = current->next;
+    }
+    return length;
+}
+
+int* list_to_array(Node* head, int length) {
+    int* array = (int*)malloc(sizeof(int) * length);
+    if (array == NULL) {
+        return NULL;
+    }
+    Node* current = head;
+    int index = 0;
+    while (current != NULL) {
+        array[index++] = current->data;
+        current = current->next;
+    }
+    return array;
+}
+
+int compare_arrays(int* dividend, int dividend_len, int* divisor, int divisor_len) {
+    if (dividend_len != divisor_len) {
+        return dividend_len - divisor_len;
+    }
+    for (int i = 0; i < dividend_len; i++) {
+        if (dividend[i] != divisor[i]) {
+            return dividend[i] - divisor[i];
+        }
+    }
+    return 0;
+}
+
+int* subtract_arrays(int* dividend, int dividend_len, int* divisor, int divisor_len, int* result_len) {
+    int* result = (int*)malloc(sizeof(int) * dividend_len);
+    if (result == NULL) {
+        *result_len = 0;
+        return NULL;
+    }
+    
+    int borrow = 0;
+    int divisor_index = divisor_len - 1;
+    for (int i = dividend_len - 1; i >= 0; i--) {
+        int divisor_digit = (divisor_index >= 0) ? divisor[divisor_index] : 0;
+        int diff = dividend[i] - divisor_digit - borrow;
+        if (diff < 0) {
+            diff += 10;
+            borrow = 1;
+        } else {
+            borrow = 0;
+        }
+        result[i] = diff;
+        divisor_index--;
+    }
+    
+    int start = 0;
+    while (start < dividend_len && result[start] == 0) {
+        start++;
+    }
+    if (start == dividend_len) {
+        *result_len = 1;
+        result[0] = 0;
+    } else {
+        *result_len = dividend_len - start;
+        for (int i = 0; i < *result_len; i++) {
+            result[i] = result[start + i];
+        }
+    }
+    return result;
+}
+
+int* modulo_division(Node* dividend_head, Node* divisor_head, int* result_len) {
+    int dividend_len = list_length(dividend_head);
+    int divisor_len = list_length(divisor_head);
+    
+    if (divisor_head == NULL || divisor_head->data == 0) {
+        *result_len = 0;
+        return NULL;
+    }
+    
+    if (dividend_head == NULL) {
+        *result_len = 1;
+        int* result = (int*)malloc(sizeof(int));
+        if (result == NULL) {
+            *result_len = 0;
+            return NULL;
+        }
+        result[0] = 0;
+        return result;
+    }
+    
+    int* dividend = list_to_array(dividend_head, dividend_len);
+    int* divisor = list_to_array(divisor_head, divisor_len);
+    
+    if (dividend == NULL || divisor == NULL) {
+        free(dividend);
+        free(divisor);
+        *result_len = 0;
+        return NULL;
+    }
+    
+    if (compare_arrays(dividend, dividend_len, divisor, divisor_len) < 0) {
+        *result_len = dividend_len;
+        free(divisor);
+        return dividend;
+    }
+    
+    int* remainder = (int*)malloc(sizeof(int) * dividend_len);
+    if (remainder == NULL) {
+        free(dividend);
+        free(divisor);
+        *result_len = 0;
+        return NULL;
+    }
+    
+    int remainder_len = 0;
+    int* current_remainder = NULL;
+    int current_len = 0;
+    
+    for (int i = 0; i < dividend_len; i++) {
+        int* temp = (int*)malloc(sizeof(int) * (current_len + 1));
+        if (temp == NULL) {
+            free(dividend);
+            free(divisor);
+            free(current_remainder);
+            *result_len = 0;
+            return NULL;
+        }
+        
+        for (int j = 0; j < current_len; j++) {
+            temp[j] = current_remainder[j];
+        }
+        temp[current_len] = dividend[i];
+        
+        free(current_remainder);
+        current_remainder = temp;
+        current_len++;
+        
+        while (current_len > 0 && current_remainder[0] == 0) {
+            if (current_len == 1) {
+                break;
+            }
+            for (int j = 0; j < current_len - 1; j++) {
+                current_remainder[j] = current_remainder[j + 1];
+            }
+            current_len--;
+        }
+        
+        while (current_len >= divisor_len && 
+               (current_len > divisor_len || compare_arrays(current_remainder, current_len, divisor, divisor_len) >= 0)) {
+            int sub_result_len = 0;
+            int* sub_result = subtract_arrays(current_remainder, current_len, divisor, divisor_len, &sub_result_len);
+            if (sub_result == NULL) {
+                free(dividend);
+                free(divisor);
+                free(current_remainder);
+                *result_len = 0;
+                return NULL;
+            }
+            free(current_remainder);
+            current_remainder = sub_result;
+            current_len = sub_result_len;
+        }
+    }
+    
+    if (current_len == 0) {
+        current_remainder = (int*)malloc(sizeof(int));
+        if (current_remainder == NULL) {
+            free(dividend);
+            free(divisor);
+            *result_len = 0;
+            return NULL;
+        }
+        current_remainder[0] = 0;
+        current_len = 1;
+    }
+    
+    free(dividend);
+    free(divisor);
+    
+    *result_len = current_len;
+    return current_remainder;
+}
+
+Node* array_to_list(int* array, int length) {
+    Node* head = NULL;
+    for (int i = 0; i < length; i++) {
+        append_node(&head, array[i]);
+    }
+    return head;
+}
+
+void print_list(Node* head) {
+    if (head == NULL) {
+        printf("Empty list\n");
+        return;
+    }
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* dividend = NULL;
+    Node* divisor = NULL;
+    
+    append_node(&dividend, 1);
+    append_node(&dividend, 2);
+    append_node(&dividend, 3);
+    append_node(&dividend, 4);
+    
+    append_node(&divisor, 1);
+    append_node(&divisor, 2);
+    
+    int result_len = 0;
+    int* result_array = modulo_division(dividend, divisor, &result_len);
+    
+    if (result_array == NULL) {
+        printf("Error in modulo division\n");
+    } else {
+        Node* result_list = array_to_list(result_array, result_len);
+        printf("Modulo result: ");
+        print_list(result_list);
+        free_list(result_list);
+        free(result_array);
+    }
+    
+    free_list(dividend);
+    free_list(divisor);
+    
+    return 0;
+}

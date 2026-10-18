@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char **remove_words_containing(char **words, int word_count, const char *substring, int *new_count) {
+    if (words == NULL || substring == NULL || new_count == NULL || word_count < 0) {
+        *new_count = 0;
+        return NULL;
+    }
+
+    char **result = malloc(sizeof(char *) * word_count);
+    if (result == NULL) {
+        *new_count = 0;
+        return NULL;
+    }
+
+    int result_index = 0;
+    for (int i = 0; i < word_count; i++) {
+        if (words[i] != NULL && strstr(words[i], substring) == NULL) {
+            result[result_index] = words[i];
+            result_index++;
+        }
+    }
+
+    char **final_result = realloc(result, sizeof(char *) * result_index);
+    if (final_result == NULL && result_index > 0) {
+        free(result);
+        *new_count = 0;
+        return NULL;
+    }
+
+    *new_count = result_index;
+    return result_index > 0 ? final_result : result;
+}
+
+int main(void) {
+    char *words[] = {"apple", "banana", "cherry", "date", "elderberry", "fig", "grape"};
+    int word_count = sizeof(words) / sizeof(words[0]);
+    int new_count = 0;
+
+    char **filtered = remove_words_containing(words, word_count, "a", &new_count);
+
+    printf("Original words: ");
+    for (int i = 0; i < word_count; i++) {
+        printf("%s ", words[i]);
+    }
+    printf("\n");
+
+    printf("Filtered words (without 'a'): ");
+    for (int i = 0; i < new_count; i++) {
+        printf("%s ", filtered[i]);
+    }
+    printf("\n");
+
+    free(filtered);
+
+    return 0;
+}

@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int a;
+    int b;
+} Tuple;
+
+typedef struct {
+    Tuple tuple;
+    size_t frequency;
+} TupleFrequency;
+
+static int compare_tuples(const void *x, const void *y) {
+    const Tuple *tx = (const Tuple *)x;
+    const Tuple *ty = (const Tuple *)y;
+    if (tx->a != ty->a) return tx->a - ty->a;
+    return tx->b - ty->b;
+}
+
+static int compare_frequencies(const void *x, const void *y) {
+    const TupleFrequency *fx = (const TupleFrequency *)x;
+    const TupleFrequency *fy = (const TupleFrequency *)y;
+    if (fy->frequency != fx->frequency) {
+        if (fy->frequency > fx->frequency) return 1;
+        return -1;
+    }
+    return compare_tuples(&fx->tuple, &fy->tuple);
+}
+
+size_t extract_unique_tuple_frequencies(const Tuple *input, size_t input_len, TupleFrequency **output) {
+    if (input == NULL || input_len == 0 || output == NULL) {
+        if (output != NULL) *output = NULL;
+        return 0;
+    }
+
+    Tuple *sorted = (Tuple *)malloc(input_len * sizeof(Tuple));
+    if (sorted == NULL) {
+        *output = NULL;
+        return 0;
+    }
+    memcpy(sorted, input, input_len * sizeof(Tuple));
+    qsort(sorted, input_len, sizeof(Tuple), compare_tuples);
+
+    size_t unique_count = 0;
+    for (size_t i = 0; i < input_len; i++) {
+        if (i == 0 || compare_tuples(&sorted[i], &sorted[i - 1]) != 0) {
+            unique_count++;
+        }
+    }
+
+    TupleFrequency *frequencies = (TupleFrequency *)malloc(unique_count * sizeof(TupleFrequency));
+    if (frequencies == NULL) {
+        free(sorted);
+        *output = NULL;
+        return 0;
+    }
+
+    size_t idx = 0;
+    for (size_t i = 0; i < input_len; i++) {
+        if (i == 0 || compare_tuples(&sorted[i], &sorted[i - 1]) != 0) {
+            frequencies[idx].tuple = sorted[i];
+            frequencies[idx].frequency = 1;
+            idx++;
+        } else {
+            frequencies[idx - 1].frequency++;
+        }
+    }
+
+    free(sorted);
+
+    qsort(frequencies, unique_count, sizeof(TupleFrequency), compare_frequencies);
+
+    *output = frequencies;
+    return unique_count;
+}
+
+int main(void) {
+    Tuple data[] = {{3, 4}, {1, 2}, {3, 4}, {5, 6}, {1, 2}, {1, 2}, {7, 8}};
+    size_t data_len = sizeof(data) / sizeof(data[0]);
+    TupleFrequency *result = NULL;
+
+    size_t unique_count = extract_unique_tuple_frequencies(data, data_len, &result);
+
+    if (result != NULL) {
+        for (size_t i = 0; i < unique_count; i++) {
+            printf("(%d, %d): %zu\n", result[i].tuple.a, result[i].tuple.b, result[i].frequency);
+        }
+        free(result);
+    }
+
+    return 0;
+}

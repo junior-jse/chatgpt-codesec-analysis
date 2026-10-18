@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int value;
+    int count;
+    struct Node *next;
+} Node;
+
+Node *create_node(int value, int count) {
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (!node) {
+        return NULL;
+    }
+    node->value = value;
+    node->count = count;
+    node->next = NULL;
+    return node;
+}
+
+void append_node(Node **head, Node **tail, int value, int count) {
+    Node *node = create_node(value, count);
+    if (!node) {
+        return;
+    }
+    if (*tail) {
+        (*tail)->next = node;
+    } else {
+        *head = node;
+    }
+    *tail = node;
+}
+
+Node *run_length_encode(const int *data, int length) {
+    if (!data || length <= 0) {
+        return NULL;
+    }
+
+    Node *head = NULL;
+    Node *tail = NULL;
+    int current_value = data[0];
+    int current_count = 1;
+
+    for (int i = 1; i < length; i++) {
+        if (data[i] == current_value) {
+            current_count++;
+        } else {
+            append_node(&head, &tail, current_value, current_count);
+            current_value = data[i];
+            current_count = 1;
+        }
+    }
+    append_node(&head, &tail, current_value, current_count);
+    return head;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current) {
+        Node *next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+void print_list(const Node *head) {
+    const Node *current = head;
+    while (current) {
+        printf("(%d, %d) ", current->value, current->count);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int data[] = {1, 1, 1, 2, 2, 3, 3, 3, 3, 1};
+    int length = sizeof(data) / sizeof(data[0]);
+
+    Node *encoded = run_length_encode(data, length);
+    if (encoded) {
+        print_list(encoded);
+        free_list(encoded);
+    } else {
+        printf("Encoding failed\n");
+    }
+
+    return 0;
+}

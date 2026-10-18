@@ -1,0 +1,37 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:5:23: style: Parameter 'a' can be declared as pointer to const [constParameterPointer]
+void findClosest(int *a, int n1, int *b, int n2, int *c, int n3) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:5:39: style: Parameter 'b' can be declared as pointer to const [constParameterPointer]
+void findClosest(int *a, int n1, int *b, int n2, int *c, int n3) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:5:55: style: Parameter 'c' can be declared as pointer to const [constParameterPointer]
+void findClosest(int *a, int n1, int *b, int n2, int *c, int n3) {
+                                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:26: warning: Uninitialized variable: res1 [uninitvar]
+    printf("%d %d %d\n", res1, res2, res3);
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:10:29: note: Assuming condition is false
+    while (i < n1 && j < n2 && k < n3) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:26: note: Uninitialized variable: res1
+    printf("%d %d %d\n", res1, res2, res3);
+                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:32: warning: Uninitialized variable: res2 [uninitvar]
+    printf("%d %d %d\n", res1, res2, res3);
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:10:29: note: Assuming condition is false
+    while (i < n1 && j < n2 && k < n3) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:32: note: Uninitialized variable: res2
+    printf("%d %d %d\n", res1, res2, res3);
+                               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:38: warning: Uninitialized variable: res3 [uninitvar]
+    printf("%d %d %d\n", res1, res2, res3);
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:10:29: note: Assuming condition is false
+    while (i < n1 && j < n2 && k < n3) {
+                            ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-938-s2.c:35:38: note: Uninitialized variable: res3
+    printf("%d %d %d\n", res1, res2, res3);
+                                     ^

@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-958-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-958-s2.c:31:39: style: Condition 'current_len+sym_len<max_result_size' is always true [knownConditionTrueFalse]
+            if (current_len + sym_len < max_result_size) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-958-s2.c:27:39: note: Assuming that condition 'current_len+sym_len>=max_result_size-1' is not redundant
+            if (current_len + sym_len >= max_result_size - 1) {
+                                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-958-s2.c:31:39: note: Condition 'current_len+sym_len<max_result_size' is always true
+            if (current_len + sym_len < max_result_size) {
+                                      ^

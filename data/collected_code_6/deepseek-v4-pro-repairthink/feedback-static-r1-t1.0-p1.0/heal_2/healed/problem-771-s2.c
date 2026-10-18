@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int isBalanced(const char *expression) {
+    if (expression == NULL) {
+        return 0;
+    }
+    
+    size_t len = strlen(expression);
+    char *stack = malloc(len + 1);
+    if (stack == NULL) {
+        return 0;
+    }
+    
+    int top = -1;
+    
+    for (size_t i = 0; i < len; i++) {
+        char current = expression[i];
+        
+        if (current == '(' || current == '[' || current == '{') {
+            stack[++top] = current;
+        } else if (current == ')' || current == ']' || current == '}') {
+            if (top == -1) {
+                free(stack);
+                return 0;
+            }
+            
+            char opening = stack[top];
+            if ((opening == '(' && current != ')') ||
+                (opening == '[' && current != ']') ||
+                (opening == '{' && current != '}')) {
+                free(stack);
+                return 0;
+            }
+            
+            top--;
+        }
+    }
+    
+    int balanced = (top == -1);
+    free(stack);
+    return balanced;
+}
+
+int main() {
+    char expression1[] = "{[()]}";
+    char expression2[] = "{[(])}";
+    char expression3[] = "((()))";
+    char expression4[] = "((())";
+    char expression5[] = "";
+    char expression6[] = "a*(b+c)-[d/{e-f}]";
+    
+    printf("\"%s\" is %s\n", expression1, isBalanced(expression1) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression2, isBalanced(expression2) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression3, isBalanced(expression3) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression4, isBalanced(expression4) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression5, isBalanced(expression5) ? "balanced" : "not balanced");
+    printf("\"%s\" is %s\n", expression6, isBalanced(expression6) ? "balanced" : "not balanced");
+    
+    return 0;
+}

@@ -1,0 +1,19 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:16:20: style: Condition 'word_count>0' is always true [knownConditionTrueFalse]
+    if (word_count > 0) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:9:58: note: Assuming condition 'word_count<=0' is false
+    if (words == NULL || out_count == NULL || word_count <= 0) {
+                                                         ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:16:20: note: Condition 'word_count>0' is always true
+    if (word_count > 0) {
+                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:19:23: style: Condition 'out_count!=NULL' is always true [knownConditionTrueFalse]
+        if (out_count != NULL) {
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:9:36: note: Assuming condition 'out_count==NULL' is false
+    if (words == NULL || out_count == NULL || word_count <= 0) {
+                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro/feedback-static+history-r0-t1.0-p1.0/heal_4/healed/problem-128-s2.c:19:23: note: Condition 'out_count!=NULL' is always true
+        if (out_count != NULL) {
+                      ^

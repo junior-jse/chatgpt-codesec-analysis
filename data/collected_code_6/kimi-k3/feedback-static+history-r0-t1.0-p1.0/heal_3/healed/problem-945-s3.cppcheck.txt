@@ -1,0 +1,25 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:122:19: style: Condition 'data_size>0' is always true [knownConditionTrueFalse]
+    if (data_size > 0 && alloc_size / sizeof(int) != data_size) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:104:37: note: Assignment 'data_size=sizeof(data)/sizeof(data[0])', assigned value is 9
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+                                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:106:19: note: Assuming condition is false
+    if (data_size > SIZE_MAX / sizeof(int)) {
+                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:111:35: note: Assignment 'alloc_size=data_size*sizeof(int)', assigned value is 36
+    size_t alloc_size = data_size * sizeof(int);
+                                  ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:118:24: note: Assuming condition is false
+    if (input.elements == NULL) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:113:34: note: Assuming that condition 'alloc_size/sizeof(int)!=data_size' is not redundant
+    if (alloc_size / sizeof(int) != data_size) {
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:118:24: note: Assuming condition is false
+    if (input.elements == NULL) {
+                       ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_3/healed/problem-945-s3.c:122:19: note: Condition 'data_size>0' is always true
+    if (data_size > 0 && alloc_size / sizeof(int) != data_size) {
+                  ^

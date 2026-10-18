@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-936.c: In function 'rearrange_tuples':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-936.c:58:29: error: assignment of member 'id' in read-only object
+   58 |         output->items[i].id = found->id;
+      |                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/deepseek-v4-pro-repairthink/feedback-static-r1-t1.0-p1.0/heal_1/healed/problem-936.c:60:68: error: assignment of read-only location '(output->items + (sizetype)(i * 36))->value[31]'
+   60 |         output->items[i].value[sizeof(output->items[i].value) - 1] = '\0';
+      |                                                                    ^

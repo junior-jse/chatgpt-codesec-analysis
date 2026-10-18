@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-70-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-70-s2.c:4:41: style: Parameter 'lengths' can be declared as pointer to const [constParameterPointer]
+int all_equal_length(int **tuples, int *lengths, int num_tuples) {
+                                        ^

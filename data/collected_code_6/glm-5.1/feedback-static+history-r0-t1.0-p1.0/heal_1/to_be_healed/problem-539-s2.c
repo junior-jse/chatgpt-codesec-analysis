@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int* map_power(const int* bases, const int* indices, size_t length, int* error) {
+    if (bases == NULL || indices == NULL || length == 0) {
+        *error = 1;
+        return NULL;
+    }
+
+    int* result = (int*)malloc(length * sizeof(int));
+    if (result == NULL) {
+        *error = 2;
+        return NULL;
+    }
+
+    for (size_t i = 0; i < length; i++) {
+        if (indices[i] < 0) {
+            *error = 3;
+            free(result);
+            return NULL;
+        }
+        result[i] = (int)pow(bases[i], indices[i]);
+    }
+
+    *error = 0;
+    return result;
+}
+
+int main(void) {
+    int bases[] = {2, 3, 5, 10};
+    /* Possible weaknesses found:
+     *  Variable 'indices' can be declared as const array [constVariable]
+     */
+    int indices[] = {3, 2, 0, 1};
+    size_t length = sizeof(bases) / sizeof(bases[0]);
+    int error;
+
+    int* result = map_power(bases, indices, length, &error);
+
+    if (error == 0 && result != NULL) {
+        for (size_t i = 0; i < length; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+    } else {
+        if (error == 1) {
+            printf("Invalid input.\n");
+        } else if (error == 2) {
+            printf("Memory allocation failed.\n");
+        } else if (error == 3) {
+            printf("Negative exponent encountered.\n");
+        }
+    }
+
+    return 0;
+}

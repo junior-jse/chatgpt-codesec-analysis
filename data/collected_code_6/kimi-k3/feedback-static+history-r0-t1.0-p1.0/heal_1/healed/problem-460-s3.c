@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} SubList;
+
+typedef struct {
+    int *elements;
+    size_t count;
+} FirstElements;
+
+static void cleanup_resources(SubList *sublists, size_t sublist_count, FirstElements *result) {
+    if (sublists != NULL) {
+        for (size_t i = 0; i < sublist_count; i++) {
+            free(sublists[i].data);
+        }
+        free(sublists);
+    }
+    
+    if (result != NULL) {
+        free(result->elements);
+        result->elements = NULL;
+        result->count = 0;
+    }
+}
+
+static bool get_first_elements(const SubList *sublists, size_t sublist_count, FirstElements *result) {
+    if (result == NULL) {
+        return false;
+    }
+    
+    result->elements = NULL;
+    result->count = 0;
+    
+    if (sublists == NULL || sublist_count == 0) {
+        return true;
+    }
+    
+    int *temp = malloc(sublist_count * sizeof(int));
+    if (temp == NULL) {
+        return false;
+    }
+    
+    for (size_t i = 0; i < sublist_count; i++) {
+        if (sublists[i].data == NULL || sublists[i].size == 0) {
+            free(temp);
+            return false;
+        }
+        temp[i] = sublists[i].data[0];
+    }
+    
+    result->elements = temp;
+    result->count = sublist_count;
+    return true;
+}
+
+int main(void) {
+    SubList *sublists = NULL;
+    FirstElements result = {NULL, 0};
+    size_t sublist_count = 3;
+    int status = EXIT_SUCCESS;
+    
+    sublists = malloc(sublist_count * sizeof(SubList));
+    if (sublists == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    for (size_t i = 0; i < sublist_count; i++) {
+        sublists[i].data = NULL;
+        sublists[i].size = 0;
+    }
+    
+    for (size_t i = 0; i < sublist_count; i++) {
+        sublists[i].size = i + 2;
+        sublists[i].data = malloc(sublists[i].size * sizeof(int));
+        
+        if (sublists[i].data == NULL) {
+            fprintf(stderr, "Memory allocation failed for sublist %zu\n", i);
+            cleanup_resources(sublists, sublist_count, &result);
+            return EXIT_FAILURE;
+        }
+        
+        for (size_t j = 0; j < sublists[i].size; j++) {
+            sublists[i].data[j] = (int)(i * 10 + j + 1);
+        }
+    }
+    
+    if (!get_first_elements(sublists, sublist_count, &result)) {
+        fprintf(stderr, "Failed to get first elements\n");
+        cleanup_resources(sublists, sublist_count, &result);
+        return EXIT_FAILURE;
+    }
+    
+    printf("First elements: ");
+    for (size_t i = 0; i < result.count; i++) {
+        printf("%d ", result.elements[i]);
+    }
+    printf("\n");
+    
+    cleanup_resources(sublists, sublist_count, &result);
+    
+    return status;
+}

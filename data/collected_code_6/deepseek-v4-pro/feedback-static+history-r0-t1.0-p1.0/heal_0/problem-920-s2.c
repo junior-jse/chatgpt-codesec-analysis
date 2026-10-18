@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct {
+    void **values;
+    size_t length;
+} Tuple;
+
+typedef struct {
+    Tuple *tuples;
+    size_t length;
+    size_t capacity;
+} TupleList;
+
+TupleList *create_tuple_list(size_t capacity) {
+    TupleList *list = (TupleList *)malloc(sizeof(TupleList));
+    if (list == NULL) {
+        return NULL;
+    }
+    list->tuples = (Tuple *)malloc(capacity * sizeof(Tuple));
+    if (list->tuples == NULL) {
+        free(list);
+        return NULL;
+    }
+    list->length = 0;
+    list->capacity = capacity;
+    return list;
+}
+
+bool tuple_is_all_none(Tuple *tuple) {
+    for (size_t i = 0; i < tuple->length; i++) {
+        if (tuple->values[i] != NULL) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple->values != NULL) {
+        free(tuple->values);
+        tuple->values = NULL;
+    }
+    tuple->length = 0;
+}
+
+void remove_all_none_tuples(TupleList *list) {
+    if (list == NULL || list->tuples == NULL) {
+        return;
+    }
+    
+    size_t write_index = 0;
+    for (size_t read_index = 0; read_index < list->length; read_index++) {
+        if (!tuple_is_all_none(&list->tuples[read_index])) {
+            if (write_index != read_index) {
+                list->tuples[write_index] = list->tuples[read_index];
+            }
+            write_index++;
+        } else {
+            free_tuple(&list->tuples[read_index]);
+        }
+    }
+    list->length = write_index;
+}
+
+void destroy_tuple_list(TupleList *list) {
+    if (list == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < list->length; i++) {
+        free_tuple(&list->tuples[i]);
+    }
+    free(list->tuples);
+    free(list);
+}
+
+Tuple *add_tuple(TupleList *list, size_t tuple_length) {
+    if (list == NULL || tuple_length == 0) {
+        return NULL;
+    }
+    if (list->length >= list->capacity) {
+        size_t new_capacity = list->capacity * 2;
+        Tuple *new_tuples = (Tuple *)realloc(list->tuples, new_capacity * sizeof(Tuple));
+        if (new_tuples == NULL) {
+            return NULL;
+        }
+        list->tuples = new_tuples;
+        list->capacity = new_capacity;
+    }
+    
+    Tuple *tuple = &list->tuples[list->length];
+    tuple->values = (void **)malloc(tuple_length * sizeof(void *));
+    if (tuple->values == NULL) {
+        return NULL;
+    }
+    tuple->length = tuple_length;
+    for (size_t i = 0; i < tuple_length; i++) {
+        tuple->values[i] = NULL;
+    }
+    list->length++;
+    return tuple;
+}
+
+int main(void) {
+    TupleList *list = create_tuple_list(4);
+    if (list == NULL) {
+        return 1;
+    }
+    
+    Tuple *t1 = add_tuple(list, 3);
+    Tuple *t2 = add_tuple(list, 2);
+    Tuple *t3 = add_tuple(list, 3);
+    Tuple *t4 = add_tuple(list, 1);
+    
+    if (t1 == NULL || t2 == NULL || t3 == NULL || t4 == NULL) {
+        destroy_tuple_list(list);
+        return 1;
+    }
+    
+    t1->values[0] = (void *)1;
+    t1->values[1] = NULL;
+    t1->values[2] = (void *)1;
+    
+    t2->values[0] = NULL;
+    t2->values[1] = NULL;
+    
+    t3->values[0] = NULL;
+    t3->values[1] = NULL;
+    t3->values[2] = NULL;
+    
+    t4->values[0] = (void *)1;
+    
+    remove_all_none_tuples(list);
+    
+    destroy_tuple_list(list);
+    return 0;
+}

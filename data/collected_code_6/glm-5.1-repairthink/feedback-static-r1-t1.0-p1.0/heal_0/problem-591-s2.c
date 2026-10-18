@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void interchange(int *list, size_t size) {
+    if (size < 2) {
+        return;
+    }
+    int temp = list[0];
+    list[0] = list[size - 1];
+    list[size - 1] = temp;
+}
+
+int main(void) {
+    size_t size = 5;
+    int *list = malloc(size * sizeof(int));
+    if (list == NULL) {
+        return 1;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        list[i] = (int)i + 1;
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        printf("%d ", list[i]);
+    }
+    printf("\n");
+
+    interchange(list, size);
+
+    for (size_t i = 0; i < size; i++) {
+        printf("%d ", list[i]);
+    }
+    printf("\n");
+
+    free(list);
+    list = NULL;
+
+    return 0;
+}

@@ -1,0 +1,7 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-904-s2.c:22:51: error: use of undeclared identifier 'INT_MIN'
+   22 |     if (end == argv[1] || *end != '\0' || value < INT_MIN || value > INT_MAX) {
+      |                                                   ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-904-s2.c:22:70: error: use of undeclared identifier 'INT_MAX'
+   22 |     if (end == argv[1] || *end != '\0' || value < INT_MIN || value > INT_MAX) {
+      |                                                                      ^~~~~~~
+2 errors generated.

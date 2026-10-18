@@ -1,0 +1,8 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s2.c: In function 'count_subsequences':
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s2.c:60:13: error: implicit declaration of function 'memmove' [-Wimplicit-function-declaration]
+   60 |             memmove(products + new_count, products, used * sizeof(*products));
+      |             ^~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-510-s2.c:5:1: note: include '<string.h>' or provide a declaration of 'memmove'
+    4 | #include <inttypes.h>
+  +++ |+#include <string.h>
+    5 | 

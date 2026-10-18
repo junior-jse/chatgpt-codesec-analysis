@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-440-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-440-s2.c:111:38: style: Condition 'word_buffer_size<word_len' is always false [knownConditionTrueFalse]
+                if (word_buffer_size < word_len) {
+                                     ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-440-s2.c:109:34: note: word_buffer_size is assigned 'word_len+1' here.
+                word_buffer_size = word_len + 1;
+                                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3-repairthink/feedback-static-r1-t1.0-p1.0/heal_3/healed/problem-440-s2.c:111:38: note: Condition 'word_buffer_size<word_len' is always false
+                if (word_buffer_size < word_len) {
+                                     ^

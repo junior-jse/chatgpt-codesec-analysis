@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *str;
+    int count;
+} StringCount;
+
+char *find_second_most_frequent(char *arr[], int size) {
+    if (size < 2) {
+        return NULL;
+    }
+    
+    StringCount *counts = (StringCount *)malloc(size * sizeof(StringCount));
+    if (counts == NULL) {
+        return NULL;
+    }
+    
+    int unique_count = 0;
+    
+    for (int i = 0; i < size; i++) {
+        int found = 0;
+        for (int j = 0; j < unique_count; j++) {
+            if (strcmp(counts[j].str, arr[i]) == 0) {
+                counts[j].count++;
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            counts[unique_count].str = arr[i];
+            counts[unique_count].count = 1;
+            unique_count++;
+        }
+    }
+    
+    /* Possible weaknesses found:
+     *  Assuming condition 'unique_count<2' is false
+     */
+    if (unique_count < 2) {
+        free(counts);
+        return NULL;
+    }
+    
+    for (int i = 0; i < unique_count - 1; i++) {
+        for (int j = i + 1; j < unique_count; j++) {
+            if (counts[i].count < counts[j].count) {
+                StringCount temp = counts[i];
+                counts[i] = counts[j];
+                counts[j] = temp;
+            }
+        }
+    }
+    
+    char *result = NULL;
+    /* Possible weaknesses found:
+     *  Condition 'unique_count>=2' is always true
+     *  Condition 'unique_count>=2' is always true [knownConditionTrueFalse]
+     */
+    if (unique_count >= 2) {
+        result = counts[1].str;
+    }
+    
+    free(counts);
+    return result;
+}
+
+int main() {
+    char *arr[] = {"apple", "banana", "apple", "cherry", "banana", "apple", "cherry", "banana", "banana"};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    
+    char *second = find_second_most_frequent(arr, size);
+    
+    if (second != NULL) {
+        printf("Second most frequent string: %s\n", second);
+    } else {
+        printf("No second most frequent string found.\n");
+    }
+    
+    return 0;
+}

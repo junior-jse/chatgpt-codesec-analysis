@@ -1,0 +1,10 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-361-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-361-s2.c:65:52: style: The comparison 'bytes_to_copy <= size*sizeof(int)' is always true because 'bytes_to_copy' and 'size*sizeof(int)' represent the same value. [knownConditionTrueFalse]
+            if (bytes_to_copy > 0 && bytes_to_copy <= size * sizeof(int)) {
+                                                   ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-361-s2.c:64:41: note: 'bytes_to_copy' is assigned value 'size*sizeof(int)' here.
+            size_t bytes_to_copy = size * sizeof(int);
+                                        ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/kimi-k3/feedback-static+history-r0-t1.0-p1.0/heal_5/healed/problem-361-s2.c:65:52: note: The comparison 'bytes_to_copy <= size*sizeof(int)' is always true because 'bytes_to_copy' and 'size*sizeof(int)' represent the same value.
+            if (bytes_to_copy > 0 && bytes_to_copy <= size * sizeof(int)) {
+                                                   ^

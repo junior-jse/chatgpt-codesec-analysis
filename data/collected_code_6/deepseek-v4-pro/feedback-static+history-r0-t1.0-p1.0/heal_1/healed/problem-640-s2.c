@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+static char *remove_parenthesis_area(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    size_t len = strlen(input);
+    char *result = malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t read_pos = 0;
+    size_t write_pos = 0;
+    int depth = 0;
+
+    while (read_pos < len) {
+        char current_char = input[read_pos];
+
+        if (current_char == '(') {
+            depth++;
+            read_pos++;
+            continue;
+        }
+
+        if (current_char == ')') {
+            if (depth > 0) {
+                depth--;
+            } else {
+                result[write_pos++] = current_char;
+            }
+            read_pos++;
+            continue;
+        }
+
+        if (depth == 0) {
+            result[write_pos++] = current_char;
+        }
+
+        read_pos++;
+    }
+
+    result[write_pos] = '\0';
+    return result;
+}
+
+int main(void) {
+    const char *test_cases[] = {
+        "Hello (world) example",
+        "Nested ((parenthesis)) test",
+        "No parenthesis here",
+        "Start (paren) end",
+        "Unmatched (parenthesis",
+        "Unmatched parenthesis)",
+        "Empty () test",
+        "(Only parenthesis)",
+        ""
+    };
+
+    size_t num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char *cleaned = remove_parenthesis_area(test_cases[i]);
+        if (cleaned != NULL) {
+            printf("Input:    \"%s\"\n", test_cases[i]);
+            printf("Output:   \"%s\"\n", cleaned);
+            printf("\n");
+            free(cleaned);
+        } else {
+            fprintf(stderr, "Memory allocation failed for test %zu\n", i);
+            return EXIT_FAILURE;
+        }
+    }
+
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-585-s3.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-585-s3.c:87:30: style: Parameter 'dataset' can be declared as pointer to const [constParameterPointer]
+Item* find_n_expensive(Item *dataset, int dataset_size, int n, int *result_size) {
+                             ^

@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* minimize_by_removing_one_char(const char* str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    if (str[0] == '\0') {
+        char* empty = malloc(1);
+        if (empty == NULL) {
+            return NULL;
+        }
+        empty[0] = '\0';
+        return empty;
+    }
+
+    int freq[256] = {0};
+    size_t len = 0;
+    for (const char* p = str; *p != '\0'; p++) {
+        freq[(unsigned char)*p]++;
+        len++;
+    }
+
+    int max_freq = 0;
+    char char_to_remove = '\0';
+    for (int i = 0; i < 256; i++) {
+        if (freq[i] > max_freq) {
+            max_freq = freq[i];
+            char_to_remove = (char)i;
+        }
+    }
+
+    size_t remaining = len - max_freq;
+    char* result = malloc(remaining + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] != char_to_remove) {
+            result[j++] = str[i];
+        }
+    }
+    result[j] = '\0';
+
+    return result;
+}
+
+int main(void) {
+    const char* test_cases[] = {
+        "aabbbcc",
+        "abcd",
+        "aaabbb",
+        "abcabcabc",
+        "",
+        "aaaa"
+    };
+
+    for (size_t i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
+        char* minimized = minimize_by_removing_one_char(test_cases[i]);
+        if (minimized == NULL) {
+            printf("Input: \"%s\", Result: (allocation failed or null input)\n",
+                   test_cases[i] ? test_cases[i] : "NULL");
+            continue;
+        }
+        size_t result_len = 0;
+        while (minimized[result_len] != '\0') {
+            result_len++;
+        }
+        printf("Input: \"%s\", Minimized: \"%s\", Length: %zu\n",
+               test_cases[i], minimized, result_len);
+        free(minimized);
+    }
+
+    char* null_result = minimize_by_removing_one_char(NULL);
+    printf("Input: NULL, Result: NULL (handled)\n");
+    free(null_result);
+
+    return 0;
+}

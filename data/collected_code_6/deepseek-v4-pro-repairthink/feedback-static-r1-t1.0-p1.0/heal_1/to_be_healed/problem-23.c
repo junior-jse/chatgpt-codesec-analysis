@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+/* Possible weaknesses found:
+ *  Parameter 'sizes' can be declared as pointer to const [constParameterPointer]
+ */
+int* find_max_sum_list(int** lists, int* sizes, int num_lists) {
+    if (lists == NULL || sizes == NULL || num_lists <= 0) {
+        return NULL;
+    }
+    
+    int max_sum = INT_MIN;
+    int max_index = -1;
+    
+    for (int i = 0; i < num_lists; i++) {
+        if (lists[i] == NULL || sizes[i] <= 0) {
+            continue;
+        }
+        
+        int current_sum = 0;
+        for (int j = 0; j < sizes[i]; j++) {
+            current_sum += lists[i][j];
+        }
+        
+        if (current_sum > max_sum) {
+            max_sum = current_sum;
+            max_index = i;
+        }
+    }
+    
+    if (max_index == -1) {
+        return NULL;
+    }
+    
+    return lists[max_index];
+}
+
+int main() {
+    int list1[] = {1, 2, 3, 4, 5};
+    int list2[] = {-5, -4, -3, -2, -1};
+    int list3[] = {10, 20};
+    int list4[] = {7, 8, 9, 10};
+    
+    int* lists[] = {list1, list2, list3, list4};
+    int sizes[] = {5, 5, 2, 4};
+    
+    /* Possible weaknesses found:
+     *  Variable 'max_list' can be declared as pointer to const [constVariablePointer]
+     */
+    int* max_list = find_max_sum_list(lists, sizes, 4);
+    
+    if (max_list != NULL) {
+        printf("Maximum sum list: ");
+        for (int i = 0; i < sizes[3]; i++) {
+            if (max_list == list4) {
+                printf("%d ", max_list[i]);
+            } else if (max_list == list3) {
+                if (i < sizes[2]) printf("%d ", max_list[i]);
+            } else if (max_list == list1 || max_list == list2) {
+                if (i < sizes[0]) printf("%d ", max_list[i]);
+            }
+        }
+        printf("\n");
+    } else {
+        printf("No valid list found\n");
+    }
+    
+    return 0;
+}

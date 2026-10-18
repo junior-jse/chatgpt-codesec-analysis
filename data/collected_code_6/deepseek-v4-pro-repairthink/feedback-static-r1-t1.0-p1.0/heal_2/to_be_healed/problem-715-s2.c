@@ -1,0 +1,127 @@
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *values;
+    size_t size;
+} Tuple;
+
+Tuple parse_tuple(const char *str) {
+    Tuple result = {NULL, 0};
+    if (str == NULL) {
+        return result;
+    }
+
+    if (*str != '(') {
+        return result;
+    }
+    const char *p = str + 1;
+    while (*p != '\0') {
+        p++;
+    }
+    if (p - str < 2 || *(p - 1) != ')') {
+        return result;
+    }
+    size_t len = (size_t)(p - str);
+    size_t inner_len = len - 2;
+
+    char *copy = malloc(inner_len + 1);
+    if (copy == NULL) {
+        return result;
+    }
+    /* Possible weaknesses found:
+     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+     */
+    memcpy(copy, str + 1, inner_len);
+    copy[inner_len] = '\0';
+
+    size_t capacity = 8;
+    int *values = malloc(capacity * sizeof(int));
+    if (values == NULL) {
+        free(copy);
+        return result;
+    }
+
+    char *token = strtok(copy, ",");
+    size_t count = 0;
+
+    while (token != NULL) {
+        while (*token == ' ') {
+            token++;
+        }
+        /* Possible weaknesses found:
+         * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+         */
+        char *end = token + strlen(token);
+        while (end > token && *(end - 1) == ' ') {
+            end--;
+        }
+        *end = '\0';
+
+        if (*token == '\0') {
+            token = strtok(NULL, ",");
+            continue;
+        }
+
+        if (count == capacity) {
+            capacity *= 2;
+            int *temp = realloc(values, capacity * sizeof(int));
+            if (temp == NULL) {
+                free(values);
+                free(copy);
+                return result;
+            }
+            values = temp;
+        }
+
+        char *endptr;
+        errno = 0;
+        long val = strtol(token, &endptr, 10);
+        if (errno != 0 || endptr == token || *endptr != '\0' ||
+            val < INT_MIN || val > INT_MAX) {
+            free(values);
+            free(copy);
+            return result;
+        }
+
+        values[count++] = (int)val;
+        token = strtok(NULL, ",");
+    }
+
+    free(copy);
+
+    result.values = values;
+    result.size = count;
+
+    return result;
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple != NULL && tuple->values != NULL) {
+        free(tuple->values);
+        tuple->values = NULL;
+        tuple->size = 0;
+    }
+}
+
+int main(void) {
+    const char *input = "(1, 2, 3, 4, 5)";
+    Tuple tuple = parse_tuple(input);
+
+    if (tuple.values == NULL) {
+        fprintf(stderr, "Failed to parse tuple\n");
+        return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < tuple.size; i++) {
+        printf("%d ", tuple.values[i]);
+    }
+    printf("\n");
+
+    free_tuple(&tuple);
+    return EXIT_SUCCESS;
+}

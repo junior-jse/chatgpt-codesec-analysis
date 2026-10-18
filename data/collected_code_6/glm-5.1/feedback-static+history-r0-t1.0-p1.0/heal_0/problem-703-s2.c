@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char **keys;
+    char **values;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+Dictionary *dictionary_create(size_t capacity) {
+    Dictionary *dict = (Dictionary *)malloc(sizeof(Dictionary));
+    if (!dict) {
+        return NULL;
+    }
+    dict->keys = (char **)malloc(capacity * sizeof(char *));
+    if (!dict->keys) {
+        free(dict);
+        return NULL;
+    }
+    dict->values = (char **)malloc(capacity * sizeof(char *));
+    if (!dict->values) {
+        free(dict->keys);
+        free(dict);
+        return NULL;
+    }
+    dict->size = 0;
+    dict->capacity = capacity;
+    return dict;
+}
+
+int dictionary_insert(Dictionary *dict, const char *key, const char *value) {
+    if (!dict || !key || !value || dict->size >= dict->capacity) {
+        return -1;
+    }
+    dict->keys[dict->size] = strdup(key);
+    if (!dict->keys[dict->size]) {
+        return -1;
+    }
+    dict->values[dict->size] = strdup(value);
+    if (!dict->values[dict->size]) {
+        free(dict->keys[dict->size]);
+        dict->keys[dict->size] = NULL;
+        return -1;
+    }
+    dict->size++;
+    return 0;
+}
+
+int dictionary_contains_key(const Dictionary *dict, const char *key) {
+    if (!dict || !key) {
+        return 0;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        if (strcmp(dict->keys[i], key) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void dictionary_destroy(Dictionary *dict) {
+    if (!dict) {
+        return;
+    }
+    for (size_t i = 0; i < dict->size; i++) {
+        free(dict->keys[i]);
+        free(dict->values[i]);
+    }
+    free(dict->keys);
+    free(dict->values);
+    free(dict);
+}
+
+int main(void) {
+    Dictionary *dict = dictionary_create(10);
+    if (!dict) {
+        return EXIT_FAILURE;
+    }
+    
+    if (dictionary_insert(dict, "apple", "fruit") != 0) {
+        dictionary_destroy(dict);
+        return EXIT_FAILURE;
+    }
+    
+    if (dictionary_insert(dict, "carrot", "vegetable") != 0) {
+        dictionary_destroy(dict);
+        return EXIT_FAILURE;
+    }
+
+    int found_apple = dictionary_contains_key(dict, "apple");
+    int found_banana = dictionary_contains_key(dict, "banana");
+    
+    printf("apple: %d\n", found_apple);
+    printf("banana: %d\n", found_banana);
+
+    dictionary_destroy(dict);
+    
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,164 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    void *data;
+    int is_list;
+    struct Node *next;
+} Node;
+
+unsigned long count_and_square(Node *head) {
+    unsigned long count = 0;
+    Node *current = head;
+    while (current != NULL) {
+        if (current->is_list) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count * count;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current != NULL) {
+        Node *next = current->next;
+        if (current->is_list) {
+            free_list((Node *)current->data);
+        } else {
+            free(current->data);
+        }
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    Node *inner_list1 = malloc(sizeof(Node));
+    Node *inner_list2 = malloc(sizeof(Node));
+    Node *inner_list3 = malloc(sizeof(Node));
+    Node *element1 = malloc(sizeof(Node));
+    
+    if (inner_list1 == NULL || inner_list2 == NULL || inner_list3 == NULL || element1 == NULL) {
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(element1);
+        return 1;
+    }
+
+    int *val1 = malloc(sizeof(int));
+    int *val2 = malloc(sizeof(int));
+    int *val3 = malloc(sizeof(int));
+    int *val4 = malloc(sizeof(int));
+
+    if (val1 == NULL || val2 == NULL || val3 == NULL || val4 == NULL) {
+        free(val1);
+        free(val2);
+        free(val3);
+        free(val4);
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(element1);
+        return 1;
+    }
+
+    *val1 = 10;
+    *val2 = 20;
+    *val3 = 30;
+    *val4 = 40;
+
+    inner_list1->data = val1;
+    inner_list1->is_list = 1;
+    inner_list1->next = NULL;
+
+    inner_list2->data = val4;
+    inner_list2->is_list = 1;
+    inner_list2->next = NULL;
+
+    inner_list3->data = val2;
+    inner_list3->is_list = 1;
+    inner_list3->next = NULL;
+
+    element1->data = val3;
+    element1->is_list = 0;
+    element1->next = NULL;
+
+    Node *head = malloc(sizeof(Node));
+    if (head == NULL) {
+        free(val1);
+        free(val2);
+        free(val3);
+        free(val4);
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(element1);
+        return 1;
+    }
+
+    head->data = inner_list1;
+    head->is_list = 1;
+    head->next = malloc(sizeof(Node));
+    
+    if (head->next == NULL) {
+        free(val1);
+        free(val4);
+        free(val2);
+        free(val3);
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(element1);
+        free(head);
+        return 1;
+    }
+
+    head->next->data = element1;
+    head->next->is_list = 0;
+    head->next->next = malloc(sizeof(Node));
+
+    if (head->next->next == NULL) {
+        free(val1);
+        free(val4);
+        free(val2);
+        free(val3);
+        free(inner_list1);
+        free(inner_list2);
+        free(inner_list3);
+        free(element1);
+        free(head->next);
+        free(head);
+        return 1;
+    }
+
+    head->next->next->data = inner_list2;
+    head->next->next->is_list = 1;
+    head->next->next->next = NULL;
+
+    Node inner_head1 = {val1, 1, NULL};
+    Node inner_head2 = {val4, 1, NULL};
+
+    inner_list1->data = &inner_head1;
+    inner_list2->data = &inner_head2;
+
+    unsigned long result = count_and_square(head);
+    printf("%lu\n", result);
+
+    free(val1);
+    free(val2);
+    free(val3);
+    free(val4);
+    free(inner_list1);
+    free(inner_list2);
+    free(inner_list3);
+    free(element1);
+    free(head->next->next);
+    free(head->next);
+    free(head);
+
+    return 0;
+}
+```

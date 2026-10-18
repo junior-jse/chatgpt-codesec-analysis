@@ -1,0 +1,80 @@
+#define _POSIX_C_SOURCE 200809L
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STRING_LENGTH 4096
+
+void remove_parentheses(char *str)
+{
+    char *read_ptr;
+    char *write_ptr;
+    int depth = 0;
+
+    if (str == NULL) {
+        return;
+    }
+
+    read_ptr = str;
+    write_ptr = str;
+
+    while (*read_ptr != '\0') {
+        if (*read_ptr == '(') {
+            depth++;
+        } else if (*read_ptr == ')') {
+            if (depth > 0) {
+                depth--;
+            }
+        } else if (depth == 0) {
+            *write_ptr = *read_ptr;
+            write_ptr++;
+        }
+        read_ptr++;
+    }
+    *write_ptr = '\0';
+}
+
+int main(void)
+{
+    const char *test_strings[] = {
+        "Hello (World) Test",
+        "No parentheses here",
+        "(Remove)Keep(Remove)",
+        "Nested (Outer (Inner) Outer) End",
+        "Unmatched (Open",
+        "Unmatched )Close(",
+        "Multiple (One) Two (Three) Four"
+    };
+    size_t num_strings = sizeof(test_strings) / sizeof(test_strings[0]);
+    size_t i;
+
+    for (i = 0; i < num_strings; i++) {
+        size_t len = strnlen(test_strings[i], MAX_STRING_LENGTH);
+        char *buffer;
+
+        if (len == MAX_STRING_LENGTH) {
+            fprintf(stderr, "String exceeds maximum length or is not null-terminated\n");
+            return EXIT_FAILURE;
+        }
+
+        buffer = malloc(len + 1);
+        if (buffer == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            return EXIT_FAILURE;
+        }
+
+        if (snprintf(buffer, len + 1, "%s", test_strings[i]) < 0) {
+            fprintf(stderr, "String copy failed\n");
+            free(buffer);
+            return EXIT_FAILURE;
+        }
+
+        printf("Original: %s\n", buffer);
+        remove_parentheses(buffer);
+        printf("Modified: %s\n\n", buffer);
+        free(buffer);
+    }
+
+    return EXIT_SUCCESS;
+}

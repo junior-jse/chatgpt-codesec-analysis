@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} DictEntry;
+
+typedef struct {
+    DictEntry *entries;
+    size_t size;
+    size_t capacity;
+} Dictionary;
+
+char **dict_keys(const Dictionary *dict, size_t *count) {
+    char **keys;
+    size_t i;
+
+    if (dict == NULL || count == NULL || dict->size == 0) {
+        if (count != NULL) {
+            *count = 0;
+        }
+        return NULL;
+    }
+
+    keys = malloc(dict->size * sizeof(char *));
+    if (keys == NULL) {
+        *count = 0;
+        return NULL;
+    }
+
+    for (i = 0; i < dict->size; i++) {
+        keys[i] = malloc(strlen(dict->entries[i].key) + 1);
+        if (keys[i] == NULL) {
+            size_t j;
+            for (j = 0; j < i; j++) {
+                free(keys[j]);
+            }
+            free(keys);
+            *count = 0;
+            return NULL;
+        }
+        strcpy(keys[i], dict->entries[i].key);
+    }
+
+    *count = dict->size;
+    return keys;
+}
+
+void free_keys(char **keys, size_t count) {
+    size_t i;
+    if (keys == NULL) {
+        return;
+    }
+    for (i = 0; i < count; i++) {
+        free(keys[i]);
+    }
+    free(keys);
+}
+
+int main(void) {
+    DictEntry entries[] = {
+        {"name", "Alice"},
+        {"age", "30"},
+        {"city", "New York"}
+    };
+    Dictionary dict = {entries, 3, 3};
+    char **keys;
+    size_t count;
+    size_t i;
+
+    keys = dict_keys(&dict, &count);
+    if (keys == NULL) {
+        fprintf(stderr, "Failed to retrieve dictionary keys\n");
+        return EXIT_FAILURE;
+    }
+
+    printf("Dictionary keys:\n");
+    for (i = 0; i < count; i++) {
+        printf("%s\n", keys[i]);
+    }
+
+    free_keys(keys, count);
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char *word;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+} LinkedList;
+
+void linked_list_init(LinkedList *list) {
+    list->head = NULL;
+}
+
+int linked_list_contains(LinkedList *list, const char *word) {
+    Node *current = list->head;
+    while (current != NULL) {
+        if (strcmp(current->word, word) == 0) {
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+int linked_list_insert(LinkedList *list, const char *word) {
+    if (linked_list_contains(list, word)) {
+        return 0;
+    }
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL) {
+        return -1;
+    }
+    new_node->word = strdup(word);
+    if (new_node->word == NULL) {
+        free(new_node);
+        return -1;
+    }
+    new_node->next = list->head;
+    list->head = new_node;
+    return 0;
+}
+
+void linked_list_free(LinkedList *list) {
+    Node *current = list->head;
+    while (current != NULL) {
+        Node *next = current->next;
+        free(current->word);
+        free(current);
+        current = next;
+    }
+    list->head = NULL;
+}
+
+char *remove_duplicate_words(const char *str, size_t str_len) {
+    if (str == NULL) {
+        return NULL;
+    }
+    char *temp = malloc(str_len + 1);
+    if (temp == NULL) {
+        return NULL;
+    }
+    memcpy(temp, str, str_len);
+    temp[str_len] = '\0';
+    char *result = malloc(str_len + 1);
+    if (result == NULL) {
+        free(temp);
+        return NULL;
+    }
+    size_t current_len = 0;
+    result[0] = '\0';
+    LinkedList collection;
+    linked_list_init(&collection);
+    char *token = strtok(temp, " ");
+    while (token != NULL) {
+        if (!linked_list_contains(&collection, token)) {
+            if (linked_list_insert(&collection, token) != 0) {
+                linked_list_free(&collection);
+                free(temp);
+                free(result);
+                return NULL;
+            }
+            int written = snprintf(result + current_len, str_len - current_len + 1, "%s%s", current_len > 0 ? " " : "", token);
+            if (written > 0) {
+                current_len += (size_t)written;
+            }
+        }
+        token = strtok(NULL, " ");
+    }
+    linked_list_free(&collection);
+    free(temp);
+    return result;
+}
+
+int main(int argc, char *argv[]) {
+    const char *input = "hello world hello C world C programming";
+    size_t len = strlen(input);
+    char *output = remove_duplicate_words(input, len);
+    if (output == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
+    printf("Input: %s\n", input);
+    printf("Output: %s\n", output);
+    free(output);
+    return 0;
+}

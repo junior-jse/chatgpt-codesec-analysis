@@ -1,0 +1,16 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c:52:18: style: Condition 'copy_len>=alloc_size' is always false [knownConditionTrueFalse]
+    if (copy_len >= alloc_size) {
+                 ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c:44:23: note: alloc_size is assigned 'best_len+1' here.
+    size_t alloc_size = best_len + 1;
+                      ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c:47:16: note: Assuming condition is false
+    if (result == NULL) {
+               ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c:51:21: note: copy_len is assigned 'best_len' here.
+    size_t copy_len = best_len;
+                    ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/data/collected_code_6/glm-5.1-repairthink/feedback-static-r1-t1.0-p1.0/heal_5/healed/problem-315-s2.c:52:18: note: Condition 'copy_len>=alloc_size' is always false
+    if (copy_len >= alloc_size) {
+                 ^

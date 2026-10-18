@@ -1,0 +1,4 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/openai-gpt56-sol/feedback-static-r0-t1.0-p1.0/heal_0/problem-73.c:86:13: warning: Value stored to 'offset' is never read [deadcode.DeadStores]
+   86 |             offset += strlen(input + offset);
+      |             ^         ~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.

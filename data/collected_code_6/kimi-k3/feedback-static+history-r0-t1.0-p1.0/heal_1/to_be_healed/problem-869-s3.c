@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Sublist {
+    int *data;
+    size_t size;
+} Sublist;
+
+typedef struct ListOfLists {
+    Sublist *sublists;
+    size_t count;
+} ListOfLists;
+
+int remove_sublists_outside_range(ListOfLists *list, int min, int max) {
+    if (list == NULL || list->sublists == NULL) {
+        return -1;
+    }
+    
+    size_t write_idx = 0;
+    size_t removed_count = 0;
+    
+    for (size_t read_idx = 0; read_idx < list->count; read_idx++) {
+        int sum = 0;
+        /* Possible weaknesses found:
+         *  Variable 'valid_sum' is assigned a value that is never used. [unreadVariable]
+         */
+        int valid_sum = 1;
+        
+        for (size_t i = 0; i < list->sublists[read_idx].size; i++) {
+            if (list->sublists[read_idx].data != NULL) {
+                sum += list->sublists[read_idx].data[i];
+            }
+        }
+        
+        if (sum >= min && sum <= max) {
+            if (write_idx != read_idx) {
+                list->sublists[write_idx] = list->sublists[read_idx];
+            }
+            write_idx++;
+        } else {
+            free(list->sublists[read_idx].data);
+            list->sublists[read_idx].data = NULL;
+            removed_count++;
+        }
+    }
+    
+    list->count = write_idx;
+    return (int)removed_count;
+}
+
+int main(void) {
+    ListOfLists list;
+    list.count = 5;
+    list.sublists = malloc(sizeof(Sublist) * list.count);
+    
+    if (list.sublists == NULL) {
+        return 1;
+    }
+    
+    /* Possible weaknesses found:
+     *  Variable 'data0' can be declared as const array [constVariable]
+     */
+    int data0[] = {1, 2, 3};
+    /* Possible weaknesses found:
+     *  Variable 'data1' can be declared as const array [constVariable]
+     */
+    int data1[] = {10, 20, 30};
+    /* Possible weaknesses found:
+     *  Variable 'data2' can be declared as const array [constVariable]
+     */
+    int data2[] = {5, 5};
+    /* Possible weaknesses found:
+     *  Variable 'data3' can be declared as const array [constVariable]
+     */
+    int data3[] = {100, 200};
+    /* Possible weaknesses found:
+     *  Variable 'data4' can be declared as const array [constVariable]
+     */
+    int data4[] = {1, 1, 1, 1};
+    
+    list.sublists[0].data = malloc(sizeof(int) * 3);
+    list.sublists[0].size = 3;
+    list.sublists[1].data = malloc(sizeof(int) * 3);
+    list.sublists[1].size = 3;
+    list.sublists[2].data = malloc(sizeof(int) * 2);
+    list.sublists[2].size = 2;
+    list.sublists[3].data = malloc(sizeof(int) * 2);
+    list.sublists[3].size = 2;
+    list.sublists[4].data = malloc(sizeof(int) * 4);
+    list.sublists[4].size = 4;
+    
+    if (list.sublists[0].data == NULL || list.sublists[1].data == NULL ||
+        list.sublists[2].data == NULL || list.sublists[3].data == NULL ||
+        list.sublists[4].data == NULL) {
+        for (size_t i = 0; i < list.count; i++) {
+            free(list.sublists[i].data);
+        }
+        free(list.sublists);
+        return 1;
+    }
+    
+    for (size_t i = 0; i < 3; i++) list.sublists[0].data[i] = data0[i];
+    for (size_t i = 0; i < 3; i++) list.sublists[1].data[i] = data1[i];
+    for (size_t i = 0; i < 2; i++) list.sublists[2].data[i] = data2[i];
+    for (size_t i = 0; i < 2; i++) list.sublists[3].data[i] = data3[i];
+    for (size_t i = 0; i < 4; i++) list.sublists[4].data[i] = data4[i];
+    
+    printf("Before removal:\n");
+    for (size_t i = 0; i < list.count; i++) {
+        printf("Sublist %zu: ", i);
+        for (size_t j = 0; j < list.sublists[i].size; j++) {
+            printf("%d ", list.sublists[i].data[j]);
+        }
+        printf("\n");
+    }
+    
+    int removed = remove_sublists_outside_range(&list, 5, 15);
+    printf("\nRemoved %d sublists\n", removed);
+    
+    printf("\nAfter removal:\n");
+    for (size_t i = 0; i < list.count; i++) {
+        printf("Sublist %zu: ", i);
+        for (size_t j = 0; j < list.sublists[i].size; j++) {
+            printf("%d ", list.sublists[i].data[j]);
+        }
+        printf("\n");
+    }
+    
+    for (size_t i = 0; i < list.count; i++) {
+        free(list.sublists[i].data);
+    }
+    free(list.sublists);
+    
+    return 0;
+}

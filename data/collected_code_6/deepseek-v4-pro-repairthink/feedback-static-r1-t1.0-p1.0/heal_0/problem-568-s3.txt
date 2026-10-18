@@ -1,0 +1,74 @@
+```c
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Dict {
+    void *data;
+    size_t size;
+} Dict;
+
+typedef struct DictList {
+    Dict *dicts;
+    size_t count;
+    size_t capacity;
+} DictList;
+
+int dict_list_init(DictList *list, size_t capacity) {
+    if (list == NULL || capacity == 0) {
+        return -1;
+    }
+    list->dicts = (Dict *)calloc(capacity, sizeof(Dict));
+    if (list->dicts == NULL) {
+        return -1;
+    }
+    list->count = 0;
+    list->capacity = capacity;
+    return 0;
+}
+
+int dict_list_add_empty(DictList *list) {
+    if (list == NULL || list->dicts == NULL) {
+        return -1;
+    }
+    if (list->count >= list->capacity) {
+        size_t new_capacity = list->capacity * 2;
+        Dict *new_dicts = (Dict *)realloc(list->dicts, new_capacity * sizeof(Dict));
+        if (new_dicts == NULL) {
+            return -1;
+        }
+        list->dicts = new_dicts;
+        list->capacity = new_capacity;
+    }
+    list->dicts[list->count].data = NULL;
+    list->dicts[list->count].size = 0;
+    list->count++;
+    return 0;
+}
+
+void dict_list_free(DictList *list) {
+    if (list == NULL) {
+        return;
+    }
+    free(list->dicts);
+    list->dicts = NULL;
+    list->count = 0;
+    list->capacity = 0;
+}
+
+int main(void) {
+    DictList list;
+    if (dict_list_init(&list, 5) != 0) {
+        return EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < 10; i++) {
+        if (dict_list_add_empty(&list) != 0) {
+            dict_list_free(&list);
+            return EXIT_FAILURE;
+        }
+    }
+
+    dict_list_free(&list);
+    return EXIT_SUCCESS;
+}
+```

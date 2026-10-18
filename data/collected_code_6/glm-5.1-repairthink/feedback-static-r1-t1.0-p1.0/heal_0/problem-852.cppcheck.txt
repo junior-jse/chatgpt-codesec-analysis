@@ -1,0 +1,4 @@
+Checking /Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-852.c ...
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/glm-5.1/feedback-static-r0-t1.0-p1.0/heal_0/problem-852.c:4:27: style: Parameter 'src' can be declared as pointer to const [constParameterPointer]
+int remove_negatives(int *src, size_t src_len, int **dst, size_t *dst_len) {
+                          ^

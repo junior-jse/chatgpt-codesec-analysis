@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    size_t length;
+} Tuple;
+
+int all_tuples_equal_length(const Tuple *tuples, size_t count) {
+    size_t i;
+    size_t expected_length;
+
+    if (tuples == NULL || count == 0) {
+        return 0;
+    }
+
+    expected_length = tuples[0].length;
+
+    for (i = 1; i < count; i++) {
+        if (tuples[i].length != expected_length) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int main(void) {
+    Tuple equal_tuples[] = {
+        {3},
+        {3},
+        {3}
+    };
+
+    Tuple unequal_tuples[] = {
+        {3},
+        {2},
+        {3}
+    };
+
+    size_t equal_count = sizeof(equal_tuples) / sizeof(equal_tuples[0]);
+    size_t unequal_count = sizeof(unequal_tuples) / sizeof(unequal_tuples[0]);
+
+    if (all_tuples_equal_length(equal_tuples, equal_count)) {
+        printf("All tuples in first set have equal length.\n");
+    } else {
+        printf("Tuples in first set have different lengths.\n");
+    }
+
+    if (all_tuples_equal_length(unequal_tuples, unequal_count)) {
+        printf("All tuples in second set have equal length.\n");
+    } else {
+        printf("Tuples in second set have different lengths.\n");
+    }
+
+    return 0;
+}

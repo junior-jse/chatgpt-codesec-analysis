@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* create_node(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    if (new_node == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+Node* create_list(const int* arr, int size) {
+    if (size <= 0) {
+        return NULL;
+    }
+    Node* head = create_node(arr[0]);
+    Node* current = head;
+    for (int i = 1; i < size; i++) {
+        current->next = create_node(arr[i]);
+        current = current->next;
+    }
+    return head;
+}
+
+Node* divide_lists(Node* list1, Node* list2) {
+    if (list1 == NULL || list2 == NULL) {
+        return NULL;
+    }
+
+    Node* head = NULL;
+    Node* tail = NULL;
+
+    while (list1 != NULL && list2 != NULL) {
+        if (list2->data == 0) {
+            Node* temp = head;
+            while (temp != NULL) {
+                Node* next = temp->next;
+                free(temp);
+                temp = next;
+            }
+            return NULL;
+        }
+
+        Node* new_node = create_node(list1->data / list2->data);
+
+        if (head == NULL) {
+            head = new_node;
+            tail = new_node;
+        } else {
+            tail->next = new_node;
+            tail = new_node;
+        }
+
+        list1 = list1->next;
+        list2 = list2->next;
+    }
+
+    return head;
+}
+
+void print_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void free_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main(void) {
+    int arr1[] = {10, 20, 30, 40, 50};
+    int arr2[] = {2, 4, 5, 2, 10};
+    int size1 = sizeof(arr1) / sizeof(arr1[0]);
+    int size2 = sizeof(arr2) / sizeof(arr2[0]);
+
+    Node* list1 = create_list(arr1, size1);
+    Node* list2 = create_list(arr2, size2);
+
+    Node* result = divide_lists(list1, list2);
+
+    if (result != NULL) {
+        print_list(result);
+        free_list(result);
+    } else {
+        printf("Division failed\n");
+    }
+
+    free_list(list1);
+    free_list(list2);
+
+    return 0;
+}

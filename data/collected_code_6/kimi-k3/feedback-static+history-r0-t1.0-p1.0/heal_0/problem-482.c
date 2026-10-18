@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+int find_sequences(const char *str) {
+    regex_t regex;
+    regmatch_t match;
+    const char *cursor = str;
+    int ret;
+    
+    if (str == NULL) {
+        return -1;
+    }
+    
+    ret = regcomp(&regex, "[A-Z][a-z]+", REG_EXTENDED);
+    if (ret != 0) {
+        return -1;
+    }
+    
+    while (1) {
+        ret = regexec(&regex, cursor, 1, &match, 0);
+        if (ret == REG_NOMATCH) {
+            break;
+        }
+        if (ret != 0) {
+            regfree(&regex);
+            return -1;
+        }
+        
+        printf("Found sequence: %.*s\n", (int)(match.rm_eo - match.rm_so), cursor + match.rm_so);
+        cursor += match.rm_eo;
+    }
+    
+    regfree(&regex);
+    return 0;
+}
+
+int main(void) {
+    const char *test_string = "Hello World This Is A Test String With MixedCase Words";
+    
+    if (find_sequences(test_string) != 0) {
+        fprintf(stderr, "Error processing string\n");
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}

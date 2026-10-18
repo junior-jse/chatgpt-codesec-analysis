@@ -1,0 +1,59 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int* extract_elements(const int* list, size_t list_size, size_t start_index, size_t num_elements, size_t* extracted_size) {
+    int* extracted = NULL;
+    size_t actual_count = 0;
+
+    if (extracted_size == NULL) {
+        return NULL;
+    }
+    *extracted_size = 0;
+
+    if (list == NULL || start_index >= list_size || num_elements == 0) {
+        return NULL;
+    }
+
+    actual_count = num_elements;
+    if (start_index + num_elements > list_size) {
+        actual_count = list_size - start_index;
+    }
+
+    extracted = (int*)malloc(actual_count * sizeof(int));
+    if (extracted == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < actual_count; i++) {
+        extracted[i] = list[start_index + i];
+    }
+
+    *extracted_size = actual_count;
+    return extracted;
+}
+
+int main(void) {
+    int list[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    size_t list_size = sizeof(list) / sizeof(list[0]);
+    size_t extracted_size = 0;
+    int* result = NULL;
+
+    result = extract_elements(list, list_size, 2, 4, &extracted_size);
+    
+    if (result != NULL) {
+        printf("Extracted elements: ");
+        for (size_t i = 0; i < extracted_size; i++) {
+            printf("%d ", result[i]);
+        }
+        printf("\n");
+        free(result);
+        result = NULL;
+    } else {
+        printf("Extraction failed or invalid parameters.\n");
+    }
+
+    return 0;
+}
+```

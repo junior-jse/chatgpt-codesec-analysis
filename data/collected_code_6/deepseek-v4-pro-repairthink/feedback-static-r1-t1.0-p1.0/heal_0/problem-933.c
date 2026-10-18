@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char *camel_to_snake(const char *input) {
+    regex_t regex;
+    regmatch_t matches[2];
+    const char *pattern = "([a-z0-9])([A-Z])";
+    size_t input_len = strlen(input);
+    size_t output_len = input_len + 1;
+    const char *cursor = input;
+    char *output;
+    char *out_ptr;
+
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0) {
+        return NULL;
+    }
+
+    while (regexec(&regex, cursor, 2, matches, 0) == 0) {
+        output_len++;
+        cursor += matches[0].rm_eo;
+    }
+
+    output = (char *)malloc(output_len);
+    if (output == NULL) {
+        regfree(&regex);
+        return NULL;
+    }
+
+    cursor = input;
+    out_ptr = output;
+
+    while (regexec(&regex, cursor, 2, matches, 0) == 0) {
+        size_t prefix_len = matches[1].rm_eo - matches[1].rm_so;
+        size_t match_len = matches[0].rm_eo - matches[0].rm_so;
+
+        memcpy(out_ptr, cursor, prefix_len);
+        out_ptr += prefix_len;
+
+        *out_ptr++ = '_';
+
+        *out_ptr++ = cursor[matches[2].rm_so] + ('a' - 'A');
+
+        cursor += match_len;
+    }
+
+    strcpy(out_ptr, cursor);
+
+    regfree(&regex);
+    return output;
+}
+
+int main(void) {
+    const char *tests[] = {
+        "camelCase",
+        "helloWorld",
+        "thisIsATest",
+        "already_snake",
+        "mixedCase_WithSnake",
+        "UPPERCASE",
+        "camel123Case",
+        "c"
+    };
+    size_t num_tests = sizeof(tests) / sizeof(tests[0]);
+
+    for (size_t i = 0; i < num_tests; i++) {
+        char *result = camel_to_snake(tests[i]);
+        if (result != NULL) {
+            printf("%s -> %s\n", tests[i], result);
+            free(result);
+        } else {
+            printf("%s -> (conversion failed)\n", tests[i]);
+        }
+    }
+
+    return 0;
+}

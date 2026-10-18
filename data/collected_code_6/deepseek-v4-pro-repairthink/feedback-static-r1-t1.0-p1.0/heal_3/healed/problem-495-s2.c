@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+size_t safe_strlen(const char *str, size_t max_len) {
+    size_t len = 0;
+    if (str != NULL) {
+        while (len < max_len && str[len] != '\0') {
+            len++;
+        }
+    }
+    return len;
+}
+
+void remove_lowercase_substrings(const char *input, char *output, size_t output_size) {
+    regex_t regex;
+    size_t out_pos = 0;
+    int result;
+    const char *cursor;
+    regmatch_t match;
+
+    if (output_size == 0) return;
+    output[0] = '\0';
+
+    result = regcomp(&regex, "[a-z]+", REG_EXTENDED);
+    if (result != 0) return;
+
+    cursor = input;
+    while (*cursor != '\0' && out_pos < output_size - 1) {
+        result = regexec(&regex, cursor, 1, &match, 0);
+        if (result == REG_NOMATCH) {
+            while (*cursor != '\0' && out_pos < output_size - 1) {
+                output[out_pos++] = *cursor++;
+            }
+            break;
+        } else if (result == 0) {
+            regoff_t prefix_len = match.rm_so;
+            regoff_t i;
+            for (i = 0; i < prefix_len && out_pos < output_size - 1; i++) {
+                output[out_pos++] = cursor[i];
+            }
+            cursor += match.rm_eo;
+        } else {
+            while (*cursor != '\0' && out_pos < output_size - 1) {
+                output[out_pos++] = *cursor++;
+            }
+            break;
+        }
+    }
+
+    output[out_pos] = '\0';
+    regfree(&regex);
+}
+
+int main(void) {
+    const char *test_strings[] = {
+        "HelloWorld",
+        "abcXYZdef",
+        "ABC123low456",
+        "test",
+        "UPPERlowerUPPER",
+        "A1b2C3d4",
+        "",
+        "alllowercase"
+    };
+    size_t num_tests = sizeof(test_strings) / sizeof(test_strings[0]);
+    size_t i;
+
+    for (i = 0; i < num_tests; i++) {
+        size_t input_len = safe_strlen(test_strings[i], 4096);
+        char *result_buffer = malloc(input_len + 1);
+        if (result_buffer == NULL) {
+            fprintf(stderr, "Memory allocation failed for test %zu\n", i);
+            continue;
+        }
+        remove_lowercase_substrings(test_strings[i], result_buffer, input_len + 1);
+        printf("Input: '%s' -> Output: '%s'\n", test_strings[i], result_buffer);
+        free(result_buffer);
+    }
+
+    return 0;
+}

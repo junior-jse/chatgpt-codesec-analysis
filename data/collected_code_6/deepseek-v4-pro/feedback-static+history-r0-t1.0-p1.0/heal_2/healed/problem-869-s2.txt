@@ -1,0 +1,125 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    int *data;
+    int size;
+    struct Node *next;
+} Node;
+
+Node *create_node(int *data, int size) {
+    Node *new_node = (Node *)malloc(sizeof(Node));
+    if (!new_node) {
+        return NULL;
+    }
+    new_node->data = (int *)malloc(size * sizeof(int));
+    if (!new_node->data) {
+        free(new_node);
+        return NULL;
+    }
+    if (size > 0 && data != NULL) {
+        memcpy(new_node->data, data, size * sizeof(int));
+    }
+    new_node->size = size;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void free_list(Node *head) {
+    Node *current = head;
+    while (current) {
+        Node *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+}
+
+int is_within_range(const int *sublist, int size, int min_val, int max_val) {
+    if (sublist == NULL) {
+        return 0;
+    }
+    for (int i = 0; i < size; i++) {
+        if (sublist[i] < min_val || sublist[i] > max_val) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+Node *remove_out_of_range(Node *head, int min_val, int max_val) {
+    Node dummy;
+    dummy.next = head;
+    Node *prev = &dummy;
+    Node *current = head;
+
+    while (current) {
+        Node *next = current->next;
+        if (!is_within_range(current->data, current->size, min_val, max_val)) {
+            prev->next = next;
+            free(current->data);
+            free(current);
+        } else {
+            prev = current;
+        }
+        current = next;
+    }
+
+    return dummy.next;
+}
+
+void print_list(Node *head) {
+    Node *current = head;
+    while (current) {
+        printf("[");
+        for (int i = 0; i < current->size; i++) {
+            printf("%d", current->data[i]);
+            if (i < current->size - 1) {
+                printf(", ");
+            }
+        }
+        printf("] ");
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int arr1[] = {1, 2, 3};
+    int arr2[] = {4, 5, 6};
+    int arr3[] = {7, 8, 9};
+    int arr4[] = {10, 11, 12};
+
+    Node *head = create_node(arr1, 3);
+    if (!head) return 1;
+    head->next = create_node(arr2, 3);
+    if (!head->next) {
+        free_list(head);
+        return 1;
+    }
+    head->next->next = create_node(arr3, 3);
+    if (!head->next->next) {
+        free_list(head);
+        return 1;
+    }
+    head->next->next->next = create_node(arr4, 3);
+    if (!head->next->next->next) {
+        free_list(head);
+        return 1;
+    }
+
+    printf("Original list: ");
+    print_list(head);
+
+    head = remove_out_of_range(head, 1, 9);
+
+    printf("Filtered list: ");
+    print_list(head);
+
+    free_list(head);
+
+    return 0;
+}
+```

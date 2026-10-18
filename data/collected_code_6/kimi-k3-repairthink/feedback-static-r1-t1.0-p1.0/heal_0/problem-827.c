@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int sum_column(int **list_of_lists, int num_rows, int num_cols, int col_index, int *result) {
+    if (list_of_lists == NULL || result == NULL || col_index < 0 || col_index >= num_cols) {
+        return -1;
+    }
+
+    int sum = 0;
+    for (int i = 0; i < num_rows; i++) {
+        if (list_of_lists[i] == NULL) {
+            return -1;
+        }
+        sum += list_of_lists[i][col_index];
+    }
+
+    *result = sum;
+    return 0;
+}
+
+int main(void) {
+    int num_rows = 3;
+    int num_cols = 3;
+    int col_index = 1;
+    int result = 0;
+
+    int **list_of_lists = malloc(num_rows * sizeof(int *));
+    if (list_of_lists == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < num_rows; i++) {
+        list_of_lists[i] = malloc(num_cols * sizeof(int));
+        if (list_of_lists[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                free(list_of_lists[j]);
+            }
+            free(list_of_lists);
+            return EXIT_FAILURE;
+        }
+    }
+
+    list_of_lists[0][0] = 1; list_of_lists[0][1] = 2; list_of_lists[0][2] = 3;
+    list_of_lists[1][0] = 4; list_of_lists[1][1] = 5; list_of_lists[1][2] = 6;
+    list_of_lists[2][0] = 7; list_of_lists[2][1] = 8; list_of_lists[2][2] = 9;
+
+    if (sum_column(list_of_lists, num_rows, num_cols, col_index, &result) == 0) {
+        printf("Sum of column %d: %d\n", col_index, result);
+    } else {
+        printf("Error calculating column sum\n");
+    }
+
+    for (int i = 0; i < num_rows; i++) {
+        free(list_of_lists[i]);
+    }
+    free(list_of_lists);
+
+    return EXIT_SUCCESS;
+}

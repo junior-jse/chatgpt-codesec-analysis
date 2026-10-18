@@ -1,0 +1,132 @@
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+int compare_tuples(const Tuple *a, const Tuple *b) {
+    if (a->size != b->size) return 0;
+    for (size_t i = 0; i < a->size; i++) {
+        if (a->data[i] != b->data[i]) return 0;
+    }
+    return 1;
+}
+
+int remove_matching_tuples(Tuple *tuple1, Tuple *tuple2) {
+    if (tuple1 == NULL || tuple2 == NULL || tuple1->data == NULL || tuple2->data == NULL) {
+        return -1;
+    }
+
+    if (!compare_tuples(tuple1, tuple2)) {
+        return 0;
+    }
+
+    free(tuple1->data);
+    tuple1->data = NULL;
+    tuple1->size = 0;
+
+    free(tuple2->data);
+    tuple2->data = NULL;
+    tuple2->size = 0;
+
+    return 1;
+}
+
+Tuple create_tuple(const int *values, size_t size) {
+    Tuple tuple;
+    tuple.size = size;
+    tuple.data = malloc(size * sizeof(int));
+    if (tuple.data == NULL) {
+        tuple.size = 0;
+        return tuple;
+    }
+    for (size_t i = 0; i < size; i++) {
+        tuple.data[i] = values[i];
+    }
+    return tuple;
+}
+
+void print_tuple(const Tuple *tuple) {
+    if (tuple == NULL || tuple->data == NULL || tuple->size == 0) {
+        printf("[]\n");
+        return;
+    }
+    printf("[");
+    for (size_t i = 0; i < tuple->size; i++) {
+        printf("%d", tuple->data[i]);
+        if (i < tuple->size - 1) printf(", ");
+    }
+    printf("]\n");
+}
+
+void free_tuple(Tuple *tuple) {
+    if (tuple == NULL) return;
+    free(tuple->data);
+    tuple->data = NULL;
+    tuple->size = 0;
+}
+
+int main(void) {
+    int values1[] = {1, 2, 3, 4, 5};
+    int values2[] = {1, 2, 3, 4, 5};
+    int values3[] = {6, 7, 8};
+    int values4[] = {1, 2, 3};
+
+    Tuple tuple1 = create_tuple(values1, 5);
+    Tuple tuple2 = create_tuple(values2, 5);
+    Tuple tuple3 = create_tuple(values3, 3);
+    Tuple tuple4 = create_tuple(values4, 3);
+
+    if (tuple1.data == NULL || tuple2.data == NULL || tuple3.data == NULL || tuple4.data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free_tuple(&tuple1);
+        free_tuple(&tuple2);
+        free_tuple(&tuple3);
+        free_tuple(&tuple4);
+        return 1;
+    }
+
+    printf("Tuple 1: ");
+    print_tuple(&tuple1);
+    printf("Tuple 2: ");
+    print_tuple(&tuple2);
+
+    if (remove_matching_tuples(&tuple1, &tuple2)) {
+        printf("Matching tuples removed.\n");
+    } else {
+        printf("Tuples do not match.\n");
+    }
+
+    printf("Tuple 1 after removal: ");
+    print_tuple(&tuple1);
+    printf("Tuple 2 after removal: ");
+    print_tuple(&tuple2);
+
+    printf("Tuple 3: ");
+    print_tuple(&tuple3);
+    printf("Tuple 4: ");
+    print_tuple(&tuple4);
+
+    if (remove_matching_tuples(&tuple3, &tuple4)) {
+        printf("Matching tuples removed.\n");
+    } else {
+        printf("Tuples do not match.\n");
+    }
+
+    printf("Tuple 3 after removal: ");
+    print_tuple(&tuple3);
+    printf("Tuple 4 after removal: ");
+    print_tuple(&tuple4);
+
+    free_tuple(&tuple1);
+    free_tuple(&tuple2);
+    free_tuple(&tuple3);
+    free_tuple(&tuple4);
+
+    return 0;
+}
+```

@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+long long count_sequences(const int *values, int n, int length) {
+    if (n <= 0 || length <= 0 || length % n != 0) {
+        return 0;
+    }
+
+    long long total_cycles = length / n;
+    long long total_sequences = 1;
+
+    for (int i = 1; i <= n; i++) {
+        total_sequences = (total_sequences * total_cycles) / i;
+    }
+
+    int *prefix_sums = (int *)malloc(n * sizeof(int));
+    if (prefix_sums == NULL) {
+        return 0;
+    }
+
+    int current_sum = 0;
+    int min_sum = 0;
+    for (int i = 0; i < n; i++) {
+        current_sum += values[i];
+        prefix_sums[i] = current_sum;
+        if (current_sum < min_sum) {
+            min_sum = current_sum;
+        }
+    }
+
+    long long valid_sequences = 0;
+
+    for (int start = 0; start < n; start++) {
+        if (start > 0) {
+            min_sum = prefix_sums[start - 1] - values[start - 1] - current_sum;
+            if (min_sum >= 0) {
+                continue;
+            }
+        } else {
+            if (min_sum >= 0) {
+                valid_sequences += total_sequences;
+                continue;
+            }
+        }
+
+        if (current_sum < 0) {
+            continue;
+        }
+
+        long long max_shifts = 0;
+        int shift_sum = 0;
+
+        for (int len = 1; len < n; len++) {
+            shift_sum += values[(start + n - len) % n];
+            if (shift_sum + min_sum >= 0) {
+                max_shifts = len;
+            }
+        }
+
+        long long moves = total_cycles - 1;
+        long long count = total_sequences;
+
+        for (long long k = 1; k <= max_shifts; k++) {
+            count *= (moves + k);
+            count /= k;
+        }
+
+        valid_sequences += count;
+    }
+
+    free(prefix_sums);
+    return valid_sequences;
+}
+
+int main() {
+    int values1[] = {1, -1, 1, -1};
+    int n1 = sizeof(values1) / sizeof(values1[0]);
+    int length1 = 4;
+    long long result1 = count_sequences(values1, n1, length1);
+    printf("%lld\n", result1);
+
+    return 0;
+}

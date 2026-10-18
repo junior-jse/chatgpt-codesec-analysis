@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_ROWS 100
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int maxPathSum(int triangle[][MAX_ROWS], int rows) {
+    int dp[MAX_ROWS][MAX_ROWS] = {0};
+    
+    dp[0][0] = triangle[0][0];
+    
+    for (int i = 1; i < rows; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (j == 0) {
+                dp[i][j] = dp[i-1][j] + triangle[i][j];
+            } else if (j == i) {
+                dp[i][j] = dp[i-1][j-1] + triangle[i][j];
+            } else {
+                dp[i][j] = max(dp[i-1][j-1], dp[i-1][j]) + triangle[i][j];
+            }
+        }
+    }
+    
+    int maxSum = dp[rows-1][0];
+    for (int j = 1; j < rows; j++) {
+        maxSum = max(maxSum, dp[rows-1][j]);
+    }
+    
+    return maxSum;
+}
+
+int main() {
+    int rows;
+    int triangle[MAX_ROWS][MAX_ROWS] = {0};
+    
+    printf("Enter number of rows: ");
+    if (scanf("%d", &rows) != 1 || rows <= 0 || rows > MAX_ROWS) {
+        fprintf(stderr, "Invalid input\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Enter triangle elements row by row:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (scanf("%d", &triangle[i][j]) != 1) {
+                fprintf(stderr, "Invalid input\n");
+                return EXIT_FAILURE;
+            }
+        }
+    }
+    
+    int result = maxPathSum(triangle, rows);
+    printf("Maximum path sum: %d\n", result);
+    
+    return EXIT_SUCCESS;
+}

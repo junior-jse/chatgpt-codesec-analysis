@@ -1,0 +1,35 @@
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:36:34: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   36 |             size_t len1 = strlen(tuples[i][j]);
+      |                                  ^~~~~~~~~~~~
+      |                                  &
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_string.h:96:28: note: passing argument to parameter '__s' here
+   96 | size_t   strlen(const char *__s);
+      |                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:37:34: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   37 |             size_t len2 = strlen(tuples[i][j + 1]);
+      |                                  ^~~~~~~~~~~~~~~~
+      |                                  &
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/_string.h:96:28: note: passing argument to parameter '__s' here
+   96 | size_t   strlen(const char *__s);
+      |                             ^
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:47:42: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   47 |             strcpy(result[result_index], tuples[i][j]);
+      |                                          ^~~~~~~~~~~~
+      |                                          &
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:40: note: expanded from macro 'strcpy'
+  249 | #define strcpy(...) __strcpy_chk_func (__VA_ARGS__)
+      |                                        ^~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:33: note: expanded from macro '__strcpy_chk_func'
+  172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
+      |                                               ^~~~~~~~~~~
+/Users/clodbrasilino/zju-workspace/chatgpt-codesec-analysis/collected_code_6/deepseek-v4-pro/feedback-static-r0-t1.0-p1.0/heal_0/problem-206-s2.c:48:42: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'const char *'; take the address with & [-Wint-conversion]
+   48 |             strcat(result[result_index], tuples[i][j + 1]);
+      |                                          ^~~~~~~~~~~~~~~~
+      |                                          &
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/secure/_string.h:254:40: note: expanded from macro 'strcat'
+  254 | #define strcat(...) __strcat_chk_func (__VA_ARGS__)
+      |                                        ^~~~~~~~~~~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/secure/_string.h:182:33: note: expanded from macro '__strcat_chk_func'
+  182 |                 __builtin___strcat_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
+      |                                               ^~~~~~~~~~~
+4 errors generated.

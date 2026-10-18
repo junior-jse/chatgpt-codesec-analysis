@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    size_t size;
+} Tuple;
+
+void trim_tuple(Tuple *t, size_t k) {
+    if (t == NULL || t->data == NULL || t->size == 0 || k == 0) {
+        return;
+    }
+
+    if (2 * k >= t->size) {
+        free(t->data);
+        t->data = NULL;
+        t->size = 0;
+        return;
+    }
+
+    size_t new_size = t->size - 2 * k;
+    int *new_data = (int *)malloc(new_size * sizeof(int));
+    if (new_data == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < new_size; i++) {
+        new_data[i] = t->data[k + i];
+    }
+
+    free(t->data);
+    t->data = new_data;
+    t->size = new_size;
+}
+
+void trim_tuple_list(Tuple *list, size_t count, size_t k) {
+    if (list == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < count; i++) {
+        trim_tuple(&list[i], k);
+    }
+}
+
+int main(void) {
+    Tuple list[3];
+    size_t k = 1;
+
+    int d0[] = {1, 2, 3, 4, 5};
+    int d1[] = {10, 20, 30, 40, 50, 60};
+    int d2[] = {7, 8, 9};
+
+    list[0].size = 5;
+    list[0].data = (int *)malloc(list[0].size * sizeof(int));
+    list[1].size = 6;
+    list[1].data = (int *)malloc(list[1].size * sizeof(int));
+    list[2].size = 3;
+    list[2].data = (int *)malloc(list[2].size * sizeof(int));
+
+    if (list[0].data == NULL || list[1].data == NULL || list[2].data == NULL) {
+        free(list[0].data);
+        free(list[1].data);
+        free(list[2].data);
+        return 1;
+    }
+
+    for (size_t i = 0; i < list[0].size; i++) list[0].data[i] = d0[i];
+    for (size_t i = 0; i < list[1].size; i++) list[1].data[i] = d1[i];
+    for (size_t i = 0; i < list[2].size; i++) list[2].data[i] = d2[i];
+
+    trim_tuple_list(list, 3, k);
+
+    for (size_t i = 0; i < 3; i++) {
+        printf("Tuple %zu: ", i);
+        for (size_t j = 0; j < list[i].size; j++) {
+            printf("%d ", list[i].data[j]);
+        }
+        printf("\n");
+        free(list[i].data);
+    }
+
+    return 0;
+}

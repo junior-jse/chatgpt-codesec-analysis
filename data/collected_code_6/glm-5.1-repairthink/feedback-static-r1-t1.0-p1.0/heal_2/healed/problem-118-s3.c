@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+char **string_to_list(const char *str, size_t str_len, size_t *list_len) {
+    if (str == NULL || list_len == NULL) {
+        return NULL;
+    }
+
+    if (str_len == 0) {
+        *list_len = 0;
+        return NULL;
+    }
+
+    if (str_len > SIZE_MAX / sizeof(char *) - 1) {
+        return NULL;
+    }
+
+    char **list = malloc((str_len + 1) * sizeof(char *));
+    if (list == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < str_len; i++) {
+        list[i] = malloc(2);
+        if (list[i] == NULL) {
+            for (size_t j = 0; j < i; j++) {
+                free(list[j]);
+            }
+            free(list);
+            return NULL;
+        }
+        list[i][0] = str[i];
+        list[i][1] = '\0';
+    }
+
+    list[str_len] = NULL;
+    *list_len = str_len;
+
+    return list;
+}
+
+void free_list(char **list, size_t list_len) {
+    if (list == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < list_len; i++) {
+        free(list[i]);
+    }
+    free(list);
+}
+
+int main(void) {
+    const char *str = "Hello";
+    size_t str_len = 5;
+    size_t list_len = 0;
+
+    char **list = string_to_list(str, str_len, &list_len);
+
+    if (list != NULL) {
+        for (size_t i = 0; i < list_len; i++) {
+            printf("%s\n", list[i]);
+        }
+        free_list(list, list_len);
+    }
+
+    return 0;
+}

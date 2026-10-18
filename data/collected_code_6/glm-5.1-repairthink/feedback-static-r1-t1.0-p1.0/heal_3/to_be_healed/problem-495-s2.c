@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+char* remove_lowercase_substrings(const char *input) {
+    if (input == NULL) {
+        return NULL;
+    }
+
+    /* Possible weaknesses found:
+     * Flawfinder strlen: Does not handle strings that are not \0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126). (risk 1, buffer)
+     */
+    size_t input_len = strlen(input);
+    char *output = malloc(input_len + 1);
+    if (output == NULL) {
+        return NULL;
+    }
+
+    regex_t regex;
+    int result = regcomp(&regex, "[a-z]+", REG_EXTENDED);
+    if (result != 0) {
+        free(output);
+        return NULL;
+    }
+
+    size_t out_len = 0;
+    size_t search_pos = 0;
+    regmatch_t match;
+
+    while (search_pos < input_len) {
+        result = regexec(&regex, input + search_pos, 1, &match, 0);
+        if (result == 0) {
+            if (match.rm_so > 0) {
+                if (out_len + match.rm_so <= input_len) {
+                    /* Possible weaknesses found:
+                     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                     */
+                    memcpy(output + out_len, input + search_pos, match.rm_so);
+                    out_len += match.rm_so;
+                }
+            }
+            search_pos += match.rm_eo;
+        } else if (result == REG_NOMATCH) {
+            size_t remaining = input_len - search_pos;
+            if (remaining > 0) {
+                if (out_len + remaining <= input_len) {
+                    /* Possible weaknesses found:
+                     * Flawfinder memcpy: Does not check for buffer overflows when copying to destination (CWE-120). Make sure destination can always hold the source data. (risk 2, buffer)
+                     */
+                    memcpy(output + out_len, input + search_pos, remaining);
+                    out_len += remaining;
+                }
+            }
+            break;
+        } else {
+            regfree(&regex);
+            free(output);
+            return NULL;
+        }
+    }
+
+    regfree(&regex);
+    output[out_len] = '\0';
+
+    char *final_output = realloc(output, out_len + 1);
+    if (final_output != NULL) {
+        return final_output;
+    }
+    return output;
+}
+
+int main(void) {
+    char *result = remove_lowercase_substrings("HelloWORLD123abcDEF");
+    if (result != NULL) {
+        printf("%s\n", result);
+        free(result);
+    }
+    return 0;
+}
